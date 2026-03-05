@@ -42,14 +42,13 @@ export default function HomePage() {
   return (
     <main>
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
-
-        <MathDeco latex="\\binom{n}{k}" className="top-10 left-6 text-[3.5rem]" />
+        <MathDeco latex="\binom{n}{k}" className="top-10 left-6 text-[3.5rem]" />
         <MathDeco latex="n!" className="top-1/3 left-[4%] text-[4rem]" />
         <MathDeco latex="a^2 + b^2 = c^2" className="bottom-12 left-[8%] text-[2.8rem]" />
-        <MathDeco latex="\\sum_{k=0}^{n} \\binom{n}{k} = 2^n" className="top-8 right-[8%] text-[2.4rem]" />
-        <MathDeco latex="a^{p-1} \\equiv 1 \\pmod{p}" className="top-1/2 right-[4%] text-[2.4rem]" />
+        <MathDeco latex="\sum_{k=0}^{n} \binom{n}{k} = 2^n" className="top-8 right-[8%] text-[2.4rem]" />
+        <MathDeco latex="a^{p-1} \equiv 1 \pmod{p}" className="top-1/2 right-[4%] text-[2.4rem]" />
         <MathDeco latex="V - E + F = 2" className="bottom-16 right-[14%] text-[2.8rem]" />
-
+        
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-28 sm:py-36 text-center">
