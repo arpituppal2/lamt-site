@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import katex from 'katex';
+import 'katex/dist/katex.min.css';
 
 interface MathDecoProps {
   latex: string;
@@ -23,7 +24,7 @@ export default function MathDeco({ latex, className = '' }: MathDecoProps) {
     <span
       ref={ref}
       aria-hidden
-      className={`math-deco ${className}`}
+      className={`pointer-events-none select-none absolute opacity-20 text-slate-200 ${className}`}
     />
   );
 }
