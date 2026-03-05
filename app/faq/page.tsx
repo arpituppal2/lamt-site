@@ -1,0 +1,25 @@
+const faqs = [
+  { q: 'Who can participate?', a: 'Any student in grades 6–12 may participate. Students must compete under their enrolled school.' },
+  { q: 'How many students per team?', a: 'Up to 4 students per team. A school may register multiple teams.' },
+  { q: 'Is there a registration fee?', a: 'Registration fee information will be announced soon. Check back for updates.' },
+  { q: 'What topics are covered?', a: 'Algebra, Geometry, Number Theory, Combinatorics, and more — following AMC/AIME style.' },
+  { q: 'Where is the tournament held?', a: 'Los Angeles, CA. Exact venue TBA. Will be announced via email to registered teams.' },
+  { q: 'Can individuals participate without a team?', a: 'Yes, individual registration may be available. Details coming soon.' },
+  { q: 'How do I get updates?', a: 'Join our Discord server (link shared after registration) and watch for emails to your coach.' },
+];
+
+export default function FAQPage() {
+  return (
+    <main className="max-w-3xl mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold text-slate-900 mb-8">Frequently Asked Questions</h1>
+      <div className="space-y-6">
+        {faqs.map((item) => (
+          <div key={item.q} className="border-l-4 border-[#2774AE] pl-4">
+            <p className="font-semibold text-slate-900 mb-1">{item.q}</p>
+            <p className="text-slate-600 text-sm">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
