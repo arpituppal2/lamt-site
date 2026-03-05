@@ -1,5 +1,6 @@
 const faqs = [
-  { q: 'Who can participate?', a: 'Any student in grades 6–12 may participate. Students must compete under their enrolled school.' },
+  { q: 'Who can participate?', a: 'LAMT is primarily a high school competition, but middle school students in grades 6–12 are welcome to compete. All students must compete under their enrolled school.' },
+  { q: 'Can 6th graders participate?', a: 'Yes! 6th grade is totally fine. LAMT is geared toward high schoolers, but younger students who are up for the challenge are absolutely welcome. No special registration process — just sign up like everyone else.' },
   { q: 'How many students per team?', a: 'Up to 4 students per team. A school may register multiple teams.' },
   { q: 'Is there a registration fee?', a: 'Registration fee information will be announced soon. Check back for updates.' },
   { q: 'What topics are covered?', a: 'Algebra, Geometry, Number Theory, Combinatorics, and more — following AMC/AIME style.' },
