@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import MathDeco from './components/MathDeco';
 
 const stats = [
   { value: 'May 23', label: 'Tournament Date', sub: '2026' },
@@ -9,22 +10,22 @@ const stats = [
 
 const formats = [
   {
-    icon: '∑',
+    icon: '\u2211',
     title: 'Individual Round',
     desc: 'Test your solo problem-solving skills across algebra, geometry, number theory, and combinatorics.',
   },
   {
-    icon: '∫',
+    icon: '\u222b',
     title: 'Team Round',
     desc: 'Collaborate with teammates on challenging multi-step problems that reward group strategy.',
   },
   {
-    icon: 'π',
+    icon: '\u03c0',
     title: 'Relay Round',
-    desc: "A fast-paced format where each answer feeds the next — teamwork and accuracy under pressure.",
+    desc: "A fast-paced format where each answer feeds the next \u2014 teamwork and accuracy under pressure.",
   },
   {
-    icon: '√',
+    icon: '\u221a',
     title: 'Guts Round',
     desc: 'Live-scored, high-intensity round where speed and accuracy determine standings in real time.',
   },
@@ -41,12 +42,15 @@ export default function HomePage() {
   return (
     <main>
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
-        <span aria-hidden className="math-deco top-10 left-6 text-[7rem]">∑</span>
-        <span aria-hidden className="math-deco top-1/3 left-[4%] text-[3.5rem]">∫₀^∞</span>
-        <span aria-hidden className="math-deco bottom-12 left-[8%] text-[5rem]">∂</span>
-        <span aria-hidden className="math-deco top-8 right-[10%] text-[8rem]">π</span>
-        <span aria-hidden className="math-deco top-1/2 right-[4%] text-[3.5rem]">e^iπ+1=0</span>
-        <span aria-hidden className="math-deco bottom-16 right-[14%] text-[6rem]">√</span>
+
+        {/* KaTeX math decorations */}
+        <MathDeco latex="\\binom{n}{k}" className="top-10 left-6 text-[3.5rem]" />
+        <MathDeco latex="n!" className="top-1/3 left-[4%] text-[4rem]" />
+        <MathDeco latex="a^2 + b^2 = c^2" className="bottom-12 left-[8%] text-[2.8rem]" />
+        <MathDeco latex="\\sum_{k=0}^{n} \\binom{n}{k} = 2^n" className="top-8 right-[8%] text-[2.4rem]" />
+        <MathDeco latex="a^{p-1} \\equiv 1 \\pmod{p}" className="top-1/2 right-[4%] text-[2.4rem]" />
+        <MathDeco latex="V - E + F = 2" className="bottom-16 right-[14%] text-[2.8rem]" />
+
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-28 sm:py-36 text-center">
@@ -58,14 +62,14 @@ export default function HomePage() {
             <span className="text-[#FFD100]">MATH TOURNAMENT</span>
           </h1>
           <p className="text-slate-400 text-base sm:text-lg mb-10 max-w-md mx-auto leading-relaxed">
-            A premier one-day competition for middle and high school students across Southern California — May 23, 2026.
+            A premier one-day competition for middle and high school students across Southern California \u2014 May 23, 2026.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/register"
               className="bg-[#FFD100] text-slate-900 font-bold px-8 py-3.5 rounded-lg hover:bg-[#FFE566] transition-all shadow-lg hover:-translate-y-0.5 text-sm sm:text-base"
             >
-              Register Your Team →
+              Register Your Team \u2192
             </Link>
             <Link
               href="/about"
@@ -75,7 +79,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="mt-8 text-slate-500 text-sm">
-            📍 UCLA Campus · Los Angeles, California
+            \uD83D\uDCCD UCLA Campus \u00B7 Los Angeles, California
           </p>
         </div>
       </section>
@@ -103,13 +107,13 @@ export default function HomePage() {
               The Los Angeles Math Tournament (LAMT) is a student-organized competition hosted at UCLA, designed to inspire and challenge talented mathematicians across the greater LA area.
             </p>
             <p className="text-slate-600 leading-relaxed mb-8">
-              Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA&apos;s own math community.
+              Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics \u2014 all problems handcrafted by UCLA&apos;s own math community.
             </p>
             <Link
               href="/about"
               className="inline-flex items-center gap-2 text-[#2774AE] font-semibold text-sm hover:gap-3 transition-all"
             >
-              Learn more about LAMT <span>→</span>
+              Learn more about LAMT <span>\u2192</span>
             </Link>
           </div>
 
@@ -155,7 +159,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-10">
             <Link href="/schedule" className="text-[#2774AE] text-sm font-semibold hover:underline">
-              View full schedule →
+              View full schedule \u2192
             </Link>
           </div>
         </div>
@@ -167,7 +171,7 @@ export default function HomePage() {
             Ready to compete?
           </h2>
           <p className="text-slate-700 mb-8 text-lg">
-            Secure your team&apos;s spot before registration closes — spaces are limited.
+            Secure your team&apos;s spot before registration closes \u2014 spaces are limited.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
