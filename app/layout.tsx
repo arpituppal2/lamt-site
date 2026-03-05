@@ -64,10 +64,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Contact</h3>
                 <a
-                  href="mailto:lamt2026@gmail.com"
+          href="mailto:uclamathtournament@gmail.com"
                   className="text-slate-300 text-sm hover:text-[#FFD100] transition-colors"
                 >
-                  lamt2026@gmail.com
+                              uclamathtournament@gmail.com
                 </a>
                 <p className="text-slate-400 text-sm mt-2">UCLA Campus</p>
                 <p className="text-slate-400 text-sm">Los Angeles, CA</p>
