@@ -21,6 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        />
       </head>
       <body className="bg-white text-slate-900 antialiased font-sans">
         <NavBar />
@@ -71,8 +75,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-500">
-              <p>© 2026 Los Angeles Math Tournament. All rights reserved.</p>
-              <p>Hosted at UCLA · May 23, 2026</p>
+              <p>&copy; 2026 Los Angeles Math Tournament. All rights reserved.</p>
+              <p>Hosted at UCLA &middot; May 23, 2026</p>
             </div>
           </div>
         </footer>
