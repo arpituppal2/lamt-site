@@ -3,10 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --ucla-blue: #2774AE;
-  --ucla-gold: #FFD100;
+  --ucla-blue:        #2774AE;
+  --ucla-blue-dark:   #1a5276;
+  --ucla-blue-deeper: #003B5C;
+  --ucla-gold:        #FFD100;
 }
 
-html {
-  scroll-behavior: smooth;
+html { scroll-behavior: smooth; }
+
+@layer utilities {
+  .math-deco {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-style: italic;
+    opacity: 0.055;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    line-height: 1;
+  }
 }
