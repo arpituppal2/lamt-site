@@ -3,7 +3,7 @@ import MathDeco from './components/MathDeco';
 
 const stats = [
   { value: 'May 23', label: 'Tournament Date', sub: '2026' },
-  { value: 'MS & HS', label: 'Divisions', sub: 'Middle & High School' },
+  { value: 'HS', label: 'Division', sub: '(Open to 6th-12th)' },
   { value: '4', label: 'Members / Team', sub: 'Maximum' },
   { value: 'UCLA', label: 'Venue', sub: 'Los Angeles, CA' },
 ];
@@ -32,7 +32,7 @@ const formats = [
 ];
 
 const highlights = [
-  { title: 'Open to MS & HS',   sub: 'Both divisions welcome' },
+  { title: 'Open to MS & HS',   sub: 'Single Division' },
   { title: 'Teams of up to 4',  sub: 'School-based teams' },
   { title: 'UCLA Campus venue', sub: 'World-class facilities' },
   { title: 'Original problems', sub: 'Crafted by UCLA students' },
