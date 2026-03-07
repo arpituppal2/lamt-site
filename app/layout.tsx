@@ -6,7 +6,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'LAMT 2026 | Los Angeles Math Tournament',
   description:
-    'Los Angeles Math Tournament — May 23, 2026. A premier one-day math competition for middle and high school students in Southern California, hosted at UCLA.',
+    'Los Angeles Math Tournament — May 23, 2026. An international high school math competition hosted at UCLA. All students are encouraged to apply.',
 };
 
 const footerLinks = ['About', 'Schedule', 'FAQ', 'Contact', 'Register'];
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="font-extrabold text-lg">LAMT 2026</span>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed">
-                  A student-run mathematics competition hosted at UCLA, celebrating mathematical curiosity and excellence across Southern California.
+                  An international high school math competition hosted at UCLA. All students are encouraged to apply.
                 </p>
               </div>
 
@@ -63,20 +63,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Contact</h3>
-                <a
-          href="mailto:uclamathtournament@gmail.com"
-                  className="text-slate-300 text-sm hover:text-[#FFD100] transition-colors"
-                >
-                              uclamathtournament@gmail.com
-                </a>
-                <p className="text-slate-400 text-sm mt-2">UCLA Campus</p>
-                <p className="text-slate-400 text-sm">Los Angeles, CA</p>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <a
+                      href="mailto:uclamathtournamant@gmail.com"
+                      className="text-slate-300 hover:text-[#FFD100] transition-colors"
+                    >
+                      uclamathtournamant@gmail.com
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href="https://fb.me/g/6xUwpXU1F/C1KP5svv"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-300 hover:text-[#FFD100] transition-colors"
+                    >
+                      Facebook Group
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href="https://www.instagram.com/lamathtournament/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-300 hover:text-[#FFD100] transition-colors"
+                    >
+                      Instagram @lamathtournament
+                    </a>
+                  </div>
+                  <p className="text-slate-400 mt-2">UCLA Campus<br />Los Angeles, CA</p>
+                </div>
               </div>
             </div>
 
-            <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-500">
-              <p>&copy; 2026 Los Angeles Math Tournament. All rights reserved.</p>
-              <p>Hosted at UCLA &middot; May 23, 2026</p>
+            <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+              <span>© 2026 Los Angeles Math Tournament. All rights reserved.</span>
+              <span>Hosted at UCLA · May 23, 2026</span>
             </div>
           </div>
         </footer>
