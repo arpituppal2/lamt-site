@@ -15,7 +15,7 @@ html { scroll-behavior: smooth; }
   .math-deco {
     font-family: 'Georgia', 'Times New Roman', serif;
     font-style: italic;
-    opacity: 0.055;
+    opacity: 0.065;
     user-select: none;
     pointer-events: none;
     position: absolute;
