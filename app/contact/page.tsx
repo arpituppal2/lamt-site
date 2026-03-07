@@ -47,7 +47,7 @@ export default function ContactPage() {
               <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline text-sm font-medium">
                 uclamathtournamant@gmail.com
               </a>
-              <span className="text-slate-500 text-sm"> &mdash; Reach us directly by email.</span>
+              <span className="text-slate-500 text-sm"> &mdash; Please reach us directly by email.</span>
             </div>
           </div>
         </div>
