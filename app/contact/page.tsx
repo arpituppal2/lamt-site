@@ -5,15 +5,51 @@ export default function ContactPage() {
       <div className="space-y-6">
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h2 className="text-lg font-semibold text-[#2774AE] mb-2">General Inquiries</h2>
-          <p className="text-slate-600 text-sm">Email us at <a href="mailto:uclamathtournament@gmail.com" className="text-[#2774AE] underline">lamt2026@gmail.com</a></p>
+          <p className="text-slate-600 text-sm">
+            Email us at{' '}
+            <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline">
+              uclamathtournamant@gmail.com
+            </a>
+          </p>
         </div>
+
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h2 className="text-lg font-semibold text-[#2774AE] mb-2">Registration Support</h2>
           <p className="text-slate-600 text-sm">For registration issues, email us with subject line &quot;LAMT Registration Help&quot;.</p>
         </div>
+
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <h2 className="text-lg font-semibold text-[#2774AE] mb-2">Stay Connected</h2>
-          <p className="text-slate-600 text-sm">Join our Discord server for real-time updates. Link will be shared after team registration.</p>
+          <h2 className="text-lg font-semibold text-[#2774AE] mb-4">Stay Connected</h2>
+          <div className="space-y-3">
+            <div>
+              <a
+                href="https://fb.me/g/6xUwpXU1F/C1KP5svv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#2774AE] underline text-sm font-medium"
+              >
+                Facebook Group
+              </a>
+              <span className="text-slate-500 text-sm"> &mdash; Join our community group for updates.</span>
+            </div>
+            <div>
+              <a
+                href="https://www.instagram.com/lamathtournament/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#2774AE] underline text-sm font-medium"
+              >
+                Instagram @lamathtournament
+              </a>
+              <span className="text-slate-500 text-sm"> &mdash; Follow us for announcements and highlights.</span>
+            </div>
+            <div>
+              <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline text-sm font-medium">
+                uclamathtournamant@gmail.com
+              </a>
+              <span className="text-slate-500 text-sm"> &mdash; Reach us directly by email.</span>
+            </div>
+          </div>
         </div>
       </div>
     </main>
