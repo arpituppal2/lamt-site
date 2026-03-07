@@ -15,7 +15,7 @@ export default function ContactPage() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h2 className="text-lg font-semibold text-[#2774AE] mb-2">Registration Support</h2>
-          <p className="text-slate-600 text-sm">For registration issues, email us with subject line &quot;LAMT Registration Help&quot;.</p>
+          <p className="text-slate-600 text-sm">For registration issues, email us with subject line &quot;[LAMT Registration Help]&quot;.</p>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-6">
