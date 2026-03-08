@@ -10,22 +10,22 @@ const stats = [
 
 const formats = [
   {
-    icon: '\u03a3',
+    icon: 'Σ',
     title: 'Individual Round',
     desc: 'Test your solo problem-solving skills across algebra, geometry, number theory, and combinatorics.',
   },
   {
-    icon: '\u222b',
+    icon: '∫',
     title: 'Team Round',
     desc: 'Collaborate with teammates on challenging multi-step problems that reward group strategy.',
   },
   {
-    icon: '\u03c0',
+    icon: 'π',
     title: 'Relay Round',
-    desc: 'A fast-paced format where each answer feeds the next \u2014 teamwork and accuracy under pressure.',
+    desc: 'A fast-paced format where each answer feeds the next — teamwork and accuracy under pressure.',
   },
   {
-    icon: '\u221a',
+    icon: '√',
     title: 'Guts Round',
     desc: 'Live-scored, high-intensity round where speed and accuracy determine standings in real time.',
   },
@@ -59,7 +59,7 @@ export default function HomePage() {
             <span className="text-[#FFD100]">MATH TOURNAMENT</span>
           </h1>
           <p className="text-slate-400 text-base sm:text-lg mb-4 max-w-md mx-auto leading-relaxed">
-            An international high school math competition hosted by UCLA students \u2014 May 23, 2026. All students are encouraged to apply.
+            An international high school math competition hosted by UCLA students — May 23, 2026. All students are encouraged to apply.
           </p>
           <p className="text-slate-500 text-sm mb-8">
             Cost: TBD
@@ -71,7 +71,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="bg-[#FFD100] text-slate-900 font-bold px-8 py-3.5 rounded-lg hover:bg-[#FFE566] transition-all shadow-lg hover:-translate-y-0.5 text-sm sm:text-base"
             >
-              Join the Waitlist \u2192
+              Join the Waitlist →
             </a>
             <Link
               href="/about"
@@ -81,7 +81,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="mt-8 text-slate-500 text-sm">
-            \ud83d\udccd UCLA Campus \u00b7 Los Angeles, California
+            📍 UCLA Campus · Los Angeles, California
           </p>
         </div>
       </section>
@@ -109,13 +109,13 @@ export default function HomePage() {
               The Los Angeles Math Tournament (LAMT) is an international student-organized competition hosted at UCLA, designed to inspire and challenge talented mathematicians from around the world.
             </p>
             <p className="text-slate-600 leading-relaxed mb-8">
-              Problems are written at a high school level. All students are encouraged to apply. Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics \u2014 all problems handcrafted by UCLA&apos;s own math community.
+              Problems are written at a high school level. All students are encouraged to apply. Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA&apos;s own math community.
             </p>
             <Link
               href="/about"
               className="inline-flex items-center gap-2 text-[#2774AE] font-semibold text-sm hover:gap-3 transition-all"
             >
-              Learn more about LAMT <span>\u2192</span>
+              Learn more about LAMT <span>→</span>
             </Link>
           </div>
           <div className="bg-gradient-to-br from-[#003B5C] to-[#2774AE] rounded-2xl p-8 text-white shadow-xl">
@@ -160,7 +160,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-10">
             <Link href="/schedule" className="text-[#2774AE] text-sm font-semibold hover:underline">
-              View full schedule \u2192
+              View full schedule →
             </Link>
           </div>
         </div>
