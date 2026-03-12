@@ -37,15 +37,16 @@ const formats = [
 ];
 
 const highlights = [
-  { title: 'Grades 6–12', sub: 'All eligible to compete' },
-  { title: 'Teams of 6', sub: 'Grades 6–12 eligible' },
-  { title: 'UCLA Campus venue', sub: 'World-class facilities' },
-  { title: 'Original problems', sub: 'Crafted by UCLA students' },
+  { icon: '🎓', title: 'Grades 6–12', sub: 'All eligible to compete' },
+  { icon: '👥', title: 'Teams of 6', sub: 'Grades 6–12 eligible' },
+  { icon: '📍', title: 'UCLA Campus', sub: 'Los Angeles, CA' },
+  { icon: '✏️', title: 'Original Problems', sub: 'Crafted by UCLA students' },
 ];
 
 export default function HomePage() {
   return (
     <main>
+      {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
         <MathDeco latex="\binom{n}{k}" className="top-10 left-6 text-[3.5rem]" />
         <MathDeco latex="n!" className="top-1/3 left-[4%] text-[4rem]" />
@@ -63,110 +64,130 @@ export default function HomePage() {
             LOS ANGELES<br />
             <span className="text-[#FFD100]">MATH TOURNAMENT</span>
           </h1>
-          <p className="text-slate-400 text-base sm:text-lg mb-4 max-w-md mx-auto leading-relaxed">
+          <p className="text-[#8BB8E8] text-base sm:text-lg mb-4 max-w-md mx-auto leading-relaxed">
             A student-led math competition hosted by UCLA students, open to grades 6–12 — May 23, 2026.
           </p>
-          <p className="text-slate-500 text-sm mb-8">
+          <p className="text-[#8BB8E8]/60 text-sm mb-8">
             Cost: TBD
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-yellow-300 transition"
+              className="bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFC72C] transition"
             >
               Join the Waitlist →
             </a>
             <Link
               href="/about"
-              className="border border-white/30 text-white px-8 py-3 rounded-full hover:bg-white/10 transition"
+              className="border border-[#8BB8E8]/40 text-[#8BB8E8] px-8 py-3 rounded-full hover:bg-[#005587]/40 transition"
             >
               Learn More
             </Link>
           </div>
-          <p className="text-slate-500 text-sm mt-8">
+          <p className="text-[#8BB8E8]/60 text-sm mt-8">
             📍 UCLA Campus · Los Angeles, California
           </p>
         </div>
       </section>
 
-      <section className="bg-white border-b border-slate-100">
-        <div className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+      {/* ── STATS BAR ────────────────────────────────────────────── */}
+      <section className="bg-[#2774AE]">
+        <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {stats.map(({ value, label, sub }) => (
             <div key={label}>
-              <p className="text-3xl font-black text-[#003B5C]">{value}</p>
-              <p className="text-sm font-semibold text-slate-700 mt-1">{label}</p>
-              <p className="text-xs text-slate-400">{sub}</p>
+              <p className="text-3xl font-black text-white">{value}</p>
+              <p className="text-sm font-semibold text-[#DAEBFE] mt-1">{label}</p>
+              <p className="text-xs text-[#8BB8E8]">{sub}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#2774AE] mb-3">About LAMT</p>
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
-            Celebrating mathematical excellence worldwide
-          </h2>
-          <p className="text-slate-600 mb-4">
-            The Los Angeles Math Tournament (LAMT) is an international student-organized competition hosted at UCLA, designed to inspire and challenge talented mathematicians from around the world.
-          </p>
-          <p className="text-slate-600 mb-6">
-            Problems are written at a high school level. Students in grades 6–12 during the 2025–2026 school year are eligible to participate. Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA’s own math community.
-          </p>
-          <Link href="/about" className="text-[#2774AE] font-semibold hover:underline">
-            Learn more about LAMT →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          {highlights.map(({ title, sub }) => (
-            <div key={title} className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-              <p className="font-bold text-slate-900 text-sm">{title}</p>
-              <p className="text-xs text-slate-500 mt-1">{sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── ABOUT LAMT ───────────────────────────────────────────── */}
+      <section className="bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#2774AE] mb-3">About LAMT</p>
+            <h2 className="text-3xl font-bold text-[#003B5C] mb-4">
+              Celebrating mathematical excellence worldwide
+            </h2>
+            <p className="text-slate-600 mb-4">
+              The Los Angeles Math Tournament (LAMT) is an international student-organized competition hosted at UCLA, designed to inspire and challenge talented mathematicians from around the world.
+            </p>
+            <p className="text-slate-600 mb-6">
+              Students in grades 6–12 during the 2025–2026 school year are eligible. Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA’s own math community.
+            </p>
+            <Link href="/about" className="inline-flex items-center gap-1 text-[#2774AE] font-semibold hover:text-[#003B5C] transition">
+              Learn more about LAMT →
+            </Link>
+          </div>
 
-      <section className="bg-[#003B5C] text-white py-16">
-        <div className="max-w-5xl mx-auto px-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#FFD100] mb-3 text-center">Competition Format</p>
-          <h2 className="text-3xl font-bold text-center mb-10">How the tournament works</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {formats.map(({ icon, title, desc }) => (
-              <div key={title} className="bg-white/5 rounded-xl p-6 border border-white/10">
-                <div className="text-3xl mb-3">{icon}</div>
-                <h3 className="font-bold text-lg mb-2">{title}</h3>
-                <p className="text-slate-300 text-sm">{desc}</p>
+          {/* Highlight boxes */}
+          <div className="grid grid-cols-2 gap-4">
+            {highlights.map(({ icon, title, sub }) => (
+              <div
+                key={title}
+                className="rounded-xl p-5 border-2 border-[#DAEBFE] bg-[#DAEBFE]/40 hover:border-[#2774AE] hover:bg-[#DAEBFE] transition group"
+              >
+                <div className="text-2xl mb-2">{icon}</div>
+                <p className="font-bold text-[#003B5C] text-sm">{title}</p>
+                <p className="text-xs text-[#005587] mt-1">{sub}</p>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── COMPETITION FORMAT ───────────────────────────────────── */}
+      <section className="bg-[#003B5C] text-white py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#FFD100] mb-3 text-center">Competition Format</p>
+          <h2 className="text-3xl font-bold text-white text-center mb-10">How the tournament works</h2>
+
+          {/* 5 boxes: all in one row on wide screens, full stack on narrow — never partial rows */}
+          <div className="flex flex-col [@media(min-width:900px)]:flex-row gap-4">
+            {formats.map(({ icon, title, desc }) => (
+              <div
+                key={title}
+                className="flex-1 bg-[#005587] rounded-xl p-5 border border-[#2774AE] flex flex-col"
+              >
+                <div className="text-3xl mb-3 text-[#FFD100]">{icon}</div>
+                <h3 className="font-bold text-base text-white mb-2">{title}</h3>
+                <p className="text-[#8BB8E8] text-sm leading-relaxed flex-1">{desc}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="text-center mt-10">
-            <Link href="/schedule" className="text-[#FFD100] font-semibold hover:underline">
+            <Link href="/schedule" className="text-[#FFD100] font-semibold hover:text-[#FFC72C] transition">
               View full schedule →
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold text-slate-900 mb-4">Interested in competing?</h2>
-        <p className="text-slate-600 mb-2">
-          Fill out our waitlist/interest form to be notified when registration opens.
-        </p>
-        <p className="text-slate-500 text-sm mb-8">Cost: TBD</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="https://forms.gle/8JUBJaQQv4fmL8th6"
-            className="bg-[#003B5C] text-white font-bold px-8 py-3 rounded-full hover:bg-[#002a45] transition"
-          >
-            Waitlist / Interest Form
-          </a>
-          <Link
-            href="/about"
-            className="border border-slate-300 text-slate-700 px-8 py-3 rounded-full hover:bg-slate-50 transition"
-          >
-            Contact Us
-          </Link>
+      {/* ── CTA ──────────────────────────────────────────────────── */}
+      <section className="bg-[#DAEBFE] py-16">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold text-[#003B5C] mb-4">Interested in competing?</h2>
+          <p className="text-[#005587] mb-2">
+            Fill out our waitlist/interest form to be notified when registration opens.
+          </p>
+          <p className="text-[#2774AE] text-sm mb-8">Cost: TBD</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://forms.gle/8JUBJaQQv4fmL8th6"
+              className="bg-[#2774AE] text-white font-bold px-8 py-3 rounded-full hover:bg-[#003B5C] transition"
+            >
+              Waitlist / Interest Form
+            </a>
+            <Link
+              href="/about"
+              className="border-2 border-[#2774AE] text-[#2774AE] font-semibold px-8 py-3 rounded-full hover:bg-[#2774AE] hover:text-white transition"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
       </section>
     </main>
