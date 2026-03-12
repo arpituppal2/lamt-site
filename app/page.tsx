@@ -2,7 +2,7 @@ import Link from 'next/link';
 import MathDeco from './components/MathDeco';
 
 const stats = [
-  { value: 'May 23', label: 'Tournament Date', sub: '2026' },
+  { value: 'May 23', label: 'Tournament Date (Tentative)', sub: '2026' },
   { value: 'Gr 6–12', label: 'Division', sub: '2025–2026 school year' },
   { value: '6', label: 'Members / Team', sub: 'Per team' },
   { value: 'UCLA', label: 'Venue', sub: 'Los Angeles, CA' },
