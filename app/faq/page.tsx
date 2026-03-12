@@ -1,5 +1,5 @@
 const faqs = [
-  { q: 'Who can participate?', a: 'LAMT is primarily a high school competition, but middle school students in grades 6–12 are welcome to compete. All students must compete under their enrolled school.' },
+  { q: 'Who can participate?', a: 'Only students in grades 6–12 during the 2025–2026 academic school year are eligible to participate in LAMT.' },
   { q: 'Can 6th graders participate?', a: 'Yes! 6th grade is totally fine. LAMT is geared toward high schoolers, but younger students who are up for the challenge are absolutely welcome. No special registration process — just sign up like everyone else.' },
   { q: 'How many students per team?', a: 'Up to 4 students per team. A school may register multiple teams.' },
   { q: 'Is there a registration fee?', a: 'Registration fee information will be announced soon. Check back for updates.' },
@@ -17,8 +17,7 @@ export default function FAQPage() {
         {faqs.map((item) => (
           <div key={item.q} className="border-l-4 border-[#2774AE] pl-4">
             <p className="font-semibold text-slate-900 mb-1">{item.q}</p>
-            <p className="text-slate-600 text-sm">{item.a}</p>
-          </div>
+            <p className="text-slate-600 text-sm">{item.a}</p>          </div>
         ))}
       </div>
     </main>
