@@ -51,9 +51,10 @@ export default function HomePage() {
         <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="top-10 left-[10%] text-[2.0em]" />
         <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="top-8 right-[8%] text-[2.4rem]" />
         <MathDeco latex="\displaystyle \sum_{i=1}^n |a_i b_i| \leq \left( \sum_{i=1}^n |a_i|^p \right)^{1/p} \left( \sum_{i=1}^n |b_i|^q \right)^{1/q}" className="bottom-12 left-[2%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle $$d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y$$" className="top-1/3 left-[4%] text-[2.0rem]" />
         <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="top-1/2 left-[4%] text-[2.3rem]" />
         <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="top-1/2 right-[5%] text-[1.8rem]" />
-        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[5%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[8%] text-[1.8rem]" />
 
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
         <div className="relative max-w-5xl mx-auto px-4 sm:py-28 py-36 text-center">
