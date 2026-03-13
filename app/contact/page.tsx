@@ -7,7 +7,7 @@ export default function ContactPage() {
           <h2 className="text-lg font-semibold text-[#2774AE] mb-2">General Inquiries</h2>
           <p className="text-slate-600 text-sm">
             Email us at{' '}
-            <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline">
+            <a href="mailto:uclamathtournament@gmail.com" className="text-[#2774AE] underline">
               uclamathtournament@gmail.com
             </a>
           </p>
@@ -23,7 +23,7 @@ export default function ContactPage() {
           <div className="space-y-3">
             <div>
               <a
-                href="https://fb.me/g/6xUwpXU1F/C1KP5svv"
+                href="https://www.facebook.com/groups/1429462591976204/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#2774AE] underline text-sm font-medium"
@@ -45,7 +45,7 @@ export default function ContactPage() {
             </div>
             <div>
               <a href="mailto:uclamathtournament@gmail.com" className="text-[#2774AE] underline text-sm font-medium">
-                uclamathtournamant@gmail.com
+                uclamathtournament@gmail.com
               </a>
               <span className="text-slate-500 text-sm"> &mdash; Please reach us directly by email.</span>
             </div>
