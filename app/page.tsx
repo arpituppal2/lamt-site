@@ -52,7 +52,7 @@ export default function HomePage() {
         <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="top-8 right-[8%] text-[2.4rem]" />
         <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="bottom-12 left-[6%] text-[2.5rem]" />
         <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="top-5/12 left-[1%] text-[2.0rem]" />
-        <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d} className="top-5/12 right-[1%] text-[2.0rem]" />
+        <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="top-5/12 right-[1%] text-[2.0rem]" />
         <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="top-1/2 left-[4%] text-[2.3rem]" />
         <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="top-1/2 right-[5%] text-[1.8rem]" />
         <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[8%] text-[1.8rem]" />
