@@ -8,7 +8,7 @@ export default function ContactPage() {
           <p className="text-slate-600 text-sm">
             Email us at{' '}
             <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline">
-              uclamathtournamant@gmail.com
+              uclamathtournament@gmail.com
             </a>
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function ContactPage() {
               <span className="text-slate-500 text-sm"> &mdash; Follow us for announcements and highlights.</span>
             </div>
             <div>
-              <a href="mailto:uclamathtournamant@gmail.com" className="text-[#2774AE] underline text-sm font-medium">
+              <a href="mailto:uclamathtournament@gmail.com" className="text-[#2774AE] underline text-sm font-medium">
                 uclamathtournamant@gmail.com
               </a>
               <span className="text-slate-500 text-sm"> &mdash; Please reach us directly by email.</span>
