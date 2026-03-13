@@ -49,7 +49,7 @@ export default function HomePage() {
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
         <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="top-10 left-6 text-[3.5rem]" />
-        <MathDeco latex="\sum_{\mathrm{sym}} x_1^{p_1} x_2^{p_2} \cdots x_n^{p_n} \geq \sum_{\mathrm{sym}} x_1^{q_1} x_2^{q_2} \cdots x_n^{q_n}$" className="top-1/3 left-[4%] text-[3.1rem]" />
+        <MathDeco latex="\displaystyle \sum_{\mathrm{sym}} x_1^{p_1} x_2^{p_2} \cdots x_n^{p_n} \geq \sum_{\mathrm{sym}} x_1^{q_1} x_2^{q_2} \cdots x_n^{q_n}$" className="top-1/3 left-[4%] text-[3.1rem]" />
         <MathDeco latex="\sum_{i=1}^n |a_i b_i| \leq \left( \sum_{i=1}^n |a_i|^p \right)^{1/p} \left( \sum_{i=1}^n |b_i|^q \right)^{1/q}" className="bottom-12 left-[8%] text-[2.8rem]" />
         <MathDeco latex="d^2 = R(R - 2r)" className="top-8 right-[8%] text-[2.4rem]" />
         <MathDeco latex="E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="top-1/2 right-[4%] text-[2.4rem]" />
