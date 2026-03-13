@@ -49,11 +49,11 @@ export default function HomePage() {
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
         <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="top-10 left-[10%] text-[2.0em]" />
-        <MathDeco latex="\sum_{n=0}^\infty p(n)x^n = \prod_{k=1}^\infty \frac{1}{1-x^k}" className="top-1/2 left-[4%] text-[2.3rem]" />
-        <MathDeco latex="\sum_{i=1}^n |a_i b_i| \leq \left( \sum_{i=1}^n |a_i|^p \right)^{1/p} \left( \sum_{i=1}^n |b_i|^q \right)^{1/q}" className="bottom-12 left-[8%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle \sum_{n=0}^\infty p(n)x^n = \prod_{k=1}^\infty \frac{1}{1-x^k}" className="top-1/2 left-[4%] text-[2.3rem]" />
+        <MathDeco latex="\displaystyle \sum_{i=1}^n |a_i b_i| \leq \left( \sum_{i=1}^n |a_i|^p \right)^{1/p} \left( \sum_{i=1}^n |b_i|^q \right)^{1/q}" className="bottom-12 left-[8%] text-[1.8rem]" />
         <MathDeco latex="d^2 = R(R - 2r)" className="top-8 right-[8%] text-[2.4rem]" />
-        <MathDeco latex="E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="top-1/2 right-[11%] text-[1.8rem]" />
-        <MathDeco latex="|X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[14%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="top-1/2 right-[11%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[14%] text-[1.8rem]" />
 
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
         <div className="relative max-w-5xl mx-auto px-4 sm:py-28 py-36 text-center">
