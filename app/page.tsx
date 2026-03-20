@@ -2,7 +2,7 @@ import Link from 'next/link';
 import MathDeco from './components/MathDeco';
 
 const stats = [
-  { value: 'May 23', label: 'Tournament Date (Tentative)', sub: '2026' },
+  { value: 'May 17', label: 'Tournament Date (Tentative)', sub: '2026' },
   { value: 'Gr 6–12', label: 'Division', sub: '2025–2026 school year' },
   { value: '6', label: 'Members / Team', sub: 'Per team' },
   { value: 'UCLA', label: 'Venue', sub: 'Los Angeles, CA' },
@@ -67,7 +67,7 @@ export default function HomePage() {
             <span className="text-[#FFD100]">MATH TOURNAMENT</span>
           </h1>
           <p className="text-[#8BB8E8] text-base sm:text-lg mb-4 max-w-md mx-auto leading-relaxed">
-            A student-led math competition hosted by UCLA students, open to grades 6–12 — May 23, 2026.
+            A student-led math competition hosted by UCLA students, open to grades 6–12 — May 17, 2026.
           </p>
           <p className="text-[#8BB8E8]/60 text-sm mb-8">
             Cost: TBD
