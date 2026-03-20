@@ -6,7 +6,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'LAMT 2026 | Los Angeles Math Tournament',
   description:
-    'Los Angeles Math Tournament — May 23, 2026. An international high school math competition hosted at UCLA. All students are encouraged to apply.',
+    'Los Angeles Math Tournament — May 17, 2026. An international high school math competition hosted at UCLA. All students are encouraged to apply.',
 };
 
 const footerLinks = ['About', 'Schedule', 'FAQ', 'Contact', 'Register'];
@@ -99,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
               <span>© 2026 Los Angeles Math Tournament. All rights reserved.</span>
-              <span>Hosted at UCLA · May 23, 2026</span>
+              <span>Hosted at UCLA · May 17, 2026</span>
             </div>
           </div>
         </footer>
