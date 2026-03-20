@@ -15,7 +15,7 @@ export default function SchedulePage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-slate-900 mb-2">Day-of Schedule</h1>
-      <p className="text-slate-500 mb-8">May 23, 2026 &mdash; Subject to minor adjustments. Final schedule distributed day-of.</p>
+      <p className="text-slate-500 mb-8">May 17, 2026 &mdash; Subject to minor adjustments. Final schedule distributed day-of.</p>
       <div className="divide-y divide-slate-100">
         {schedule.map((item) => (
           <div key={item.time} className="py-4">
