@@ -20,7 +20,7 @@ function CustomCursor() {
     const handleMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
-dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
       }
     };
 
@@ -62,11 +62,11 @@ dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) tran
   return (
     <>
       {/* small dot exactly on cursor */}
-<div
-  ref={dotRef}
-  className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999]"
-style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
-  />
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999]"
+        style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
+      />
       {/* thin ring around cursor */}
       <div
         ref={ringRef}
@@ -92,13 +92,13 @@ function NavBar() {
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 backdrop-blur-xl border-b border-white/10"
-        style={{ background: 'rgba(255,255,255,0.9)' }}    >
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-[#0A192F]/95 backdrop-blur-md border-b border-white/10"
+    >
       <Link href="/" className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2774AE]">
           <span className="text-[10px] font-black text-[#FFD100]">LA</span>
         </div>
-<span className="text-sm font-semibold tracking-[0.28em] uppercase text-[#003B5C]">
+        <span className="text-sm font-semibold tracking-[0.28em] uppercase text-[#E5EDF9]">
           LAMT 2026
         </span>
       </Link>
@@ -107,7 +107,7 @@ function NavBar() {
           <Link
             key={href}
             href={href}
-className="relative text-[#005587] hover:text-[#FFB81C] transition-colors"
+            className="relative text-slate-200 hover:text-[#FFB81C] transition-colors"
           >
             <span className="hidden md:inline">{label}</span>
           </Link>
@@ -139,7 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="min-h-screen pt-16">{children}</main>
 
         {/* ultra-compact footer */}
-<footer className="border-t border-[#8BB8E8] bg-white/90 backdrop-blur-md text-[#003B5C]">
+        <footer className="border-t border-white/10 bg-[#0A192F]/95 backdrop-blur-md text-slate-100">
           <div className="max-w-6xl mx-auto h-[60px] flex items-center justify-between px-6">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-[#2774AE] rounded-lg flex items-center justify-center">
@@ -149,23 +149,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 LAMT 2026
               </span>
             </div>
-<div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
-  {[
-    { href: '/#about',    label: 'About' },
-    { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq',      label: 'FAQ' },
-    { href: '/#contact',  label: 'Contact' },
-    { href: '/#register', label: 'Register' },
-  ].map(({ href, label }) => (
-    <Link
-      key={href}
-      href={href}
-      className="hover:text-[#FFD100] transition-colors"
-    >
-      {label}
-    </Link>
-  ))}
-</div>
+            <div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+              {[
+                { href: '/#about',    label: 'About' },
+                { href: '/#schedule', label: 'Schedule' },
+                { href: '/#faq',      label: 'FAQ' },
+                { href: '/#contact',  label: 'Contact' },
+                { href: '/#register', label: 'Register' },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="hover:text-[#FFD100] transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
         </footer>
       </body>
