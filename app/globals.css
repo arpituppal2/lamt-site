@@ -181,3 +181,9 @@ footer {
   z-index: 10000;
   width: 0%;
 }
+
+/* Force-hide system cursor on entire document */
+body,
+body * {
+  cursor: none !important;
+}
