@@ -94,7 +94,7 @@ export default function HomePage() {
         <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/4 left-[2%] text-[1.8rem]" />
         <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="hidden md:block absolute top-1/3 right-[10%] text-[2.0rem]" />
         <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="absolute top-10 left-[15%] text-[2.0em]" />
-        <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="hidden md:block absolute top-1/2 left-[4%] text-[2.0em]" />
+        <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="hidden md:block absolute bottom-1/3 left-[4%] text-[2.0em]" />
         <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-12 right-[8%] text-[1.8rem]" />
 
         <motion.div
