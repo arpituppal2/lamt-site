@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
+Import React from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -8,7 +9,7 @@ interface MathDecoProps {
   className?: string;
 }
 
-export default function MathDeco({ latex, className = '' }: MathDecoProps) {
+export default function MathDeco = memo(({ latex, className = '' }: MathDecoProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -27,4 +28,4 @@ export default function MathDeco({ latex, className = '' }: MathDecoProps) {
       className={`pointer-events-none select-none absolute opacity-20 text-slate-200 ${className}`}
     />
   );
-}
+});
