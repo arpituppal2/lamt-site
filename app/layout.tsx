@@ -92,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       Instagram @lamathtournament
                     </a>
                   </div>
-                  <p className="text-slate-400 mt-2">UCLA Campus<br />Los Angeles, CA</p>
+                  <p className="text-slate-400 mt-2">UCLA <br />Los Angeles, CA</p>
                 </div>
               </div>
             </div>
