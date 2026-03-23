@@ -68,12 +68,12 @@ export default function HomePage() {
   return (
     <main className="relative bg-gradient-to-br from-[#006994] to-[#0A192F] text-white">
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
-      >
+<section
+  ref={heroRef}
+  className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
+>
         {/* Equations backdrop */}
-        <div className="absolute inset-0 opacity-[0.25] pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.6] pointer-events-none">
           <div className="math-bg top-[18%] right-[10%] text-4xl">
             v_p(x^n - y^n) = v_p(x-y) + v_p(n)
           </div>
@@ -90,7 +90,7 @@ export default function HomePage() {
 
         <motion.div
           style={{ y: heroY }}
-          className="relative z-10 max-w-5xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center mt-10 md:mt-6"
         >
           <motion.span
             initial={{ opacity: 0, y: 10 }}
