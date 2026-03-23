@@ -73,7 +73,7 @@ export default function HomePage() {
   className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
 >
         {/* Equations backdrop */}
-        <div className="absolute inset-0 opacity-[0.6] pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.1] pointer-events-none">
           <div className="math-bg top-[18%] right-[10%] text-4xl">
             v_p(x^n - y^n) = v_p(x-y) + v_p(n)
           </div>
@@ -119,7 +119,7 @@ export default function HomePage() {
             transition={{ delay: 0.05, duration: 0.6 }}
             className="max-w-xl mx-auto text-lg text-slate-200/85 mb-10 font-medium"
           >
-            "Have you ever done math with your life on the line?"
+            "Have you ever done math with your life on the line?" <br>
             Experience rigorous, high-stakes mathematics at UCLA on{' '}
             <span className="text-[#FFB300] font-semibold">May 17, 2026</span>.
             Individual, team, relay, and guts rounds.
