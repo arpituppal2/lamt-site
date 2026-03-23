@@ -132,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
         />
       </head>
-      <body className="bg-gradient-to-br from-[#006994] to-[#0A192F] text-slate-100 antialiased font-sans selection:bg-[#FFD100] selection:text-[#003B5C] overflow-x-hidden">
+<body className="bg-[#8BB8E8] text-[#003B5C] antialiased font-sans selection:bg-[#FFD100] selection:text-[#003B5C] overflow-x-hidden">
         <CustomCursor />
         <NavBar />
 
