@@ -72,7 +72,7 @@ export default function HomePage() {
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
       >
-        {/* Equations backdrop (super subtle) */}
+        {/* Equations backdrop */}
         <div className="absolute inset-0 opacity-[0.25] pointer-events-none">
           <div className="math-bg top-[18%] right-[10%] text-4xl">
             v_p(x^n - y^n) = v_p(x-y) + v_p(n)
@@ -177,7 +177,7 @@ export default function HomePage() {
             transition={{ delay: 0.02, duration: 0.4 }}
             className="text-center text-slate-300 text-sm mb-10"
           >
-            May 17, 2026 · subject to minor adjustments
+            May 17, 2026 — subject to minor adjustments. Final schedule distributed day-of.
           </motion.p>
 
           <div className="glass-card overflow-hidden">
@@ -187,30 +187,32 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.04, type: 'spring', stiffness: 220, damping: 22 }}
+                transition={{ delay: idx * 0.04, type: 'spring', stiffness: 300, damping: 24 }}
                 whileHover={{
                   backgroundColor: 'rgba(255,179,0,0.06)',
                   x: 4,
-                  boxShadow: '0 0 30px rgba(255,179,0,0.3)',
+                  boxShadow: '0 0 24px rgba(255,179,0,0.25)',
                 }}
-                className="flex items-center gap-4 px-6 py-4 border-b border-white/7 last:border-0"
+                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-white/7 last:border-0"
               >
-                <span className="text-2xl w-8 text-center">{row.icon}</span>
-                <span className="w-40 text-xs font-mono text-slate-300">{row.time}</span>
-                <span className="flex-1 text-sm font-semibold">{row.event}</span>
-                {row.dur && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full border border-[#FFB300]/40 text-[#FFB300]/90">
-                    {row.dur}
-                  </span>
-                )}
-                {row.q && (
-                  <span className="text-[11px] text-slate-400">
-                    {row.q}
-                  </span>
-                )}
+                <span className="w-32 text-xs font-mono text-slate-300">
+                  {row.time}
+                </span>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-slate-50">
+                    {row.title}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-0.5">
+                    {row.subtitle}
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
+
+          <p className="mt-4 text-[11px] text-center text-slate-400">
+            *Schedule is tentative and subject to change.
+          </p>
         </div>
       </section>
     </main>
