@@ -92,7 +92,7 @@ export default function HomePage() {
   {//<MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
   }
         <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="hidden md:block absolute bottom-12 left-[6%] text-[2.5rem]" />
-        <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/4 left-[2%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/3 left-[2%] text-[1.8rem]" />
   <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="hidden md:block absolute top-1/3 right-[10%] text-[2.0rem]" />
   
   {// <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="absolute top-10 left-[15%] text-[2.0em]" />
