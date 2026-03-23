@@ -15,7 +15,7 @@
 
 html {
   scroll-behavior: smooth;
-  background: linear-gradient(135deg, #006994 0%, #0A192F 100%);
+  background: linear-gradient(135deg, #E6F3FF 0%, #CDE5FF 40%, #006994 100%);
 }
 
 body {
