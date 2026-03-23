@@ -3,24 +3,27 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const links = [
-  { href: '/about',    label: 'About'    },
-  { href: '/schedule', label: 'Schedule' },
-  { href: '/faq',      label: 'FAQ'      },
-  { href: '/contact',  label: 'Contact'  },
+  { href: '/#about',    label: 'About'    },
+  { href: '/#schedule', label: 'Schedule' },
+  { href: '/#faq',      label: 'FAQ'      },
+  { href: '/#contact',  label: 'Contact'  },
+  { href: '/#register', label: 'Register' },
 ];
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm border-b border-slate-100 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-[#020816]/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-[#003B5C] rounded flex items-center justify-center">
-            <span className="text-[#FFD100] font-black text-[11px] leading-none tracking-tight">LA</span>
+            <span className="text-[#FFD100] font-black text-[11px] leading-none tracking-tight">
+              LA
+            </span>
           </div>
-          <span className="font-extrabold text-lg tracking-tight text-slate-900">
-            LAMT <span className="text-[#2774AE]">2026</span>
+          <span className="font-extrabold text-lg tracking-tight text-slate-50">
+            LAMT <span className="text-[#FFB300]">2026</span>
           </span>
         </Link>
 
@@ -29,21 +32,15 @@ export default function NavBar() {
             <Link
               key={href}
               href={href}
-              className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#2774AE] rounded-md hover:bg-blue-50 transition-colors"
+              className="px-3 py-2 text-xs font-semibold text-slate-200 hover:text-[#FFB300] rounded-md hover:bg-white/5 transition-colors tracking-[0.2em] uppercase"
             >
               {label}
             </Link>
           ))}
-          <Link
-            href="/register"
-            className="ml-3 bg-[#2774AE] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-[#1a5276] transition-colors shadow-sm"
-          >
-            Register
-          </Link>
         </div>
 
         <button
-          className="md:hidden p-2 rounded-md text-slate-500 hover:text-[#2774AE] hover:bg-blue-50 transition"
+          className="md:hidden p-2 rounded-md text-slate-200 hover:text-[#FFB300] hover:bg-white/5 transition"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -60,24 +57,17 @@ export default function NavBar() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-slate-100 px-4 pb-4 pt-2 space-y-1 bg-white">
+        <div className="md:hidden border-t border-white/10 px-4 pb-4 pt-2 space-y-1 bg-[#020816]/95">
           {links.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="block px-3 py-2 text-sm font-medium text-slate-700 hover:text-[#2774AE] hover:bg-blue-50 rounded-md transition"
+              className="block px-3 py-2 text-sm font-medium text-slate-100 hover:text-[#FFB300] hover:bg-white/5 rounded-md transition"
               onClick={() => setOpen(false)}
             >
               {label}
             </Link>
           ))}
-          <Link
-            href="/register"
-            className="block mt-2 text-center bg-[#2774AE] text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-[#1a5276] transition"
-            onClick={() => setOpen(false)}
-          >
-            Register Your Team
-          </Link>
         </div>
       )}
     </nav>
