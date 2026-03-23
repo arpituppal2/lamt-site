@@ -58,48 +58,6 @@ body {
   border: 1px solid rgba(255, 179, 0, 0.2);
 }
 
-/* ---------------------------------------------------------- */
-/* ── Custom cursor (old, kept) ───────────────────────────── */
-#cursor,
-#cursor-ring {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.3s var(--ease-apple), transform 0.15s linear;
-}
-
-body.js-enabled #cursor,
-body.js-enabled #cursor-ring {
-  opacity: 1;
-}
-
-#cursor {
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-
-#cursor-ring {
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(255, 179, 0, 0.3);
-  border-radius: 50%;
-  transition:
-    width 0.3s var(--ease-apple),
-    height 0.3s var(--ease-apple),
-    border-color 0.3s var(--ease-apple);
-}
-
-body.cursor-hover #cursor-ring {
-  width: 48px;
-  height: 48px;
-  border-color: rgba(255, 179, 0, 0.6);
-  background: rgba(255, 179, 0, 0.05);
-}
-
 /* ── Scroll linked reveal ─────────────────────────────────── */
 .reveal-item {
   will-change: transform, opacity;
