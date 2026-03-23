@@ -20,7 +20,7 @@ function CustomCursor() {
     const handleMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
       }
     };
 
@@ -62,11 +62,11 @@ function CustomCursor() {
   return (
     <>
       {/* small dot exactly on cursor */}
-      <div
-        ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999] hidden md:block"
-        style={{ transform: 'translate(-9999px,-9999px)' }}
-      />
+<div
+  ref={dotRef}
+  className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999] hidden md:block"
+style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
+  />
       {/* thin ring around cursor */}
       <div
         ref={ringRef}
