@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import MathDeco from './components/MathDeco';
 
 const daySchedule = [
   {
