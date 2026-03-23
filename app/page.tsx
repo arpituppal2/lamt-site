@@ -131,11 +131,11 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-<main className="relative bg-gradient-to-br from-[#006994] via-[#03527b] to-[#0A192F] text-white">
+<main className="relative bg-gradient-to-br from-[#E6F3FF] via-[#CDE5FF] to-[#006994] text-slate-900">
   {/* HERO */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 text-white"
       >
         {/* Equation backdrop via MathDeco */}
         <MathDeco
