@@ -7,7 +7,7 @@ import MathDeco from './components/MathDeco';
 
 const daySchedule = [
   { time: '8:00 AM',  title: 'Check-in',  subtitle: 'Arrive and check in your team.' },
-  { time: '8:45 AM',  title: 'Registration & Opening Ceremony', subtitle: 'Finish check-in; opening remarks.' },
+  { time: '8:45 AM',  title: 'Opening Ceremony', subtitle: 'Finish check-in; opening remarks.' },
   { time: '9:15 AM',  title: 'Special Team Round', subtitle: '75 minutes total. Details TBA.' },
   { time: '10:45 AM', title: 'Algebra',   subtitle: '50 minutes · 10 questions.' },
   { time: '12:00 PM', title: 'Geometry',  subtitle: '50 minutes · 10 questions.' },
