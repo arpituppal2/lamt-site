@@ -14,22 +14,22 @@ const schedule = [
 export default function SchedulePage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-slate-900 mb-2">Day-of Schedule</h1>
+      <h1 className="text-3xl font-bold text-slate-100 mb-2">Day-of Schedule</h1>
       <p className="text-slate-500 mb-8">May 17, 2026 &mdash; Subject to minor adjustments. Final schedule distributed day-of.</p>
       <div className="divide-y divide-slate-100">
         {schedule.map((item) => (
           <div key={item.time} className="py-4">
             <div className="flex items-center gap-6">
               <span className="w-24 text-sm font-mono text-[#2774AE] shrink-0">{item.time}</span>
-              <span className="text-slate-800 font-semibold">{item.event}</span>
+              <span className="text-slate-200 font-semibold">{item.event}</span>
             </div>
             {item.detail && (
-              <p className="text-slate-500 text-sm mt-1 ml-30 pl-[7.5rem]">{item.detail}</p>
+              <p className="text-slate-300 text-sm mt-1 ml-30 pl-[7.5rem]">{item.detail}</p>
             )}
           </div>
         ))}
       </div>
-      <p className="text-slate-400 text-xs mt-8">*Schedule is tentative and subject to change.</p>
+      <p className="text-slate-200 text-xs mt-8">*Schedule is tentative and subject to change.</p>
     </main>
   );
 }
