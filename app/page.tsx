@@ -131,13 +131,12 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-<main className="relative bg-[#DAEBFE] text-[#003B5C]">
-  
-  {/* HERO */}
+    <main className="relative bg-[#DAEBFE] text-[#003B5C]">
+      {/* HERO */}
       <section
         ref={heroRef}
-className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 bg-[#2774AE] text-white"
-        >
+        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 bg-[#2774AE] text-white"
+      >
         {/* Equation backdrop via MathDeco */}
         <MathDeco
           latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
@@ -180,7 +179,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-block uppercase tracking-[0.4em] text-[#FFB300] text-[10px] font-bold mb-6"
+            className="inline-block uppercase tracking-[0.4em] text-[#FFD100] text-[10px] font-bold mb-6"
           >
             UCLA STUDENT-RUN TOURNAMENT · MAY 17, 2026
           </motion.span>
@@ -189,7 +188,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             initial={{ opacity: 0, y: 30, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-7 gold-text"
+            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-7"
             style={{ textShadow: '0 0 50px rgba(255,179,0,0.45)' }}
           >
             LOS ANGELES
@@ -201,11 +200,11 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.6 }}
-            className="max-w-xl mx-auto text-lg text-slate-200/85 mb-10 font-medium"
+            className="max-w-xl mx-auto text-lg text-slate-100 mb-10 font-medium"
           >
             &quot;Have you ever done math with your life on the line?&quot; <br />
             Experience rigorous, high-stakes mathematics at UCLA on{' '}
-            <span className="text-[#FFB300] font-semibold">May 17, 2026</span>.
+            <span className="text-[#FFD100] font-semibold">May 17, 2026</span>.
             Individual, team, relay, and guts rounds.
           </motion.p>
 
@@ -222,7 +221,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             >
               <Link
                 href="https://forms.gle/8JUBJaQQv4fmL8th6"
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#FFB300] text-[#003B5C] font-semibold text-sm shadow-[0_0_25px_rgba(255,179,0,0.6)]"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#FFD100] text-[#003B5C] font-semibold text-sm shadow-[0_0_25px_rgba(255,209,0,0.6)]"
               >
                 Join Waitlist
               </Link>
@@ -234,7 +233,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             >
               <a
                 href="#about"
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-white/20 text-sm font-semibold text-slate-100 hover:bg-white/5"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-white/40 text-sm font-semibold text-white hover:bg-white/10"
               >
                 Learn More
               </a>
@@ -246,7 +245,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
       {/* DAY-OF SCHEDULE */}
       <section
         id="schedule"
-  className="relative border-t border-[#8BB8E8] bg-[#DAEBFE] px-6 pb-20 pt-12"
+        className="relative border-t border-[#8BB8E8] bg-[#DAEBFE] px-6 pb-20 pt-12"
       >
         <div className="max-w-5xl mx-auto">
           <motion.h2
@@ -254,7 +253,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-bold mb-2 text-center gold-text"
+            className="text-3xl md:text-4xl font-bold mb-2 text-center text-[#003B5C]"
           >
             Day-of Schedule
           </motion.h2>
@@ -263,7 +262,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.02, duration: 0.4 }}
-            className="text-center text-slate-300 text-sm mb-10"
+            className="text-center text-[#003B5C] text-sm mb-10"
           >
             May 17, 2026 — subject to minor adjustments. Final schedule distributed day-of.
           </motion.p>
@@ -282,20 +281,20 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                   damping: 24,
                 }}
                 whileHover={{
-                  backgroundColor: 'rgba(255,179,0,0.06)',
+                  backgroundColor: 'rgba(255,184,28,0.04)',
                   x: 4,
-                  boxShadow: '0 0 24px rgba(255,179,0,0.25)',
+                  boxShadow: '0 0 24px rgba(0,59,92,0.12)',
                 }}
-                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-white/7 last:border-0"
+                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#DAEBFE] last:border-0"
               >
-                <span className="w-32 text-xs font-mono text-slate-300">
+                <span className="w-32 text-xs font-mono text-[#005587]">
                   {row.time}
                 </span>
                 <div className="flex-1">
-                  <div className="text-sm font-semibold text-slate-50">
+                  <div className="text-sm font-semibold text-[#003B5C]">
                     {row.title}
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-[#005587] mt-0.5">
                     {row.subtitle}
                   </div>
                 </div>
@@ -303,7 +302,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             ))}
           </div>
 
-          <p className="mt-4 text-[11px] text-center text-slate-400">
+          <p className="mt-4 text-[11px] text-center text-[#005587]">
             *Schedule is tentative and subject to change.
           </p>
         </div>
@@ -312,18 +311,18 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
       {/* ABOUT */}
       <section
         id="about"
-  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gold-text text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C] text-center">
             About LAMT
           </h2>
-          <p className="text-center text-slate-200 mb-10">
+          <p className="text-center text-[#003B5C] mb-10">
             Los Angeles Math Tournament (LAMT) 2026 is a student-led math
             competition organized by UCLA math students, held on May 17, 2026 at UCLA.
           </p>
 
-          <div className="space-y-6 text-slate-200 text-sm leading-relaxed">
+          <div className="space-y-6 text-[#003B5C] text-sm leading-relaxed">
             <p>
               LAMT is open to students in grades 6–12 during the 2025–2026
               academic school year. We deliver creative problem-solving across
@@ -338,10 +337,10 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-slate-300 mb-4">Ready to compete?</p>
+            <p className="text-[#003B5C] mb-4">Ready to compete?</p>
             <a
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="inline-block bg-[#FFB300] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFD54F] transition shadow-[0_0_24px_rgba(255,179,0,0.6)] text-sm"
+              className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFB81C] transition shadow-[0_0_24px_rgba(255,184,28,0.5)] text-sm"
             >
               Join the Waitlist →
             </a>
@@ -352,10 +351,10 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
       {/* FAQ */}
       <section
         id="faq"
-  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 gold-text text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
             Frequently Asked Questions
           </h2>
           <div className="space-y-4">
@@ -375,10 +374,10 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                       setOpenFaq((prev) => (prev === item.q ? null : item.q))
                     }
                   >
-                    <span className="font-semibold text-slate-50 text-sm">
+                    <span className="font-semibold text-[#003B5C] text-sm">
                       {item.q}
                     </span>
-                    <span className="text-slate-400 text-xs ml-4">
+                    <span className="text-[#005587] text-xs ml-4">
                       {open ? '−' : '+'}
                     </span>
                   </button>
@@ -391,7 +390,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                         transition={{ duration: 0.18, ease: 'easeOut' }}
                         className="overflow-hidden"
                       >
-                        <p className="text-slate-300 text-xs mt-3 leading-relaxed">
+                        <p className="text-[#003B5C] text-xs mt-3 leading-relaxed">
                           {item.a}
                         </p>
                       </motion.div>
@@ -407,23 +406,23 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
       {/* CONTACT */}
       <section
         id="contact"
-  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 gold-text text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
             Contact Us
           </h2>
 
           <div className="space-y-6">
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB300] mb-2">
+              <h3 className="text-lg font-semibold text-[#FFB81C] mb-2">
                 General Inquiries
               </h3>
-              <p className="text-slate-200 text-sm">
+              <p className="text-[#003B5C] text-sm">
                 Email us at{' '}
                 <a
                   href="mailto:uclamathtournament@gmail.com"
-                  className="text-[#FFB300] underline"
+                  className="text-[#005587] underline"
                 >
                   uclamathtournament@gmail.com
                 </a>
@@ -432,17 +431,17 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             </div>
 
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB300] mb-2">
+              <h3 className="text-lg font-semibold text-[#FFB81C] mb-2">
                 Registration Support
               </h3>
-              <p className="text-slate-200 text-sm">
+              <p className="text-[#003B5C] text-sm">
                 For registration issues, email us with subject line
                 &nbsp;&quot;LAMT Registration Help&quot; so we can respond faster.
               </p>
             </div>
 
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB300] mb-4">
+              <h3 className="text-lg font-semibold text-[#FFB81C] mb-4">
                 Stay Connected
               </h3>
               <div className="space-y-3 text-sm">
@@ -451,11 +450,11 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                     href="https://www.facebook.com/groups/1429462591976204/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#FFB300] underline font-medium"
+                    className="text-[#005587] underline font-medium"
                   >
                     Facebook Group
                   </a>
-                  <span className="text-slate-300">
+                  <span className="text-[#003B5C]">
                     {' '}
                     — Join our community group for updates.
                   </span>
@@ -465,11 +464,11 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                     href="https://www.instagram.com/lamathtournament/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#FFB300] underline font-medium"
+                    className="text-[#005587] underline font-medium"
                   >
                     Instagram @lamathtournament
                   </a>
-                  <span className="text-slate-300">
+                  <span className="text-[#003B5C]">
                     {' '}
                     — Follow us for announcements and highlights.
                   </span>
@@ -477,11 +476,11 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
                 <div>
                   <a
                     href="mailto:uclamathtournament@gmail.com"
-                    className="text-[#FFB300] underline font-medium"
+                    className="text-[#005587] underline font-medium"
                   >
                     uclamathtournament@gmail.com
                   </a>
-                  <span className="text-slate-300">
+                  <span className="text-[#003B5C]">
                     {' '}
                     — Please reach us directly by email.
                   </span>
@@ -495,20 +494,20 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
       {/* REGISTER / WAITLIST */}
       <section
         id="register"
-  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gold-text">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C]">
             Interest / Waitlist Form
           </h2>
-          <p className="text-slate-200 mb-2 text-sm">
+          <p className="text-[#003B5C] mb-2 text-sm">
             LAMT 2026 — May 17th, 2026. Registration is not yet open.
           </p>
-          <p className="text-slate-200 mb-2 text-sm">
+          <p className="text-[#003B5C] mb-2 text-sm">
             Fill out the form below to join the waitlist and be notified when
             registration opens.
           </p>
-          <p className="text-slate-400 mb-8 text-xs">
+          <p className="text-[#005587] mb-8 text-xs">
             Cost: TBD · Up to 6 members per team · High school level (all
             students welcome)
           </p>
@@ -516,7 +515,7 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             href="https://forms.gle/8JUBJaQQv4fmL8th6"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-[#FFB300] text-[#003B5C] font-bold px-10 py-4 rounded-full hover:bg-[#FFD54F] transition-all shadow-[0_0_24px_rgba(255,179,0,0.7)] text-sm"
+            className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-10 py-4 rounded-full hover:bg-[#FFB81C] transition-all shadow-[0_0_24px_rgba(255,184,28,0.6)] text-sm"
           >
             Open Waitlist / Interest Form →
           </a>
