@@ -26,8 +26,23 @@ body {
 }
 
 /* Remove default cursor so custom cursor ring can show */
-* {
-  cursor: none;
+html,
+body,
+main,
+section,
+header,
+footer,
+button,
+a,
+input,
+textarea,
+select,
+label,
+svg,
+canvas,
+div,
+span {
+  cursor: none !important;
 }
 
 /* Thin dark scrollbars */
