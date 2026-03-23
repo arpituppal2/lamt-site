@@ -337,25 +337,6 @@ className="relative min-h-screen flex items-center justify-center overflow-hidde
             </p>
           </div>
 
-          <div className="mt-10">
-            <h3 className="text-xl font-semibold text-slate-100 mb-4">
-              Competition Rounds
-            </h3>
-            <div className="space-y-4">
-              {rounds.map((round) => (
-                <div
-                  key={round.title}
-                  className="border-l-4 border-[#2774AE] pl-4 py-1"
-                >
-                  <p className="font-semibold text-slate-100">{round.title}</p>
-                  <p className="text-slate-300 text-sm mt-0.5">
-                    {round.detail}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div className="mt-12 text-center">
             <p className="text-slate-300 mb-4">Ready to compete?</p>
             <a
