@@ -71,7 +71,7 @@ export default function HomePage() {
       {/* HERO */}
 <section
   ref={heroRef}
-  className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
+  className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14"
 >
         {/* Equations backdrop */}
   {/*<div className="absolute inset-0 opacity-[1.0] pointer-events-none">
@@ -104,7 +104,7 @@ export default function HomePage() {
 
         <motion.div
           style={{ y: heroY }}
-          className="relative z-10 max-w-5xl mx-auto text-center mt-10 md:mt-6"
+          className="relative z-10 max-w-5xl mx-auto text-center mt-10 md:mt-0"
         >
           <motion.span
             initial={{ opacity: 0, y: 10 }}
