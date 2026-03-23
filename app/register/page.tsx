@@ -4,7 +4,7 @@ export default function RegisterPage() {
       <div className="max-w-2xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-slate-900 mb-4">Interest / Waitlist Form</h1>
         <p className="text-slate-600 mb-2">
-          LAMT 2026 &mdash; May 23, 2026. Registration is not yet open.
+          LAMT 2026 &mdash; May 17th, 2026. Registration is not yet open.
         </p>
         <p className="text-slate-600 mb-2">
           Fill out the form below to join the waitlist and be notified when registration opens.
