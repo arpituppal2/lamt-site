@@ -64,13 +64,13 @@ dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) tran
       {/* small dot exactly on cursor */}
 <div
   ref={dotRef}
-  className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999] hidden md:block"
+  className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999]"
 style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
   />
       {/* thin ring around cursor */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-[rgba(255,179,0,0.5)] bg-[rgba(255,179,0,0.05)] pointer-events-none z-[9998] hidden md:block"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-[rgba(255,179,0,0.5)] bg-[rgba(255,179,0,0.05)] pointer-events-none z-[9998]"
         style={{ transform: 'translate(-9999px,-9999px) translate(-50%,-50%)' }}
       />
       <div id="scroll-progress" />
