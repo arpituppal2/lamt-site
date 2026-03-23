@@ -73,7 +73,7 @@ export default function HomePage() {
   className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
 >
         {/* Equations backdrop */}
-        <div className="absolute inset-0 opacity-[0.1] pointer-events-none">
+        <div className="absolute inset-0 opacity-[1.0] pointer-events-none">
           <div className="math-bg top-[18%] right-[10%] text-4xl">
             v_p(x^n - y^n) = v_p(x-y) + v_p(n)
           </div>
