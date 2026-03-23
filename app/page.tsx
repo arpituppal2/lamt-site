@@ -17,7 +17,7 @@ const daySchedule = [
   },
   {
     time: '9:15 AM',
-    title: 'Special Round!!!',
+    title: 'Special Team Round',
     subtitle: '75 minutes total. Details TBA.',
   },
   {
