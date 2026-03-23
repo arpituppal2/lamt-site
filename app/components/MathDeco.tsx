@@ -3,6 +3,11 @@ import { useEffect, useRef } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
+interface MathDecoProps {
+  latex: string;
+  className?: string;
+}
+
 export default function MathDeco({ latex, className = '' }: MathDecoProps) {
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
