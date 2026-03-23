@@ -66,10 +66,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="space-y-2 text-sm">
                   <div>
                     <a
-                      href="mailto:uclamathtournamant@gmail.com"
+                      href="mailto:uclamathtournament@gmail.com"
                       className="text-slate-300 hover:text-[#FFD100] transition-colors"
                     >
-                      uclamathtournamant@gmail.com
+                      uclamathtournament@gmail.com
                     </a>
                   </div>
                   <div>
