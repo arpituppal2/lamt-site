@@ -9,31 +9,11 @@ const stats = [
 ];
 
 const formats = [
-  {
-    icon: '⭐',
-    title: 'Special Round!!!',
-    desc: 'A surprise competitive team round — details coming soon. Stay tuned!',
-  },
-  {
-    icon: 'Σ',
-    title: 'Algebra',
-    desc: '10-question individual round testing algebraic reasoning and computation. 50 minutes.',
-  },
-  {
-    icon: '△',
-    title: 'Geometry',
-    desc: '10-question individual round covering Euclidean and coordinate geometry. 50 minutes.',
-  },
-  {
-    icon: 'π',
-    title: 'Combinatorics',
-    desc: '10-question individual round on counting, probability, and discrete math. 50 minutes.',
-  },
-  {
-    icon: '√',
-    title: 'Guts Round',
-    desc: 'Live-scored, high-intensity team round where speed and accuracy determine standings in real time.',
-  },
+  { icon: '⭐', title: 'Special Round!!!', desc: 'A surprise competitive team round — details coming soon. Stay tuned!' },
+  { icon: 'Σ', title: 'Algebra', desc: '10-question individual round testing algebraic reasoning and computation. 50 minutes.' },
+  { icon: '△', title: 'Geometry', desc: '10-question individual round covering Euclidean and coordinate geometry. 50 minutes.' },
+  { icon: 'π', title: 'Combinatorics', desc: '10-question individual round on counting, probability, and discrete math. 50 minutes.' },
+  { icon: '√', title: 'Guts Round', desc: 'Live-scored, high-intensity team round where speed and accuracy determine standings in real time.' },
 ];
 
 const highlights = [
@@ -45,97 +25,112 @@ const highlights = [
 
 export default function HomePage() {
   return (
-    <main>
-      {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#003B5C] text-white">
-        
-        <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/3 right-[5%] text-[1.8rem]" />
-        <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
-        <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="hidden md:block absolute bottom-12 left-[6%] text-[2.5rem]" />
-        <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/4 left-[2%] text-[1.8rem]" />
-        <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="hidden md:block absolute top-1/3 right-[10%] text-[2.0rem]" />
-        <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="absolute top-10 left-[15%] text-[2.0em]" />
-        <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="hidden md:block absolute top-1/2 left-[4%] text-[2.0em]" />
-        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-12 right-[8%] text-[1.8rem]" />
-        
+    <main className="bg-[#003B5C] text-white selection:bg-[#FFD100] selection:text-[#003B5C]">
+      <div className="noise-overlay" />
 
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:py-28 py-36 text-center">
-          <span className="inline-block uppercase tracking-[0.2em] text-[#FFD100] text-xs font-bold mb-6 border border-[#FFD100]/30 rounded-full px-4 py-1.5">
-            UCLA Student-Run Competition
-          </span>
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tight leading-[1.05] mb-5">
-            LOS ANGELES<br />
-            <span className="text-[#FFD100]">MATH TOURNAMENT</span>
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+          <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="absolute bottom-1/4 right-[5%] text-[2.5rem] anim-float" />
+          <MathDeco latex="\displaystyle \sum_{n \geq 0} p(n)x^n = \prod_{k \geq 1} \frac{1}{1-x^k}" className="absolute top-1/4 right-[8%] text-[3rem] anim-float delay-300" />
+          <MathDeco latex="\displaystyle d^2 = -a^2 \Delta y \Delta z - b^2 \Delta x \Delta z - c^2 \Delta x \Delta y" className="absolute top-1/3 left-[2%] text-[2.2rem] anim-float delay-150" />
+          <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="absolute bottom-1/3 right-[12%] text-[2.8rem] anim-float delay-450" />
+          <MathDeco latex="x^n - 1 = \prod_{d|n} \Phi_d(x)" className="absolute top-[15%] left-[12%] text-[2.6rem] anim-float delay-600" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <div className="inline-block anim-fade-up delay-0">
+            <span className="inline-flex items-center gap-2 uppercase tracking-[0.3em] text-[#FFD100] text-xs font-bold mb-8 py-2 px-4 rounded-full border border-[#FFD100]/30 bg-[#FFD100]/5 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFD100] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFD100]"></span>
+              </span>
+              UCLA Student-Run Competition
+            </span>
+          </div>
+
+          <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-[0.9] anim-fade-up delay-150">
+            <span className="text-white/90">LOS ANGELES</span><br />
+            <span className="text-[#FFD100] drop-shadow-[0_0_15px_rgba(255,209,0,0.3)]">MATH TOURNAMENT</span>
           </h1>
-          <p className="text-[#8BB8E8] text-base sm:text-lg mb-4 max-w-md mx-auto leading-relaxed">
-            A student-led math competition hosted by UCLA students, open to grades 6–12 — May 17, 2026.
+
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-300 mb-12 leading-relaxed anim-fade-up delay-300">
+            A student-led math competition hosted by UCLA students, open to grades 6–12. 
+            Experience mathematical rigor in a grand, high-stakes environment.
           </p>
-          <p className="text-[#8BB8E8]/60 text-sm mb-8">
-            Cost: TBD
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFC72C] transition"
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 anim-fade-up delay-450">
+            <Link 
+              href="https://forms.gle/8JUBJaQQv4fmL8th6" 
+              className="btn-primary group relative px-10 py-5 bg-[#FFD100] text-[#003B5C] font-bold rounded-xl text-lg shadow-xl overflow-hidden"
             >
-              Join the Waitlist →
-            </a>
-            <Link
-              href="/about"
-              className="border border-[#8BB8E8]/40 text-[#8BB8E8] px-8 py-3 rounded-full hover:bg-[#005587]/40 transition"
+              <span className="relative z-10">Join the Waitlist</span>
+              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
+            </Link>
+            <Link 
+              href="#about" 
+              className="btn-secondary px-10 py-5 bg-white/5 border border-white/10 text-white font-bold rounded-xl text-lg hover:bg-white/10 backdrop-blur-md transition-all"
             >
               Learn More
             </Link>
           </div>
-          <p className="text-[#8BB8E8]/60 text-sm mt-8">
-            📍 UCLA · Los Angeles, California
-          </p>
+          
+          <div className="mt-16 text-slate-400 text-sm font-medium tracking-widest flex items-center justify-center gap-4 anim-fade-in delay-600">
+            <span className="w-8 h-[1px] bg-slate-700"></span>
+            📍 UCLA · LOS ANGELES, CALIFORNIA
+            <span className="w-8 h-[1px] bg-slate-700"></span>
+          </div>
+        </div>
+        
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 anim-fade-in delay-600">
+          <div className="w-[1px] h-12 bg-gradient-to-b from-[#FFD100] to-transparent animate-bounce"></div>
         </div>
       </section>
 
       {/* ── STATS BAR ────────────────────────────────────────────── */}
-      <section className="bg-[#2774AE]">
-        <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {stats.map(({ value, label, sub }) => (
-            <div key={label}>
-              <p className="text-3xl font-black text-white">{value}</p>
-              <p className="text-sm font-semibold text-[#DAEBFE] mt-1">{label}</p>
-              <p className="text-xs text-[#8BB8E8]">{sub}</p>
-            </div>
-          ))}
+      <section className="relative z-20 -mt-12 mb-24 px-6">
+        <div className="max-w-6xl mx-auto bg-[#002B44]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl reveal">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+            {stats.map(({ value, label, sub }) => (
+              <div key={label} className="stat-item text-center">
+                <div className="text-3xl md:text-4xl font-black text-[#FFD100] mb-2">{value}</div>
+                <div className="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1">{label}</div>
+                <div className="text-sm text-slate-500">{sub}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── ABOUT LAMT ───────────────────────────────────────────── */}
-      <section className="bg-white">
-        <div className="max-w-5xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-start">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#2774AE] mb-3">About LAMT</p>
-            <h2 className="text-3xl font-bold text-[#003B5C] mb-4">
-              Celebrating mathematical excellence worldwide
+      <section id="about" className="py-24 px-6 relative">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+          <div className="reveal">
+            <div className="text-[#FFD100] font-bold tracking-widest text-sm uppercase mb-6 flex items-center gap-3">
+              <span className="w-10 h-[1px] bg-[#FFD100]/50"></span>
+              About LAMT
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">
+              Celebrating <span className="text-[#FFD100]">mathematical excellence</span> worldwide.
             </h2>
-            <p className="text-slate-600 mb-4">
-              The Los Angeles Math Tournament (LAMT) is an international student-organized competition hosted at UCLA, designed to inspire and challenge talented mathematicians from around the world.
+            <p className="text-slate-300 text-lg leading-relaxed mb-8">
+              The Los Angeles Math Tournament (LAMT) is an international student-organized competition hosted at UCLA, designed to challenge talented mathematicians from around the world.
             </p>
-            <p className="text-slate-600 mb-6">
-              Students in grades 6–12 during the 2025–2026 school year are eligible. Participants compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA’s own math community.
+            <p className="text-slate-400 text-lg leading-relaxed mb-10">
+              Students in grades 6–12 compete in individual and team-based events spanning algebra, geometry, number theory, and combinatorics — all problems handcrafted by UCLA’s own math community.
             </p>
-            <Link href="/about" className="inline-flex items-center gap-1 text-[#2774AE] font-semibold hover:text-[#003B5C] transition">
-              Learn more about LAMT →
+            <Link href="/about" className="link-underline text-[#FFD100] font-bold text-lg inline-flex items-center gap-2 group">
+              Learn more about LAMT
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
 
-          {/* Highlight boxes */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-stagger">
             {highlights.map(({ icon, title, sub }) => (
-              <div
-                key={title}
-                className="rounded-xl p-5 border-2 border-[#DAEBFE] bg-[#DAEBFE]/40 hover:border-[#2774AE] hover:bg-[#DAEBFE] transition group"
-              >
-                <div className="text-2xl mb-2">{icon}</div>
-                <p className="font-bold text-[#003B5C] text-sm">{title}</p>
-                <p className="text-xs text-[#005587] mt-1">{sub}</p>
+              <div key={title} className="card-premium p-8 group">
+                <div className="text-4xl mb-4 icon-hover">{icon}</div>
+                <h3 className="text-xl font-bold text-white group-hover:text-[#FFD100] transition-colors mb-2">{title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{sub}</p>
               </div>
             ))}
           </div>
@@ -143,51 +138,52 @@ export default function HomePage() {
       </section>
 
       {/* ── COMPETITION FORMAT ───────────────────────────────────── */}
-      <section className="bg-[#003B5C] text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#FFD100] mb-3 text-center">Competition Format</p>
-          <h2 className="text-3xl font-bold text-white text-center mb-10">How the tournament works</h2>
+      <section className="py-24 px-6 section-divider">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20 reveal">
+            <div className="text-[#FFD100] font-bold tracking-widest text-sm uppercase mb-6">Tournament Structure</div>
+            <h2 className="text-4xl md:text-5xl font-black mb-6">How the competition works</h2>
+            <div className="w-24 h-1 bg-[#FFD100] mx-auto rounded-full"></div>
+          </div>
 
-          {/* 5 boxes: all in one row on wide screens, full stack on narrow — never partial rows */}
-          <div className="flex flex-col [@media(min-width:900px)]:flex-row gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-16 reveal-stagger">
             {formats.map(({ icon, title, desc }) => (
-              <div
-                key={title}
-                className="flex-1 bg-[#005587] rounded-xl p-5 border border-[#2774AE] flex flex-col"
-              >
-                <div className="text-3xl mb-3 text-[#FFD100]">{icon}</div>
-                <h3 className="font-bold text-base text-white mb-2">{title}</h3>
-                <p className="text-[#8BB8E8] text-sm leading-relaxed flex-1">{desc}</p>
+              <div key={title} className="card-premium p-8 h-full flex flex-col">
+                <div className="text-3xl mb-6 icon-hover">{icon}</div>
+                <h3 className="text-xl font-bold mb-4 text-white group-hover:text-[#FFD100]">{title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed flex-grow">{desc}</p>
               </div>
             ))}
           </div>
 
-          <div className="text-center mt-10">
-            <Link href="/schedule" className="text-[#FFD100] font-semibold hover:text-[#FFC72C] transition">
-              View full schedule →
+          <div className="text-center reveal">
+            <Link href="/schedule" className="btn-secondary px-8 py-4 bg-white/5 border border-white/10 rounded-xl font-bold inline-flex items-center gap-3 group">
+              View full schedule
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-[#DAEBFE] py-16">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-[#003B5C] mb-4">Interested in competing?</h2>
-          <p className="text-[#005587] mb-2">
-            Fill out our waitlist/interest form to be notified when registration opens.
+      <section className="py-32 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[#FFD100]/5 z-0"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10 reveal">
+          <h2 className="text-4xl md:text-6xl font-black mb-8">Ready to compete?</h2>
+          <p className="text-xl text-slate-300 mb-12 leading-relaxed">
+            Fill out our waitlist form to be notified the moment registration opens. 
+            Limited spots available for the 2026 tournament.
           </p>
-          <p className="text-[#2774AE] text-sm mb-8">Cost: TBD</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="bg-[#2774AE] text-white font-bold px-8 py-3 rounded-full hover:bg-[#003B5C] transition"
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link 
+              href="https://forms.gle/8JUBJaQQv4fmL8th6" 
+              className="btn-primary px-12 py-5 bg-[#FFD100] text-[#003B5C] font-bold rounded-xl text-xl shadow-2xl"
             >
               Waitlist / Interest Form
-            </a>
-            <Link
-              href="/about"
-              className="border-2 border-[#2774AE] text-[#2774AE] font-semibold px-8 py-3 rounded-full hover:bg-[#2774AE] hover:text-white transition"
+            </Link>
+            <Link 
+              href="/contact" 
+              className="px-10 py-5 font-bold text-white hover:text-[#FFD100] transition-colors"
             >
               Contact Us
             </Link>
