@@ -49,7 +49,7 @@ export default function HomePage() {
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#003B5C] text-white">
         
-        <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/4 right-[5%] text-[1.8rem]" />
+        <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/3 right-[5%] text-[1.8rem]" />
         <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
         <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="hidden md:block absolute bottom-12 left-[6%] text-[2.5rem]" />
         <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/4 left-[2%] text-[1.8rem]" />
