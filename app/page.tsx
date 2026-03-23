@@ -116,7 +116,7 @@ export default function HomePage() {
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: 0.05, duration: 0.6 }}
             className="max-w-xl mx-auto text-lg text-slate-200/85 mb-10 font-medium"
           >
             Experience rigorous, high-stakes mathematics at UCLA on{' '}
@@ -127,13 +127,13 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.6 }}
+            transition={{ delay: 0.05, duration: 0.4 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <motion.div
-              whileHover={{ scale: 1.07 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 20, mass: 0.4 }}
             >
               <Link
                 href="https://forms.gle/8JUBJaQQv4fmL8th6"
@@ -174,7 +174,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.4 }}
+            transition={{ delay: 0.02, duration: 0.4 }}
             className="text-center text-slate-300 text-sm mb-10"
           >
             May 17, 2026 · subject to minor adjustments
@@ -187,7 +187,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.06, type: 'spring', stiffness: 220, damping: 22 }}
+                transition={{ delay: idx * 0.04, type: 'spring', stiffness: 220, damping: 22 }}
                 whileHover={{
                   backgroundColor: 'rgba(255,179,0,0.06)',
                   x: 4,
