@@ -68,10 +68,10 @@ span {
 
 /* Glass card system used across pages */
 .glass-card {
-  background: rgba(10, 25, 47, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   border-radius: 1rem;
-  border: 1px solid rgba(255, 179, 0, 0.2);
+  border: 1px solid rgba(39, 116, 174, 0.3); /* UCLA Blue */
 }
 
 /* ── Scroll linked reveal ─────────────────────────────────── */
