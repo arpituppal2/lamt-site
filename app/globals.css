@@ -3,213 +3,160 @@
 @tailwind utilities;
 
 :root {
-  --ucla-blue:        #2774AE;
-  --ucla-blue-dark:   #1a5276;
-  --ucla-blue-deeper: #003B5C;
-  --ucla-gold:        #FFD100;
-  --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out:   cubic-bezier(0.45, 0, 0.55, 1);
-  --dur-micro:     200ms;
-  --dur-section:   550ms;
+  --bg-main:      #0B3C5D;
+  --bg-secondary: #0E4F70;
+  --bg-card:      #145374;
+  --accent:       #F2C94C;
+  --text-primary: #FFFFFF;
+  --text-muted:   #94A3B8;
+  --ease-apple:   cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-html { scroll-behavior: smooth; }
+html { 
+  scroll-behavior: smooth;
+  background-color: var(--bg-main);
+}
 
-/* ── Custom cursor (safer fallback) ─────────────────────────── */
-body.js-enabled { cursor: none !important; }
-body.js-enabled * { cursor: none !important; }
+body {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
 
-#cursor {
+/* ── Custom cursor (Simplified) ───────────────────────────── */
+#cursor, #cursor-ring {
   position: fixed;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255, 209, 0, 0.9);
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: width var(--dur-micro) var(--ease-out),
-              height var(--dur-micro) var(--ease-out),
-              opacity var(--dur-micro) var(--ease-out);
-  mix-blend-mode: difference;
-}
-
-#cursor-ring {
-  position: fixed;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 209, 0, 0.45);
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: width 250ms var(--ease-out),
-              height 250ms var(--ease-out),
-              opacity 250ms var(--ease-out);
+  transition: opacity 0.3s var(--ease-apple), transform 0.15s linear;
 }
 
 body.js-enabled #cursor, body.js-enabled #cursor-ring { opacity: 1; }
 
-body.cursor-hover #cursor { width: 24px; height: 24px; }
-body.cursor-hover #cursor-ring { width: 56px; height: 56px; border-color: rgba(255, 209, 0, 0.7); }
-
-/* ── Scroll progress bar ───────────────────────────────────── */
-#scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--ucla-gold), #fff);
-  z-index: 9997;
-  width: 0%;
-  transition: width 100ms linear;
-  box-shadow: 0 0 10px rgba(255, 209, 0, 0.5);
+#cursor {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
 }
 
-/* ── Keyframe animations ───────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
+#cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(242, 201, 76, 0.3);
+  border-radius: 50%;
+  transition: width 0.3s var(--ease-apple), height 0.3s var(--ease-apple), border-color 0.3s var(--ease-apple);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+body.cursor-hover #cursor-ring {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(242, 201, 76, 0.6);
+  background: rgba(242, 201, 76, 0.05);
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50%       { transform: translateY(-15px) rotate(2deg); }
+/* ── Scroll linked reveal ─────────────────────────────────── */
+.reveal-item {
+  will-change: transform, opacity;
+  /* These will be controlled by JS for smooth interpolation */
 }
 
-/* ── Reusable animation classes ────────────────────────────── */
-.anim-fade-up { animation: fadeUp var(--dur-section) var(--ease-out) both; }
-.anim-fade-in { animation: fadeIn var(--dur-section) var(--ease-out) both; }
-.anim-float { animation: float 8s var(--ease-in-out) infinite; }
-
-.delay-0 { animation-delay: 0ms; }
-.delay-150 { animation-delay: 150ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-450 { animation-delay: 450ms; }
-.delay-600 { animation-delay: 600ms; }
-
-/* ── Scroll reveal system (safer) ───────────────────────────── */
-.reveal {
-  opacity: 1; /* Default to visible if JS fails */
-  transform: none;
-  transition: opacity var(--dur-section) var(--ease-out),
-              transform var(--dur-section) var(--ease-out);
-}
-
-body.js-enabled .reveal {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-body.js-enabled .reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Stagger system */
-.reveal-stagger > * {
-  opacity: 1;
-  transition: opacity var(--dur-section) var(--ease-out),
-              transform var(--dur-section) var(--ease-out);
-}
-
-body.js-enabled .reveal-stagger > * {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-body.js-enabled .reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
-body.js-enabled .reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
-body.js-enabled .reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 200ms; }
-body.js-enabled .reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 300ms; }
-body.js-enabled .reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 400ms; }
-body.js-enabled .reveal-stagger.visible > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 500ms; }
-
-/* ── Premium cards ─────────────────────────────────────────── */
+/* ── Standardized Card System ─────────────────────────────── */
 .card-premium {
-  position: relative;
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-  transition: transform var(--dur-section) var(--ease-out),
-              box-shadow var(--dur-section) var(--ease-out),
-              border-color var(--dur-section) var(--ease-out),
-              background var(--dur-section) var(--ease-out);
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: transform 0.25s var(--ease-apple), box-shadow 0.25s var(--ease-apple);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .card-premium:hover {
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-  border-color: rgba(255,209,0,0.3);
-  background: rgba(255,255,255,0.06);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Mouse reactive lighting */
-.card-premium::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,209,0,0.08) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 300ms ease;
-  pointer-events: none;
+/* ── Typography & Spacing ─────────────────────────────────── */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
-.card-premium:hover::after { opacity: 1; }
+
+.section-padding {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+/* ── Compact Footer ────────────────────────────────────────── */
+footer {
+  background: #082D45;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
 
 /* ── Micro-interactions ────────────────────────────────────── */
 .link-underline {
   position: relative;
+  display: inline-block;
 }
+
 .link-underline::after {
   content: '';
   position: absolute;
   bottom: -2px;
   left: 0;
   width: 0;
-  height: 1.5px;
-  background: #FFD100;
-  transition: width 300ms var(--ease-out);
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.25s var(--ease-apple);
 }
-.link-underline:hover::after { width: 100%; }
 
-.btn-primary { transition: all 250ms var(--ease-out); }
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(255,209,0,0.3); }
-.btn-primary:active { transform: scale(0.96); }
+.link-underline:hover::after {
+  width: 100%;
+}
 
-.stat-item { transition: transform 300ms var(--ease-out); }
-.stat-item:hover { transform: translateY(-5px); }
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-main);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.2s var(--ease-apple), filter 0.2s var(--ease-apple);
+}
 
-.noise-overlay {
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ── Math Deco Fix ─────────────────────────────────────────── */
+.math-bg {
   position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events: none;
-  opacity: 0.15;
-  mix-blend-mode: overlay;
+  user-select: none;
+  opacity: 0.05;
+  color: white;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  white-space: nowrap;
+  will-change: transform;
 }
 
-.section-divider {
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-@layer utilities {
-  .math-deco {
-    font-family: serif;
-    font-style: italic;
-    opacity: 0.08;
-    position: absolute;
-    pointer-events: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .math-deco { display: none; }
+/* ── Scroll Progress ────────────────────────────────────────── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 10000;
+  width: 0%;
 }
