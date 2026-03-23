@@ -79,7 +79,14 @@ style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
 }
 
 function NavBar() {
-  const links = ['About', 'Schedule', 'FAQ', 'Contact', 'Register'];
+  const links = [
+    { href: '/#about',    label: 'About' },
+    { href: '/#schedule', label: 'Schedule' },
+    { href: '/#faq',      label: 'FAQ' },
+    { href: '/#contact',  label: 'Contact' },
+    { href: '/#register', label: 'Register' },
+  ];
+
   return (
     <motion.nav
       initial={{ y: -40, opacity: 0 }}
@@ -97,10 +104,10 @@ function NavBar() {
         </span>
       </Link>
       <div className="flex items-center gap-6 text-xs font-semibold tracking-[0.18em] uppercase">
-        {links.map(label => (
+        {links.map(({ href, label }) => (
           <Link
-            key={label}
-            href={`/${label.toLowerCase()}`}
+            key={href}
+            href={href}
             className="relative text-white/70 hover:text-[#FFB300] transition-colors"
           >
             <span className="hidden md:inline">{label}</span>
@@ -143,17 +150,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 LAMT 2026
               </span>
             </div>
-            <div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
-              {['About', 'Schedule', 'FAQ', 'Contact', 'Register'].map(label => (
-                <Link
-                  key={label}
-                  href={`/${label.toLowerCase()}`}
-                  className="hover:text-[#FFD100] transition-colors"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
+<div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
+  {[
+    { href: '/#about',    label: 'About' },
+    { href: '/#schedule', label: 'Schedule' },
+    { href: '/#faq',      label: 'FAQ' },
+    { href: '/#contact',  label: 'Contact' },
+    { href: '/#register', label: 'Register' },
+  ].map(({ href, label }) => (
+    <Link
+      key={href}
+      href={href}
+      className="hover:text-[#FFD100] transition-colors"
+    >
+      {label}
+    </Link>
+  ))}
+</div>
           </div>
         </footer>
       </body>
