@@ -9,38 +9,41 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement | null>(null);
-  const glowRef = useRef<HTMLDivElement | null>(null);
-  const pos = useRef({ x: 0, y: 0 });
-  const glowPos = useRef({ x: 0, y: 0 });
+  const dotRef = useRef<HTMLDivElement | null>(null);
+  const ringRef = useRef<HTMLDivElement | null>(null);
+  const mouse = useRef({ x: 0, y: 0 });
+  const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     document.body.classList.add('js-enabled');
 
     const handleMove = (e: MouseEvent) => {
-      pos.current = { x: e.clientX, y: e.clientY };
+      mouse.current = { x: e.clientX, y: e.clientY };
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      }
     };
+
     window.addEventListener('mousemove', handleMove);
 
     let raf: number;
-    const loop = () => {
-      glowPos.current.x += (pos.current.x - glowPos.current.x) * 0.08;
-      glowPos.current.y += (pos.current.y - glowPos.current.y) * 0.08;
+    const animate = () => {
+      // smooth follow for ring
+      ring.current.x += (mouse.current.x - ring.current.x) * 0.18;
+      ring.current.y += (mouse.current.y - ring.current.y) * 0.18;
 
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px)`;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ring.current.x}px, ${ring.current.y}px) translate(-50%, -50%)`;
       }
-      if (glowRef.current) {
-        glowRef.current.style.transform = `translate(${glowPos.current.x - 200}px, ${glowPos.current.y - 200}px)`;
-      }
-      raf = requestAnimationFrame(loop);
+
+      raf = requestAnimationFrame(animate);
     };
-    raf = requestAnimationFrame(loop);
+    raf = requestAnimationFrame(animate);
 
-    const interactiveSelector = 'a,button,input,textarea,[role="button"]';
+    const interactive = 'a,button,input,textarea,[role="button"]';
     const enter = () => document.body.classList.add('cursor-hover');
     const leave = () => document.body.classList.remove('cursor-hover');
-    const els = Array.from(document.querySelectorAll(interactiveSelector));
+    const els = Array.from(document.querySelectorAll(interactive));
     els.forEach(el => {
       el.addEventListener('mouseenter', enter);
       el.addEventListener('mouseleave', leave);
@@ -58,21 +61,17 @@ function CustomCursor() {
 
   return (
     <>
-      {/* small gold dot */}
+      {/* small dot exactly on cursor */}
       <div
-        id="cursor"
-        ref={cursorRef}
-        className="hidden md:block fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999]"
+        ref={dotRef}
+        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999] hidden md:block"
+        style={{ transform: 'translate(-9999px,-9999px)' }}
       />
-      {/* thin gold ring + glow blob */}
+      {/* thin ring around cursor */}
       <div
-        id="cursor-ring"
-        ref={glowRef}
-        className="hidden md:block fixed top-0 left-0 w-[400px] h-[400px] pointer-events-none z-[9998] opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(255,179,0,0.35) 0%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
+        ref={ringRef}
+        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-[rgba(255,179,0,0.5)] bg-[rgba(255,179,0,0.05)] pointer-events-none z-[9998] hidden md:block"
+        style={{ transform: 'translate(-9999px,-9999px) translate(-50%,-50%)' }}
       />
       <div id="scroll-progress" />
     </>
