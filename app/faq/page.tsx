@@ -12,7 +12,7 @@ const faqs = [
 export default function FAQPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-slate-900 mb-8">Frequently Asked Questions</h1>
+      <h1 className="text-3xl font-bold text-slate-100 mb-8">Frequently Asked Questions</h1>
       <div className="space-y-6">
         {faqs.map((item) => (
           <div key={item.q} className="border-l-4 border-[#2774AE] pl-4">
