@@ -119,7 +119,7 @@ export default function HomePage() {
             transition={{ delay: 0.05, duration: 0.6 }}
             className="max-w-xl mx-auto text-lg text-slate-200/85 mb-10 font-medium"
           >
-            "Have you ever done math with your life on the line?" <br>
+            "Have you ever done math with your life on the line?"
             Experience rigorous, high-stakes mathematics at UCLA on{' '}
             <span className="text-[#FFB300] font-semibold">May 17, 2026</span>.
             Individual, team, relay, and guts rounds.
