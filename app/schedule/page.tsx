@@ -24,7 +24,7 @@ export default function SchedulePage() {
               <span className="text-slate-200 font-semibold">{item.event}</span>
             </div>
             {item.detail && (
-              <p className="text-slate-200 text-sm mt-1 ml-30 pl-[7.5rem]">{item.detail}</p>
+              <p className="text-slate-300 text-sm mt-1 ml-30 pl-[7.5rem]">{item.detail}</p>
             )}
           </div>
         ))}
