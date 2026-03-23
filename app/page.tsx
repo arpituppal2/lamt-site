@@ -5,59 +5,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import MathDeco from './components/MathDeco';
 
-const daySchedule = [
-  {
-    time: '8:00 AM',
-    title: 'Check-in',
-    subtitle: 'Arrive and check in your team.',
-  },
-  {
-    time: '8:45 AM',
-    title: 'Registration & Opening Ceremony',
-    subtitle: 'Finish check-in; opening remarks.',
-  },
-  {
-    time: '9:15 AM',
-    title: 'Special Team Round',
-    subtitle: '75 minutes total. Details TBA.',
-  },
-  {
-    time: '10:45 AM',
-    title: 'Algebra',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '12:00 PM',
-    title: 'Geometry',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '1:00 PM',
-    title: 'Lunch & Disputes',
-    subtitle: 'Lunch break and dispute window.',
-  },
-  {
-    time: '2:00 PM',
-    title: 'Combinatorics',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '3:15 PM',
-    title: 'Guts Round',
-    subtitle: '60–75 minutes · number of rounds TBD.',
-  },
-  {
-    time: '4:30 PM',
-    title: 'Integration Bee / Prof. Talk / Tiebreaks',
-    subtitle: 'Integration Bee, guest lecture, tiebreakers, and final disputes.',
-  },
-  {
-    time: '6:00 PM',
-    title: 'Awards Ceremony',
-    subtitle: 'Recognition and prize distribution.',
-  },
-];
-
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
@@ -171,64 +118,6 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
         </motion.div>
-      </section>
-
-      {/* DAY-OF SCHEDULE */}
-      <section className="relative border-t border-white/10 bg-[#020816]/50 backdrop-blur-xl px-6 pb-20 pt-12">
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-bold mb-2 text-center gold-text"
-          >
-            Day-of Schedule
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.02, duration: 0.4 }}
-            className="text-center text-slate-300 text-sm mb-10"
-          >
-            May 17, 2026 — subject to minor adjustments. Final schedule distributed day-of.
-          </motion.p>
-
-          <div className="glass-card overflow-hidden">
-            {daySchedule.map((row, idx) => (
-              <motion.div
-                key={row.time + row.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.04, type: 'spring', stiffness: 300, damping: 24 }}
-                whileHover={{
-                  backgroundColor: 'rgba(255,179,0,0.06)',
-                  x: 4,
-                  boxShadow: '0 0 24px rgba(255,179,0,0.25)',
-                }}
-                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-white/7 last:border-0"
-              >
-                <span className="w-32 text-xs font-mono text-slate-300">
-                  {row.time}
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-semibold text-slate-50">
-                    {row.title}
-                  </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
-                    {row.subtitle}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <p className="mt-4 text-[11px] text-center text-slate-400">
-            *Schedule is tentative and subject to change.
-          </p>
-        </div>
       </section>
     </main>
   );
