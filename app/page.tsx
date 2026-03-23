@@ -6,83 +6,25 @@ import { useRef, useState } from 'react';
 import MathDeco from './components/MathDeco';
 
 const daySchedule = [
-  {
-    time: '8:00 AM',
-    title: 'Check-in',
-    subtitle: 'Arrive and check in your team.',
-  },
-  {
-    time: '8:45 AM',
-    title: 'Registration & Opening Ceremony',
-    subtitle: 'Finish check-in; opening remarks.',
-  },
-  {
-    time: '9:15 AM',
-    title: 'Special Team Round',
-    subtitle: '75 minutes total. Details TBA.',
-  },
-  {
-    time: '10:45 AM',
-    title: 'Algebra',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '12:00 PM',
-    title: 'Geometry',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '1:00 PM',
-    title: 'Lunch & Disputes',
-    subtitle: 'Lunch break and dispute window.',
-  },
-  {
-    time: '2:00 PM',
-    title: 'Combinatorics',
-    subtitle: '50 minutes · 10 questions.',
-  },
-  {
-    time: '3:15 PM',
-    title: 'Guts Round',
-    subtitle: '60–75 minutes · number of rounds TBD.',
-  },
-  {
-    time: '4:30 PM',
-    title: 'Integration Bee / Prof. Talk / Tiebreaks',
-    subtitle: 'Integration Bee, guest lecture, tiebreakers, and final disputes.',
-  },
-  {
-    time: '6:00 PM',
-    title: 'Awards Ceremony',
-    subtitle: 'Recognition and prize distribution.',
-  },
+  { time: '8:00 AM',  title: 'Check-in',  subtitle: 'Arrive and check in your team.' },
+  { time: '8:45 AM',  title: 'Registration & Opening Ceremony', subtitle: 'Finish check-in; opening remarks.' },
+  { time: '9:15 AM',  title: 'Special Team Round', subtitle: '75 minutes total. Details TBA.' },
+  { time: '10:45 AM', title: 'Algebra',   subtitle: '50 minutes · 10 questions.' },
+  { time: '12:00 PM', title: 'Geometry',  subtitle: '50 minutes · 10 questions.' },
+  { time: '1:00 PM',  title: 'Lunch & Disputes', subtitle: 'Lunch break and dispute window.' },
+  { time: '2:00 PM',  title: 'Combinatorics', subtitle: '50 minutes · 10 questions.' },
+  { time: '3:15 PM',  title: 'Guts Round', subtitle: '60–75 minutes · number of rounds TBD.' },
+  { time: '4:30 PM',  title: 'Integration Bee / Prof. Talk / Tiebreaks', subtitle: 'Integration Bee, guest lecture, tiebreakers, and final disputes.' },
+  { time: '6:00 PM',  title: 'Awards Ceremony', subtitle: 'Recognition and prize distribution.' },
 ];
 
 const rounds = [
-  {
-    title: 'Special Round!!!',
-    detail: 'A mystery round — details coming soon! 75 minutes total.',
-  },
-  {
-    title: 'Algebra',
-    detail: '50 min, 10 questions — individual round.',
-  },
-  {
-    title: 'Geometry',
-    detail: '50 min, 10 questions — individual round.',
-  },
-  {
-    title: 'Combinatorics',
-    detail: '50 min, 10 questions — individual round.',
-  },
-  {
-    title: 'Guts Round',
-    detail: '60–75 min live-scored team round, number of sets TBD.',
-  },
-  {
-    title: 'Integration Bee',
-    detail: 'Speed-based integration competition (post-rounds event).',
-  },
+  { title: 'Special Round!!!', detail: 'A mystery round — details coming soon! 75 minutes total.' },
+  { title: 'Algebra',          detail: '50 min, 10 questions — individual round.' },
+  { title: 'Geometry',         detail: '50 min, 10 questions — individual round.' },
+  { title: 'Combinatorics',    detail: '50 min, 10 questions — individual round.' },
+  { title: 'Guts Round',       detail: '60–75 min live-scored team round, number of sets TBD.' },
+  { title: 'Integration Bee',  detail: 'Speed-based integration competition (post-rounds event).' },
 ];
 
 const faqs = [
@@ -127,11 +69,10 @@ export default function HomePage() {
     offset: ['start start', 'end start'],
   });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <main className="relative bg-[#DAEBFE] text-[#003B5C]">
+    <main className="relative bg-[#8BB8E8] text-[#003B5C]">
       {/* HERO */}
       <section
         ref={heroRef}
@@ -189,7 +130,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
             className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-7"
-            style={{ textShadow: '0 0 50px rgba(255,179,0,0.45)' }}
+            style={{ textShadow: '0 0 50px rgba(255,209,0,0.45)' }}
           >
             LOS ANGELES
             <br />
@@ -200,7 +141,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.6 }}
-            className="max-w-xl mx-auto text-lg text-slate-100 mb-10 font-medium"
+            className="max-w-xl mx-auto text-lg text-[#F9FAFB] mb-10 font-medium"
           >
             &quot;Have you ever done math with your life on the line?&quot; <br />
             Experience rigorous, high-stakes mathematics at UCLA on{' '}
@@ -245,7 +186,7 @@ export default function HomePage() {
       {/* DAY-OF SCHEDULE */}
       <section
         id="schedule"
-        className="relative border-t border-[#B4D2F4] bg-[#DAEBFE] px-6 pb-20 pt-12"
+        className="relative border-t border-[#8BB8E8] bg-[#8BB8E8] px-6 pb-20 pt-12"
       >
         <div className="max-w-5xl mx-auto">
           <motion.h2
@@ -281,11 +222,11 @@ export default function HomePage() {
                   damping: 24,
                 }}
                 whileHover={{
-                  backgroundColor: 'rgba(255,184,28,0.04)',
+                  backgroundColor: 'rgba(255,209,0,0.08)',
                   x: 4,
-                  boxShadow: '0 0 24px rgba(0,59,92,0.12)',
+                  boxShadow: '0 0 24px rgba(0,85,135,0.16)',
                 }}
-                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#B4D2F4] last:border-0"
+                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#8BB8E8] last:border-0"
               >
                 <span className="w-32 text-xs font-mono text-[#005587]">
                   {row.time}
@@ -311,7 +252,7 @@ export default function HomePage() {
       {/* ABOUT */}
       <section
         id="about"
-        className="border-t border-[#B4D2F4] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C] text-center">
@@ -340,7 +281,7 @@ export default function HomePage() {
             <p className="text-[#003B5C] mb-4">Ready to compete?</p>
             <a
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFB81C] transition shadow-[0_0_24px_rgba(255,184,28,0.5)] text-sm"
+              className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFD100] transition shadow-[0_0_24px_rgba(255,209,0,0.5)] text-sm"
             >
               Join the Waitlist →
             </a>
@@ -351,7 +292,7 @@ export default function HomePage() {
       {/* FAQ */}
       <section
         id="faq"
-        className="border-t border-[#B4D2F4] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
@@ -406,7 +347,7 @@ export default function HomePage() {
       {/* CONTACT */}
       <section
         id="contact"
-        className="border-t border-[#B4D2F4] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
@@ -415,7 +356,7 @@ export default function HomePage() {
 
           <div className="space-y-6">
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB81C] mb-2">
+              <h3 className="text-lg font-semibold text-[#FFD100] mb-2">
                 General Inquiries
               </h3>
               <p className="text-[#003B5C] text-sm">
@@ -431,7 +372,7 @@ export default function HomePage() {
             </div>
 
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB81C] mb-2">
+              <h3 className="text-lg font-semibold text-[#FFD100] mb-2">
                 Registration Support
               </h3>
               <p className="text-[#003B5C] text-sm">
@@ -441,7 +382,7 @@ export default function HomePage() {
             </div>
 
             <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFB81C] mb-4">
+              <h3 className="text-lg font-semibold text-[#FFD100] mb-4">
                 Stay Connected
               </h3>
               <div className="space-y-3 text-sm">
@@ -494,7 +435,7 @@ export default function HomePage() {
       {/* REGISTER / WAITLIST */}
       <section
         id="register"
-        className="border-t border-[#B4D2F4] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C]">
@@ -515,7 +456,7 @@ export default function HomePage() {
             href="https://forms.gle/8JUBJaQQv4fmL8th6"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-10 py-4 rounded-full hover:bg-[#FFB81C] transition-all shadow-[0_0_24px_rgba(255,184,28,0.6)] text-sm"
+            className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-10 py-4 rounded-full hover:bg-[#FFD100] transition-all shadow-[0_0_24px_rgba(255,209,0,0.6)] text-sm"
           >
             Open Waitlist / Interest Form →
           </a>
