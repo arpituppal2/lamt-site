@@ -183,7 +183,7 @@ export default function HomePage() {
           <div className="glass-card overflow-hidden">
             {daySchedule.map((row, idx) => (
               <motion.div
-                key={row.time + row.event}
+                key={row.time + row.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
