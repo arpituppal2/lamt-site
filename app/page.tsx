@@ -88,7 +88,8 @@ export default function HomePage() {
             xⁿ − 1 = ∏ Φ_d(x)
             {</div>
         </div>*/}
-   <MathDeco latex="\displaystyle \sum |a_i b_i| \leq \left( \sum |a_i|^p \right)^{1/p} \left( \sum |b_i|^q \right)^{1/q}" className="hidden md:block absolute top-8 text-[2.4rem]" />
+  {//<MathDeco latex="\displaystyle \sum |a_i b_i| \leq \left( \sum |a_i|^p \right)^{1/p} \left( \sum |b_i|^q \right)^{1/q}" className="hidden md:block absolute top-8 text-[2.4rem]" />
+  }
         <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/3 right-[5%] text-[1.8rem]" />
   <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
   
