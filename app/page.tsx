@@ -131,8 +131,8 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <main className="relative bg-gradient-to-br from-[#006994] to-[#0A192F] text-white">
-      {/* HERO */}
+<main className="relative bg-gradient-to-br from-[#006994] via-[#03527b] to-[#0A192F] text-white">
+  {/* HERO */}
       <section
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14"
