@@ -131,12 +131,13 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-<main className="relative bg-gradient-to-br from-[#E6F3FF] via-[#CDE5FF] to-[#006994] text-slate-900">
+<main className="relative bg-[#DAEBFE] text-[#003B5C]">
+  
   {/* HERO */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 text-white"
-      >
+className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 bg-[#2774AE] text-white"
+        >
         {/* Equation backdrop via MathDeco */}
         <MathDeco
           latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
@@ -245,7 +246,7 @@ export default function HomePage() {
       {/* DAY-OF SCHEDULE */}
       <section
         id="schedule"
-        className="relative border-t border-white/10 bg-[#020816]/50 backdrop-blur-xl px-6 pb-20 pt-12"
+  className="relative border-t border-[#8BB8E8] bg-[#DAEBFE] px-6 pb-20 pt-12"
       >
         <div className="max-w-5xl mx-auto">
           <motion.h2
@@ -311,7 +312,7 @@ export default function HomePage() {
       {/* ABOUT */}
       <section
         id="about"
-        className="border-t border-white/10 px-6 py-16 bg-[#020816]/60"
+  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 gold-text text-center">
@@ -370,7 +371,7 @@ export default function HomePage() {
       {/* FAQ */}
       <section
         id="faq"
-        className="border-t border-white/10 px-6 py-16 bg-[#020816]/70"
+  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 gold-text text-center">
@@ -425,7 +426,7 @@ export default function HomePage() {
       {/* CONTACT */}
       <section
         id="contact"
-        className="border-t border-white/10 px-6 py-16 bg-[#020816]/80"
+  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 gold-text text-center">
@@ -513,7 +514,7 @@ export default function HomePage() {
       {/* REGISTER / WAITLIST */}
       <section
         id="register"
-        className="border-t border-white/10 px-6 py-16 bg-[#020816]/90"
+  className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
       >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 gold-text">
