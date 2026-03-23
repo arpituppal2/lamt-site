@@ -68,10 +68,10 @@ span {
 
 /* Glass card system used across pages */
 .glass-card {
-  background: rgba(15, 23, 42, 0.85);          /* dark slate glass */
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(16px);
   border-radius: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.35); /* slate border */
+  border: 1px solid rgba(0, 85, 135, 0.18);
 }
 
 /* ── Scroll linked reveal ─────────────────────────────────── */
