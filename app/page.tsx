@@ -5,16 +5,56 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
 const daySchedule = [
-  { time: '8:00–8:15 AM',  event: 'Check-in',           icon: '🧮', dur: '',       q: '' },
-  { time: '8:15–8:45 AM',  event: 'Final Check-in',     icon: '🔄', dur: '',       q: '' },
-  { time: '8:45–9:45 AM',  event: 'Individual Round',   icon: '🧮', dur: '50 min', q: '10 questions' },
-  { time: '10:00–11:00 AM',event: 'Team Round',         icon: '👥', dur: '60 min', q: 'TBA' },
-  { time: '11:00–12:00 PM',event: 'Relay Round',        icon: '🔄', dur: '50 min', q: '10 questions' },
-  { time: '12:00–1:00 PM', event: 'Lunch',              icon: '🍽️', dur: '',       q: '' },
-  { time: '1:00–2:00 PM',  event: 'Guts Round',         icon: '⚡', dur: '60 min', q: '10 questions' },
-  { time: '2:00–2:45 PM',  event: 'Guts Round 1',       icon: '⚡', dur: '45 min', q: 'TBA' },
-  { time: '2:45–3:45 PM',  event: 'Integration Bee',    icon: '👥', dur: '60 min', q: '' },
-  { time: '3:45–5:00 PM',  event: 'Awards Ceremony',    icon: '🏆', dur: '',       q: '' },
+  {
+    time: '8:00 AM',
+    title: 'Check-in',
+    subtitle: 'Arrive and check in your team.',
+  },
+  {
+    time: '8:45 AM',
+    title: 'Registration & Opening Ceremony',
+    subtitle: 'Finish check-in; opening remarks.',
+  },
+  {
+    time: '9:15 AM',
+    title: 'Special Round!!!',
+    subtitle: '75 minutes total. Details TBA.',
+  },
+  {
+    time: '10:45 AM',
+    title: 'Algebra',
+    subtitle: '50 minutes · 10 questions.',
+  },
+  {
+    time: '12:00 PM',
+    title: 'Geometry',
+    subtitle: '50 minutes · 10 questions.',
+  },
+  {
+    time: '1:00 PM',
+    title: 'Lunch & Disputes',
+    subtitle: 'Lunch break and dispute window.',
+  },
+  {
+    time: '2:00 PM',
+    title: 'Combinatorics',
+    subtitle: '50 minutes · 10 questions.',
+  },
+  {
+    time: '3:15 PM',
+    title: 'Guts Round',
+    subtitle: '60–75 minutes · number of rounds TBD.',
+  },
+  {
+    time: '4:30 PM',
+    title: 'Integration Bee / Prof. Talk / Tiebreaks',
+    subtitle: 'Integration Bee, guest lecture, tiebreakers, and final disputes.',
+  },
+  {
+    time: '6:00 PM',
+    title: 'Awards Ceremony',
+    subtitle: 'Recognition and prize distribution.',
+  },
 ];
 
 export default function HomePage() {
