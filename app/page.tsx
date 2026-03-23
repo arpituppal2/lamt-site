@@ -1,171 +1,175 @@
+'use client';
+
 import Link from 'next/link';
-import MathDeco from './components/MathDeco';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 
-const Icon = ({ type }: { type: string }) => {
-  const base = "w-8 h-8 transition-colors duration-300";
-  switch (type) {
-    case 'algebra':
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={base}>
-          <path d="M2 18c4-12 16-12 20 0" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      );
-    case 'geometry':
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={base}>
-          <path d="M12 3L2 21h20L12 3z" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="12" cy="15" r="3" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      );
-    case 'combinatorics':
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={base}>
-          <circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/>
-          <path d="M12 7.5l-5 8m10 0l-5-8m-9 10.5h14" strokeLinecap="round"/>
-        </svg>
-      );
-    case 'guts':
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={base}>
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      );
-    case 'special':
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={base}>
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      );
-    default: return null;
-  }
-};
-
-const stats = [
-  { value: 'May 17', label: 'Date', sub: '2026' },
-  { value: 'Gr 6–12', label: 'Division', sub: '2025–26' },
-  { value: '6', label: 'Teams', sub: 'Per team' },
-  { value: 'UCLA', label: 'Venue', sub: 'Los Angeles' },
-];
-
-const formats = [
-  { icon: 'special', title: 'Special Round!!!', desc: 'A surprise competitive team round — details coming soon.' },
-  { icon: 'algebra', title: 'Algebra', desc: '10-question individual round testing algebraic reasoning. 50 minutes.' },
-  { icon: 'geometry', title: 'Geometry', desc: '10-question individual round covering Euclidean geometry. 50 minutes.' },
-  { icon: 'combinatorics', title: 'Combinatorics', desc: 'Individual round on counting and probability. 50 minutes.' },
-  { icon: 'guts', title: 'Guts Round', desc: 'Live-scored, high-intensity team round where standings shift in real time.' },
+const daySchedule = [
+  { time: '8:00–8:15 AM',  event: 'Check-in',           icon: '🧮', dur: '',       q: '' },
+  { time: '8:15–8:45 AM',  event: 'Final Check-in',     icon: '🔄', dur: '',       q: '' },
+  { time: '8:45–9:45 AM',  event: 'Individual Round',   icon: '🧮', dur: '50 min', q: '10 questions' },
+  { time: '10:00–11:00 AM',event: 'Team Round',         icon: '👥', dur: '60 min', q: 'TBA' },
+  { time: '11:00–12:00 PM',event: 'Relay Round',        icon: '🔄', dur: '50 min', q: '10 questions' },
+  { time: '12:00–1:00 PM', event: 'Lunch',              icon: '🍽️', dur: '',       q: '' },
+  { time: '1:00–2:00 PM',  event: 'Guts Round',         icon: '⚡', dur: '60 min', q: '10 questions' },
+  { time: '2:00–2:45 PM',  event: 'Guts Round 1',       icon: '⚡', dur: '45 min', q: 'TBA' },
+  { time: '2:45–3:45 PM',  event: 'Integration Bee',    icon: '👥', dur: '60 min', q: '' },
+  { time: '3:45–5:00 PM',  event: 'Awards Ceremony',    icon: '🏆', dur: '',       q: '' },
 ];
 
 export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+
   return (
-    <main className="bg-[#0B3C5D] text-white selection:bg-[#F2C94C] selection:text-[#0B3C5D]">
-      {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none hero-parallax">
-          <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="math-bg top-[20%] right-[10%] text-4xl" />
-          <MathDeco latex="\sum_{n \geq 0} p(n)x^n = \prod_{k \geq 1} \frac{1}{1-x^k}" className="math-bg top-[40%] left-[5%] text-5xl" />
-          <MathDeco latex="\phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="math-bg bottom-[30%] right-[15%] text-4xl" />
-          <MathDeco latex="x^n - 1 = \prod_{d|n} \Phi_d(x)" className="math-bg bottom-[15%] left-[12%] text-3xl" />
-        </div>
-
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center reveal-item">
-          <span className="inline-block uppercase tracking-[0.4em] text-[#F2C94C] text-[10px] font-bold mb-6 opacity-80">
-            UCLA Student-Run Competition
-          </span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
-            LOS ANGELES<br />
-            <span className="text-[#F2C94C]">MATH TOURNAMENT</span>
-          </h1>
-          <p className="max-w-xl mx-auto text-lg text-slate-300/90 mb-12 font-medium">
-            Experience mathematical rigor in a grand, high-stakes environment at UCLA. May 17, 2026.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="https://forms.gle/8JUBJaQQv4fmL8th6" className="btn-primary">
-              Join the Waitlist
-            </Link>
-            <Link href="#about" className="px-8 py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-all font-semibold">
-              Learn More
-            </Link>
+    <main className="relative bg-gradient-to-br from-[#006994] to-[#0A192F] text-white">
+      {/* HERO */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
+      >
+        {/* Equations backdrop (super subtle) */}
+        <div className="absolute inset-0 opacity-[0.06] pointer-events-none">
+          <div className="math-bg top-[18%] right-[10%] text-4xl">
+            v_p(x^n - y^n) = v_p(x-y) + v_p(n)
+          </div>
+          <div className="math-bg top-[40%] left-[5%] text-5xl">
+            ∑ p(n)xⁿ = ∏ (1 - xᵏ)⁻¹
+          </div>
+          <div className="math-bg bottom-[30%] right-[15%] text-4xl">
+            φ(n) = ∑ μ(d) n/d
+          </div>
+          <div className="math-bg bottom-[15%] left-[12%] text-3xl">
+            xⁿ − 1 = ∏ Φ_d(x)
           </div>
         </div>
+
+        <motion.div
+          style={{ y: heroY }}
+          className="relative z-10 max-w-5xl mx-auto text-center"
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block uppercase tracking-[0.4em] text-[#FFB300] text-[10px] font-bold mb-6"
+          >
+            UCLA STUDENT-RUN TOURNAMENT · MAY 17, 2026
+          </motion.span>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-7 gold-text"
+            style={{ textShadow: '0 0 50px rgba(255,179,0,0.45)' }}
+          >
+            LOS ANGELES
+            <br />
+            MATH TOURNAMENT
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="max-w-xl mx-auto text-lg text-slate-200/85 mb-10 font-medium"
+          >
+            Experience rigorous, high-stakes mathematics at UCLA on{' '}
+            <span className="text-[#FFB300] font-semibold">May 17, 2026</span>.
+            Individual, team, relay, and guts rounds inspired by HMMT/BMT.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <motion.div
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+            >
+              <Link
+                href="https://forms.gle/8JUBJaQQv4fmL8th6"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#FFB300] text-[#003B5C] font-semibold text-sm shadow-[0_0_25px_rgba(255,179,0,0.6)]"
+              >
+                Join Waitlist
+              </Link>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+            >
+              <Link
+                href="/about"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-white/20 text-sm font-semibold text-slate-100 hover:bg-white/5"
+              >
+                Learn More
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* ── STATS ────────────────────────────────────────────────── */}
-      <section className="border-y border-white/5 bg-[#0E4F70]/30 py-12 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 reveal-item">
-          {stats.map(({ value, label, sub }) => (
-            <div key={label} className="text-center group">
-              <div className="text-2xl md:text-3xl font-bold text-[#F2C94C] mb-1">{value}</div>
-              <div className="text-[10px] uppercase tracking-widest font-black text-slate-400 mb-1">{label}</div>
-              <div className="text-xs text-slate-500 font-medium">{sub}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* DAY-OF SCHEDULE */}
+      <section className="relative border-t border-white/10 bg-[#020816]/50 backdrop-blur-xl px-6 pb-20 pt-12">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-3xl md:text-4xl font-bold mb-2 text-center gold-text"
+          >
+            Day-of Schedule
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="text-center text-slate-300 text-sm mb-10"
+          >
+            May 17, 2026 · subject to minor adjustments
+          </motion.p>
 
-      {/* ── ABOUT ────────────────────────────────────────────────── */}
-      <section id="about" className="section-padding px-6 relative">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
-          <div className="reveal-item">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              Celebrating <span className="text-[#F2C94C]">mathematical excellence</span> worldwide.
-            </h2>
-            <p className="text-slate-300 text-lg mb-8">
-              The Los Angeles Math Tournament (LAMT) is an international competition designed to challenge talented mathematicians from around the world.
-            </p>
-            <Link href="/about" className="link-underline text-[#F2C94C] font-bold">
-              Learn more about LAMT →
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal-item">
-            <div className="card-premium">
-              <div className="text-2xl mb-4 text-[#F2C94C]">🎓</div>
-              <h3 className="font-bold mb-2">Grades 6–12</h3>
-              <p className="text-slate-400 text-sm">All eligible to compete</p>
-            </div>
-            <div className="card-premium">
-              <div className="text-2xl mb-4 text-[#F2C94C]">👥</div>
-              <h3 className="font-bold mb-2">Teams of 6</h3>
-              <p className="text-slate-400 text-sm">High school & middle school</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FORMAT ───────────────────────────────────────────────── */}
-      <section className="section-padding bg-[#0E4F70]/20 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 reveal-item">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Competition Format</h2>
-            <div className="w-12 h-1 bg-[#F2C94C] mx-auto opacity-50 rounded-full"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 reveal-item">
-            {formats.map(({ icon, title, desc }) => (
-              <div key={title} className="card-premium flex flex-col p-6">
-                <div className="text-[#F2C94C] mb-6 opacity-80 group-hover:opacity-100 transition-opacity">
-                  <Icon type={icon} />
-                </div>
-                <h3 className="text-lg font-bold mb-3">{title}</h3>
-                <p className="text-slate-400 text-xs leading-relaxed flex-grow">{desc}</p>
-              </div>
+          <div className="glass-card overflow-hidden">
+            {daySchedule.map((row, idx) => (
+              <motion.div
+                key={row.time + row.event}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06, type: 'spring', stiffness: 220, damping: 22 }}
+                whileHover={{
+                  backgroundColor: 'rgba(255,179,0,0.06)',
+                  x: 4,
+                  boxShadow: '0 0 30px rgba(255,179,0,0.3)',
+                }}
+                className="flex items-center gap-4 px-6 py-4 border-b border-white/7 last:border-0"
+              >
+                <span className="text-2xl w-8 text-center">{row.icon}</span>
+                <span className="w-40 text-xs font-mono text-slate-300">{row.time}</span>
+                <span className="flex-1 text-sm font-semibold">{row.event}</span>
+                {row.dur && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full border border-[#FFB300]/40 text-[#FFB300]/90">
+                    {row.dur}
+                  </span>
+                )}
+                {row.q && (
+                  <span className="text-[11px] text-slate-400">
+                    {row.q}
+                  </span>
+                )}
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="section-padding px-6 text-center">
-        <div className="max-w-2xl mx-auto reveal-item">
-          <h2 className="text-3xl md:text-5xl font-bold mb-8">Ready to compete?</h2>
-          <p className="text-slate-300 text-lg mb-10">
-            Limited spots available for the 2026 tournament.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="https://forms.gle/8JUBJaQQv4fmL8th6" className="btn-primary px-12 py-4 text-lg">
-              Waitlist Form
-            </Link>
-            <Link href="/contact" className="font-bold hover:text-[#F2C94C] transition-colors">
-              Contact Us
-            </Link>
           </div>
         </div>
       </section>
