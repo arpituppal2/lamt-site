@@ -15,14 +15,15 @@
 
 html {
   scroll-behavior: smooth;
-  background: linear-gradient(135deg, #E6F3FF 0%, #CDE5FF 40%, #006994 100%);
+  background-color: #DAEBFE; /* Lightest Blue */
 }
 
 body {
-  color: var(--text-primary);
+  color: #003B5C; /* Darkest Blue for text */
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
+  background-color: #DAEBFE;
 }
 
 /* Remove default cursor so custom cursor ring can show */
