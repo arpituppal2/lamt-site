@@ -73,7 +73,7 @@ export default function HomePage() {
   className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20"
 >
         {/* Equations backdrop */}
-        /*<div className="absolute inset-0 opacity-[1.0] pointer-events-none">
+  {/*<div className="absolute inset-0 opacity-[1.0] pointer-events-none">
           <div className="math-bg top-[18%] right-[10%] text-4xl">
             v_p(x^n - y^n) = v_p(x-y) + v_p(n)
           </div>
@@ -85,8 +85,8 @@ export default function HomePage() {
           </div>
           <div className="math-bg bottom-[15%] left-[12%] text-3xl">
             xⁿ − 1 = ∏ Φ_d(x)
-          </div>
-        </div>*/
+            {</div>
+        </div>*/}
         <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/3 right-[5%] text-[1.8rem]" />
         <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
         <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="hidden md:block absolute bottom-12 left-[6%] text-[2.5rem]" />
