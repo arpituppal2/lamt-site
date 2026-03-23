@@ -22,3 +22,26 @@ html { scroll-behavior: smooth; }
     line-height: 1;
   }
 }
+@media (min-width: 768px) {
+  .math-container {
+    position: relative;
+    height: 600px;
+  }
+}
+
+@media (max-width: 767px) {
+  .math-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    overflow-x: hidden; 
+  }
+
+  .math-container > * {
+    position: static !important; 
+    font-size: 1.2rem !important;
+    transform: none !important;
+  }
+}
