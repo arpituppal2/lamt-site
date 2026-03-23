@@ -56,7 +56,7 @@ export default function HomePage() {
         <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="top-1/3 right-[10%] text-[2.0rem]" />
         <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="hidden md:block absolute top-1/2 left-[4%] text-[2.3rem]" />
         <MathDeco latex="\displaystyle E\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n E[X_i]" className="hidden md:block absolute top-1/2 right-[5%] text-[1.8rem]" />
-        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-16 right-[8%] text-[1.8rem]" />
+        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-12 right-[8%] text-[1.8rem]" />
         
 
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#FFD100]" />
