@@ -2,29 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- Global theme (new) ---- */
 :root {
-  --bg-main:      #0B3C5D;
-  --bg-secondary: #0E4F70;
-  --bg-card:      #145374;
-  --accent:       #F2C94C;
+  --bg-main:      #0A192F;
+  --bg-secondary: #006994;
+  --bg-card:      #0F2845;
+  --accent:       #FFB300;
   --text-primary: #FFFFFF;
   --text-muted:   #94A3B8;
   --ease-apple:   cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-html { 
+html {
   scroll-behavior: smooth;
-  background-color: var(--bg-main);
+  background: linear-gradient(135deg, #006994 0%, #0A192F 100%);
 }
 
 body {
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
-/* ── Custom cursor (Simplified) ───────────────────────────── */
-#cursor, #cursor-ring {
+/* Remove default cursor so custom cursor ring can show */
+* {
+  cursor: none;
+}
+
+/* Thin dark scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0A192F;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Gold gradient display text */
+.gold-text {
+  background: linear-gradient(135deg, #FFB300, #FFF4C1, #FFB300);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card system used across pages */
+.glass-card {
+  background: rgba(10, 25, 47, 0.7);
+  backdrop-filter: blur(16px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 179, 0, 0.2);
+}
+
+/* ---------------------------------------------------------- */
+/* ── Custom cursor (old, kept) ───────────────────────────── */
+#cursor,
+#cursor-ring {
   position: fixed;
   pointer-events: none;
   z-index: 9999;
@@ -33,7 +70,10 @@ body {
   transition: opacity 0.3s var(--ease-apple), transform 0.15s linear;
 }
 
-body.js-enabled #cursor, body.js-enabled #cursor-ring { opacity: 1; }
+body.js-enabled #cursor,
+body.js-enabled #cursor-ring {
+  opacity: 1;
+}
 
 #cursor {
   width: 8px;
@@ -45,31 +85,35 @@ body.js-enabled #cursor, body.js-enabled #cursor-ring { opacity: 1; }
 #cursor-ring {
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(242, 201, 76, 0.3);
+  border: 1px solid rgba(255, 179, 0, 0.3);
   border-radius: 50%;
-  transition: width 0.3s var(--ease-apple), height 0.3s var(--ease-apple), border-color 0.3s var(--ease-apple);
+  transition:
+    width 0.3s var(--ease-apple),
+    height 0.3s var(--ease-apple),
+    border-color 0.3s var(--ease-apple);
 }
 
 body.cursor-hover #cursor-ring {
   width: 48px;
   height: 48px;
-  border-color: rgba(242, 201, 76, 0.6);
-  background: rgba(242, 201, 76, 0.05);
+  border-color: rgba(255, 179, 0, 0.6);
+  background: rgba(255, 179, 0, 0.05);
 }
 
 /* ── Scroll linked reveal ─────────────────────────────────── */
 .reveal-item {
   will-change: transform, opacity;
-  /* These will be controlled by JS for smooth interpolation */
 }
 
-/* ── Standardized Card System ─────────────────────────────── */
+/* ── Standardized Card System (old, still usable) ────────── */
 .card-premium {
   background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 2rem;
-  transition: transform 0.25s var(--ease-apple), box-shadow 0.25s var(--ease-apple);
+  transition:
+    transform 0.25s var(--ease-apple),
+    box-shadow 0.25s var(--ease-apple);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -80,7 +124,9 @@ body.cursor-hover #cursor-ring {
 }
 
 /* ── Typography & Spacing ─────────────────────────────────── */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   letter-spacing: -0.02em;
   font-weight: 700;
 }
@@ -90,15 +136,15 @@ h1, h2, h3 {
   padding-bottom: 6rem;
 }
 
-/* ── Compact Footer ────────────────────────────────────────── */
+/* ── Compact Footer (we’ll override structure in layout) ─── */
 footer {
-  background: #082D45;
+  background: #071425;
   padding-top: 3rem;
   padding-bottom: 3rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* ── Micro-interactions ────────────────────────────────────── */
+/* ── Micro-interactions (old, kept) ──────────────────────── */
 .link-underline {
   position: relative;
   display: inline-block;
@@ -125,7 +171,9 @@ footer {
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  transition: transform 0.2s var(--ease-apple), filter 0.2s var(--ease-apple);
+  transition:
+    transform 0.2s var(--ease-apple),
+    filter 0.2s var(--ease-apple);
 }
 
 .btn-primary:hover {
@@ -137,7 +185,7 @@ footer {
   transform: scale(0.98);
 }
 
-/* ── Math Deco Fix ─────────────────────────────────────────── */
+/* ── Math Deco Fix (old helper) ──────────────────────────── */
 .math-bg {
   position: absolute;
   pointer-events: none;
@@ -150,7 +198,7 @@ footer {
   will-change: transform;
 }
 
-/* ── Scroll Progress ────────────────────────────────────────── */
+/* ── Scroll Progress (old helper) ────────────────────────── */
 #scroll-progress {
   position: fixed;
   top: 0;
