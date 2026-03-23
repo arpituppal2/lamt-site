@@ -37,7 +37,7 @@ export default function AboutPage() {
             Los Angeles Math Tournament (LAMT) 2026
           </h1>
           <p className="text-slate-300 text-lg mb-8">
-            Student-led math competition | May 23, 2026 at UCLA
+            Student-led math competition | May 17, 2026 at UCLA
           </p>
           <a
             href="https://forms.gle/8JUBJaQQv4fmL8th6"
