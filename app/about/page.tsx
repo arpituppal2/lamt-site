@@ -67,8 +67,8 @@ export default function AboutPage() {
         <div className="space-y-4">
           {rounds.map((round) => (
             <div key={round.title} className="border-l-4 border-[#2774AE] pl-4 py-1">
-              <p className="font-semibold text-slate-300">{round.title}</p>
-              <p className="text-slate-500 text-sm mt-0.5">{round.detail}</p>
+              <p className="font-semibold text-slate-200">{round.title}</p>
+              <p className="text-slate-300 text-sm mt-0.5">{round.detail}</p>
             </div>
           ))}
         </div>
