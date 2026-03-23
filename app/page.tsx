@@ -131,7 +131,7 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <main className="relative bg-[#DAEBFE] text-[#003B5C]">
+    <main className="relative bg-[#8BB8E8] text-[#003B5C]">
       {/* HERO */}
       <section
         ref={heroRef}
@@ -245,7 +245,7 @@ export default function HomePage() {
       {/* DAY-OF SCHEDULE */}
       <section
         id="schedule"
-        className="relative border-t border-[#8BB8E8] bg-[#DAEBFE] px-6 pb-20 pt-12"
+        className="relative border-t border-[#8BB8E8] bg-[#8BB8E8] px-6 pb-20 pt-12"
       >
         <div className="max-w-5xl mx-auto">
           <motion.h2
@@ -285,7 +285,7 @@ export default function HomePage() {
                   x: 4,
                   boxShadow: '0 0 24px rgba(0,59,92,0.12)',
                 }}
-                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#DAEBFE] last:border-0"
+                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#8BB8E8] last:border-0"
               >
                 <span className="w-32 text-xs font-mono text-[#005587]">
                   {row.time}
@@ -311,7 +311,7 @@ export default function HomePage() {
       {/* ABOUT */}
       <section
         id="about"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C] text-center">
@@ -351,7 +351,7 @@ export default function HomePage() {
       {/* FAQ */}
       <section
         id="faq"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
@@ -406,7 +406,7 @@ export default function HomePage() {
       {/* CONTACT */}
       <section
         id="contact"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
@@ -494,7 +494,7 @@ export default function HomePage() {
       {/* REGISTER / WAITLIST */}
       <section
         id="register"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#DAEBFE]"
+        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
       >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C]">
