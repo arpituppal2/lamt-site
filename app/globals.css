@@ -4,26 +4,26 @@
 
 /* ---- Global theme (new) ---- */
 :root {
-  --bg-main:      #0A192F;
-  --bg-secondary: #006994;
-  --bg-card:      #0F2845;
-  --accent:       #FFB300;
-  --text-primary: #FFFFFF;
-  --text-muted:   #94A3B8;
+  --bg-main:      #020617; /* very dark navy */
+  --bg-secondary: #0f172a;
+  --bg-card:      #020617;
+  --accent:       #FACC15; /* gold */
+  --text-primary: #e5e7eb;
+  --text-muted:   #9ca3af;
   --ease-apple:   cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 html {
   scroll-behavior: smooth;
-  background-color: #DAEBFE; /* Lightest Blue */
+  background-color: var(--bg-main);
 }
 
 body {
-  color: #003B5C; /* Darkest Blue for text */
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
-  background-color: #DAEBFE;
+  background-color: var(--bg-main);
 }
 
 /* Remove default cursor so custom cursor ring can show */
@@ -51,7 +51,7 @@ span {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A192F;
+  background: #020617;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--accent);
@@ -60,7 +60,7 @@ span {
 
 /* Gold gradient display text */
 .gold-text {
-  background: linear-gradient(135deg, #FFB300, #FFF4C1, #FFB300);
+  background: linear-gradient(135deg, #FACC15, #fef9c3, #FACC15);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -68,10 +68,10 @@ span {
 
 /* Glass card system used across pages */
 .glass-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.85);          /* dark slate glass */
+  backdrop-filter: blur(18px);
   border-radius: 1rem;
-  border: 1px solid rgba(39, 116, 174, 0.3); /* UCLA Blue */
+  border: 1px solid rgba(148, 163, 184, 0.35); /* slate border */
 }
 
 /* ── Scroll linked reveal ─────────────────────────────────── */
@@ -88,13 +88,13 @@ span {
   transition:
     transform 0.25s var(--ease-apple),
     box-shadow 0.25s var(--ease-apple);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .card-premium:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* ── Typography & Spacing ─────────────────────────────────── */
@@ -112,10 +112,10 @@ h3 {
 
 /* ── Compact Footer (we’ll override structure in layout) ─── */
 footer {
-  background: #071425;
+  background: #020617;
   padding-top: 3rem;
   padding-bottom: 3rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
 }
 
 /* ── Micro-interactions (old, kept) ──────────────────────── */
@@ -141,7 +141,7 @@ footer {
 
 .btn-primary {
   background: var(--accent);
-  color: var(--bg-main);
+  color: #020617;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -164,8 +164,8 @@ footer {
   position: absolute;
   pointer-events: none;
   user-select: none;
-  opacity: 0.05;
-  color: white;
+  opacity: 0.08;
+  color: #e5e7eb;
   font-family: 'Times New Roman', serif;
   font-style: italic;
   white-space: nowrap;
