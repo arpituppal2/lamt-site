@@ -1,11 +1,19 @@
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------
+   THEME TOKENS
+------------------------------------------------------------------- */
 :root {
   /* UCLA brand tokens */
-  --ucla-blue: #2774AE;   /* primary UCLA Blue */
-  --ucla-gold: #FFD100;   /* primary UCLA Gold */
-  --ucla-darkest: #003B5C;/* “darkest blue” */
-  --ucla-darker: #005587; /* “darker blue” */
-  --ucla-light: #8BB8E8;  /* lighter blue */
-  --ucla-lightest: #DAEBFE; /* lightest blue */
+  --ucla-blue: #2774AE;
+  --ucla-gold: #FFD100;
+  --ucla-darkest: #003B5C;
+  --ucla-darker: #005587;
+  --ucla-light: #8BB8E8;
+  --ucla-lightest: #DAEBFE;
 
   /* DARK THEME (default) */
   --bg: #020617;
@@ -16,30 +24,41 @@
   --card-border: rgba(148, 163, 184, 0.35);
 }
 
-/* LIGHT THEME – bright, lots of white with UCLA Blue/Gold accents */
+/* LIGHT THEME – neutral with UCLA accents */
 html[data-theme='light'] {
-  --bg: #F9FAFB;                /* neutral light background */
-  --bg-elevated: #FFFFFF;       /* white cards */
-  --text: #020617;              /* near-black text */
-  --text-muted: #4B5563;        /* slate-600 */
+  --bg: #F9FAFB;
+  --bg-elevated: #FFFFFF;
+  --text: #020617;
+  --text-muted: #4B5563;
   --card-bg: rgba(255, 255, 255, 0.96);
   --card-border: rgba(15, 23, 42, 0.08);
 }
 
-/* Base body styles relying on vars */
+/* ------------------------------------------------------------------
+   BASE ELEMENTS
+------------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
   background-color: var(--bg);
 }
 
 body {
+  margin: 0;
   background-color: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Optional: subtle scrollbar */
+/* Let Tailwind / components control layout.
+   NO global padding/margins that affect sections. */
+
+/* ------------------------------------------------------------------
+   UTILITIES & DECOR
+------------------------------------------------------------------- */
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -47,9 +66,25 @@ body {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148,163,184,0.6);
+  background: rgba(148, 163, 184, 0.6);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148,163,184,0.9);
+  background: rgba(148, 163, 184, 0.9);
+}
+
+/* Gold text gradient (for hero, logos, etc.) */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassy surfaces if you want them */
+.apple-glass {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
