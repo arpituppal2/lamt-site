@@ -4,21 +4,52 @@ import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // --- ICONS ---
 const SunIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="5" />
     <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
   </svg>
 );
 
 const MoonIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 );
+
+// --- CUSTOM CURSOR ---
+function EliteCursor() {
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Hide default cursor across the app
+    document.body.classList.add('cursor-hidden');
+
+    const handleMove = (e: MouseEvent) => {
+      if (!cursorRef.current) return;
+      
+      // Use standard transform for maximum performance and zero frame lag
+      cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      document.body.classList.remove('cursor-hidden');
+    };
+  }, []);
+
+  return (
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-black dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2"
+      style={{ transform: 'translate3d(-999px, -999px, 0)' }}
+    />
+  );
+}
 
 // --- THEME TOGGLE ---
 function ThemeToggle() {
@@ -70,7 +101,7 @@ function NavBar() {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-10 py-4 bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 transition-colors duration-400"
+      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-10 py-4 bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 transition-colors duration-500"
     >
       <Link href="/" className="flex items-center gap-3 group">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2774AE]">
@@ -110,7 +141,7 @@ function NavBar() {
 // --- FOOTER ---
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black transition-colors duration-400">
+    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black transition-colors duration-500">
       <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6 md:px-10 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-3">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2774AE]">
@@ -144,7 +175,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
       </head>
       <body className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]" suppressHydrationWarning>
-        {/* Anti-Flicker Script for Dark Mode */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -158,6 +188,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        <EliteCursor />
         <NavBar />
         <ThemeToggle />
         <main className="relative min-h-screen pt-20">{children}</main>
