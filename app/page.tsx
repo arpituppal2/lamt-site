@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MathDeco from './components/MathDeco';
 
 // --- DATA ------------------------------------------------------------------
@@ -71,22 +71,95 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
+// --- THEME TOGGLE ----------------------------------------------------------
+// Make sure globals.css has something like:
+// :root { --bg: #020617; --bg-elevated:#030712; --text:#F5F5F7; --text-muted:#9CA3AF; --card-bg:rgba(15,23,42,0.9); --card-border:rgba(148,163,184,0.35); --ucla-blue:#2774AE; --ucla-gold:#FFD100; }
+// html[data-theme='light'] { --bg:#F9FAFB; --bg-elevated:#FFFFFF; --text:#020617; --text-muted:#4B5563; --card-bg:rgba(255,255,255,0.96); --card-border:rgba(15,23,42,0.08); }
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = window.localStorage.getItem('lamt-theme') as 'dark' | 'light' | null;
+    const initial =
+      stored ??
+      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+    setTheme(initial);
+    document.documentElement.setAttribute('data-theme', initial);
+  }, []);
+
+  const toggle = () => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      if (typeof window !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', next);
+        window.localStorage.setItem('lamt-theme', next);
+      }
+      return next;
+    });
+  };
+
+  const isDark = theme === 'dark';
+
+  return (
+    <button
+      onClick={toggle}
+      aria-label="Toggle light and dark mode"
+      className="fixed top-4 right-4 z-[60]"
+    >
+      <motion.div
+        className="w-12 h-7 rounded-full flex items-center px-1 backdrop-blur-md"
+        animate={{
+          backgroundColor: isDark ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.95)',
+          borderColor: isDark ? 'rgba(255,255,255,0.28)' : 'rgba(15,23,42,0.12)',
+        }}
+        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+        style={{ borderWidth: 1 }}
+      >
+        <motion.div
+          layout
+          className="w-5 h-5 rounded-full shadow-md flex items-center justify-center"
+          animate={{
+            x: isDark ? 0 : 18,
+            backgroundColor: isDark ? 'var(--ucla-gold)' : 'var(--ucla-blue)',
+          }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+        >
+          <motion.span
+            key={theme}
+            initial={{ scale: 0, rotate: -90 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, rotate: 90 }}
+            className="text-[10px] font-bold text-black"
+          >
+            {isDark ? '☾' : '☼'}
+          </motion.span>
+        </motion.div>
+      </motion.div>
+    </button>
+  );
+}
+
 // --- PAGE ------------------------------------------------------------------
 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <div className="relative bg-[#020617] text-[#F5F5F7] overflow-hidden">
+    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-hidden">
+      <ThemeToggle />
+
       {/* HERO -------------------------------------------------------------- */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16">
-        {/* UCLA-colors glow */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 bg-[var(--bg)]">
+        {/* UCLA glows: look good in both themes */}
         <div className="absolute inset-0 -z-20">
-          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#2774AE] opacity-[0.35] blur-[140px]" />
-          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[#FFD100] opacity-[0.27] blur-[170px]" />
+          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[var(--ucla-blue)] opacity-[0.35] blur-[140px]" />
+          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[var(--ucla-gold)] opacity-[0.27] blur-[170px]" />
         </div>
 
-        {/* Visible math halo */}
+        {/* Math halo with high legibility */}
         <div className="absolute inset-0 -z-10 pointer-events-none">
           <motion.div
             animate={{ y: [0, -20, 0] }}
@@ -94,8 +167,7 @@ export default function HomePage() {
           >
             <MathDeco
               latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
-              // primary: bright and legible
-              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-white drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-[var(--text)] drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
             />
           </motion.div>
 
@@ -105,7 +177,7 @@ export default function HomePage() {
           >
             <MathDeco
               latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
-              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[#FFD100] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[var(--ucla-gold)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
@@ -135,7 +207,7 @@ export default function HomePage() {
           >
             <MathDeco
               latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
-              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[#FFD100] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
+              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[var(--ucla-gold)] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
@@ -145,7 +217,7 @@ export default function HomePage() {
           >
             <MathDeco
               latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
-              className="absolute top-[12%] left-[18%] text-[2rem] text-white drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              className="absolute top-[12%] left-[18%] text-[2rem] text-[var(--text)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
@@ -178,7 +250,7 @@ export default function HomePage() {
           className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div variants={fadeUp} className="mb-6">
-            <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-slate-100">
+            <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[var(--text)]">
               UCLA · Los Angeles Math Tournament · May 17, 2026
             </span>
           </motion.div>
@@ -189,17 +261,17 @@ export default function HomePage() {
           >
             Where math
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#9CA3AF]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--text)] via-[var(--text)] to-[var(--text-muted)]">
               meets Westwood.
             </span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
-            className="max-w-2xl mx-auto text-lg md:text-xl text-[#D1D5DB] font-light mb-10 leading-relaxed"
+            className="max-w-2xl mx-auto text-lg md:text-xl text-[var(--text-muted)] font-light mb-10 leading-relaxed"
           >
             A one-day, student-run tournament at the{' '}
-            <span className="font-semibold text-[#FFD100]">#1 public university</span>. 
+            <span className="font-semibold text-[var(--ucla-gold)]">#1 public university</span>. 
             Elite problems, electric campus energy, and the full work-hard, play-hard UCLA experience.
           </motion.p>
 
@@ -209,13 +281,13 @@ export default function HomePage() {
           >
             <Link
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="px-10 py-4 rounded-full bg-[#FFD100] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
+              className="px-10 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
             >
               Join the waitlist
             </Link>
             <a
               href="#about"
-              className="px-10 py-4 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors duration-300"
+              className="px-10 py-4 rounded-full border border-white/20 text-[var(--text)] font-medium hover:bg-white/5 transition-colors duration-300"
             >
               Explore the rounds
             </a>
@@ -224,7 +296,7 @@ export default function HomePage() {
       </section>
 
       {/* ABOUT / ROUNDS ---------------------------------------------------- */}
-      <section id="about" className="py-28 px-6 border-t border-white/10">
+      <section id="about" className="py-28 px-6 border-t border-white/10 bg-[var(--bg)]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial="hidden"
@@ -236,63 +308,49 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
               Built by UCLA students.
             </h2>
-            <p className="text-[#CBD5F5] max-w-2xl mx-auto text-sm md:text-base">
+            <p className="text-[var(--text-muted)] max-w-2xl mx-auto text-sm md:text-base">
               LAMT is written, organized, and staffed by UCLA undergraduates who grew up on math contests. 
               It is our version of a perfect Saturday: proofs, problems, and a campus that never sleeps.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Academic
-              </h3>
-              <p className="text-sm text-slate-100">
-                Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.08 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Competitive
-              </h3>
-              <p className="text-sm text-slate-100">
-                Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.16 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Westwood
-              </h3>
-              <p className="text-sm text-slate-100">
-                A full day on UCLA&apos;s campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.
-              </p>
-            </motion.div>
+            {[
+              {
+                title: 'Academic',
+                body: 'Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.',
+              },
+              {
+                title: 'Competitive',
+                body: 'Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.',
+              },
+              {
+                title: 'Westwood',
+                body: "A full day on UCLA's campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.",
+              },
+            ].map((card, idx) => (
+              <motion.div
+                key={card.title}
+                className="p-7 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)]"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.08 }}
+              >
+                <h3 className="text-sm font-semibold text-[var(--ucla-gold)] tracking-[0.22em] uppercase mb-3">
+                  {card.title}
+                </h3>
+                <p className="text-sm text-[var(--text)]">
+                  {card.body}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* SCHEDULE ---------------------------------------------------------- */}
-      <section id="schedule" className="py-28 px-6 border-t border-white/10 bg-[#030712]">
+      <section id="schedule" className="py-28 px-6 border-t border-white/10 bg-[var(--bg-elevated)]">
         <div className="max-w-4xl mx-auto">
           <motion.h2
             initial="hidden"
@@ -312,16 +370,16 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.5, delay: idx * 0.04 }}
-                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.04] hover:border-[#FFD100]/30 transition-colors"
+                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] hover:bg-white/[0.04] hover:border-[var(--ucla-gold)]/40 transition-colors"
               >
-                <span className="w-28 text-xs font-mono tracking-[0.25em] uppercase text-[#FFD100]">
+                <span className="w-28 text-xs font-mono tracking-[0.25em] uppercase text-[var(--ucla-gold)]">
                   {row.time}
                 </span>
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-white">
+                  <h3 className="text-base md:text-lg font-semibold text-[var(--text)]">
                     {row.title}
                   </h3>
-                  <p className="text-xs md:text-sm text-[#9CA3AF] mt-1">
+                  <p className="text-xs md:text-sm text-[var(--text-muted)] mt-1">
                     {row.subtitle}
                   </p>
                 </div>
@@ -329,14 +387,14 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p className="mt-4 text-[11px] text-center text-[#6B7280]">
+          <p className="mt-4 text-[11px] text-center text-[var(--text-muted)]">
             Schedule is tentative and subject to minor adjustment. Final timings will be shared with registered teams.
           </p>
         </div>
       </section>
 
       {/* FAQ ---------------------------------------------------------------- */}
-      <section id="faq" className="py-28 px-6 border-t border-white/10">
+      <section id="faq" className="py-28 px-6 border-t border-white/10 bg-[var(--bg)]">
         <div className="max-w-3xl mx-auto">
           <motion.h2
             initial="hidden"
@@ -364,10 +422,10 @@ export default function HomePage() {
                     className="w-full py-4 flex items-center justify-between text-left"
                     onClick={() => setOpenFaq(open ? null : item.q)}
                   >
-                    <span className="text-sm md:text-base font-medium text-white">
+                    <span className="text-sm md:text-base font-medium text-[var(--text)]">
                       {item.q}
                     </span>
-                    <span className="text-[#9CA3AF] text-xl font-light ml-4">
+                    <span className="text-[var(--text-muted)] text-xl font-light ml-4">
                       {open ? '−' : '+'}
                     </span>
                   </button>
@@ -380,7 +438,7 @@ export default function HomePage() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <p className="pb-4 text-xs md:text-sm text-[#D1D5DB] leading-relaxed">
+                        <p className="pb-4 text-xs md:text-sm text-[var(--text-muted)] leading-relaxed">
                           {item.a}
                         </p>
                       </motion.div>
@@ -396,9 +454,9 @@ export default function HomePage() {
       {/* REGISTER / CONTACT ------------------------------------------------ */}
       <section
         id="register"
-        className="py-32 px-6 border-t border-white/10 relative overflow-hidden bg-[#020617]"
+        className="py-32 px-6 border-t border-white/10 relative overflow-hidden bg-[var(--bg)]"
       >
-        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[#FFD100] opacity-[0.08] blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[var(--ucla-gold)] opacity-[0.08] blur-[140px] pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.h2
             initial="hidden"
@@ -414,7 +472,7 @@ export default function HomePage() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="text-sm md:text-base text-[#D1D5DB] max-w-xl mx-auto mb-10"
+            className="text-sm md:text-base text-[var(--text-muted)] max-w-xl mx-auto mb-10"
           >
             LAMT 2026 takes place on May 17, 2026. Registration is not yet open, but the waitlist
             gives your team priority access when it is.
@@ -430,46 +488,46 @@ export default function HomePage() {
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
               target="_blank"
               rel="noreferrer"
-              className="inline-block px-12 py-4 rounded-full bg-[#FFD100] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
+              className="inline-block px-12 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
             >
               Open waitlist / interest form →
             </Link>
           </motion.div>
 
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
+            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+              <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Email
               </h3>
               <a
                 href="mailto:uclamathtournament@gmail.com"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors break-words"
+                className="text-sm text-[var(--text)] hover:text-[var(--ucla-gold)] transition-colors break-words"
               >
                 uclamathtournament<br />@gmail.com
               </a>
             </div>
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
+            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+              <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Instagram
               </h3>
               <a
                 href="https://www.instagram.com/lamathtournament/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors"
+                className="text-sm text-[var(--text)] hover:text-[var(--ucla-gold)] transition-colors"
               >
                 @lamathtournament
               </a>
             </div>
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
+            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+              <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Facebook
               </h3>
               <a
                 href="https://www.facebook.com/groups/1429462591976204/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors"
+                className="text-sm text-[var(--text)] hover:text-[var(--ucla-gold)] transition-colors"
               >
                 LAMT Community Group
               </a>
