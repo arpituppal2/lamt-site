@@ -2,78 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---- UCLA-aligned theme ---- */
 :root {
-  --ucla-blue:   #2774AE;
-  --ucla-gold:   #FFD100;
-  --ucla-deep:   #003B5C;
-  --text-main:   #003B5C;
-  --text-muted:  #6B7280;
-  --bg-page:     #F5F5F7;
-  --bg-panel:    #FFFFFF;
-  --border-soft: #E5E7EB;
+  --bg-main: #000000;
+  --bg-secondary: #0a0a0a;
+  --accent-gold: #D4AF37;
+  --text-primary: #F5F5F7;
+  --text-muted: #86868B; /* Apple's exact muted gray */
 }
 
-/* Base */
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg-page);
+  background-color: var(--bg-main);
 }
 
 body {
-  color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, Roboto, sans-serif;
-  line-height: 1.6;
-  min-height: 100vh;
-  background-color: var(--bg-page);
+  color: var(--text-primary);
+  /* Apple's signature system font stack */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Keep native cursor by default; custom cursor handled via component only */
-body,
-button,
-a {
-  cursor: default;
-}
-
-/* When hovering interactive elements, slightly shrink custom ring via class */
-.cursor-hover .some-cursor-class {
-  /* you can hook extra states here if you want later */
-}
-
-/* Scrollbars */
+/* Elegant Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-page);
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
+  background: #333;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #555;
 }
 
-/* Utility: gold gradient text if you ever want it */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #FACC15, #FFE58F, #FACC15);
+/* Metallic Text Gradient */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Simple card style if needed */
-.card-soft {
-  background-color: var(--bg-panel);
-  border-radius: 1rem;
-  border: 1px solid var(--border-soft);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
-}
-
-/* Sections spacing helper */
-.section-padding {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+/* Apple Glass */
+.apple-glass {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
