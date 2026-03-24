@@ -101,7 +101,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
+              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
               className="text-[2.3rem] text-[#FFD100]/80 dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.4)] transition-all duration-300 hover:text-[#FFD100] hover:drop-shadow-[0_0_25px_rgba(255,209,0,0.8)] dark:hover:drop-shadow-[0_0_40px_rgba(255,209,0,1)]"
             />
           </motion.div>
@@ -113,7 +113,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
+              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
               className="text-[2rem] text-white/50 dark:text-slate-300 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-white dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(0,105,148,0.8)]"
             />
           </motion.div>
@@ -125,7 +125,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
+              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
               className="text-[1.7rem] text-white/40 dark:text-slate-400 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-white dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(0,105,148,0.8)]"
             />
           </motion.div>
@@ -137,7 +137,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
               className="text-[1.9rem] text-[#FFD100]/70 dark:text-[#FFD100]/90 drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.3)] transition-all duration-300 hover:text-[#FFD100] hover:drop-shadow-[0_0_25px_rgba(255,209,0,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(255,209,0,0.9)]"
             />
           </motion.div>
@@ -149,7 +149,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
+              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
               className="text-[2rem] text-white/60 dark:text-white/80 drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(0,105,148,0.9)]"
             />
           </motion.div>
