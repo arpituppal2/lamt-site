@@ -6,7 +6,6 @@ import type React from 'react';
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-// Optional: keep the custom cursor, but don't force cursor: none in CSS
 function EliteCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
 
@@ -33,9 +32,9 @@ function EliteCursor() {
 
 function PremiumNavBar() {
   const links = [
-    { href: '/#about',    label: 'About' },
+    { href: '/#about', label: 'About' },
     { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq',      label: 'FAQ' },
+    { href: '/#faq', label: 'FAQ' },
     { href: '/#register', label: 'Register' },
   ];
 
@@ -44,11 +43,16 @@ function PremiumNavBar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-4 bg-[color-mix(in_srgb,var(--bg) 80%,#000 20%)]/90 backdrop-blur-xl border-b border-white/10"
+      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-4 bg-[rgba(0,0,0,0.75)] backdrop-blur-xl border-b border-white/10"
     >
-      <Link href="/" className="flex items-center gap-3 group">
-        <span className="text-xl font-semibold tracking-[0.32em] uppercase text-[var(--text)] transition-opacity group-hover:opacity-70">
-          LAMT <span className="text-[var(--ucla-gold)]">2026</span>
+      <Link href="/" className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-full bg-[var(--ucla-blue)] flex items-center justify-center">
+          <span className="text-[9px] font-black text-[var(--ucla-gold)] tracking-[0.3em]">
+            LA
+          </span>
+        </div>
+        <span className="text-xs md:text-sm font-semibold tracking-[0.32em] uppercase text-[var(--text)]">
+          LAMT 2026
         </span>
       </Link>
 
@@ -57,7 +61,7 @@ function PremiumNavBar() {
           <Link
             key={href}
             href={href}
-            className="hover:text-[var(--text)] transition-colors duration-300"
+            className="hover:text-[var(--text)] transition-colors"
           >
             {label}
           </Link>
@@ -86,21 +90,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <EliteCursor />
         <PremiumNavBar />
 
-        {/* main content sits under a fixed nav; give it consistent top padding */}
-        <main className="min-h-screen">
+        <main className="min-h-screen pt-20">
           {children}
         </main>
 
         <footer className="border-t border-white/10 bg-[var(--bg-elevated)] text-[var(--text-muted)]">
-          <div className="max-w-7xl mx-auto py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-[10px] tracking-[0.25em] uppercase">
-              © 2026 Los Angeles Math Tournament
-            </span>
-            <div className="flex gap-6 text-[10px] tracking-[0.25em] uppercase">
-              <Link href="/#about" className="hover:text-[var(--ucla-gold)] transition-colors">
+          <div className="max-w-6xl mx-auto py-8 px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] tracking-[0.24em] uppercase">
+            <span>© 2026 Los Angeles Math Tournament</span>
+            <div className="flex gap-6">
+              <Link href="/#about" className="hover:text-[var(--ucla-gold)]">
                 About
               </Link>
-              <Link href="/#contact" className="hover:text-[var(--ucla-gold)] transition-colors">
+              <Link href="/#contact" className="hover:text-[var(--ucla-gold)]">
                 Contact
               </Link>
             </div>
