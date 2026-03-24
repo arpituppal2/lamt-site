@@ -2,15 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---- Global theme (new) ---- */
 :root {
-  --bg-main:      #020617; /* very dark navy */
-  --bg-secondary: #0f172a;
-  --bg-card:      #020617;
-  --accent:       #FACC15; /* gold */
-  --text-primary: #e5e7eb;
-  --text-muted:   #9ca3af;
-  --ease-apple:   cubic-bezier(0.25, 0.1, 0.25, 1);
+  --bg-main: #000000;
+  --bg-secondary: #0a0a0a;
+  --accent-gold: #D4AF37;
+  --text-primary: #F5F5F7;
+  --text-muted: #86868B; /* Apple's exact muted gray */
 }
 
 html {
@@ -20,172 +17,40 @@ html {
 
 body {
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
-  line-height: 1.6;
-  min-height: 100vh;
+  /* Apple's signature system font stack */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Remove default cursor so custom cursor ring can show */
-html,
-body,
-main,
-section,
-header,
-footer,
-button,
-a,
-input,
-textarea,
-select,
-label,
-svg,
-canvas,
-div,
-span {
-  cursor: none !important;
-}
-
-/* Thin dark scrollbars */
+/* Elegant Scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 2px;
+  background: #333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
-/* Gold gradient display text */
-.gold-text {
-  background: linear-gradient(135deg, #FACC15, #fef9c3, #FACC15);
+/* Metallic Text Gradient */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Glass card system used across pages */
-.glass-card {
-  background: rgba(255, 255, 255, 0.80);
-  backdrop-filter: blur(16px);
-  border-radius: 1rem;
-  border: 1px solid rgba(0, 85, 135, 0.18);
+/* Apple Glass */
+.apple-glass {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
-/* ── Scroll linked reveal ─────────────────────────────────── */
-.reveal-item {
-  will-change: transform, opacity;
-}
-
-/* ── Standardized Card System (old, still usable) ────────── */
-.card-premium {
-  background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 2rem;
-  transition:
-    transform 0.25s var(--ease-apple),
-    box-shadow 0.25s var(--ease-apple);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-}
-
-.card-premium:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-/* ── Typography & Spacing ─────────────────────────────────── */
-h1,
-h2,
-h3 {
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
-
-.section-padding {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
-}
-
-/* ── Compact Footer (we’ll override structure in layout) ─── */
-footer {
-  background: #020617;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.3);
-}
-
-/* ── Micro-interactions (old, kept) ──────────────────────── */
-.link-underline {
-  position: relative;
-  display: inline-block;
-}
-
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: width 0.25s var(--ease-apple);
-}
-
-.link-underline:hover::after {
-  width: 100%;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #020617;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  transition:
-    transform 0.2s var(--ease-apple),
-    filter 0.2s var(--ease-apple);
-}
-
-.btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-/* ── Math Deco Fix (old helper) ──────────────────────────── */
-.math-bg {
-  position: absolute;
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.08;
-  color: #e5e7eb;
-  font-family: 'Times New Roman', serif;
-  font-style: italic;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-/* ── Scroll Progress (old helper) ────────────────────────── */
-#scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: var(--accent);
-  z-index: 10000;
-  width: 0%;
-}
-
-/* Force-hide system cursor on entire document */
-body,
-body * {
-  cursor: none !important;
-}
-
