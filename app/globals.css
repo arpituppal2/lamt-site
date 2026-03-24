@@ -23,9 +23,10 @@ body {
   background: #374151; /* Dark mode */
 }
 
-/* Ensure KaTeX inherits Tailwind's dark/light mode text colors */
-.katex, 
-.katex * {
+/* Force KaTeX to respect Tailwind's light/dark mode text colors */
+.katex {
   color: inherit !important;
-  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+.katex * {
+  border-color: currentColor !important;
 }
