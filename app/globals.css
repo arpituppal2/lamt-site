@@ -22,3 +22,10 @@ body {
 .dark ::-webkit-scrollbar-thumb {
   background: #374151; /* Dark mode */
 }
+
+/* Ensure KaTeX inherits Tailwind's dark/light mode text colors */
+.katex, 
+.katex * {
+  color: inherit !important;
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
