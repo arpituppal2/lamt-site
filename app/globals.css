@@ -1,5 +1,3 @@
-'use client';
-
 import './globals.css'; // make sure globals.css imports config.css at the top
 import type React from 'react';
 import Link from 'next/link';
