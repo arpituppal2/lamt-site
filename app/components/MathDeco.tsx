@@ -1,6 +1,4 @@
 'use client';
-
-import { useEffect, useRef } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -10,25 +8,24 @@ interface MathDecoProps {
 }
 
 export default function MathDeco({ latex, className = '' }: MathDecoProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    try {
-      katex.render(latex, ref.current, {
-        throwOnError: false,
-        displayMode: true,
-      });
-    } catch (e) {
-      console.error('KaTeX render error:', e);
-    }
-  }, [latex]);
+  let html = '';
+  
+  try {
+    // Generate the raw HTML string from the latex
+    html = katex.renderToString(latex, {
+      throwOnError: false, // Prevents the whole app from crashing if a slash is missed
+      displayMode: true,
+      colorIsTextColor: true, // Tells KaTeX to respect parent text color
+    });
+  } catch (e) {
+    console.error("KaTeX Error:", e);
+  }
 
   return (
     <span
-      ref={ref}
-      aria-hidden
+      aria-hidden="true"
       className={`pointer-events-none select-none ${className}`}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }
