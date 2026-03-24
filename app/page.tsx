@@ -82,10 +82,6 @@ export default function HomePage() {
 
         {/* Dynamic Math Halo */}
         <div className="absolute inset-0 -z-10 pointer-events-auto">
-          {/* 
-            Notice whileHover={{ scale: 1.15 }}. We removed `filter: brightness` because 
-            it conflicts with text-shadow inheritance. Tailwind `hover:drop-shadow` handles the glow perfectly.
-          */}
           <motion.div 
             className="hidden md:block absolute top-[18%] left-[8%] cursor-pointer"
             animate={{ y: [0, -20, 0] }} 
@@ -158,7 +154,7 @@ export default function HomePage() {
             />
           </motion.div>
         </div>
-
+        
         {/* Hero content */}
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div variants={fadeUp} className="mb-6">
