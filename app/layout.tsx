@@ -1,36 +1,45 @@
 'use client';
 
 import './globals.css';
-import Link from 'next/link';
 import type React from 'react';
-import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+// Optional: keep this around, but you can comment it out if you don't want a custom cursor.
 function EliteCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  return null;
+  /*
+  const cursorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    document.body.classList.add('cursor-hidden');
+
     const handleMove = (e: MouseEvent) => {
       if (!cursorRef.current) return;
       cursorRef.current.animate(
-        { left: `${e.clientX}px`, top: `${e.clientY}px` },
-        { duration: 150, fill: 'forwards' }
+        { transform: `translate(${e.clientX}px, ${e.clientY}px)` },
+        { duration: 120, fill: 'forwards', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
       );
     };
+
     window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      document.body.classList.remove('cursor-hidden');
+    };
   }, []);
 
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 w-5 h-5 rounded-full bg-white mix-blend-difference pointer-events-none z-[9999]"
-      style={{ transform: 'translate(-50%, -50%)' }}
+      className="fixed top-0 left-0 z-[9999] h-6 w-6 rounded-full bg-white mix-blend-difference pointer-events-none"
+      style={{ transform: 'translate(-999px, -999px)' }}
     />
   );
+  */
 }
 
-function PremiumNavBar() {
+function NavBar() {
   const links = [
     { href: '/#about', label: 'About' },
     { href: '/#schedule', label: 'Schedule' },
@@ -40,40 +49,90 @@ function PremiumNavBar() {
 
   return (
     <motion.nav
-      initial={{ y: -80, opacity: 0 }}
+      initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-4 bg-[rgba(0,0,0,0.75)] backdrop-blur-xl border-b border-white/10"
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="nav-glass fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-4"
     >
-      <Link href="/" className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-[var(--ucla-blue)] flex items-center justify-center">
-          <span className="text-[9px] font-black text-[var(--ucla-gold)] tracking-[0.3em]">
+      <Link href="/" className="flex items-center gap-3 group">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2774AE]">
+          <span className="text-[10px] font-black tracking-[0.24em] text-[#FFD100]">
             LA
           </span>
         </div>
-        <span className="text-xs md:text-sm font-semibold tracking-[0.32em] uppercase text-[var(--text)]">
-          LAMT 2026
-        </span>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-slate-100">
+            LAMT 2026
+          </span>
+          <span className="text-[10px] text-slate-400">
+            UCLA · Los Angeles Math Tournament
+          </span>
+        </div>
       </Link>
 
-      <div className="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-[0.2em] uppercase text-[var(--text-muted)]">
-        {links.map(({ href, label }) => (
+      <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-300 md:flex">
+        {links.map(link => (
           <Link
-            key={href}
-            href={href}
-            className="hover:text-[var(--text)] transition-colors"
+            key={link.href}
+            href={link.href}
+            className="relative transition-colors duration-300 hover:text-white"
           >
-            {label}
+            {link.label}
           </Link>
         ))}
+        <Link
+          href="/#register"
+          className="ml-4 rounded-full bg-[#FFD100] px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-black transition-transform duration-200 hover:scale-105"
+        >
+          Waitlist
+        </Link>
       </div>
     </motion.nav>
   );
 }
 
+function Footer() {
+  return (
+    <footer className="border-t border-white/10 bg-black">
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 md:px-10 text-[11px] text-slate-400">
+        <div className="flex items-center gap-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2774AE]">
+            <span className="text-[9px] font-black tracking-[0.26em] text-[#FFD100]">
+              LA
+            </span>
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[10px] font-semibold tracking-[0.26em] uppercase text-slate-200">
+              LAMT 2026
+            </span>
+            <span className="text-[10px] text-slate-500">
+              © 2026 UCLA Los Angeles Math Tournament
+            </span>
+          </div>
+        </div>
+
+        <div className="hidden items-center gap-4 text-[10px] font-semibold uppercase tracking-[0.24em] md:flex">
+          <Link href="/#about" className="hover:text-slate-200">
+            About
+          </Link>
+          <Link href="/#schedule" className="hover:text-slate-200">
+            Schedule
+          </Link>
+          <Link href="/#faq" className="hover:text-slate-200">
+            FAQ
+          </Link>
+          <Link href="/#register" className="hover:text-slate-200">
+            Register
+          </Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth bg-[#020617]">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -86,27 +145,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
         />
       </head>
-      <body className="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased selection:bg-[var(--ucla-gold)] selection:text-[var(--ucla-darkest)]">
+      <body className="min-h-screen bg-[#020617] text-[#F5F5F7] antialiased">
         <EliteCursor />
-        <PremiumNavBar />
-
-        <main className="min-h-screen pt-20">
-          {children}
-        </main>
-
-        <footer className="border-t border-white/10 bg-[var(--bg-elevated)] text-[var(--text-muted)]">
-          <div className="max-w-6xl mx-auto py-8 px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] tracking-[0.24em] uppercase">
-            <span>© 2026 Los Angeles Math Tournament</span>
-            <div className="flex gap-6">
-              <Link href="/#about" className="hover:text-[var(--ucla-gold)]">
-                About
-              </Link>
-              <Link href="/#contact" className="hover:text-[var(--ucla-gold)]">
-                Contact
-              </Link>
-            </div>
-          </div>
-        </footer>
+        <NavBar />
+        <main className="relative min-h-screen pt-20">{children}</main>
+        <Footer />
       </body>
     </html>
   );
