@@ -2,116 +2,78 @@
 
 import './globals.css';
 import Link from 'next/link';
-import type React from 'react';
-
-// We’ll inline the nav + cursor for now to keep it in one file
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement | null>(null);
-  const ringRef = useRef<HTMLDivElement | null>(null);
-  const mouse = useRef({ x: 0, y: 0 });
-  const ring = useRef({ x: 0, y: 0 });
+// An elegant, mix-blend-mode cursor. 
+// It inverses the colors beneath it instead of being a cheap yellow dot.
+function EliteCursor() {
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.body.classList.add('js-enabled');
-
     const handleMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      if (cursorRef.current) {
+        // Using animate for butter-smooth 60fps movement without React state lag
+        cursorRef.current.animate(
+          {
+            left: `${e.clientX}px`,
+            top: `${e.clientY}px`,
+          },
+          { duration: 150, fill: 'forwards' } // adds a subtle drag physics
+        );
       }
     };
-
     window.addEventListener('mousemove', handleMove);
-
-    let raf: number;
-    const animate = () => {
-      // smooth follow for ring
-      ring.current.x += (mouse.current.x - ring.current.x) * 0.18;
-      ring.current.y += (mouse.current.y - ring.current.y) * 0.18;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ring.current.x}px, ${ring.current.y}px) translate(-50%, -50%)`;
-      }
-
-      raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-
-    const interactive = 'a,button,input,textarea,[role="button"]';
-    const enter = () => document.body.classList.add('cursor-hover');
-    const leave = () => document.body.classList.remove('cursor-hover');
-    const els = Array.from(document.querySelectorAll(interactive));
-    els.forEach(el => {
-      el.addEventListener('mouseenter', enter);
-      el.addEventListener('mouseleave', leave);
-    });
-
-    return () => {
-      window.removeEventListener('mousemove', handleMove);
-      cancelAnimationFrame(raf);
-      els.forEach(el => {
-        el.removeEventListener('mouseenter', enter);
-        el.removeEventListener('mouseleave', leave);
-      });
-    };
+    return () => window.removeEventListener('mousemove', handleMove);
   }, []);
 
   return (
-    <>
-      {/* small dot exactly on cursor */}
-      <div
-        ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[var(--accent)] pointer-events-none z-[9999]"
-        style={{ transform: 'translate(-50%,-50%) translate(-9999px,-9999px)' }}
-      />
-      {/* thin ring around cursor */}
-      <div
-        ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-[rgba(255,179,0,0.5)] bg-[rgba(255,179,0,0.05)] pointer-events-none z-[9998]"
-        style={{ transform: 'translate(-9999px,-9999px) translate(-50%,-50%)' }}
-      />
-      <div id="scroll-progress" />
-    </>
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 w-6 h-6 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
+      style={{ transform: 'translate(-50%, -50%)' }}
+    />
   );
 }
 
-function NavBar() {
+function PremiumNavBar() {
   const links = [
     { href: '/#about',    label: 'About' },
     { href: '/#schedule', label: 'Schedule' },
     { href: '/#faq',      label: 'FAQ' },
     { href: '/#contact',  label: 'Contact' },
-    { href: '/#register', label: 'Register' },
   ];
 
   return (
     <motion.nav
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-[#0A192F]/95 backdrop-blur-md border-b border-white/10"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} // Apple-esque easing
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 apple-glass"
     >
-      <Link href="/" className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2774AE]">
-          <span className="text-[10px] font-black text-[#FFD100]">LA</span>
-        </div>
-        <span className="text-sm font-semibold tracking-[0.28em] uppercase text-[#E5EDF9]">
-          LAMT 2026
+      <Link href="/" className="flex items-center gap-3 group">
+        <span className="text-xl font-semibold tracking-widest text-white transition-opacity group-hover:opacity-70">
+          LAMT <span className="text-gradient-gold">2026</span>
         </span>
       </Link>
-      <div className="flex items-center gap-6 text-xs font-semibold tracking-[0.18em] uppercase">
+      
+      <div className="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-[0.2em] uppercase text-[#86868B]">
         {links.map(({ href, label }) => (
           <Link
             key={href}
             href={href}
-            className="relative text-slate-200 hover:text-[#FFB81C] transition-colors"
+            className="hover:text-white transition-colors duration-300"
           >
-            <span className="hidden md:inline">{label}</span>
+            {label}
           </Link>
         ))}
+        {/* A true call to action button */}
+        <Link 
+          href="/#register" 
+          className="ml-4 px-5 py-2 rounded-full bg-white text-black hover:scale-105 transition-transform duration-300"
+        >
+          Register
+        </Link>
       </div>
     </motion.nav>
   );
@@ -119,52 +81,27 @@ function NavBar() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-        />
-      </head>
-<body className="bg-[#8BB8E8] text-[#003B5C] antialiased font-sans selection:bg-[#FFD100] selection:text-[#003B5C] overflow-x-hidden">
-        <CustomCursor />
-        <NavBar />
+    <html lang="en" className="scroll-smooth bg-black">
+      {/* Notice we removed the baby blue background and simplified the body */}
+      <body className="bg-black text-[#F5F5F7] antialiased selection:bg-[#D4AF37] selection:text-black min-h-screen flex flex-col cursor-none">
+        <EliteCursor />
+        <PremiumNavBar />
 
-        <main className="min-h-screen pt-16">{children}</main>
+        {/* The main content area with a subtle noise/glow background */}
+        <main className="flex-grow relative pt-24">
+          {/* Subtle atmospheric glow behind all content */}
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#D4AF37] opacity-[0.03] blur-[150px] pointer-events-none rounded-full" />
+          {children}
+        </main>
 
-        {/* ultra-compact footer */}
-        <footer className="border-t border-white/10 bg-[#0A192F]/95 backdrop-blur-md text-slate-100">
-          <div className="max-w-6xl mx-auto h-[60px] flex items-center justify-between px-6">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-[#2774AE] rounded-lg flex items-center justify-center">
-                <span className="text-[9px] font-black text-[#FFD100]">LA</span>
-              </div>
-              <span className="text-xs font-semibold tracking-[0.22em] uppercase text-slate-300">
-                LAMT 2026
-              </span>
-            </div>
-            <div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
-              {[
-                { href: '/#about',    label: 'About' },
-                { href: '/#schedule', label: 'Schedule' },
-                { href: '/#faq',      label: 'FAQ' },
-                { href: '/#contact',  label: 'Contact' },
-                { href: '/#register', label: 'Register' },
-              ].map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="hover:text-[#FFD100] transition-colors"
-                >
-                  {label}
-                </Link>
-              ))}
+        <footer className="border-t border-white/[0.05] bg-black text-[#86868B]">
+          <div className="max-w-7xl mx-auto py-12 px-8 flex flex-col md:flex-row items-center justify-between">
+            <span className="text-[10px] tracking-widest uppercase mb-4 md:mb-0">
+              © 2026 Los Angeles Math Tournament
+            </span>
+            <div className="flex gap-6 text-[10px] tracking-widest uppercase">
+              <Link href="/#about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/#contact" className="hover:text-white transition-colors">Contact</Link>
             </div>
           </div>
         </footer>
