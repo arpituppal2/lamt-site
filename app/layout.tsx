@@ -31,8 +31,12 @@ function EliteCursor() {
     const handleMove = (e: MouseEvent) => {
       if (!cursorRef.current) return;
       
-      // Use standard transform for maximum performance and zero frame lag
-      cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      // Subtracting 12px centers the 24px (h-6 w-6) cursor perfectly on the mouse
+      const x = e.clientX - 12;
+      const y = e.clientY - 12;
+      
+      // Apply translation directly without relying on Tailwind transform classes
+      cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     };
 
     window.addEventListener('mousemove', handleMove);
@@ -45,7 +49,8 @@ function EliteCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-slate-800 dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2"
+      // Removed -translate-x-1/2 and -translate-y-1/2 since JS handles it now
+      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-slate-800 dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out"
       style={{ transform: 'translate3d(-999px, -999px, 0)' }}
     />
   );
