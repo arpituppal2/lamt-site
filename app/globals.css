@@ -4,4 +4,21 @@
 
 body {
   margin: 0;
+  /* Smoothly fade between light and dark modes */
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Adaptive Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1; /* Light mode */
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151; /* Dark mode */
 }
