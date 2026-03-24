@@ -87,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PremiumNavBar />
 
         {/* main content sits under a fixed nav; give it consistent top padding */}
-        <main className="min-h-screen pt-20">
+        <main className="min-h-screen">
           {children}
         </main>
 
