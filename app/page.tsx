@@ -176,7 +176,7 @@ export default function HomePage() {
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
+              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
               className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[var(--ucla-gold)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
@@ -186,7 +186,7 @@ export default function HomePage() {
             transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
+              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
               className="hidden lg:block absolute bottom-[14%] left-[14%] text-[2rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
             />
           </motion.div>
@@ -196,7 +196,7 @@ export default function HomePage() {
             transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
+              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
               className="hidden md:block absolute top-[34%] left-[3%] text-[1.7rem] text-slate-300 drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
             />
           </motion.div>
@@ -206,7 +206,7 @@ export default function HomePage() {
             transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
               className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[var(--ucla-gold)] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
             />
           </motion.div>
@@ -216,7 +216,7 @@ export default function HomePage() {
             transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
+              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
               className="absolute top-[12%] left-[18%] text-[2rem] text-[var(--text)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
@@ -226,7 +226,7 @@ export default function HomePage() {
             transition={{ duration: 12.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle E\\left[\\sum X_i\\right] = \\sum E[X_i]"
+              latex="\displaystyle E\left[\sum X_i\right] = \sum E[X_i]"
               className="hidden md:block absolute bottom-[22%] left-[6%] text-[2rem] text-slate-100 drop-shadow-[0_0_20px_rgba(0,0,0,0.9)]"
             />
           </motion.div>
@@ -236,7 +236,7 @@ export default function HomePage() {
             transition={{ duration: 11.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
-              latex="\\displaystyle |X/G| = \\frac{1}{|G|} \\sum_{g \\in G} |X^g|"
+              latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|"
               className="absolute bottom-[16%] right-[10%] text-[1.9rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,0.95)]"
             />
           </motion.div>
