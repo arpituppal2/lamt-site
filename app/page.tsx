@@ -96,7 +96,7 @@ export default function HomePage() {
         {/* Soft blue glow */}
         <div className="pointer-events-none absolute -z-10 w-[520px] h-[520px] bg-[#2774AE] opacity-[0.16] blur-[130px] rounded-full top-[-10%] right-[-10%]" />
 
-        {/* Math background, very restrained */}
+        {/* Math background – visible but behind content */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
           <motion.div
             animate={{ y: [0, -18, 0] }}
@@ -104,20 +104,30 @@ export default function HomePage() {
           >
             <MathDeco
               latex="\\displaystyle E\\left[\\sum X_i\\right] = \\sum E[X_i]"
-              className="absolute bottom-[14%] left-[8%] text-[1.6rem] text-[#9CA3AF]"
+              className="absolute bottom-[14%] left-[8%] text-[2rem] text-[#4B5563] opacity-45"
             />
           </motion.div>
+
           <motion.div
             animate={{ y: [0, 22, 0] }}
             transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
           >
             <MathDeco
               latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
-              className="absolute top-[10%] right-[10%] text-[2.1rem] text-[#CBD5F5]"
+              className="absolute top-[8%] right-[10%] text-[2.4rem] text-[#1F2937] opacity-35"
+            />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [-12, 8, -12] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <MathDeco
+              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+              className="absolute top-[46%] left-[18%] text-[1.8rem] text-[#111827] opacity-25"
             />
           </motion.div>
         </div>
-
         <motion.div
           className="relative z-10 max-w-5xl mx-auto text-center"
           initial="hidden"
