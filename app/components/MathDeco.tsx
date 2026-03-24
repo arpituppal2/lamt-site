@@ -1,7 +1,13 @@
-export default function MathDeco({ latex, className = '' }: { latex: string; className?: string }) {
+'use client';
+
+interface MathDecoProps {
+  latex: string;
+  className?: string;
+}
+
+export default function MathDeco({ latex, className = '' }: MathDecoProps) {
   return (
     <div className={`pointer-events-none select-none ${className}`}>
-      {/* We wrap the latex string in $$ so the CDN script catches it */}
       $${latex}$$
     </div>
   );
