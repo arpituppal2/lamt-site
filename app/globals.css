@@ -1,40 +1,55 @@
 :root {
-  /* shared tokens */
-  --ucla-blue: #2774AE;
-  --ucla-gold: #FFD100;
-  --ucla-darkest: #003B5C;
-  --text-radius: 0.22em;
+  /* UCLA brand tokens */
+  --ucla-blue: #2774AE;   /* primary UCLA Blue */
+  --ucla-gold: #FFD100;   /* primary UCLA Gold */
+  --ucla-darkest: #003B5C;/* “darkest blue” */
+  --ucla-darker: #005587; /* “darker blue” */
+  --ucla-light: #8BB8E8;  /* lighter blue */
+  --ucla-lightest: #DAEBFE; /* lightest blue */
 
-  /* default = dark */
+  /* DARK THEME (default) */
   --bg: #020617;
   --bg-elevated: #030712;
   --text: #F5F5F7;
   --text-muted: #9CA3AF;
-  --card-bg: rgba(15, 23, 42, 0.9);
+  --card-bg: rgba(15, 23, 42, 0.92);
   --card-border: rgba(148, 163, 184, 0.35);
 }
 
+/* LIGHT THEME – bright, lots of white with UCLA Blue/Gold accents */
 html[data-theme='light'] {
-  --bg: #F9FAFB;
-  --bg-elevated: #FFFFFF;
-  --text: #020617;
-  --text-muted: #4B5563;
-  --card-bg: rgba(255, 255, 255, 0.92);
-  --card-border: rgba(15, 23, 42, 0.06);
+  --bg: #F9FAFB;                /* neutral light background */
+  --bg-elevated: #FFFFFF;       /* white cards */
+  --text: #020617;              /* near-black text */
+  --text-muted: #4B5563;        /* slate-600 */
+  --card-bg: rgba(255, 255, 255, 0.96);
+  --card-border: rgba(15, 23, 42, 0.08);
 }
 
-/* existing body etc., just swap hard colors for vars */
+/* Base body styles relying on vars */
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg);
+}
+
 body {
   background-color: var(--bg);
   color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* simple helpers */
-.theme-surface {
-  background-color: var(--bg);
-  color: var(--text);
+/* Optional: subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
-
-.theme-surface-elevated {
-  background-color: var(--bg-elevated);
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.6);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148,163,184,0.9);
 }
