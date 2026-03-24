@@ -63,28 +63,22 @@ export default function HomePage() {
 
   return (
     <div className="relative overflow-hidden">
-      
-      {/* HERO SECTION ------------------------------------------------------- */}
-      {/* 
-        Background Logic: 
-        Light mode uses a strict rich gradient from #003B5C to #006994. 
-        Dark mode forces solid black via from-black to-black.
-      */}
+
+      {/* HERO --------------------------------------------------------------- */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 bg-gradient-to-br from-[#003B5C] to-[#006994] dark:from-black dark:to-black transition-colors duration-500">
-        
+
         {/* Ambient Glows */}
         <div className="absolute inset-0 -z-20 overflow-hidden pointer-events-none">
-          {/* Light Mode: subtle top glow. Dark Mode: intense teal/blue top glow */}
           <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#006994] opacity-[0.2] dark:opacity-[0.45] blur-[120px] rounded-full mix-blend-screen transition-opacity duration-500" />
-          {/* Gold Bottom Glow */}
           <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[#FFD100] opacity-[0.15] dark:opacity-[0.25] blur-[140px] dark:blur-[170px] rounded-full mix-blend-screen transition-opacity duration-500" />
         </div>
 
         {/* Dynamic Math Halo */}
         <div className="absolute inset-0 -z-10 pointer-events-auto">
-          <motion.div 
+
+          <motion.div
             className="hidden md:block absolute top-[18%] left-[8%] cursor-pointer"
-            animate={{ y: [0, -20, 0] }} 
+            animate={{ y: [0, -20, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
@@ -94,68 +88,69 @@ export default function HomePage() {
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hidden lg:block absolute top-[10%] right-[10%] cursor-pointer"
-            animate={{ y: [0, 24, 0] }} 
+            animate={{ y: [0, 24, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
+              latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
               className="text-[2.3rem] text-[#FFD100]/80 dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.4)] transition-all duration-300 hover:text-[#FFD100] hover:drop-shadow-[0_0_25px_rgba(255,209,0,0.8)] dark:hover:drop-shadow-[0_0_40px_rgba(255,209,0,1)]"
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hidden lg:block absolute bottom-[14%] left-[14%] cursor-pointer"
-            animate={{ y: [0, -16, 0] }} 
+            animate={{ y: [0, -16, 0] }}
             transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
+              latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
               className="text-[2rem] text-white/50 dark:text-slate-300 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-white dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(0,105,148,0.8)]"
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hidden md:block absolute top-[34%] left-[3%] cursor-pointer"
-            animate={{ y: [0, 18, 0] }} 
+            animate={{ y: [0, 18, 0] }}
             transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
+              latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
               className="text-[1.7rem] text-white/40 dark:text-slate-400 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-white dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(0,105,148,0.8)]"
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hidden md:block absolute top-[32%] right-[12%] cursor-pointer"
-            animate={{ y: [0, -14, 0] }} 
+            animate={{ y: [0, -14, 0] }}
             transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
+              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
               className="text-[1.9rem] text-[#FFD100]/70 dark:text-[#FFD100]/90 drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.3)] transition-all duration-300 hover:text-[#FFD100] hover:drop-shadow-[0_0_25px_rgba(255,209,0,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(255,209,0,0.9)]"
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="absolute top-[12%] left-[18%] cursor-pointer"
-            animate={{ y: [0, 18, 0] }} 
+            animate={{ y: [0, 18, 0] }}
             transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
             whileHover={{ scale: 1.15 }}
           >
             <MathDeco
-              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
+              latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
               className="text-[2rem] text-white/60 dark:text-white/80 drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(0,105,148,0.9)]"
             />
           </motion.div>
+
         </div>
-        
-        {/* Hero content */}
+
+        {/* Hero Content */}
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div variants={fadeUp} className="mb-6">
             <span className="inline-block py-1 px-4 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[#FFD100] dark:text-slate-100 backdrop-blur-md shadow-sm dark:shadow-none">
@@ -172,7 +167,7 @@ export default function HomePage() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="max-w-2xl mx-auto text-lg md:text-xl text-white/90 dark:text-[#D1D5DB] font-light mb-10 leading-relaxed">
-            "Have you ever done math with your life on the line?"<br/>
+            "Have you ever done math with your life on the line?"<br />
             Experience rigorous, high-stakes mathematics at UCLA.
           </motion.p>
 
@@ -193,13 +188,13 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ABOUT / ROUNDS ---------------------------------------------------- */}
+      {/* ABOUT -------------------------------------------------------------- */}
       <section id="about" className="py-28 px-6 bg-[#FAFAFA] dark:bg-black transition-colors duration-500">
         <div className="max-w-6xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-120px' }} variants={fadeUp} className="mb-14 text-center">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#003B5C] dark:text-white">Built by UCLA students.</h2>
             <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
-              LAMT is written, organized, and staffed by UCLA undergraduates who grew up on math contests. 
+              LAMT is written, organized, and staffed by UCLA undergraduates who grew up on math contests.
               It is our version of a perfect Saturday: proofs, problems, and a campus that never sleeps.
             </p>
           </motion.div>
@@ -208,7 +203,7 @@ export default function HomePage() {
             {[
               { title: 'Academic', desc: 'Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.' },
               { title: 'Competitive', desc: 'Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.' },
-              { title: 'Westwood', desc: 'A full day on UCLA’s campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.' }
+              { title: 'Westwood', desc: 'A full day on UCLA\'s campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.' },
             ].map((box, i) => (
               <motion.div
                 key={box.title}
@@ -226,7 +221,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SCHEDULE ---------------------------------------------------------- */}
+      {/* SCHEDULE ----------------------------------------------------------- */}
       <section id="schedule" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-500">
         <div className="max-w-4xl mx-auto">
           <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center text-[#003B5C] dark:text-white">
@@ -286,7 +281,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REGISTER / CONTACT ------------------------------------------------ */}
+      {/* REGISTER ----------------------------------------------------------- */}
       <section id="register" className="py-32 px-6 border-t border-slate-200 dark:border-white/10 relative overflow-hidden bg-[#FAFAFA] dark:bg-[#020617] transition-colors duration-500">
         <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[#006994] dark:bg-[#FFD100] opacity-[0.1] dark:opacity-[0.08] blur-[140px] pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -312,7 +307,7 @@ export default function HomePage() {
             {[
               { title: 'Email', val: 'uclamathtournament\n@gmail.com', link: 'mailto:uclamathtournament@gmail.com' },
               { title: 'Instagram', val: '@lamathtournament', link: 'https://www.instagram.com/lamathtournament/' },
-              { title: 'Facebook', val: 'LAMT Community Group', link: 'https://www.facebook.com/groups/1429462591976204/' }
+              { title: 'Facebook', val: 'LAMT Community Group', link: 'https://www.facebook.com/groups/1429462591976204/' },
             ].map(contact => (
               <div key={contact.title} className="p-7 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
                 <h3 className="text-[11px] font-bold text-[#006994] dark:text-[#FFD100] tracking-[0.25em] uppercase mb-2">{contact.title}</h3>
@@ -324,6 +319,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
     </div>
   );
 }
