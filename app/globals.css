@@ -1,56 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
-  --bg-main: #000000;
-  --bg-secondary: #0a0a0a;
-  --accent-gold: #D4AF37;
-  --text-primary: #F5F5F7;
-  --text-muted: #86868B; /* Apple's exact muted gray */
+  /* shared tokens */
+  --ucla-blue: #2774AE;
+  --ucla-gold: #FFD100;
+  --ucla-darkest: #003B5C;
+  --text-radius: 0.22em;
+
+  /* default = dark */
+  --bg: #020617;
+  --bg-elevated: #030712;
+  --text: #F5F5F7;
+  --text-muted: #9CA3AF;
+  --card-bg: rgba(15, 23, 42, 0.9);
+  --card-border: rgba(148, 163, 184, 0.35);
 }
 
-html {
-  scroll-behavior: smooth;
-  background-color: var(--bg-main);
+html[data-theme='light'] {
+  --bg: #F9FAFB;
+  --bg-elevated: #FFFFFF;
+  --text: #020617;
+  --text-muted: #4B5563;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-border: rgba(15, 23, 42, 0.06);
 }
 
+/* existing body etc., just swap hard colors for vars */
 body {
-  color: var(--text-primary);
-  /* Apple's signature system font stack */
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-main);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-/* Elegant Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+/* simple helpers */
+.theme-surface {
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-/* Metallic Text Gradient */
-.text-gradient-gold {
-  background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Apple Glass */
-.apple-glass {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+.theme-surface-elevated {
+  background-color: var(--bg-elevated);
 }
