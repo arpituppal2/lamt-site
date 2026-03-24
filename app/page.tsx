@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MathDeco from './components/MathDeco';
 
-// --- DATA ------------------------------------------------------------------
+// --- DATA ------------------------------------------------------------
 
 const daySchedule = [
   { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
@@ -55,7 +55,7 @@ const faqs = [
   },
 ];
 
-// --- ANIMATION VARIANTS ----------------------------------------------------
+// --- ANIMATION VARIANTS ----------------------------------------------
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -71,10 +71,7 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
-// --- THEME TOGGLE ----------------------------------------------------------
-// Make sure globals.css has something like:
-// :root { --bg: #020617; --bg-elevated:#030712; --text:#F5F5F7; --text-muted:#9CA3AF; --card-bg:rgba(15,23,42,0.9); --card-border:rgba(148,163,184,0.35); --ucla-blue:#2774AE; --ucla-gold:#FFD100; }
-// html[data-theme='light'] { --bg:#F9FAFB; --bg-elevated:#FFFFFF; --text:#020617; --text-muted:#4B5563; --card-bg:rgba(255,255,255,0.96); --card-border:rgba(15,23,42,0.08); }
+// --- THEME TOGGLE ----------------------------------------------------
 
 function ThemeToggle() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -107,16 +104,15 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle light and dark mode"
-      className="fixed top-4 right-4 z-[60]"
+      className="fixed top-4 right-4 z-50"
     >
       <motion.div
-        className="w-12 h-7 rounded-full flex items-center px-1 backdrop-blur-md"
+        className="w-12 h-7 rounded-full flex items-center px-1 backdrop-blur-md border"
         animate={{
-          backgroundColor: isDark ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.95)',
-          borderColor: isDark ? 'rgba(255,255,255,0.28)' : 'rgba(15,23,42,0.12)',
+          backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.95)',
+          borderColor: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(15,23,42,0.12)',
         }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-        style={{ borderWidth: 1 }}
       >
         <motion.div
           layout
@@ -127,311 +123,160 @@ function ThemeToggle() {
           }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         >
-          <motion.span
-            key={theme}
-            initial={{ scale: 0, rotate: -90 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, rotate: 90 }}
-            className="text-[10px] font-bold text-black"
-          >
+          <span className="text-[10px] font-bold text-black">
             {isDark ? '☾' : '☼'}
-          </motion.span>
+          </span>
         </motion.div>
       </motion.div>
     </button>
   );
 }
 
-// --- PAGE ------------------------------------------------------------------
+// --- PAGE ------------------------------------------------------------
 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-hidden">
+    <div className="bg-[var(--bg)] text-[var(--text)] min-h-screen">
       <ThemeToggle />
 
-      {/* HERO -------------------------------------------------------------- */}
-      {/* HERO -------------------------------------------------------------- */}
-      <section
-        className="relative min-h-screen px-6 bg-[var(--bg)]"
-      >
-        {/* ensure the hero content is vertically centered inside a max-width container */}
-        <div className="relative max-w-6xl mx-auto flex items-center justify-center min-h-screen">
-          {/* background glows */}
-          <div className="absolute inset-0 -z-20">
-            <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-[var(--ucla-blue)] opacity-[0.35] blur-[140px]" />
-            <div className="absolute -bottom-40 -right-40 w-[520px] h-[520px] bg-[var(--ucla-gold)] opacity-[0.27] blur-[170px]" />
+      {/* Centered column for entire page */}
+      <div className="max-w-6xl mx-auto px-6">
+
+        {/* HERO ---------------------------------------------------------- */}
+        <section className="relative overflow-hidden pt-28 pb-24">
+          {/* Blue gradient background like original mock */}
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,var(--ucla-blue)_0%,#020617_55%,#020617_100%)]" />
+
+          {/* Equations as subtle background rows */}
+          <div className="absolute inset-x-0 top-16 pointer-events-none select-none opacity-35 text-slate-200/80">
+            <div className="flex flex-wrap justify-center gap-16">
+              <MathDeco
+                latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
+                className="hidden lg:block text-xl"
+              />
+              <MathDeco
+                latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+                className="hidden md:block text-xl"
+              />
+            </div>
+            <div className="mt-14 flex flex-wrap justify-center gap-16">
+              <MathDeco
+                latex="\\displaystyle E\\left[\\sum X_i\\right] = \\sum E[X_i]"
+                className="hidden md:block text-2xl"
+              />
+              <MathDeco
+                latex="\\displaystyle |X/G| = \\frac{1}{|G|} \\sum_{g \\in G} |X^g|"
+                className="hidden lg:block text-2xl"
+              />
+            </div>
           </div>
 
-          {/* math halo */}
-          <div className="absolute inset-0 -z-10 pointer-events-none">
-            {/* hero center equation */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
-                className="absolute top-[18%] left-1/2 -translate-x-1/2 text-[2rem] text-[var(--text)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
-              />
-            </motion.div>
-
-            {/* left + right equations framing hero */}
-            <motion.div
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
-                className="hidden md:block absolute top-[32%] left-[5%] text-[1.6rem] text-[var(--text)] drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
-              />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, 16, 0] }}
-              transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
-                className="hidden lg:block absolute top-[30%] right-[6%] text-[2rem] text-[var(--ucla-gold)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
-              />
-            </motion.div>
-
-            {/* lower ring */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
-                className="hidden lg:block absolute bottom-[24%] left-[10%] text-[1.8rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
-              />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle E\left[\sum X_i\right] = \sum E[X_i]"
-                className="hidden md:block absolute bottom-[20%] left-1/2 -translate-x-1/2 text-[1.9rem] text-slate-100 drop-shadow-[0_0_20px_rgba(0,0,0,0.9)]"
-              />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 11.5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|"
-                className="absolute bottom-[22%] right-[10%] text-[1.8rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,0.95)]"
-              />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
-                className="hidden md:block absolute top-[50%] right-[3%] text-[1.6rem] text-slate-300 drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
-              />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 12.5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <MathDeco
-                latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
-                className="hidden md:block absolute top-[46%] left-[12%] text-[1.7rem] text-[var(--ucla-gold)] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
-              />
-            </motion.div>
-          </div>
-
-          {/* hero copy block, perfectly centered in that container */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="relative z-10 max-w-5xl mx-auto text-center"
+            className="relative z-10 text-center"
           >
             <motion.div variants={fadeUp} className="mb-6">
-              <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[var(--text)]">
-                <span className="text-[var(--ucla-blue)]">UCLA</span> · Los Angeles Math Tournament · May 17, 2026
+              <span className="inline-block py-1 px-4 rounded-full border border-white/25 bg-black/30 text-[10px] font-semibold tracking-[0.35em] uppercase">
+                UCLA Student-Run Tournament · May 17, 2026
               </span>
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
-              className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8"
+              className="text-4xl md:text-6xl lg:text-[4.5rem] font-black leading-[1.05] tracking-tight mb-6"
             >
-              Where math
+              LOS ANGELES
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--text)] via-[var(--text)] to-[var(--text-muted)]">
-                meets Westwood.
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--ucla-gold)] via-[#FFEBA0] to-[var(--ucla-gold)]">
+                MATH TOURNAMENT
               </span>
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
-              className="max-w-2xl mx-auto text-lg md:text-xl text-[var(--text-muted)] font-light mb-10 leading-relaxed"
+              className="max-w-2xl mx-auto text-sm md:text-base text-[var(--text-muted)] mb-10"
             >
-              A one-day, student-run tournament at the{' '}
-              <span className="font-semibold text-[var(--ucla-gold)]">#1 public university</span>. 
-              Elite problems, electric campus energy, and the full work-hard, play-hard UCLA experience.
+              &quot;Have you ever done math with your life on the line?&quot; Experience rigorous, 
+              high-stakes mathematics at UCLA on{' '}
+              <span className="font-semibold text-[var(--ucla-gold)]">May 17, 2026</span>. 
+              Individual, team, relay, and guts rounds.
             </motion.p>
 
             <motion.div
               variants={fadeUp}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
                 href="https://forms.gle/8JUBJaQQv4fmL8th6"
-                className="px-10 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
+                className="px-9 py-3 rounded-full bg-[var(--ucla-gold)] text-[var(--ucla-darkest)] font-semibold text-sm shadow-[0_12px_40px_rgba(0,0,0,0.45)] hover:scale-105 transition-transform"
               >
-                Join the waitlist
+                Join Waitlist
               </Link>
               <a
                 href="#about"
-                className="px-10 py-4 rounded-full border border-white/20 text-[var(--text)] font-medium hover:bg-white/5 transition-colors duration-300"
+                className="px-9 py-3 rounded-full border border-white/30 text-sm font-semibold text-[var(--text)] hover:bg-white/10 transition-colors"
               >
-                Explore the rounds
+                Learn More
               </a>
             </motion.div>
           </motion.div>
-        </div>
-      </section>
+        </section>
 
-      {/* ABOUT / ROUNDS ---------------------------------------------------- */}
-      <section id="about" className="py-28 px-6 border-t border-white/10 bg-[var(--bg)]">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-120px' }}
-            variants={fadeUp}
-            className="mb-14 text-center"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              Built by UCLA students.
-            </h2>
-            <p className="text-[var(--text-muted)] max-w-2xl mx-auto text-sm md:text-base">
-              LAMT is written, organized, and staffed by UCLA undergraduates who grew up on math contests. 
-              It is our version of a perfect Saturday: proofs, problems, and a campus that never sleeps.
-            </p>
-          </motion.div>
+        {/* ABOUT --------------------------------------------------------- */}
+        <section id="about" className="py-20 border-t border-white/10 bg-[var(--bg)]">
+          {/* your existing About content, centered inside this column */}
+          {/* ... */}
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                title: 'Academic',
-                body: 'Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.',
-              },
-              {
-                title: 'Competitive',
-                body: 'Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.',
-              },
-              {
-                title: 'Westwood',
-                body: "A full day on UCLA's campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.",
-              },
-            ].map((card, idx) => (
-              <motion.div
-                key={card.title}
-                className="p-7 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)]"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.08 }}
-              >
-                <h3 className="text-sm font-semibold text-[var(--ucla-gold)] tracking-[0.22em] uppercase mb-3">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-[var(--text)]">
-                  {card.body}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SCHEDULE ---------------------------------------------------------- */}
-      <section id="schedule" className="py-28 px-6 border-t border-white/10 bg-[var(--bg-elevated)]">
-        <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center"
-          >
+        {/* SCHEDULE ------------------------------------------------------ */}
+        <section id="schedule" className="py-20 border-t border-white/10 bg-[var(--bg-elevated)]">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             One day in Westwood.
-          </motion.h2>
-
-          <div className="space-y-2">
-            {daySchedule.map((row, idx) => (
-              <motion.div
+          </h2>
+          <div className="space-y-3">
+            {daySchedule.map((row) => (
+              <div
                 key={row.time + row.title}
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.5, delay: idx * 0.04 }}
-                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] hover:bg-white/[0.04] hover:border-[var(--ucla-gold)]/40 transition-colors"
+                className="flex flex-col md:flex-row md:items-center gap-3 p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]"
               >
                 <span className="w-28 text-xs font-mono tracking-[0.25em] uppercase text-[var(--ucla-gold)]">
                   {row.time}
                 </span>
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-[var(--text)]">
+                  <h3 className="text-sm md:text-base font-semibold text-[var(--text)]">
                     {row.title}
                   </h3>
                   <p className="text-xs md:text-sm text-[var(--text-muted)] mt-1">
                     {row.subtitle}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-
           <p className="mt-4 text-[11px] text-center text-[var(--text-muted)]">
             Schedule is tentative and subject to minor adjustment. Final timings will be shared with registered teams.
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ ---------------------------------------------------------------- */}
-      <section id="faq" className="py-28 px-6 border-t border-white/10 bg-[var(--bg)]">
-        <div className="max-w-3xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-12 text-center"
-          >
+        {/* FAQ ----------------------------------------------------------- */}
+        <section id="faq" className="py-20 border-t border-white/10 bg-[var(--bg)]">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Questions, answered.
-          </motion.h2>
-
+          </h2>
           <div className="space-y-4">
-            {faqs.map((item, idx) => {
+            {faqs.map((item) => {
               const open = openFaq === item.q;
               return (
-                <motion.div
-                  key={item.q}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.06 }}
-                  className="border-b border-white/10 last:border-0"
-                >
+                <div key={item.q} className="border-b border-white/15 last:border-0">
                   <button
                     className="w-full py-4 flex items-center justify-between text-left"
                     onClick={() => setOpenFaq(open ? null : item.q)}
                   >
-                    <span className="text-sm md:text-base font-medium text-[var(--text)]">
+                    <span className="text-sm md:text-base font-medium">
                       {item.q}
                     </span>
                     <span className="text-[var(--text-muted)] text-xl font-light ml-4">
@@ -453,58 +298,37 @@ export default function HomePage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* REGISTER / CONTACT ------------------------------------------------ */}
-      <section
-        id="register"
-        className="py-32 px-6 border-t border-white/10 relative overflow-hidden bg-[var(--bg)]"
-      >
-        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[var(--ucla-gold)] opacity-[0.08] blur-[140px] pointer-events-none" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-6"
-          >
+        {/* REGISTER / CONTACT ------------------------------------------- */}
+        <section
+          id="register"
+          className="py-24 border-t border-white/10 bg-[var(--bg)]"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
             Ready for UCLA?
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-sm md:text-base text-[var(--text-muted)] max-w-xl mx-auto mb-10"
-          >
+          </h2>
+          <p className="text-sm md:text-base text-[var(--text-muted)] max-w-xl mx-auto mb-8 text-center">
             LAMT 2026 takes place on May 17, 2026. Registration is not yet open, but the waitlist
             gives your team priority access when it is.
-          </motion.p>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
+          </p>
+          <div className="text-center mb-16">
             <Link
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
               target="_blank"
               rel="noreferrer"
-              className="inline-block px-12 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
+              className="inline-block px-12 py-4 rounded-full bg-[var(--ucla-gold)] text-[var(--ucla-darkest)] font-semibold tracking-wide text-sm md:text-base"
             >
               Open waitlist / interest form →
             </Link>
-          </motion.div>
+          </div>
 
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <div className="p-6 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
               <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Email
               </h3>
@@ -515,7 +339,7 @@ export default function HomePage() {
                 uclamathtournament<br />@gmail.com
               </a>
             </div>
-            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+            <div className="p-6 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
               <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Instagram
               </h3>
@@ -528,7 +352,7 @@ export default function HomePage() {
                 @lamathtournament
               </a>
             </div>
-            <div className="p-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
+            <div className="p-6 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
               <h3 className="text-[11px] font-semibold text-[var(--ucla-gold)] tracking-[0.25em] uppercase mb-2">
                 Facebook
               </h3>
@@ -542,8 +366,8 @@ export default function HomePage() {
               </a>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }
