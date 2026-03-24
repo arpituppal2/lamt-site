@@ -10,6 +10,7 @@ interface MathDecoProps {
 
 export default function MathDeco({ latex, className = '' }: MathDecoProps) {
   const ref = useRef<HTMLSpanElement>(null);
+
   useEffect(() => {
     if (ref.current) {
       katex.render(latex, ref.current, {
@@ -18,10 +19,12 @@ export default function MathDeco({ latex, className = '' }: MathDecoProps) {
       });
     }
   }, [latex]);
+
   return (
-    <span ref={ref}
+    <span
+      ref={ref}
       aria-hidden
-      className={`pointer-events-none select-none absolute opacity-20 text-slate-200 ${className}`}
+      className={`pointer-events-none select-none ${className}`}
     />
   );
 }
