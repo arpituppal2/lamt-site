@@ -14,7 +14,7 @@ export default function MathDeco({ latex, className = '' }: MathDecoProps) {
     if (ref.current) {
       katex.render(latex, ref.current, {
         throwOnError: false,
-        displayMode: false,
+        displayMode: true,
       });
     }
   }, [latex]);
