@@ -30,3 +30,8 @@ body {
 .katex * {
   border-color: currentColor !important;
 }
+/* Custom cursor toggle helper */
+body.cursor-hidden,
+body.cursor-hidden * {
+  cursor: none !important;
+}
