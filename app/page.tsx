@@ -1,315 +1,229 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import MathDeco from './components/MathDeco';
 
+// --- DATA ---
 const daySchedule = [
-  { time: '8:00 AM',  title: 'Check-in',  subtitle: 'Arrive and check in your team.' },
-  { time: '8:45 AM',  title: 'Opening Ceremony', subtitle: 'Finish check-in; opening remarks.' },
-  { time: '9:15 AM',  title: 'Special Team Round', subtitle: '75 minutes total. Details TBA.' },
-  { time: '10:45 AM', title: 'Algebra',   subtitle: '50 minutes · 10 questions.' },
-  { time: '12:00 PM', title: 'Geometry',  subtitle: '50 minutes · 10 questions.' },
-  { time: '1:00 PM',  title: 'Lunch & Disputes', subtitle: 'Lunch break and dispute window.' },
-  { time: '2:00 PM',  title: 'Combinatorics', subtitle: '50 minutes · 10 questions.' },
-  { time: '3:15 PM',  title: 'Guts Round', subtitle: '60–75 minutes · number of rounds TBD.' },
-  { time: '4:30 PM',  title: 'Integration Bee / Prof. Talk / Tiebreaks', subtitle: 'Integration Bee, guest lecture, tiebreakers, and final disputes.' },
-  { time: '6:00 PM',  title: 'Awards Ceremony', subtitle: 'Recognition and prize distribution.' },
+  { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive and register your team.' },
+  { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome address & briefing.' },
+  { time: '09:15 AM', title: 'Special Team Round', subtitle: '75 minutes. A mystery challenge.' },
+  { time: '10:45 AM', title: 'Algebra', subtitle: '50 minutes · 10 questions.' },
+  { time: '12:00 PM', title: 'Geometry', subtitle: '50 minutes · 10 questions.' },
+  { time: '01:00 PM', title: 'Intermission', subtitle: 'Lunch break and dispute window.' },
+  { time: '02:00 PM', title: 'Combinatorics', subtitle: '50 minutes · 10 questions.' },
+  { time: '03:15 PM', title: 'Guts Round', subtitle: '60–75 minutes · Live-scored chaos.' },
+  { time: '04:30 PM', title: 'Integration Bee', subtitle: 'Guest lecture & tiebreakers.' },
+  { time: '06:00 PM', title: 'Awards Ceremony', subtitle: 'Recognition & prize distribution.' },
 ];
 
 const rounds = [
-  { title: 'Special Round!!!', detail: 'A mystery round — details coming soon! 75 minutes total.' },
-  { title: 'Algebra',          detail: '50 min, 10 questions — individual round.' },
-  { title: 'Geometry',         detail: '50 min, 10 questions — individual round.' },
-  { title: 'Combinatorics',    detail: '50 min, 10 questions — individual round.' },
-  { title: 'Guts Round',       detail: '60–75 min live-scored team round, number of sets TBD.' },
-  { title: 'Integration Bee',  detail: 'Speed-based integration competition (post-rounds event).' },
+  { title: 'Special Round', detail: 'A mystery round — details coming soon. 75 minutes total.' },
+  { title: 'Algebra', detail: '50 min, 10 questions — individual round.' },
+  { title: 'Geometry', detail: '50 min, 10 questions — individual round.' },
+  { title: 'Combinatorics', detail: '50 min, 10 questions — individual round.' },
+  { title: 'Guts Round', detail: '60–75 min live-scored team round, number of sets TBD.' },
+  { title: 'Integration Bee', detail: 'Speed-based integration competition.' },
 ];
 
 const faqs = [
-  {
-    q: 'Who can participate?',
-    a: 'Students in grades 6–12 during the 2025–2026 academic school year are eligible to participate in LAMT.',
-  },
-  {
-    q: 'Can 6th graders participate?',
-    a: 'Yes! 6th grade is totally fine. While LAMT is geared toward high schoolers, younger students who are up for the challenge are absolutely welcome. No special registration process — just sign up like everyone else. However, note that poor behavior, which is more common amongst the youngest, will result in immediate disqualification.',
-  },
-  {
-    q: 'How many students per team?',
-    a: 'Up to 6 students per team. A school may register multiple teams.',
-  },
-  {
-    q: 'Is there a registration fee?',
-    a: 'Registration fee information will be announced soon. Check back for updates.',
-  },
-  {
-    q: 'What topics are covered?',
-    a: 'Algebra, Geometry, Number Theory, Combinatorics, and more — following AMC/AIME style.',
-  },
-  {
-    q: 'Where is the tournament held?',
-    a: 'Los Angeles, CA. Exact venue TBA. Will be announced via email to registered teams.',
-  },
-  {
-    q: 'Can individuals participate without a team?',
-    a: 'Yes, individual registration may be available. But you should probably stop being lonely for this one. Details coming soon.',
-  },
-  {
-    q: 'How do I get updates?',
-    a: 'Join our Discord server (link shared after registration) and watch for emails to your coach.',
-  },
+  { q: 'Who can participate?', a: 'Students in grades 6–12 during the 2025–2026 academic school year.' },
+  { q: 'Can 6th graders participate?', a: 'Yes! While LAMT is geared toward high schoolers, younger students who are up for the challenge are absolutely welcome.' },
+  { q: 'How many students per team?', a: 'Up to 6 students per team. A school may register multiple teams.' },
+  { q: 'Is there a registration fee?', a: 'Registration fee information will be announced soon.' },
+  { q: 'What topics are covered?', a: 'Algebra, Geometry, Number Theory, Combinatorics, following AMC/AIME rigor.' },
+  { q: 'Where is the tournament held?', a: 'UCLA Campus, Los Angeles, CA. Exact venue TBA.' },
 ];
 
+// --- ANIMATION VARIANTS ---
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
 export default function HomePage() {
-  const heroRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <main className="relative bg-[#8BB8E8] text-[#003B5C]">
-      {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-14 bg-[#2774AE] text-white"
-      >
-        {/* Equation backdrop via MathDeco */}
-            <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="hidden md:block absolute bottom-1/3 right-[5%] text-[1.8rem]" />
-  <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="hidden md:block absolute top-8 right-[8%] text-[2.4rem]" />
+    <div className="relative bg-black text-[#F5F5F7] overflow-hidden">
+      
+      {/* --- HERO SECTION --- */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-12">
+        {/* Deep background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37] opacity-[0.07] blur-[150px] rounded-full pointer-events-none" />
 
-        <MathDeco latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}" className="hidden md:block absolute bottom-12 left-[6%] text-[2.5rem]" />
-  <MathDeco latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y" className="hidden md:block absolute top-1/3 left-[2%] text-[1.8rem]" />
-  <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="hidden md:block absolute top-1/3 right-[10%] text-[2.0rem]" />
+        {/* Floating Ethereal Math Equations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 md:opacity-30 mix-blend-screen">
+          <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}>
+            <MathDeco latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)" className="absolute bottom-[20%] right-[10%] text-2xl text-[#86868B]" />
+          </motion.div>
+          <motion.div animate={{ y: [0, 30, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}>
+            <MathDeco latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}" className="absolute top-[15%] right-[15%] text-3xl text-white/40" />
+          </motion.div>
+          <motion.div animate={{ y: [0, -15, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}>
+            <MathDeco latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}" className="absolute top-[30%] left-[10%] text-2xl text-[#D4AF37]/50" />
+          </motion.div>
+        </div>
 
-  <MathDeco latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)" className="absolute top-10 left-[15%] text-[2.0em]" />
-
-        <MathDeco latex="\displaystyle E\left[\sum X_i\right] = \sum E[X_i]" className="hidden md:block absolute bottom-1/3 left-[4%] text-[2.0em]" />
-        <MathDeco latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|" className="bottom-12 right-[8%] text-[1.8rem]" />
-        <motion.div
-          style={{ y: heroY }}
-          className="relative z-10 max-w-5xl mx-auto text-center mt-10 md:mt-0"
+        <motion.div 
+          className="relative z-10 max-w-5xl mx-auto text-center"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
         >
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block uppercase tracking-[0.4em] text-[#FFD100] text-[10px] font-bold mb-6"
-          >
-            UCLA STUDENT-RUN TOURNAMENT · MAY 17, 2026
-          </motion.span>
+          <motion.div variants={fadeUp} className="mb-6">
+            <span className="inline-block py-1 px-3 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-bold tracking-[0.3em] uppercase backdrop-blur-md">
+              UCLA Student-Run Tournament · May 17, 2026
+            </span>
+          </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tight mb-7"
-            style={{ textShadow: '0 0 50px rgba(255,209,0,0.45)' }}
+          <motion.h1 
+            variants={fadeUp}
+            className="text-5xl md:text-7xl lg:text-[7.5rem] font-black leading-[0.9] tracking-tighter mb-8"
           >
             LOS ANGELES
             <br />
-            MATH TOURNAMENT
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-[#86868B]">
+              MATH TOURNAMENT
+            </span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.6 }}
-            className="max-w-xl mx-auto text-lg text-[#F9FAFB] mb-10 font-medium"
+          <motion.p 
+            variants={fadeUp}
+            className="max-w-2xl mx-auto text-lg md:text-xl text-[#86868B] font-light mb-12 leading-relaxed"
           >
             &quot;Have you ever done math with your life on the line?&quot; <br />
-            Experience rigorous, high-stakes mathematics at UCLA on{' '}
-            <span className="text-[#FFD100] font-semibold">May 17, 2026</span>.
-            Individual, team, relay, and guts rounds.
+            Experience rigorous, high-stakes mathematics at UCLA.
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.4 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 20, mass: 0.4 }}
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link
+              href="https://forms.gle/8JUBJaQQv4fmL8th6"
+              className="px-10 py-4 rounded-full bg-white text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] transition-all duration-300"
             >
-              <Link
-                href="https://forms.gle/8JUBJaQQv4fmL8th6"
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#FFD100] text-[#003B5C] font-semibold text-sm shadow-[0_0_25px_rgba(255,209,0,0.6)]"
-              >
-                Join Waitlist
-              </Link>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+              Join the Waitlist
+            </Link>
+            <a
+              href="#about"
+              className="px-10 py-4 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors duration-300"
             >
-              <a
-                href="#about"
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-white/40 text-sm font-semibold text-white hover:bg-white/10"
-              >
-                Learn More
-              </a>
-            </motion.div>
+              Discover LAMT
+            </a>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* DAY-OF SCHEDULE */}
-      <section
-        id="schedule"
-        className="relative border-t border-[#8BB8E8] bg-[#8BB8E8] px-6 pb-20 pt-12"
-      >
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-bold mb-2 text-center text-[#003B5C]"
+      {/* --- ABOUT & ROUNDS (Bento Box Layout) --- */}
+      <section id="about" className="py-32 px-6 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
+            className="mb-16 text-center"
           >
-            Day-of Schedule
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.02, duration: 0.4 }}
-            className="text-center text-[#003B5C] text-sm mb-10"
-          >
-            May 17, 2026 — subject to minor adjustments. Final schedule distributed day-of.
-          </motion.p>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">The Arena</h2>
+            <p className="text-[#86868B] max-w-2xl mx-auto">A proving ground for the finest mathematical minds in grades 6–12, featuring individual mastery and chaotic team challenges.</p>
+          </motion.div>
 
-          <div className="glass-card overflow-hidden">
-            {daySchedule.map((row, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {rounds.map((round, idx) => (
               <motion.div
-                key={row.time + row.title}
-                initial={{ opacity: 0, y: 24 }}
+                key={round.title}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  delay: idx * 0.04,
-                  type: 'spring',
-                  stiffness: 300,
-                  damping: 24,
-                }}
-                whileHover={{
-                  backgroundColor: 'rgba(255,209,0,0.08)',
-                  x: 4,
-                  boxShadow: '0 0 24px rgba(0,85,135,0.16)',
-                }}
-                className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-6 py-4 border-b border-[#8BB8E8] last:border-0"
+                transition={{ delay: idx * 0.1, duration: 0.6 }}
+                className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.05] hover:border-[#D4AF37]/30 hover:bg-white/[0.04] transition-colors duration-500 group"
               >
-                <span className="w-32 text-xs font-mono text-[#005587]">
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-[#D4AF37] transition-colors">{round.title}</h3>
+                <p className="text-sm text-[#86868B] leading-relaxed">{round.detail}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SCHEDULE --- */}
+      <section id="schedule" className="py-32 px-6 border-t border-white/[0.05] relative bg-[#050505]">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-16 text-center"
+          >
+            Itinerary
+          </motion.h2>
+
+          <div className="space-y-2">
+            {daySchedule.map((row, idx) => (
+              <motion.div
+                key={row.title}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: idx * 0.05, duration: 0.5 }}
+                className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 p-6 rounded-2xl hover:bg-white/[0.03] transition-colors border border-transparent hover:border-white/[0.05]"
+              >
+                <span className="w-32 text-sm font-mono tracking-widest text-[#D4AF37]">
                   {row.time}
                 </span>
-                <div className="flex-1">
-                  <div className="text-sm font-semibold text-[#003B5C]">
-                    {row.title}
-                  </div>
-                  <div className="text-[11px] text-[#005587] mt-0.5">
-                    {row.subtitle}
-                  </div>
+                <div>
+                  <h4 className="text-lg font-medium text-white">{row.title}</h4>
+                  <p className="text-sm text-[#86868B] mt-1">{row.subtitle}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-
-          <p className="mt-4 text-[11px] text-center text-[#005587]">
-            *Schedule is tentative and subject to change.
-          </p>
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section
-        id="about"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C] text-center">
-            About LAMT
-          </h2>
-          <p className="text-center text-[#003B5C] mb-10">
-            Los Angeles Math Tournament (LAMT) 2026 is a student-led math
-            competition organized by UCLA math students, held on May 17, 2026 at UCLA.
-          </p>
+      {/* --- FAQ --- */}
+      <section id="faq" className="py-32 px-6 border-t border-white/[0.05]">
+        <div className="max-w-3xl mx-auto">
+          <motion.h2 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-16 text-center"
+          >
+            Intelligence
+          </motion.h2>
 
-          <div className="space-y-6 text-[#003B5C] text-sm leading-relaxed">
-            <p>
-              LAMT is open to students in grades 6–12 during the 2025–2026
-              academic school year. We deliver creative problem-solving across
-              algebra, geometry, number theory, combinatorics, and team challenges.
-            </p>
-            <p>
-              <span className="font-semibold">Our Mission:</span> Challenge
-              students beyond textbooks with engaging rounds that build math
-              passion and community in Los Angeles. LAMT is fully student-run,
-              inspired by peer tournaments like HMMT and BMT.
-            </p>
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-[#003B5C] mb-4">Ready to compete?</p>
-            <a
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-8 py-3 rounded-full hover:bg-[#FFD100] transition shadow-[0_0_24px_rgba(255,209,0,0.5)] text-sm"
-            >
-              Join the Waitlist →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section
-        id="faq"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
-            Frequently Asked Questions
-          </h2>
           <div className="space-y-4">
-            {faqs.map((item) => {
-              const open = openFaq === item.q;
+            {faqs.map((item, idx) => {
+              const isOpen = openFaq === item.q;
               return (
                 <motion.div
                   key={item.q}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="glass-card px-5 py-4"
+                  transition={{ delay: idx * 0.1 }}
+                  className="border-b border-white/[0.08] last:border-0"
                 >
                   <button
-                    className="w-full flex items-center justify-between text-left"
-                    onClick={() =>
-                      setOpenFaq((prev) => (prev === item.q ? null : item.q))
-                    }
+                    className="w-full py-6 flex items-center justify-between text-left group"
+                    onClick={() => setOpenFaq(isOpen ? null : item.q)}
                   >
-                    <span className="font-semibold text-[#003B5C] text-sm">
+                    <span className="text-lg font-medium group-hover:text-[#D4AF37] transition-colors">
                       {item.q}
                     </span>
-                    <span className="text-[#005587] text-xs ml-4">
-                      {open ? '−' : '+'}
+                    <span className="text-[#86868B] text-2xl font-light">
+                      {isOpen ? '−' : '+'}
                     </span>
                   </button>
-                  <AnimatePresence initial={false}>
-                    {open && (
+                  <AnimatePresence>
+                    {isOpen && (
                       <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.18, ease: 'easeOut' }}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <p className="text-[#003B5C] text-xs mt-3 leading-relaxed">
+                        <p className="pb-6 text-[#86868B] leading-relaxed">
                           {item.a}
                         </p>
                       </motion.div>
@@ -322,124 +236,51 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section
-        id="contact"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
-      >
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#003B5C] text-center">
-            Contact Us
-          </h2>
+      {/* --- CONTACT & CTA --- */}
+      <section id="contact" className="py-32 px-6 border-t border-white/[0.05] relative overflow-hidden">
+        {/* Subtle bottom glow */}
+        <div className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#D4AF37] opacity-[0.05] blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <motion.h2 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-4xl md:text-6xl font-black tracking-tighter mb-8"
+          >
+            Are You Ready?
+          </motion.h2>
+          <motion.p 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-[#86868B] mb-12 text-lg"
+          >
+            Registration opens soon. Secure your team&apos;s place on the waitlist today.
+          </motion.p>
+          
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <Link
+              href="https://forms.gle/8JUBJaQQv4fmL8th6"
+              className="inline-block px-12 py-5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#AA771C] text-black font-bold tracking-wide hover:scale-105 hover:shadow-[0_0_50px_rgba(212,175,55,0.4)] transition-all duration-300"
+            >
+              Open Waitlist Form
+            </Link>
+          </motion.div>
 
-          <div className="space-y-6">
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFD100] mb-2">
-                General Inquiries
-              </h3>
-              <p className="text-[#003B5C] text-sm">
-                Email us at{' '}
-                <a
-                  href="mailto:uclamathtournament@gmail.com"
-                  className="text-[#005587] underline"
-                >
-                  uclamathtournament@gmail.com
-                </a>
-                .
-              </p>
+          <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+              <h3 className="text-sm font-semibold text-[#D4AF37] tracking-widest uppercase mb-2">Direct</h3>
+              <a href="mailto:uclamathtournament@gmail.com" className="text-white hover:text-[#D4AF37] transition-colors">uclamathtournament<br/>@gmail.com</a>
             </div>
-
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFD100] mb-2">
-                Registration Support
-              </h3>
-              <p className="text-[#003B5C] text-sm">
-                For registration issues, email us with subject line
-                &nbsp;&quot;LAMT Registration Help&quot; so we can respond faster.
-              </p>
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+              <h3 className="text-sm font-semibold text-[#D4AF37] tracking-widest uppercase mb-2">Instagram</h3>
+              <a href="https://www.instagram.com/lamathtournament/" target="_blank" rel="noreferrer" className="text-white hover:text-[#D4AF37] transition-colors">@lamathtournament</a>
             </div>
-
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-[#FFD100] mb-4">
-                Stay Connected
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <a
-                    href="https://www.facebook.com/groups/1429462591976204/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#005587] underline font-medium"
-                  >
-                    Facebook Group
-                  </a>
-                  <span className="text-[#003B5C]">
-                    {' '}
-                    — Join our community group for updates.
-                  </span>
-                </div>
-                <div>
-                  <a
-                    href="https://www.instagram.com/lamathtournament/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#005587] underline font-medium"
-                  >
-                    Instagram @lamathtournament
-                  </a>
-                  <span className="text-[#003B5C]">
-                    {' '}
-                    — Follow us for announcements and highlights.
-                  </span>
-                </div>
-                <div>
-                  <a
-                    href="mailto:uclamathtournament@gmail.com"
-                    className="text-[#005587] underline font-medium"
-                  >
-                    uclamathtournament@gmail.com
-                  </a>
-                  <span className="text-[#003B5C]">
-                    {' '}
-                    — Please reach us directly by email.
-                  </span>
-                </div>
-              </div>
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+              <h3 className="text-sm font-semibold text-[#D4AF37] tracking-widest uppercase mb-2">Community</h3>
+              <a href="https://www.facebook.com/groups/1429462591976204/" target="_blank" rel="noreferrer" className="text-white hover:text-[#D4AF37] transition-colors">Facebook Group</a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* REGISTER / WAITLIST */}
-      <section
-        id="register"
-        className="border-t border-[#8BB8E8] px-6 py-16 bg-[#8BB8E8]"
-      >
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#003B5C]">
-            Interest / Waitlist Form
-          </h2>
-          <p className="text-[#003B5C] mb-2 text-sm">
-            LAMT 2026 — May 17th, 2026. Registration is not yet open.
-          </p>
-          <p className="text-[#003B5C] mb-2 text-sm">
-            Fill out the form below to join the waitlist and be notified when
-            registration opens.
-          </p>
-          <p className="text-[#005587] mb-8 text-xs">
-            Cost: TBD · Up to 6 members per team · High school level (all
-            students welcome)
-          </p>
-          <a
-            href="https://forms.gle/8JUBJaQQv4fmL8th6"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-[#FFD100] text-[#003B5C] font-bold px-10 py-4 rounded-full hover:bg-[#FFD100] transition-all shadow-[0_0_24px_rgba(255,209,0,0.6)] text-sm"
-          >
-            Open Waitlist / Interest Form →
-          </a>
-        </div>
-      </section>
-    </main>
+    </div>
   );
 }
