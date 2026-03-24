@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import MathDeco from './components/MathDeco';
 
-// --- DATA ------------------------------------------------------------------
-
+// --- DATA ---
 const daySchedule = [
   { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
   { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome remarks from UCLA students and faculty.' },
@@ -45,25 +44,12 @@ const faqs = [
     q: 'Where is the tournament held?',
     a: 'On the UCLA campus in Westwood, Los Angeles. Exact building and room assignments will be emailed to registered teams closer to the date.',
   },
-  {
-    q: 'What topics are covered?',
-    a: 'Algebra, geometry, number theory, and combinatorics, with problem styles inspired by AMC, AIME, and university-run tournaments.',
-  },
-  {
-    q: 'How do we get updates?',
-    a: 'Once you join the waitlist, we will send key updates by email. Coaches and team leads will also receive information about logistics and deadlines.',
-  },
 ];
 
-// --- ANIMATION VARIANTS ----------------------------------------------------
-
+// --- ANIMATION VARIANTS ---
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const staggerContainer = {
@@ -71,151 +57,99 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
-// --- PAGE ------------------------------------------------------------------
-
+// --- PAGE ---
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <div className="relative bg-[#020617] text-[#F5F5F7] overflow-hidden">
+    <div className="relative overflow-hidden">
       {/* HERO -------------------------------------------------------------- */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16">
-        {/* UCLA-colors glow */}
-        <div className="absolute inset-0 -z-20">
-          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#2774AE] opacity-[0.35] blur-[140px]" />
-          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[#FFD100] opacity-[0.27] blur-[170px]" />
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 bg-[#FAFAFA] dark:bg-black transition-colors duration-400">
+        
+        {/* Atmospheric Glows */}
+        <div className="absolute inset-0 -z-20 overflow-hidden">
+          {/* UCLA Blue Glow */}
+          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#2774AE] opacity-[0.12] dark:opacity-[0.35] blur-[100px] dark:blur-[140px] rounded-full mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500" />
+          {/* UCLA Gold Glow */}
+          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[#FFD100] opacity-[0.15] dark:opacity-[0.27] blur-[120px] dark:blur-[170px] rounded-full mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500" />
         </div>
 
-        {/* Visible math halo */}
+        {/* Dynamic Math Halo */}
         <div className="absolute inset-0 -z-10 pointer-events-none">
-          <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
               latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
-              // primary: bright and legible
-              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-white drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-[#2774AE] dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
             />
           </motion.div>
 
-          <motion.div
-            animate={{ y: [0, 24, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, 24, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
-              latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
-              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[#FFD100] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
+              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[#B38728] dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
-          <motion.div
-            animate={{ y: [0, -16, 0] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, -16, 0] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
-              latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
-              className="hidden lg:block absolute bottom-[14%] left-[14%] text-[2rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
+              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
+              className="hidden lg:block absolute bottom-[14%] left-[14%] text-[2rem] text-[#003B5C]/60 dark:text-slate-200 drop-shadow-none dark:drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, 18, 0] }} transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
-              latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
-              className="hidden md:block absolute top-[34%] left-[3%] text-[1.7rem] text-slate-300 drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
+              className="hidden md:block absolute top-[34%] left-[3%] text-[1.7rem] text-[#2774AE]/50 dark:text-slate-300 drop-shadow-none dark:drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
             />
           </motion.div>
 
-          <motion.div
-            animate={{ y: [0, -14, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, -14, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
-              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
-              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[#FFD100] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
+              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
+              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[#B38728]/80 dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
             />
           </motion.div>
 
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <motion.div animate={{ y: [0, 18, 0] }} transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}>
             <MathDeco
-              latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
-              className="absolute top-[12%] left-[18%] text-[2rem] text-white drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, -22, 0] }}
-            transition={{ duration: 12.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\\displaystyle E\\left[\\sum X_i\\right] = \\sum E[X_i]"
-              className="hidden md:block absolute bottom-[22%] left-[6%] text-[2rem] text-slate-100 drop-shadow-[0_0_20px_rgba(0,0,0,0.9)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 11.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\\displaystyle |X/G| = \\frac{1}{|G|} \\sum_{g \\in G} |X^g|"
-              className="absolute bottom-[16%] right-[10%] text-[1.9rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,0.95)]"
+              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
+              className="absolute top-[12%] left-[18%] text-[2rem] text-[#003B5C]/80 dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
             />
           </motion.div>
         </div>
 
         {/* Hero content */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="relative z-10 max-w-5xl mx-auto text-center"
-        >
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div variants={fadeUp} className="mb-6">
-            <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-slate-100">
+            <span className="inline-block py-1 px-4 rounded-full border border-slate-200 dark:border-white/15 bg-white/60 dark:bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[#2774AE] dark:text-slate-100 shadow-sm dark:shadow-none">
               UCLA · Los Angeles Math Tournament · May 17, 2026
             </span>
           </motion.div>
 
-          <motion.h1
-            variants={fadeUp}
-            className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8"
-          >
-            Where math
+          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8">
+            <span className="text-slate-900 dark:text-white">Where math</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#9CA3AF]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#2774AE] to-[#003B5C] dark:from-white dark:to-[#9CA3AF]">
               meets Westwood.
             </span>
           </motion.h1>
 
-          <motion.p
-            variants={fadeUp}
-            className="max-w-2xl mx-auto text-lg md:text-xl text-[#D1D5DB] font-light mb-10 leading-relaxed"
-          >
-            A one-day, student-run tournament at the{' '}
-            <span className="font-semibold text-[#FFD100]">#1 public university</span>. 
+          <motion.p variants={fadeUp} className="max-w-2xl mx-auto text-lg md:text-xl text-slate-600 dark:text-[#D1D5DB] font-light mb-10 leading-relaxed">
+            A one-day, student-run tournament at the <span className="font-semibold text-[#003B5C] dark:text-[#FFD100]">#1 public university</span>. 
             Elite problems, electric campus energy, and the full work-hard, play-hard UCLA experience.
           </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
-          >
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="px-10 py-4 rounded-full bg-[#FFD100] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
+              className="px-10 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_8px_30px_rgba(255,209,0,0.3)] dark:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
             >
               Join the waitlist
             </Link>
             <a
               href="#about"
-              className="px-10 py-4 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors duration-300"
+              className="px-10 py-4 rounded-full border border-slate-300 dark:border-white/20 text-[#003B5C] dark:text-white font-medium hover:bg-slate-100 dark:hover:bg-white/5 transition-colors duration-300"
             >
               Explore the rounds
             </a>
@@ -224,83 +158,42 @@ export default function HomePage() {
       </section>
 
       {/* ABOUT / ROUNDS ---------------------------------------------------- */}
-      <section id="about" className="py-28 px-6 border-t border-white/10">
+      <section id="about" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-white dark:bg-black transition-colors duration-400">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-120px' }}
-            variants={fadeUp}
-            className="mb-14 text-center"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              Built by UCLA students.
-            </h2>
-            <p className="text-[#CBD5F5] max-w-2xl mx-auto text-sm md:text-base">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-120px' }} variants={fadeUp} className="mb-14 text-center">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-slate-900 dark:text-white">Built by UCLA students.</h2>
+            <p className="text-slate-600 dark:text-[#CBD5F5] max-w-2xl mx-auto text-sm md:text-base">
               LAMT is written, organized, and staffed by UCLA undergraduates who grew up on math contests. 
               It is our version of a perfect Saturday: proofs, problems, and a campus that never sleeps.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Academic
-              </h3>
-              <p className="text-sm text-slate-100">
-                Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.08 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Competitive
-              </h3>
-              <p className="text-sm text-slate-100">
-                Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="p-7 rounded-3xl bg-white/5 border border-white/10"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.16 }}
-            >
-              <h3 className="text-sm font-semibold text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Westwood
-              </h3>
-              <p className="text-sm text-slate-100">
-                A full day on UCLA&apos;s campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.
-              </p>
-            </motion.div>
+            {[
+              { title: 'Academic', desc: 'Problems inspired by AMC, AIME, and top collegiate tournaments, with original twists and rigorous solutions.' },
+              { title: 'Competitive', desc: 'Individual and team rounds, live-scored guts, and an Integration Bee that keeps everyone in the room.' },
+              { title: 'Westwood', desc: 'A full day on UCLA’s campus—towering lecture halls, views over Los Angeles, and a community that takes ideas seriously.' }
+            ].map((box, i) => (
+              <motion.div
+                key={box.title}
+                className="p-7 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#2774AE]/30 dark:hover:border-[#FFD100]/30 transition-colors"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.08 }}
+              >
+                <h3 className="text-sm font-bold text-[#2774AE] dark:text-[#FFD100] tracking-[0.22em] uppercase mb-3">{box.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-100">{box.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* SCHEDULE ---------------------------------------------------------- */}
-      <section id="schedule" className="py-28 px-6 border-t border-white/10 bg-[#030712]">
+      <section id="schedule" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-400">
         <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center"
-          >
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center text-slate-900 dark:text-white">
             One day in Westwood.
           </motion.h2>
 
@@ -312,39 +205,25 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.5, delay: idx * 0.04 }}
-                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.04] hover:border-[#FFD100]/30 transition-colors"
+                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl bg-white dark:bg-white/[0.01] border border-slate-200 dark:border-white/5 hover:border-[#2774AE]/40 dark:hover:border-[#FFD100]/30 transition-colors shadow-sm dark:shadow-none"
               >
-                <span className="w-28 text-xs font-mono tracking-[0.25em] uppercase text-[#FFD100]">
+                <span className="w-28 text-xs font-bold font-mono tracking-[0.25em] uppercase text-[#2774AE] dark:text-[#FFD100]">
                   {row.time}
                 </span>
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-white">
-                    {row.title}
-                  </h3>
-                  <p className="text-xs md:text-sm text-[#9CA3AF] mt-1">
-                    {row.subtitle}
-                  </p>
+                  <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white">{row.title}</h3>
+                  <p className="text-xs md:text-sm text-slate-500 dark:text-[#9CA3AF] mt-1">{row.subtitle}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-
-          <p className="mt-4 text-[11px] text-center text-[#6B7280]">
-            Schedule is tentative and subject to minor adjustment. Final timings will be shared with registered teams.
-          </p>
         </div>
       </section>
 
       {/* FAQ ---------------------------------------------------------------- */}
-      <section id="faq" className="py-28 px-6 border-t border-white/10">
+      <section id="faq" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-white dark:bg-black transition-colors duration-400">
         <div className="max-w-3xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-12 text-center"
-          >
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-12 text-center text-slate-900 dark:text-white">
             Questions, answered.
           </motion.h2>
 
@@ -352,37 +231,15 @@ export default function HomePage() {
             {faqs.map((item, idx) => {
               const open = openFaq === item.q;
               return (
-                <motion.div
-                  key={item.q}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.06 }}
-                  className="border-b border-white/10 last:border-0"
-                >
-                  <button
-                    className="w-full py-4 flex items-center justify-between text-left"
-                    onClick={() => setOpenFaq(open ? null : item.q)}
-                  >
-                    <span className="text-sm md:text-base font-medium text-white">
-                      {item.q}
-                    </span>
-                    <span className="text-[#9CA3AF] text-xl font-light ml-4">
-                      {open ? '−' : '+'}
-                    </span>
+                <motion.div key={item.q} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: idx * 0.06 }} className="border-b border-slate-200 dark:border-white/10 last:border-0">
+                  <button className="w-full py-4 flex items-center justify-between text-left" onClick={() => setOpenFaq(open ? null : item.q)}>
+                    <span className="text-sm md:text-base font-semibold text-slate-800 dark:text-white">{item.q}</span>
+                    <span className="text-slate-400 dark:text-[#9CA3AF] text-xl font-light ml-4">{open ? '−' : '+'}</span>
                   </button>
                   <AnimatePresence initial={false}>
                     {open && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="pb-4 text-xs md:text-sm text-[#D1D5DB] leading-relaxed">
-                          {item.a}
-                        </p>
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+                        <p className="pb-4 text-xs md:text-sm text-slate-600 dark:text-[#D1D5DB] leading-relaxed">{item.a}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -394,86 +251,40 @@ export default function HomePage() {
       </section>
 
       {/* REGISTER / CONTACT ------------------------------------------------ */}
-      <section
-        id="register"
-        className="py-32 px-6 border-t border-white/10 relative overflow-hidden bg-[#020617]"
-      >
-        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[#FFD100] opacity-[0.08] blur-[140px] pointer-events-none" />
+      <section id="register" className="py-32 px-6 border-t border-slate-200 dark:border-white/10 relative overflow-hidden bg-[#FAFAFA] dark:bg-[#020617] transition-colors duration-400">
+        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[#2774AE] dark:bg-[#FFD100] opacity-[0.08] blur-[140px] pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-6"
-          >
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-slate-900 dark:text-white">
             Ready for UCLA?
           </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-sm md:text-base text-[#D1D5DB] max-w-xl mx-auto mb-10"
-          >
-            LAMT 2026 takes place on May 17, 2026. Registration is not yet open, but the waitlist
-            gives your team priority access when it is.
+          <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-sm md:text-base text-slate-600 dark:text-[#D1D5DB] max-w-xl mx-auto mb-10">
+            LAMT 2026 takes place on May 17, 2026. Registration is not yet open, but the waitlist gives your team priority access when it is.
           </motion.p>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <Link
               href="https://forms.gle/8JUBJaQQv4fmL8th6"
               target="_blank"
               rel="noreferrer"
-              className="inline-block px-12 py-4 rounded-full bg-[#FFD100] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
+              className="inline-block px-12 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_8px_30px_rgba(255,209,0,0.3)] dark:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
             >
               Open waitlist / interest form →
             </Link>
           </motion.div>
 
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
-                Email
-              </h3>
-              <a
-                href="mailto:uclamathtournament@gmail.com"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors break-words"
-              >
-                uclamathtournament<br />@gmail.com
-              </a>
-            </div>
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
-                Instagram
-              </h3>
-              <a
-                href="https://www.instagram.com/lamathtournament/"
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors"
-              >
-                @lamathtournament
-              </a>
-            </div>
-            <div className="p-7 rounded-2xl bg-white/5 border border-white/10">
-              <h3 className="text-[11px] font-semibold text-[#FFD100] tracking-[0.25em] uppercase mb-2">
-                Facebook
-              </h3>
-              <a
-                href="https://www.facebook.com/groups/1429462591976204/"
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-white hover:text-[#FFD100] transition-colors"
-              >
-                LAMT Community Group
-              </a>
-            </div>
+            {[
+              { title: 'Email', val: 'uclamathtournament\n@gmail.com', link: 'mailto:uclamathtournament@gmail.com' },
+              { title: 'Instagram', val: '@lamathtournament', link: 'https://www.instagram.com/lamathtournament/' },
+              { title: 'Facebook', val: 'LAMT Community Group', link: 'https://www.facebook.com/groups/1429462591976204/' }
+            ].map(contact => (
+              <div key={contact.title} className="p-7 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
+                <h3 className="text-[11px] font-bold text-[#2774AE] dark:text-[#FFD100] tracking-[0.25em] uppercase mb-2">{contact.title}</h3>
+                <a href={contact.link} target="_blank" rel="noreferrer" className="text-sm text-slate-800 dark:text-white hover:text-[#2774AE] dark:hover:text-[#FFD100] transition-colors break-words whitespace-pre-line">
+                  {contact.val}
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>
