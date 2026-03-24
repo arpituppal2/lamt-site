@@ -45,7 +45,7 @@ function EliteCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-black dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2"
+      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-slate-800 dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2"
       style={{ transform: 'translate3d(-999px, -999px, 0)' }}
     />
   );
