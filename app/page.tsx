@@ -75,46 +75,82 @@ export default function HomePage() {
         </div>
 
         {/* Dynamic Math Halo */}
-        <div className="absolute inset-0 -z-10 pointer-events-none">
-          <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}>
+        <div className="absolute inset-0 -z-10 pointer-events-auto">
+          {/* Equation 1 */}
+          <motion.div 
+            className="hidden md:block absolute top-[18%] left-[8%] cursor-pointer"
+            animate={{ y: [0, -20, 0] }} 
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.3)" }}
+          >
             <MathDeco
               latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
-              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-[#2774AE] dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              className="text-[1.8rem] text-[#2774AE] dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(39,116,174,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(255,255,255,0.9)]"
             />
           </motion.div>
 
-          <motion.div animate={{ y: [0, 24, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}>
+          {/* Equation 2 (Gold) */}
+          <motion.div 
+            className="hidden lg:block absolute top-[10%] right-[10%] cursor-pointer"
+            animate={{ y: [0, 24, 0] }} 
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.2)" }}
+          >
             <MathDeco
-              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
-              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[#B38728] dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
+              className="text-[2.3rem] text-[#B38728] dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.4)] transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(179,135,40,0.8)] dark:hover:drop-shadow-[0_0_40px_rgba(255,209,0,1)]"
             />
           </motion.div>
 
-          <motion.div animate={{ y: [0, -16, 0] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}>
+          {/* Equation 3 */}
+          <motion.div 
+            className="hidden lg:block absolute bottom-[14%] left-[14%] cursor-pointer"
+            animate={{ y: [0, -16, 0] }} 
+            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.3)" }}
+          >
             <MathDeco
-              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
-              className="hidden lg:block absolute bottom-[14%] left-[14%] text-[2rem] text-[#003B5C]/60 dark:text-slate-200 drop-shadow-none dark:drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
+              latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
+              className="text-[2rem] text-[#003B5C]/60 dark:text-slate-200 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-[#003B5C] dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(0,59,92,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
             />
           </motion.div>
 
-          <motion.div animate={{ y: [0, 18, 0] }} transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}>
+          {/* Equation 4 */}
+          <motion.div 
+            className="hidden md:block absolute top-[34%] left-[3%] cursor-pointer"
+            animate={{ y: [0, 18, 0] }} 
+            transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.3)" }}
+          >
             <MathDeco
-              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
-              className="hidden md:block absolute top-[34%] left-[3%] text-[1.7rem] text-[#2774AE]/50 dark:text-slate-300 drop-shadow-none dark:drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
+              className="text-[1.7rem] text-[#2774AE]/50 dark:text-slate-300 drop-shadow-none dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:text-[#2774AE] dark:hover:text-white hover:drop-shadow-[0_0_20px_rgba(39,116,174,0.6)] dark:hover:drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
             />
           </motion.div>
 
-          <motion.div animate={{ y: [0, -14, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}>
+          {/* Equation 5 (Gold) */}
+          <motion.div 
+            className="hidden md:block absolute top-[32%] right-[12%] cursor-pointer"
+            animate={{ y: [0, -14, 0] }} 
+            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.2)" }}
+          >
             <MathDeco
-              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
-              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[#B38728]/80 dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
+              latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+              className="text-[1.9rem] text-[#B38728]/80 dark:text-[#FFD100] drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,209,0,0.3)] transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(179,135,40,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(255,209,0,0.9)]"
             />
           </motion.div>
 
-          <motion.div animate={{ y: [0, 18, 0] }} transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}>
+          {/* Equation 6 */}
+          <motion.div 
+            className="absolute top-[12%] left-[18%] cursor-pointer"
+            animate={{ y: [0, 18, 0] }} 
+            transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15, filter: "brightness(1.3)" }}
+          >
             <MathDeco
-              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
-              className="absolute top-[12%] left-[18%] text-[2rem] text-[#003B5C]/80 dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
+              className="text-[2rem] text-[#003B5C]/80 dark:text-white drop-shadow-sm dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(0,59,92,0.8)] dark:hover:drop-shadow-[0_0_35px_rgba(255,255,255,0.9)]"
             />
           </motion.div>
         </div>
