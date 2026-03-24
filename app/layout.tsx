@@ -5,6 +5,7 @@ import type React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
+import KaTeXLoader from './components/KaTeXLoader';
 
 // --- ICONS ---
 const SunIcon = () => (
@@ -177,20 +178,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        
-        {/* KaTeX CDN Links */}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onLoad={() => {
-          // @ts-ignore
-          window.renderMathInElement(document.body, {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '$', right: '$', display: false}
-            ],
-            throwOnError: false
-          });
-        }}></script>
       </head>
       <body className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]" suppressHydrationWarning>
         <script
@@ -206,6 +193,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        <KaTeXLoader />
         <EliteCursor />
         <NavBar />
         <ThemeToggle />
