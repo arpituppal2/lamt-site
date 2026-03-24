@@ -152,147 +152,156 @@ export default function HomePage() {
       <ThemeToggle />
 
       {/* HERO -------------------------------------------------------------- */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 bg-[var(--bg)]">
-        {/* UCLA glows: look good in both themes */}
-        <div className="absolute inset-0 -z-20">
-          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[var(--ucla-blue)] opacity-[0.35] blur-[140px]" />
-          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[var(--ucla-gold)] opacity-[0.27] blur-[170px]" />
-        </div>
+      {/* HERO -------------------------------------------------------------- */}
+      <section
+        className="relative min-h-screen px-6 bg-[var(--bg)]"
+      >
+        {/* ensure the hero content is vertically centered inside a max-width container */}
+        <div className="relative max-w-6xl mx-auto flex items-center justify-center min-h-screen">
+          {/* background glows */}
+          <div className="absolute inset-0 -z-20">
+            <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-[var(--ucla-blue)] opacity-[0.35] blur-[140px]" />
+            <div className="absolute -bottom-40 -right-40 w-[520px] h-[520px] bg-[var(--ucla-gold)] opacity-[0.27] blur-[170px]" />
+          </div>
 
-        {/* Math halo with high legibility */}
-        <div className="absolute inset-0 -z-10 pointer-events-none">
-          <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
-              className="hidden md:block absolute top-[18%] left-[8%] text-[1.8rem] text-[var(--text)] drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 24, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle \sum_{n\geq0} p(n)x^n = \prod_{k\geq1}\frac{1}{1-x^k}"
-              className="hidden lg:block absolute top-[10%] right-[10%] text-[2.3rem] text-[var(--ucla-gold)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, -16, 0] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle f\left( \frac{\sum x_i}{n} \right) \leq \frac{\sum f(x_i)}{n}"
-              className="hidden lg:block absolute bottom-[14%] left-[14%] text-[2rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle d^2 = -a^2\Delta y \Delta z - b^2\Delta x \Delta z - c^2\Delta x \Delta y"
-              className="hidden md:block absolute top-[34%] left-[3%] text-[1.7rem] text-slate-300 drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, -14, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle \phi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}"
-              className="hidden md:block absolute top-[32%] right-[12%] text-[1.9rem] text-[var(--ucla-gold)] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle x^n - 1 = \prod_{d|n} \Phi_d(x)"
-              className="absolute top-[12%] left-[18%] text-[2rem] text-[var(--text)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, -22, 0] }}
-            transition={{ duration: 12.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle E\left[\sum X_i\right] = \sum E[X_i]"
-              className="hidden md:block absolute bottom-[22%] left-[6%] text-[2rem] text-slate-100 drop-shadow-[0_0_20px_rgba(0,0,0,0.9)]"
-            />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 11.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <MathDeco
-              latex="\displaystyle |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g|"
-              className="absolute bottom-[16%] right-[10%] text-[1.9rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,0.95)]"
-            />
-          </motion.div>
-        </div>
-
-        {/* Hero content */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="relative z-10 max-w-5xl mx-auto text-center"
-        >
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[var(--text)]">
-              UCLA · Los Angeles Math Tournament · May 17, 2026
-            </span>
-          </motion.div>
-
-          <motion.h1
-            variants={fadeUp}
-            className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8"
-          >
-            Where math
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--text)] via-[var(--text)] to-[var(--text-muted)]">
-              meets Westwood.
-            </span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="max-w-2xl mx-auto text-lg md:text-xl text-[var(--text-muted)] font-light mb-10 leading-relaxed"
-          >
-            A one-day, student-run tournament at the{' '}
-            <span className="font-semibold text-[var(--ucla-gold)]">#1 public university</span>. 
-            Elite problems, electric campus energy, and the full work-hard, play-hard UCLA experience.
-          </motion.p>
-
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
-          >
-            <Link
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              className="px-10 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
+          {/* math halo */}
+          <div className="absolute inset-0 -z-10 pointer-events-none">
+            {/* hero center equation */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
             >
-              Join the waitlist
-            </Link>
-            <a
-              href="#about"
-              className="px-10 py-4 rounded-full border border-white/20 text-[var(--text)] font-medium hover:bg-white/5 transition-colors duration-300"
+              <MathDeco
+                latex="\\displaystyle x^n - 1 = \\prod_{d|n} \\Phi_d(x)"
+                className="absolute top-[18%] left-1/2 -translate-x-1/2 text-[2rem] text-[var(--text)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              />
+            </motion.div>
+
+            {/* left + right equations framing hero */}
+            <motion.div
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
             >
-              Explore the rounds
-            </a>
+              <MathDeco
+                latex="v_p(x^n - y^n) = v_p(x-y) + v_p(n)"
+                className="hidden md:block absolute top-[32%] left-[5%] text-[1.6rem] text-[var(--text)] drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              />
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 16, 0] }}
+              transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle \\sum_{n\\geq0} p(n)x^n = \\prod_{k\\geq1}\\frac{1}{1-x^k}"
+                className="hidden lg:block absolute top-[30%] right-[6%] text-[2rem] text-[var(--ucla-gold)] drop-shadow-[0_0_24px_rgba(0,0,0,1)]"
+              />
+            </motion.div>
+
+            {/* lower ring */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle f\\left( \\frac{\\sum x_i}{n} \\right) \\leq \\frac{\\sum f(x_i)}{n}"
+                className="hidden lg:block absolute bottom-[24%] left-[10%] text-[1.8rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,1)]"
+              />
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle E\\left[\\sum X_i\\right] = \\sum E[X_i]"
+                className="hidden md:block absolute bottom-[20%] left-1/2 -translate-x-1/2 text-[1.9rem] text-slate-100 drop-shadow-[0_0_20px_rgba(0,0,0,0.9)]"
+              />
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 11.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle |X/G| = \\frac{1}{|G|} \\sum_{g \\in G} |X^g|"
+                className="absolute bottom-[22%] right-[10%] text-[1.8rem] text-slate-200 drop-shadow-[0_0_20px_rgba(0,0,0,0.95)]"
+              />
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 10.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle d^2 = -a^2\\Delta y \\Delta z - b^2\\Delta x \\Delta z - c^2\\Delta x \\Delta y"
+                className="hidden md:block absolute top-[50%] right-[3%] text-[1.6rem] text-slate-300 drop-shadow-[0_0_18px_rgba(0,0,0,0.9)]"
+              />
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 12.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <MathDeco
+                latex="\\displaystyle \\phi(n) = \\sum_{d \\mid n} \\mu(d) \\frac{n}{d}"
+                className="hidden md:block absolute top-[46%] left-[12%] text-[1.7rem] text-[var(--ucla-gold)] drop-shadow-[0_0_22px_rgba(0,0,0,1)]"
+              />
+            </motion.div>
+          </div>
+
+          {/* hero copy block, perfectly centered in that container */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="relative z-10 max-w-5xl mx-auto text-center"
+          >
+            <motion.div variants={fadeUp} className="mb-6">
+              <span className="inline-block py-1 px-4 rounded-full border border-white/15 bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[var(--text)]">
+                <span className="text-[var(--ucla-blue)]">UCLA</span> · Los Angeles Math Tournament · May 17, 2026
+              </span>
+            </motion.div>
+
+            <motion.h1
+              variants={fadeUp}
+              className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8"
+            >
+              Where math
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--text)] via-[var(--text)] to-[var(--text-muted)]">
+                meets Westwood.
+              </span>
+            </motion.h1>
+
+            <motion.p
+              variants={fadeUp}
+              className="max-w-2xl mx-auto text-lg md:text-xl text-[var(--text-muted)] font-light mb-10 leading-relaxed"
+            >
+              A one-day, student-run tournament at the{' '}
+              <span className="font-semibold text-[var(--ucla-gold)]">#1 public university</span>. 
+              Elite problems, electric campus energy, and the full work-hard, play-hard UCLA experience.
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col sm:flex-row items-center justify-center gap-6"
+            >
+              <Link
+                href="https://forms.gle/8JUBJaQQv4fmL8th6"
+                className="px-10 py-4 rounded-full bg-[var(--ucla-gold)] text-black font-semibold tracking-wide hover:scale-105 hover:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
+              >
+                Join the waitlist
+              </Link>
+              <a
+                href="#about"
+                className="px-10 py-4 rounded-full border border-white/20 text-[var(--text)] font-medium hover:bg-white/5 transition-colors duration-300"
+              >
+                Explore the rounds
+              </a>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ABOUT / ROUNDS ---------------------------------------------------- */}
