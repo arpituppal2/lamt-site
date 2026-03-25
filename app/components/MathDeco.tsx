@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import katex from 'katex';
-import 'katex/dist/katex.min.css';
 
 interface MathDecoProps {
   latex: string;
@@ -10,24 +8,35 @@ interface MathDecoProps {
 }
 
 export default function MathDeco({ latex, className = '' }: MathDecoProps) {
-  const ref = useRef<HTMLSpanElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-    try {
-      katex.render(latex, ref.current, {
-        throwOnError: false,
-        displayMode: true,
-      });
-    } catch (e) {
-      console.error('KaTeX render error:', e);
-    }
+    let interval: ReturnType<typeof setInterval>;
+
+    const tryRender = () => {
+      if (ref.current && (window as any).katex) {
+        try {
+          (window as any).katex.render(latex, ref.current, {
+            throwOnError: false,
+            displayMode: true,
+          });
+        } catch (e) {
+          // silently ignore render errors
+        }
+        clearInterval(interval);
+      }
+    };
+
+    // Poll every 100ms until katex is available on window
+    interval = setInterval(tryRender, 100);
+    tryRender(); // also try immediately
+
+    return () => clearInterval(interval);
   }, [latex]);
 
   return (
-    <span
+    <div
       ref={ref}
-      aria-hidden
       className={`pointer-events-none select-none ${className}`}
     />
   );
