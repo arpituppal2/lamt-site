@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class', // <--- CRITICAL for the toggle to work
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,13 +9,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        uclaBlue: '#006994',
+        uclaBlue: '#2774AE', // Updated to official UCLA Blue
         deepNavy: '#0A192F',
-        gold: '#FFB300',
+        gold: '#FFD100', // Updated to official UCLA Gold
       },
       boxShadow: {
-        'glow-gold': '0 0 30px rgba(255,179,0,0.6)',
-        'glow-blue': '0 0 20px rgba(0,105,148,0.5)',
+        'glow-gold': '0 0 30px rgba(255,209,0,0.6)',
+        'glow-blue': '0 0 20px rgba(39,116,174,0.5)',
       },
       animation: {
         'float-slow': 'floatSlow 20s ease-in-out infinite',
@@ -28,8 +29,8 @@ module.exports = {
           '66%': { transform: 'translateY(10px) rotate(-3deg)' },
         },
         pulseGold: {
-          '0%,100%': { boxShadow: '0 0 10px rgba(255,179,0,0.4)' },
-          '50%': { boxShadow: '0 0 30px rgba(255,179,0,0.9)' },
+          '0%,100%': { boxShadow: '0 0 10px rgba(255,209,0,0.4)' },
+          '50%': { boxShadow: '0 0 30px rgba(255,209,0,0.9)' },
         },
         spring: {
           '0%': { transform: 'scale(1)' },
