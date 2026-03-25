@@ -306,7 +306,7 @@ export default function HomePage() {
             Ready for UCLA?
           </motion.h2>
           <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-sm md:text-base text-slate-600 dark:text-[#D1D5DB] max-w-xl mx-auto mb-10">
-            LAMT 2026 takes place on May 17, 2026. Registration is not yet open, but the waitlist gives your team priority access when it is.
+            LAMT 2026 takes place on May 17, 2026. Registration will open very soon, and our waitlist gives your team priority access when it is.
           </motion.p>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
