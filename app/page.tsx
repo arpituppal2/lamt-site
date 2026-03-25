@@ -25,6 +25,10 @@ const faqs = [
     a: 'LAMT is open to students in grades 6–12 during the 2025–2026 academic year. We welcome both newcomers and seasoned contestants.',
   },
   {
+    q: 'When and where is the tournament held?',
+    a: 'LAMT will take place on May 17th. The tournament is held in the Court of Sciences at UCLA, Los Angeles. Rounds will be held in the Mathematical Sciences Building; room assignments will be emailed to registered teams closer to the date.',
+  },
+  {
     q: 'Is LAMT only for advanced students?',
     a: 'Rounds are written at a high level, inspired by contests like HMMT and BMT, but we design the experience to be welcoming and aspirational for anyone who loves math.',
   },
@@ -37,12 +41,20 @@ const faqs = [
     a: 'Yes. We plan to offer individual registration and will help form composite teams when appropriate. Details will be shared with waitlisted participants.',
   },
   {
-    q: 'Is there a registration fee?',
-    a: 'Yes. Final pricing will be announced soon and will cover contest materials, scoring, and on-campus logistics. Need-based accommodations may be available.',
+    q: 'What is the registration fee?',
+    a: 'The final registration fee is currently TBD. Pricing will be announced soon and will cover contest materials, scoring, and on-campus logistics. Need-based accommodations may be available.',
   },
   {
-    q: 'Where is the tournament held?',
-    a: 'On the UCLA campus in Westwood, Los Angeles. Exact building and room assignments will be emailed to registered teams closer to the date.',
+    q: 'Will lunch or tournament shirts be provided?',
+    a: 'We are currently finalizing logistics regarding provided lunches and tournament merchandise. We will update all registered teams as soon as these details are confirmed.',
+  },
+  {
+    q: 'Are calculators allowed?',
+    a: 'No. Calculators, smart devices, and other computational aids are strictly prohibited during all testing rounds to ensure a fair environment for all participants.',
+  },
+  {
+    q: 'Do teams need a chaperone?',
+    a: 'Yes. All students or teams must be accompanied by an adult chaperone (parent, teacher, or coach) who must remain on the UCLA campus for the duration of the event.',
   },
 ];
 
