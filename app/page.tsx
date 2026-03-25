@@ -298,45 +298,102 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REGISTER ----------------------------------------------------------- */}
-      <section id="register" className="py-32 px-6 border-t border-slate-200 dark:border-white/10 relative overflow-hidden bg-[#FAFAFA] dark:bg-[#020617] transition-colors duration-500">
-        <div className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[780px] h-[380px] bg-[#006994] dark:bg-[#FFD100] opacity-[0.1] dark:opacity-[0.08] blur-[140px] pointer-events-none" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-[#003B5C] dark:text-white">
-            Ready for UCLA?
-          </motion.h2>
-          <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-sm md:text-base text-slate-600 dark:text-[#D1D5DB] max-w-xl mx-auto mb-10">
-            LAMT 2026 takes place on May 17, 2026. Registration will open very soon, and our waitlist gives your team priority access when it is.
-          </motion.p>
+{/* REGISTER ----------------------------------------------------------- */}
+<section
+  id="register"
+  className="relative overflow-hidden border-t border-slate-200 dark:border-white/10 bg-[#FAFAFA] dark:bg-[#020617] py-24 sm:py-32 px-6"
+>
+  <div className="pointer-events-none absolute inset-x-0 bottom-[-25%] mx-auto h-[380px] w-[780px] -translate-y-8 rounded-full bg-[#006994] dark:bg-[#FFD100] opacity-[0.09] blur-[140px]" />
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <Link
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-block px-12 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_8px_30px_rgba(255,209,0,0.3)] dark:shadow-[0_0_50px_rgba(255,209,0,0.45)] transition-all duration-300 text-sm md:text-base"
-            >
-              Open waitlist / interest form →
-            </Link>
-          </motion.div>
+  <div className="relative z-10 mx-auto max-w-4xl text-center">
+    <motion.h2
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      className="text-balance text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white"
+    >
+      Ready for UCLA?
+    </motion.h2>
 
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            {[
-              { title: 'Email', val: 'uclamathtournament\n@gmail.com', link: 'mailto:uclamathtournament@gmail.com' },
-              { title: 'Instagram', val: '@lamathtournament', link: 'https://www.instagram.com/lamathtournament/' },
-              { title: 'Facebook', val: 'LAMT Community Group', link: 'https://www.facebook.com/groups/1429462591976204/' },
-            ].map(contact => (
-              <div key={contact.title} className="p-7 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
-                <h3 className="text-[11px] font-bold text-[#006994] dark:text-[#FFD100] tracking-[0.25em] uppercase mb-2">{contact.title}</h3>
-                <a href={contact.link} target="_blank" rel="noreferrer" className="text-sm text-slate-800 dark:text-white hover:text-[#006994] dark:hover:text-[#FFD100] transition-colors break-words whitespace-pre-line">
-                  {contact.val}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <motion.p
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      className="mt-4 text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto"
+    >
+      LAMT 2026 will be held on May 17, 2026. Join the waitlist to get early
+      access as soon as team registration opens.
+    </motion.p>
+
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      className="mt-8"
+    >
+      <Link
+        href="https://forms.gle/8JUBJaQQv4fmL8th6"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center justify-center rounded-full bg-[#FFD100] px-8 md:px-12 py-3 md:py-4 text-sm md:text-base font-semibold text-[#003B5C] dark:text-black tracking-wide shadow-[0_8px_30px_rgba(255,209,0,0.30)] dark:shadow-[0_0_45px_rgba(255,209,0,0.45)] transition-transform duration-200 hover:translate-y-[1px] hover:shadow-[0_10px_35px_rgba(255,209,0,0.35)]"
+      >
+        Join waitlist / interest form →
+      </Link>
+    </motion.div>
+
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeUp}
+      className="mt-14 grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-3 text-left"
+    >
+      {[
+        {
+          title: 'Email',
+          val: 'uclamathtournament@gmail.com',
+          link: 'mailto:uclamathtournament@gmail.com',
+        },
+        {
+          title: 'Instagram',
+          val: '@lamathtournament',
+          link: 'https://www.instagram.com/lamathtournament/',
+        },
+        {
+          title: 'Facebook',
+          val: 'LAMT Community Group',
+          link: 'https://www.facebook.com/groups/1429462591976204/',
+        },
+      ].map((contact) => (
+        <a
+          key={contact.title}
+          href={contact.link}
+          target="_blank"
+          rel="noreferrer"
+          className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/90 p-5 sm:p-6 text-sm shadow-sm ring-1 ring-transparent transition-all duration-200 hover:-translate-y-[2px] hover:border-[#006994]/30 hover:ring-[#006994]/10 dark:border-white/10 dark:bg-white/5 dark:hover:border-[#FFD100]/40 dark:hover:ring-[#FFD100]/15"
+        >
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#006994] dark:text-[#FFD100]">
+            {contact.title}
+          </span>
+          <span className="mt-3 text-slate-800 dark:text-slate-50 break-words">
+            {contact.val}
+          </span>
+          <span className="mt-3 inline-flex items-center text-[11px] font-medium text-[#006994]/80 dark:text-[#FFD100]/80">
+            Open link
+            <span className="ml-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+              →
+            </span>
+          </span>
+        </a>
+      ))}
+    </motion.div>
+  </div>
+</section>
 
     </div>
   );
 }
+
