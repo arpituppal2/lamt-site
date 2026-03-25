@@ -2,81 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-/* -------------------------------------------------
-   THEME TOKENS (UCLA-compliant palette)
-   Dark by default, light when data-theme="light"
--------------------------------------------------- */
-:root {
-  /* UCLA brand */
-  --ucla-blue: #2774AE;
-  --ucla-gold: #FFD100;
-  --ucla-darkest: #003B5C;
-  --ucla-darker: #005587;
-
-  /* Dark theme (default) */
-  --bg: #020617;           /* page background */
-  --bg-elevated: #030712;  /* cards/sections */
-  --text: #F5F5F7;
-  --text-muted: #9CA3AF;
-  --card-bg: rgba(15, 23, 42, 0.96);
-  --card-border: rgba(148, 163, 184, 0.35);
-}
-
-html[data-theme='light'] {
-  --bg: #F9FAFB;
-  --bg-elevated: #FFFFFF;
-  --text: #020617;
-  --text-muted: #4B5563;
-  --card-bg: rgba(255, 255, 255, 0.96);
-  --card-border: rgba(15, 23, 42, 0.08);
-}
-
-/* -------------------------------------------------
-   BASE
--------------------------------------------------- */
-html {
-  scroll-behavior: smooth;
-  background-color: var(--bg);
-}
-
 body {
   margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  /* Smoothly fade between light and dark modes */
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* -------------------------------------------------
-   UTILITIES / DECOR
--------------------------------------------------- */
-
+/* Adaptive Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.6);
+  background: #CBD5E1; /* Light mode */
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.9);
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151; /* Dark mode */
 }
 
-/* Gold gradient text (Rolls-Royce / Apple vibe) */
-.text-gradient-gold {
-  background: linear-gradient(
-    135deg,
-    #bf953f,
-    #fcf6ba,
-    #b38728,
-    #fbf5b7,
-    #aa771c
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Force KaTeX to respect Tailwind's light/dark mode text colors */
+.katex {
+  color: inherit !important;
+}
+.katex * {
+  border-color: currentColor !important;
+}
+/* Custom cursor toggle helper */
+body.cursor-hidden,
+body.cursor-hidden * {
+  cursor: none !important;
 }
