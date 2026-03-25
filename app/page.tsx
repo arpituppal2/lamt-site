@@ -10,7 +10,7 @@ const daySchedule = [
   { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
   { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome remarks from UCLA students and faculty.' },
   { time: '09:15 AM', title: 'Special Team Round', subtitle: '75 minutes. A mystery collaboration round, revealed day-of.' },
-  { time: '10:45 AM', title: 'Algebra Round', subtitle: '50 minutes · 10 problems · individual focus.' },
+  { time: '10:45 AM', title: 'Algebra/Number Theory Round', subtitle: '50 minutes · 10 problems · individual focus.' },
   { time: '12:00 PM', title: 'Geometry Round', subtitle: '50 minutes · 10 problems · precision and diagrams.' },
   { time: '01:00 PM', title: 'Lunch & Disputes', subtitle: 'Recharge, explore campus, and submit solution disputes.' },
   { time: '02:00 PM', title: 'Combinatorics Round', subtitle: '50 minutes · 10 problems · clever counting under time.' },
