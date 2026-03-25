@@ -188,66 +188,55 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ABOUT -------------------------------------------------------------- */}
-      <section id="about" className="py-28 px-6 bg-[#FAFAFA] dark:bg-black transition-colors duration-500">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-120px' }}
-            variants={fadeUp}
-            className="mb-14 text-center"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#003B5C] dark:text-white">
-              What is LAMT?
-            </h2>
-          </motion.div>
+{/* ABOUT -------------------------------------------------------------- */}
+<section
+  id="about"
+  className="py-24 px-6 bg-[#F5F7FB] dark:bg-black transition-colors duration-500"
+>
+  <div className="max-w-4xl mx-auto">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-120px' }}
+      variants={fadeUp}
+      className="mb-10"
+    >
+      <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100] mb-3">
+        About the tournament
+      </p>
+      <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white mb-4">
+        What is LAMT?
+      </h2>
+      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
+        The Los Angeles Math Tournament (LAMT) is an annual, student‑run math competition at UCLA
+        for middle and high school students. For one day each year, teams tackle creative,
+        proof‑driven problems in algebra, geometry, combinatorics, and number theory, with an
+        emphasis on deep problem solving over routine techniques.
+      </p>
+    </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            {/* WHAT IS LAMT -------------------------------------------------- */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="p-7 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none"
-            >
-              <h3 className="text-xs font-bold text-[#006994] dark:text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                What is LAMT
-              </h3>
-              <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                The Los Angeles Math Tournament (LAMT) is an annual, student‑run math competition hosted at UCLA for middle
-                and high school students from across the region and beyond. For a full day, teams tackle creative,
-                proof‑driven problems that draw on algebra, geometry, combinatorics, and number theory, emphasizing deep
-                problem solving over routine techniques.
-              </p>
-            </motion.div>
-
-            {/* ROUNDS / FORMAT ---------------------------------------------- */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.08 }}
-              className="p-7 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none"
-            >
-              <h3 className="text-xs font-bold text-[#006994] dark:text-[#FFD100] tracking-[0.22em] uppercase mb-3">
-                Rounds & contest format
-              </h3>
-              <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                The Los Angeles Math Tournament is a full‑day contest for middle and high school students, with teams of up
-                to six competitors. The planned format is:
-              </p>
-              <ul className="mt-4 space-y-2 text-sm md:text-base text-slate-600 dark:text-slate-300">
-                <li>• Team Round 1 – 75 minutes, format to be revealed.</li>
-                <li>• Individual rounds – three 50‑minute subject tests, each with 10 numerical‑answer questions.</li>
-                <li>• Team Round 2 – 75 minutes, format to be revealed.</li>
-                <li>• Tiebreakers (individual only) – 15 minutes, 3 short‑answer problems for each team and individual round.</li>
-              </ul>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="space-y-4"
+    >
+      <h3 className="text-xs font-semibold tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100]">
+        Rounds and format
+      </h3>
+      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
+        LAMT is a full‑day contest for teams of up to six students. The planned format is:
+      </p>
+      <ul className="mt-2 space-y-1 text-sm md:text-base text-slate-700 dark:text-slate-300 list-disc list-inside">
+        <li>Team Round 1 – 75 minutes, format revealed on contest day.</li>
+        <li>Individual rounds – three 50‑minute subject tests, each with 10 numerical‑answer questions.</li>
+        <li>Team Round 2 – 75 minutes, format revealed on contest day.</li>
+        <li>Tiebreakers (individual only) – 15 minutes, 3 short‑answer problems per round.</li>
+      </ul>
+    </motion.div>
+  </div>
+</section>
       
       {/* SCHEDULE ----------------------------------------------------------- */}
       <section id="schedule" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-500">
