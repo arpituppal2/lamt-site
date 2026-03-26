@@ -8,13 +8,13 @@ import MathDeco from './components/MathDeco';
 // --- DATA ------------------------------------------------------------------
 const daySchedule = [
   { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
-  { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome remarks from UCLA students and faculty.' },
-  { time: '09:15 AM', title: 'Special Team Round', subtitle: '75 minutes. A mystery collaboration round, revealed day-of.' },
-  { time: '10:45 AM', title: 'Algebra/Number Theory Round', subtitle: '50 minutes · 10 problems · individual focus.' },
-  { time: '12:00 PM', title: 'Geometry Round', subtitle: '50 minutes · 10 problems · precision and diagrams.' },
+  { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome remarks from UCLA Students and LAMT Hosts.' },
+  { time: '09:15 AM', title: 'Special Team Round', subtitle: '75 minutes. A special team round, details revealed day-of.' },
+  { time: '10:45 AM', title: 'Algebra/Number Theory Round', subtitle: '50 minutes · 10 problems · individual round.' },
+  { time: '12:00 PM', title: 'Geometry Round', subtitle: '50 minutes · 10 problems · individual round.' },
   { time: '01:00 PM', title: 'Lunch & Disputes', subtitle: 'Recharge, explore campus, and submit solution disputes.' },
-  { time: '02:00 PM', title: 'Combinatorics Round', subtitle: '50 minutes · 10 problems · clever counting under time.' },
-  { time: '03:15 PM', title: 'Guts Round', subtitle: '60–75 minutes · live-scored, high-energy team chaos.' },
+  { time: '02:00 PM', title: 'Combinatorics Round', subtitle: '50 minutes · 10 problems · individual round.' },
+  { time: '03:15 PM', title: 'Guts Round', subtitle: '75 minutes · live-scored. multiple sets of 3 problems.' },
   { time: '04:30 PM', title: 'Integration Bee & Talk', subtitle: 'Integration Bee, guest lecture, tiebreaks, final disputes.' },
   { time: '06:00 PM', title: 'Awards Ceremony', subtitle: 'Team & individual awards, photos, and celebration.' },
 ];
@@ -254,7 +254,7 @@ export default function HomePage() {
       <section id="schedule" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-500">
         <div className="max-w-4xl mx-auto">
           <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center text-[#003B5C] dark:text-white">
-            One day in Westwood.
+            LAMT 2026 will be held on May 17th.
           </motion.h2>
 
           <div className="space-y-2">
