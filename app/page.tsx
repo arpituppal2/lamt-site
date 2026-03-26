@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: 'Is LAMT only for advanced students?',
-    a: 'Rounds are written at a high level, inspired by contests like HMMT and BMT, but we design the experience to be welcoming and aspirational for anyone who loves math.',
+    a: 'Rounds are written for to provide a challenge for competitors at all levels. We design the experience to be welcoming and aspirational for anyone who loves math, while still providing a challenging set of questions for those at an advanced level.',
   },
   {
     q: 'How many students per team?',
