@@ -243,7 +243,7 @@ export default function HomePage() {
       <ul className="mt-2 space-y-1 text-sm md:text-base text-slate-700 dark:text-slate-300 list-disc list-inside">
         <li>Team Round 1 – 75 minutes, format revealed on contest day.</li>
         <li>Individual rounds – three 50‑minute subject tests, each with 10 numerical‑answer questions.</li>
-        <li>Team Round 2 – 75 minutes, format revealed on contest day.</li>
+        <li>Team Round 2 – 75 minutes, live scored GUTS Round.</li>
         <li>Tiebreakers (individual only) – 15 minutes, 3 short‑answer problems per round.</li>
       </ul>
     </motion.div>
