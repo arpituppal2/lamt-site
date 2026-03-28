@@ -1,3 +1,4 @@
+// app/layout.tsx
 'use client';
 
 import './globals.css';
@@ -5,23 +6,17 @@ import type React from 'react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'LAMT 2026 · UCLA Los Angeles Math Tournament',
+  title: 'Los Angeles Math Tournament',
   description: 'Student-run math tournament at UCLA for middle and high school students.',
 };
-
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
-import KaTeXLoader from './components/KaTeXLoader';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]" suppressHydrationWarning>
-        {/* keep your script, KaTeXLoader, NavBar, etc. exactly as before */}
-        {/* ... */}
+        {/* your script, KaTeXLoader, NavBar, etc. */}
         <main className="relative min-h-screen pt-20">{children}</main>
-        {/* ... */}
+        {/* Footer, etc. */}
       </body>
     </html>
   );
