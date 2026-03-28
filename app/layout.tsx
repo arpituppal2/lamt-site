@@ -3,24 +3,10 @@
 
 import './globals.css';
 import type React from 'react';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Los Angeles Math Tournament',
-  description: 'Student-run math tournament at UCLA for middle and high school students.',
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]" suppressHydrationWarning>
-        {/* your script, KaTeXLoader, NavBar, etc. */}
-        <main className="relative min-h-screen pt-20">{children}</main>
-        {/* Footer, etc. */}
-      </body>
-    </html>
-  );
-}
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
+import KaTeXLoader from './components/KaTeXLoader';
 
 // --- ICONS ---
 const SunIcon = () => (
@@ -41,17 +27,12 @@ function EliteCursor() {
   const cursorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Hide default cursor across the app
     document.body.classList.add('cursor-hidden');
 
     const handleMove = (e: MouseEvent) => {
       if (!cursorRef.current) return;
-      
-      // Subtracting 12px centers the 24px (h-6 w-6) cursor perfectly on the mouse
       const x = e.clientX - 12;
       const y = e.clientY - 12;
-      
-      // Apply translation directly without relying on Tailwind transform classes
       cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     };
 
@@ -65,7 +46,6 @@ function EliteCursor() {
   return (
     <div
       ref={cursorRef}
-      // Removed -translate-x-1/2 and -translate-y-1/2 since JS handles it now
       className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-slate-800 dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out"
       style={{ transform: 'translate3d(-999px, -999px, 0)' }}
     />
@@ -187,14 +167,24 @@ function Footer() {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    document.title = 'Los Angeles Math Tournament';
+  }, []);
+
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]" suppressHydrationWarning>
+      <body
+        className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]"
+        suppressHydrationWarning
+      >
         <script
           dangerouslySetInnerHTML={{
             __html: `
