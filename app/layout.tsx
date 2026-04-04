@@ -4,6 +4,7 @@
 import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
@@ -75,8 +76,8 @@ function NavBar() {
       className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-10 py-4 bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 transition-colors duration-500"
     >
       <Link href="/" className="flex items-center gap-3 group">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2774AE]">
-          <span className="text-[10px] font-black tracking-[0.24em] text-[#FFD100]">LA</span>
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white overflow-hidden">
+          <Image src="/LAMTBear.png" alt="LAMT Bear" width={36} height={36} className="object-contain" />
         </div>
         <div className="flex flex-col leading-tight">
           <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-slate-900 dark:text-slate-100">
@@ -117,8 +118,8 @@ function Footer() {
     <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black transition-colors duration-500">
       <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6 md:px-10 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2774AE]">
-            <span className="text-[9px] font-black tracking-[0.26em] text-[#FFD100]">LA</span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white overflow-hidden">
+            <Image src="/LAMTBear.png" alt="LAMT Bear" width={28} height={28} className="object-contain" />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-[10px] font-semibold tracking-[0.26em] uppercase text-slate-700 dark:text-slate-200">
