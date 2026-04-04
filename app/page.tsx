@@ -69,6 +69,8 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
+const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
+
 // --- PAGE ------------------------------------------------------------------
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
@@ -186,7 +188,7 @@ export default function HomePage() {
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
-              href="https://contestdojo.com/"
+              href={REGISTER_URL}
               target="_blank"
               rel="noreferrer"
               className="px-10 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_0_30px_rgba(255,209,0,0.4)] dark:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
@@ -350,7 +352,7 @@ export default function HomePage() {
       className="mt-8"
     >
       <Link
-        href="https://contestdojo.com/"
+        href={REGISTER_URL}
         target="_blank"
         rel="noreferrer"
         className="inline-flex items-center justify-center rounded-full bg-[#FFD100] px-8 md:px-12 py-3 md:py-4 text-sm md:text-base font-semibold text-[#003B5C] dark:text-black tracking-wide shadow-[0_8px_30px_rgba(255,209,0,0.30)] dark:shadow-[0_0_45px_rgba(255,209,0,0.45)] transition-transform duration-200 hover:translate-y-[1px] hover:shadow-[0_10px_35px_rgba(255,209,0,0.35)]"
