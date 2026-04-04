@@ -28,13 +28,17 @@ const faqs = [
     q: 'When and where is the tournament held?',
     a: 'LAMT will take place on May 17th. The tournament is held in the Court of Sciences at UCLA, Los Angeles. Rounds will be held in the Mathematical Sciences Building; room assignments will be emailed to registered teams closer to the date.',
   },
+    {
+    q: 'Will middle school students be given a different exam?',
+    a: 'No. All students will be given the same exam. The exam is designed for the high school level, though middle school students may participate.',
+  },
   {
     q: 'Is LAMT only for advanced students?',
     a: 'Rounds are written to provide a challenge for competitors at all levels. We design the experience to be welcoming and aspirational for anyone who loves math, while still providing a challenging set of questions for those at an advanced level.',
   },
   {
     q: 'How many students per team?',
-    a: 'Teams may have up to 6 students. Schools and programs are welcome to register multiple teams.',
+    a: 'Teams may have up to 6 students. Schools and programs are welcome to register multiple teams. There is no restriction on age or grade level for teams; for example, a team may consist of 6th, 8th, and 11th grade students without any issues.',
   },
   {
     q: 'Can individuals sign up without a team?',
