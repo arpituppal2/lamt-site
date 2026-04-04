@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: 'Is LAMT only for advanced students?',
-    a: 'Rounds are written for to provide a challenge for competitors at all levels. We design the experience to be welcoming and aspirational for anyone who loves math, while still providing a challenging set of questions for those at an advanced level.',
+    a: 'Rounds are written to provide a challenge for competitors at all levels. We design the experience to be welcoming and aspirational for anyone who loves math, while still providing a challenging set of questions for those at an advanced level.',
   },
   {
     q: 'How many students per team?',
@@ -166,7 +166,7 @@ export default function HomePage() {
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div variants={fadeUp} className="mb-6">
             <span className="inline-block py-1 px-4 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[#FFD100] dark:text-slate-100 backdrop-blur-md shadow-sm dark:shadow-none">
-              UCLA · Los Angeles Math Tournament · May 17, 2026
+              Los Angeles Math Tournament · May 17, 2026
             </span>
           </motion.div>
 
@@ -179,8 +179,9 @@ export default function HomePage() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="max-w-2xl mx-auto text-lg md:text-xl text-white/90 dark:text-[#D1D5DB] font-light mb-10 leading-relaxed">
-            "Have you ever done math with your life on the line?"<br />
-            Experience rigorous, high-stakes mathematics at UCLA.
+            A student-run mathematics competition hosted at UCLA,
+            bringing together middle and high school students for a full day of
+            rigorous problem solving across algebra, geometry, combinatorics, and number theory.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -222,10 +223,10 @@ export default function HomePage() {
         What is LAMT?
       </h2>
       <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
-        The Los Angeles Math Tournament (LAMT) is an annual, student‑run math competition at UCLA
-        for middle and high school students. For one day each year, teams tackle creative,
-        proof‑driven problems in algebra, geometry, combinatorics, and number theory, with an
-        emphasis on deep problem solving over routine techniques.
+        The Los Angeles Math Tournament (LAMT) is an annual, student-run mathematics competition
+        held at UCLA for middle and high school students. Teams tackle carefully crafted problems
+        in algebra, geometry, combinatorics, and number theory, with an emphasis on mathematical
+        depth and creative problem solving.
       </p>
     </motion.div>
 
@@ -240,13 +241,13 @@ export default function HomePage() {
         Rounds and format
       </h3>
       <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
-        LAMT is a full‑day contest for teams of up to six students. The planned format is:
+        LAMT is a full-day contest for teams of up to six students. The planned format is:
       </p>
       <ul className="mt-2 space-y-1 text-sm md:text-base text-slate-700 dark:text-slate-300 list-disc list-inside">
         <li>Team Round 1 – 75 minutes, format revealed on contest day.</li>
-        <li>Individual rounds – three 50‑minute subject tests, each with 10 numerical‑answer questions.</li>
+        <li>Individual rounds – three 50-minute subject tests, each with 10 numerical-answer questions.</li>
         <li>Team Round 2 – 75 minutes, live scored GUTS Round.</li>
-        <li>Tiebreakers (individual only) – 15 minutes, 3 short‑answer problems per round.</li>
+        <li>Tiebreakers (individual only) – 15 minutes, 3 short-answer problems per round.</li>
       </ul>
     </motion.div>
   </div>
@@ -286,7 +287,7 @@ export default function HomePage() {
       <section id="faq" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-white dark:bg-black transition-colors duration-500">
         <div className="max-w-3xl mx-auto">
           <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-12 text-center text-[#003B5C] dark:text-white">
-            Questions, answered.
+            Frequently Asked Questions
           </motion.h2>
 
           <div className="space-y-4">
@@ -327,7 +328,7 @@ export default function HomePage() {
       variants={fadeUp}
       className="text-balance text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white"
     >
-      Registration is live!
+      Registration is now open.
     </motion.h2>
 
     <motion.p
@@ -337,8 +338,8 @@ export default function HomePage() {
       variants={fadeUp}
       className="mt-4 text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto"
     >
-      LAMT 2026 will be held on May 17, 2026. Register your team now on ContestDojo
-      and share with any friends who might be interested!
+      LAMT 2026 takes place on May 17, 2026 at UCLA. Register your team on ContestDojo
+      and share this opportunity with students who may be interested in participating.
     </motion.p>
 
     <motion.div

@@ -73,23 +73,23 @@ function NavBar() {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-10 py-4 bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 transition-colors duration-500"
+      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-12 py-5 bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 transition-colors duration-500"
     >
-      <Link href="/" className="flex items-center gap-3 group">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white overflow-hidden">
-          <Image src="/LAMTBear.png" alt="LAMT Bear" width={36} height={36} className="object-contain" />
+      <Link href="/" className="flex items-center gap-4 group">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white overflow-hidden shadow-sm">
+          <Image src="/LAMTBear.png" alt="LAMT Bear" width={44} height={44} className="object-contain" />
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-slate-900 dark:text-slate-100">
+          <span className="text-xs font-semibold tracking-[0.3em] uppercase text-slate-900 dark:text-slate-100">
             LAMT 2026
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400">
-            UCLA · Los Angeles Math Tournament
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Los Angeles Math Tournament
           </span>
         </div>
       </Link>
 
-      <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-600 dark:text-slate-300 md:flex">
+      <div className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-600 dark:text-slate-300 md:flex">
         {links.map(link => (
           <Link
             key={link.href}
@@ -103,7 +103,7 @@ function NavBar() {
           href="https://contestdojo.com/"
           target="_blank"
           rel="noreferrer"
-          className="ml-4 rounded-full bg-[#FFD100] px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#003B5C] dark:text-black transition-transform duration-200 hover:scale-105 shadow-md dark:shadow-none"
+          className="ml-4 rounded-full bg-[#FFD100] px-6 py-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#003B5C] dark:text-black transition-transform duration-200 hover:scale-105 shadow-md dark:shadow-none"
         >
           Register
         </Link>
@@ -118,14 +118,14 @@ function Footer() {
     <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black transition-colors duration-500">
       <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6 md:px-10 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white overflow-hidden">
-            <Image src="/LAMTBear.png" alt="LAMT Bear" width={28} height={28} className="object-contain" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white overflow-hidden shadow-sm">
+            <Image src="/LAMTBear.png" alt="LAMT Bear" width={32} height={32} className="object-contain" />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-[10px] font-semibold tracking-[0.26em] uppercase text-slate-700 dark:text-slate-200">
               LAMT 2026
             </span>
-            <span className="text-[10px]">© 2026 UCLA Los Angeles Math Tournament</span>
+            <span className="text-[10px]">© 2026 Los Angeles Math Tournament</span>
           </div>
         </div>
 
@@ -174,7 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <KaTeXLoader />
         <NavBar />
         <ThemeToggle />
-        <main className="relative min-h-screen pt-20">{children}</main>
+        <main className="relative min-h-screen pt-24">{children}</main>
         <Footer />
       </body>
     </html>
