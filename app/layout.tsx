@@ -5,7 +5,7 @@ import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
 
 // --- ICONS ---
@@ -21,36 +21,6 @@ const MoonIcon = () => (
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 );
-
-// --- CUSTOM CURSOR ---
-function EliteCursor() {
-  const cursorRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    document.body.classList.add('cursor-hidden');
-
-    const handleMove = (e: MouseEvent) => {
-      if (!cursorRef.current) return;
-      const x = e.clientX - 12;
-      const y = e.clientY - 12;
-      cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    };
-
-    window.addEventListener('mousemove', handleMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMove);
-      document.body.classList.remove('cursor-hidden');
-    };
-  }, []);
-
-  return (
-    <div
-      ref={cursorRef}
-      className="fixed top-0 left-0 z-[99999] h-6 w-6 rounded-full bg-slate-800 dark:bg-white mix-blend-difference pointer-events-none transition-transform duration-75 ease-out"
-      style={{ transform: 'translate3d(-999px, -999px, 0)' }}
-    />
-  );
-}
 
 // --- THEME TOGGLE ---
 function ThemeToggle() {
@@ -129,10 +99,12 @@ function NavBar() {
           </Link>
         ))}
         <Link
-          href="/#register"
+          href="https://contestdojo.com/"
+          target="_blank"
+          rel="noreferrer"
           className="ml-4 rounded-full bg-[#FFD100] px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#003B5C] dark:text-black transition-transform duration-200 hover:scale-105 shadow-md dark:shadow-none"
         >
-          Waitlist
+          Register
         </Link>
       </div>
     </motion.nav>
@@ -199,7 +171,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <KaTeXLoader />
-        <EliteCursor />
         <NavBar />
         <ThemeToggle />
         <main className="relative min-h-screen pt-20">{children}</main>

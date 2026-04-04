@@ -38,7 +38,7 @@ const faqs = [
   },
   {
     q: 'Can individuals sign up without a team?',
-    a: 'Yes. We plan to offer individual registration and will help form composite teams when appropriate. Details will be shared with waitlisted participants.',
+    a: 'Yes. We plan to offer individual registration and will help form composite teams when appropriate. Details will be shared upon registration.',
   },
   {
     q: 'What is the registration fee?',
@@ -185,10 +185,12 @@ export default function HomePage() {
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
-              href="https://forms.gle/8JUBJaQQv4fmL8th6"
+              href="https://contestdojo.com/"
+              target="_blank"
+              rel="noreferrer"
               className="px-10 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_0_30px_rgba(255,209,0,0.4)] dark:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
             >
-              Join the waitlist
+              Register on ContestDojo
             </Link>
             <a
               href="#about"
@@ -325,7 +327,7 @@ export default function HomePage() {
       variants={fadeUp}
       className="text-balance text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white"
     >
-      Ready for UCLA?
+      Registration is live!
     </motion.h2>
 
     <motion.p
@@ -335,8 +337,8 @@ export default function HomePage() {
       variants={fadeUp}
       className="mt-4 text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto"
     >
-      LAMT 2026 will be held on May 17, 2026. Join the waitlist to get early
-      access as soon as team registration opens.
+      LAMT 2026 will be held on May 17, 2026. Register your team now on ContestDojo
+      and share with any friends who might be interested!
     </motion.p>
 
     <motion.div
@@ -347,12 +349,12 @@ export default function HomePage() {
       className="mt-8"
     >
       <Link
-        href="https://forms.gle/8JUBJaQQv4fmL8th6"
+        href="https://contestdojo.com/"
         target="_blank"
         rel="noreferrer"
         className="inline-flex items-center justify-center rounded-full bg-[#FFD100] px-8 md:px-12 py-3 md:py-4 text-sm md:text-base font-semibold text-[#003B5C] dark:text-black tracking-wide shadow-[0_8px_30px_rgba(255,209,0,0.30)] dark:shadow-[0_0_45px_rgba(255,209,0,0.45)] transition-transform duration-200 hover:translate-y-[1px] hover:shadow-[0_10px_35px_rgba(255,209,0,0.35)]"
       >
-        Join waitlist / interest form →
+        Register on ContestDojo →
       </Link>
     </motion.div>
 
@@ -408,4 +410,3 @@ export default function HomePage() {
     </div>
   );
 }
-
