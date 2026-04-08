@@ -1,6 +1,3 @@
-// app/layout.tsx
-'use client';
-
 import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
@@ -151,9 +148,6 @@ function Footer() {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    document.title = 'Los Angeles Math Tournament';
-  }, []);
 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
