@@ -1,3 +1,5 @@
+'use client';
+
 import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
@@ -5,16 +7,6 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title:"Los Angeles Math Tournament",
-  icons: {
-    icon: "/LAMTBear.png",
-    shortcut: "/LAMTBear.png",
-    apple: "/LAMTBear.png",
-  },
-};
   
 
 // --- ICONS ---
@@ -152,6 +144,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <title>Los Angeles Math Tournament</title>
+        <link rel="icon" href="/LAMTBear.png" type="image/png" />
+        <link rel="shortcut icon" href="/LAMTBear.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/LAMTBear.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -159,6 +155,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
+
       <body
         className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]"
         suppressHydrationWarning
