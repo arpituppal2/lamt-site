@@ -8,6 +8,17 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title:"Los Angeles Math Tournament",
+  icons: {
+    icon: "/LAMTBear.png",
+    shortcut: "/LAMTBear.png",
+    apple: "/LAMTBear.png",
+  },
+};
+  
 
 // --- ICONS ---
 const SunIcon = () => (
