@@ -145,9 +145,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <title>Los Angeles Math Tournament</title>
-        <link rel="icon" href="/LAMTBear.png?v=2" type="image/png" />
-        <link rel="shortcut icon" href="/LAMTBear.png?v=2" type="image/png" />
-        <link rel="apple-touch-icon" href="/LAMTBear.png?v=2" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
