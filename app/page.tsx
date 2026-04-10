@@ -291,7 +291,7 @@ export default function HomePage() {
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeUp}
-      className="mt-14 grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-3 text-left"
+      className="mt-14 grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-4 text-left"
     >
       {[
         {
@@ -309,6 +309,11 @@ export default function HomePage() {
           val: 'LAMT Community Group',
           link: 'https://www.facebook.com/groups/1429462591976204/',
         },
+      {
+        title: 'LinkedIn',
+        val: Los Angeles Math Tournament
+        link: 'https://www.linkedin.com/company/la-math-tournament/'
+      },
       ].map((contact) => (
         <a
           key={contact.title}
