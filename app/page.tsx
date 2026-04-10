@@ -92,10 +92,10 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-10 max-w-5xl mx-auto text-center">
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-15 max-w-5xl mx-auto text-center">
           <motion.div variants={fadeUp} className="mb-6">
             <span className="inline-block py-1 px-4 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[#FFD100] dark:text-slate-100 backdrop-blur-md shadow-sm dark:shadow-none">
-              Los Angeles Math Tournament · May 17, 2026
+              UCLA Court of Sciences · Sunday, May 17, 2026
             </span>
           </motion.div>
 
