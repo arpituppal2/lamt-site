@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import MathDeco from './components/MathDeco';
 
 // --- DATA ------------------------------------------------------------------
 const daySchedule = [
