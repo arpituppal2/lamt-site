@@ -296,8 +296,8 @@ export default function HomePage() {
       {[
         {
           title: 'Email',
-          val: 'uclamathtournament@gmail.com',
-          link: 'mailto:uclamathtournament@gmail.com',
+          val: 'team@lamt.net',
+          link: 'mailto:team@lamt.net',
         },
         {
           title: 'Instagram',
