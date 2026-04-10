@@ -83,14 +83,7 @@ export default function HomePage() {
     <div className="relative overflow-hidden">
 
       {/* HERO --------------------------------------------------------------- */}
-<section className="relative min-h-screen flex flex-col items-center justify-center px-6 bg-gradient-to-br from-[#003B5C] to-[#006994] dark:from-black dark:to-black transition-colors duration-500"
-  style={{
-    minHeight: 'calc(100dvh - var(--navbar-height, 0px))',
-    paddingTop: 'calc(var(--navbar-height, 64px) + 1.5rem)',
-    paddingBottom: '2rem',
-  }}
->
-
+<section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-6 pt-16 pb-8 bg-gradient-to-br from-[#003B5C] to-[#006994] dark:from-black dark:to-black transition-colors duration-500">
         {/* Ambient Glows */}
         <div className="absolute inset-0 -z-20 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#006994] opacity-[0.2] dark:opacity-[0.45] blur-[120px] rounded-full mix-blend-screen transition-opacity duration-500" />
