@@ -173,7 +173,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <KaTeXLoader />
         <NavBar />
         <ThemeToggle />
-        <main className="relative min-h-screen pt-24">{children}</main>
+          <main className="relative min-h-screen">{children}</main>
         <Footer />
       </body>
     </html>
