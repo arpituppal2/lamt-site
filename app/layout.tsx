@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
 
-// --- THEME TOGGLE (fixed bottom-right) ------------------------------------
+// ── THEME TOGGLE (fixed bottom-right) ──────────────────────────────────────
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -20,9 +20,8 @@ function ThemeToggle() {
   if (!mounted) return null;
 
   const toggle = () => {
-    const root = document.documentElement;
     const next = !isDark;
-    root.classList.toggle('dark', next);
+    document.documentElement.classList.toggle('dark', next);
     try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch (_) {}
     setIsDark(next);
   };
@@ -36,8 +35,8 @@ function ThemeToggle() {
         bottom: '1.5rem',
         right: '1.5rem',
         zIndex: 50,
-        width: '42px',
-        height: '42px',
+        width: '40px',
+        height: '40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -45,18 +44,18 @@ function ThemeToggle() {
         backgroundColor: 'var(--surface)',
         border: '1px solid var(--border-strong)',
         color: 'var(--text-muted)',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
         cursor: 'pointer',
         transition: 'color 0.15s, background-color 0.15s',
       }}
     >
       {isDark ? (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="5"/>
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
       ) : (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       )}
@@ -64,241 +63,153 @@ function ThemeToggle() {
   );
 }
 
-// --- NAVBAR ---------------------------------------------------------------
+// ── NAVBAR ──────────────────────────────────────────────────────────────────
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const links = [
-    { href: '/#about', label: 'About' },
+    { href: '/#about',    label: 'About' },
     { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq', label: 'FAQ' },
+    { href: '/#faq',      label: 'FAQ' },
     { href: '/#location', label: 'Location' },
   ];
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const fn = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
   }, []);
-
-  const navStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0, left: 0, right: 0,
-    zIndex: 40,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 clamp(1rem, 4vw, 3rem)',
-    height: '60px',
-    backgroundColor: scrolled ? 'color-mix(in srgb, var(--bg) 94%, transparent)' : 'var(--bg)',
-    borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
-    backdropFilter: scrolled ? 'blur(12px)' : 'none',
-    transition: 'background-color 0.25s, border-color 0.25s',
-  };
 
   return (
     <>
-      <nav style={navStyle}>
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-md overflow-hidden"
-            style={{ backgroundColor: 'var(--blue)' }}
-          >
-            <Image src="/LAMTBear.png" alt="LAMT" width={28} height={28} className="object-contain" />
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
+        height: '58px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 clamp(1rem, 4vw, 3rem)',
+        backgroundColor: scrolled ? 'var(--bg)' : 'transparent',
+        borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
+        backdropFilter: scrolled ? 'blur(8px)' : 'none',
+        transition: 'background-color 0.2s, border-color 0.2s',
+      }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
+          <div style={{
+            width: '30px', height: '30px', borderRadius: '6px',
+            backgroundColor: 'var(--blue)', overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <Image src="/LAMTBear.png" alt="LAMT" width={26} height={26} style={{ objectFit: 'contain' }} />
           </div>
-          <div className="flex flex-col" style={{ gap: '1px' }}>
-            <span style={{
-              fontSize: 'var(--text-sm)',
-              fontWeight: 700,
-              letterSpacing: '0.04em',
-              color: 'var(--text)',
-              lineHeight: 1.2,
-            }}>LAMT 2026</span>
-            <span style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--text-muted)',
-              lineHeight: 1.2,
-            }}>May 17 · UCLA</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+            <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text)', lineHeight: 1.15 }}>LAMT 2026</span>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', lineHeight: 1.15 }}>May 17 · UCLA</span>
           </div>
         </Link>
 
-        {/* Desktop links */}
         <div className="hidden md:flex items-center" style={{ gap: 'var(--s8)' }}>
-          {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                fontSize: 'var(--text-sm)',
-                color: 'var(--text-muted)',
-                fontWeight: 500,
-                transition: 'color 0.15s',
-                textDecoration: 'none',
-              }}
+          {links.map(l => (
+            <Link key={l.href} href={l.href}
               className="hover:!text-[var(--text)]"
-            >
-              {link.label}
-            </Link>
+              style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', fontWeight: 500, textDecoration: 'none', transition: 'color 0.15s' }}
+            >{l.label}</Link>
           ))}
         </div>
 
-        {/* Right: register + mobile hamburger */}
-        <div className="flex items-center" style={{ gap: 'var(--s3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s3)' }}>
           <Link
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden md:inline-flex items-center justify-center"
-            style={{
-              fontSize: 'var(--text-sm)',
-              fontWeight: 600,
-              padding: '0.4375rem 1rem',
-              backgroundColor: 'var(--blue)',
-              color: '#fff',
-              borderRadius: 'var(--radius-md)',
-              textDecoration: 'none',
-              transition: 'opacity 0.15s',
-            }}
+            target="_blank" rel="noreferrer"
             className="hidden md:inline-flex items-center justify-center hover:opacity-85"
-          >
-            Register
-          </Link>
+            style={{
+              fontSize: 'var(--text-sm)', fontWeight: 600,
+              padding: '0.4375rem 1rem',
+              backgroundColor: 'var(--blue)', color: '#fff',
+              borderRadius: '6px', textDecoration: 'none', transition: 'opacity 0.15s',
+            }}
+          >Register</Link>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMenuOpen(v => !v)}
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-md"
+            className="md:hidden flex items-center justify-center"
             style={{
-              border: '1px solid var(--border)',
-              color: 'var(--text)',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
+              width: '36px', height: '36px',
+              border: '1px solid var(--border)', borderRadius: '6px',
+              color: 'var(--text)', backgroundColor: 'transparent', cursor: 'pointer',
             }}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           >
-            {menuOpen ? (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            ) : (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            )}
+            {menuOpen
+              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            }
           </button>
         </div>
       </nav>
 
-      {/* Mobile drawer */}
       {menuOpen && (
-        <div
-          className="md:hidden fixed left-0 right-0 z-30 flex flex-col"
-          style={{
-            top: '60px',
-            backgroundColor: 'var(--bg)',
-            borderBottom: '1px solid var(--border)',
-            padding: 'var(--s4) clamp(1rem, 4vw, 3rem) var(--s6)',
-          }}
-        >
-          {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: 'var(--text-base)',
-                fontWeight: 500,
-                color: 'var(--text)',
-                padding: 'var(--s3) 0',
-                borderBottom: '1px solid var(--border)',
-                textDecoration: 'none',
-              }}
-            >
-              {link.label}
-            </Link>
+        <div className="md:hidden" style={{
+          position: 'fixed', top: '58px', left: 0, right: 0, zIndex: 30,
+          backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)',
+          padding: 'var(--s3) clamp(1rem, 4vw, 3rem) var(--s5)',
+        }}>
+          {links.map(l => (
+            <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)} style={{
+              display: 'block', fontSize: 'var(--text-base)', fontWeight: 500, color: 'var(--text)',
+              padding: 'var(--s3) 0', borderBottom: '1px solid var(--border)', textDecoration: 'none',
+            }}>{l.label}</Link>
           ))}
           <Link
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-            target="_blank"
-            rel="noreferrer"
+            target="_blank" rel="noreferrer"
             onClick={() => setMenuOpen(false)}
-            className="mt-3 flex items-center justify-center"
             style={{
-              fontSize: 'var(--text-base)',
-              fontWeight: 600,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginTop: 'var(--s3)', fontSize: 'var(--text-base)', fontWeight: 600,
               padding: 'var(--s3) var(--s6)',
-              backgroundColor: 'var(--blue)',
-              color: '#fff',
-              borderRadius: 'var(--radius-md)',
-              textDecoration: 'none',
+              backgroundColor: 'var(--blue)', color: '#fff', borderRadius: '6px', textDecoration: 'none',
             }}
-          >
-            Register on ContestDojo
-          </Link>
+          >Register on ContestDojo</Link>
         </div>
       )}
     </>
   );
 }
 
-// --- FOOTER ---------------------------------------------------------------
+// ── FOOTER ──────────────────────────────────────────────────────────────────
 function Footer() {
-  const links = [
-    { href: '/#about', label: 'About' },
-    { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq', label: 'FAQ' },
-    { href: '/#location', label: 'Location' },
-    { href: 'mailto:team@lamt.net', label: 'Contact' },
-  ];
-
   return (
     <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--bg)' }}>
-      <div
-        className="container"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 'var(--s4)',
-          paddingTop: 'var(--s8)',
-          paddingBottom: 'var(--s8)',
-        }}
-      >
+      <div style={{
+        maxWidth: '1000px', marginInline: 'auto',
+        padding: 'var(--s8) clamp(1rem, 4vw, 3rem)',
+        display: 'flex', flexWrap: 'wrap',
+        alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s4)',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s3)' }}>
           <div style={{
-            width: '28px', height: '28px',
-            borderRadius: 'var(--radius-sm)',
-            backgroundColor: 'var(--blue)',
-            overflow: 'hidden',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
+            width: '26px', height: '26px', borderRadius: '5px',
+            backgroundColor: 'var(--blue)', overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <Image src="/LAMTBear.png" alt="LAMT" width={24} height={24} className="object-contain" />
+            <Image src="/LAMTBear.png" alt="LAMT" width={22} height={22} style={{ objectFit: 'contain' }} />
           </div>
-          <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
             © 2026 Los Angeles Math Tournament
           </span>
         </div>
-
-        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s6)' }}>
-          {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                fontSize: 'var(--text-sm)',
-                color: 'var(--text-muted)',
-                textDecoration: 'none',
-                transition: 'color 0.15s',
-              }}
+        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s5)' }}>
+          {[
+            { href: '/#about',    label: 'About' },
+            { href: '/#schedule', label: 'Schedule' },
+            { href: '/#faq',      label: 'FAQ' },
+            { href: '/#location', label: 'Location' },
+            { href: 'mailto:team@lamt.net', label: 'Contact' },
+          ].map(l => (
+            <Link key={l.href} href={l.href}
               className="hover:!text-[var(--text)]"
-            >
-              {link.label}
-            </Link>
+              style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.15s' }}
+            >{l.label}</Link>
           ))}
         </nav>
       </div>
@@ -306,53 +217,31 @@ function Footer() {
   );
 }
 
-// --- ROOT LAYOUT ----------------------------------------------------------
+// ── ROOT LAYOUT ─────────────────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <title>Los Angeles Math Tournament 2026</title>
         <meta name="description" content="LAMT 2026 — A student-run math competition at UCLA on May 17, 2026. Open to middle and high school students in grades 6–12." />
-        <meta name="keywords" content="math tournament, LA math tournament, LAMT, UCLA, math competition, high school math, middle school math, 2026" />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://www.lamt.net" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.lamt.net" />
-        <meta property="og:title" content="Los Angeles Math Tournament 2026" />
-        <meta property="og:description" content="A student-run math competition at UCLA on May 17, 2026. Open to middle and high school students in grades 6–12." />
-        <meta property="og:image" content="https://www.lamt.net/LAMTBear.png" />
-        <meta property="og:site_name" content="LAMT" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Los Angeles Math Tournament 2026" />
-        <meta name="twitter:description" content="Student-run math competition at UCLA · May 17, 2026 · Grades 6–12" />
-        <meta name="twitter:image" content="https://www.lamt.net/LAMTBear.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#003B5C" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
       </head>
       <body suppressHydrationWarning>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark')
-                } else {
-                  document.documentElement.classList.remove('dark')
-                }
-              } catch (_) {}
-            `,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            }
+          } catch(_) {}
+        `}} />
         <KaTeXLoader />
         <NavBar />
         <ThemeToggle />
-        <main style={{ paddingTop: '60px' }}>{children}</main>
+        <main style={{ paddingTop: '58px' }}>{children}</main>
         <Footer />
       </body>
     </html>
