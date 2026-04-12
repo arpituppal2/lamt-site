@@ -2,36 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* UCLA brand palette — restrained use */
+  --blue:        #003B5C;
+  --blue-mid:    #005281;
+  --blue-light:  #1a6a94;
+  --gold:        #FFD100;
+  --gold-dim:    #e6bc00;
+
+  /* Surfaces */
+  --bg:          #fafaf8;
+  --surface:     #ffffff;
+  --surface-2:   #f4f3f0;
+  --border:      rgba(0, 59, 92, 0.10);
+  --border-strong: rgba(0, 59, 92, 0.18);
+
+  /* Text */
+  --text:        #1a1a1a;
+  --text-muted:  #5a5a5a;
+  --text-faint:  #9a9a9a;
+
+  /* Type scale */
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.15vw, 0.8125rem);
+  --text-sm:   clamp(0.875rem, 0.82rem + 0.22vw, 0.9375rem);
+  --text-base: clamp(1rem,     0.95rem + 0.2vw,  1.0625rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.5vw,  1.375rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.2vw,  2rem);
+  --text-2xl:  clamp(2rem,     1.2rem  + 2.2vw,  3.25rem);
+  --text-hero: clamp(3rem,     0.5rem  + 7vw,    7.5rem);
+
+  /* Spacing */
+  --s1: 0.25rem; --s2: 0.5rem; --s3: 0.75rem; --s4: 1rem;
+  --s5: 1.25rem; --s6: 1.5rem; --s8: 2rem; --s10: 2.5rem;
+  --s12: 3rem; --s16: 4rem; --s20: 5rem; --s24: 6rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+}
+
+/* Dark mode */
+.dark {
+  --bg:          #111010;
+  --surface:     #181716;
+  --surface-2:   #1f1e1d;
+  --border:      rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text:        #e8e6e1;
+  --text-muted:  #8a8680;
+  --text-faint:  #504d4a;
+  --blue-light:  #4a9ac4;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 body {
-  margin: 0;
-  /* Smoothly fade between light and dark modes */
-  transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100dvh;
+  line-height: 1.6;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: var(--text-base);
+  color: var(--text);
+  background-color: var(--bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Adaptive Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1; /* Light mode */
-  border-radius: 4px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #374151; /* Dark mode */
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.15; }
+p { text-wrap: pretty; }
+
+img, svg { display: block; max-width: 100%; }
+
+::selection {
+  background: var(--gold);
+  color: var(--blue);
 }
 
-/* Force KaTeX to respect Tailwind's light/dark mode text colors */
-.katex {
-  color: inherit !important;
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
-.katex * {
-  border-color: currentColor !important;
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-/* Custom cursor toggle helper */
-body.cursor-hidden,
-body.cursor-hidden * {
-  cursor: none !important;
+
+.container {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+.container-narrow {
+  max-width: 720px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
 }

@@ -6,222 +6,391 @@ import { useState } from 'react';
 
 // --- DATA ------------------------------------------------------------------
 const daySchedule = [
-  { time: '08:00 AM', title: 'Check-in', subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
-  { time: '08:45 AM', title: 'Opening Ceremony', subtitle: 'Welcome remarks from UCLA Students and LAMT Hosts.' },
-  { time: '09:15 AM', title: 'Special Team Round', subtitle: '75 minutes. A special team round, details revealed day-of.' },
-  { time: '10:45 AM', title: 'Algebra/Number Theory Round', subtitle: '50 minutes · 10 problems · individual round.' },
-  { time: '12:00 PM', title: 'Geometry Round', subtitle: '50 minutes · 10 problems · individual round.' },
-  { time: '01:00 PM', title: 'Lunch & Disputes', subtitle: 'Recharge, explore campus, and submit solution disputes.' },
-  { time: '02:00 PM', title: 'Combinatorics Round', subtitle: '50 minutes · 10 problems · individual round.' },
-  { time: '03:15 PM', title: 'Guts Round', subtitle: '75 minutes · live-scored. Multiple sets of 3 problems.' },
-  { time: '04:30 PM', title: 'Integration Bee & Talk', subtitle: 'Integration Bee, guest lecture, final disputes.' },
-  { time: '06:00 PM', title: 'Awards Ceremony', subtitle: 'Team & individual awards, photos, and celebration.' },
-];
-
-const rounds = [
-  {
-    label: 'Special Team Round',
-    duration: '75 min',
-    detail: 'Format revealed on contest day. Collaborative problem solving for teams of up to 6.',
-  },
-  {
-    label: 'Individual Rounds',
-    duration: '3 × 50 min',
-    detail: 'Algebra/NT, Geometry, and Combinatorics — each with 10 numerical-answer problems.',
-  },
-  {
-    label: 'Guts Round',
-    duration: '75 min',
-    detail: 'Live-scored relay format. Multiple sets of 3 problems with running scoreboard.',
-  },
+  { time: '8:00 AM',  title: 'Check-in',               subtitle: 'Arrive on campus, register your team, settle into Westwood.' },
+  { time: '8:45 AM',  title: 'Opening Ceremony',        subtitle: 'Welcome remarks from UCLA students and LAMT hosts.' },
+  { time: '9:15 AM',  title: 'Special Team Round',      subtitle: '75 minutes. Format revealed on contest day.' },
+  { time: '10:45 AM', title: 'Algebra / Number Theory',  subtitle: '50 minutes · 10 problems · individual.' },
+  { time: '12:00 PM', title: 'Geometry Round',           subtitle: '50 minutes · 10 problems · individual.' },
+  { time: '1:00 PM',  title: 'Lunch & Disputes',         subtitle: 'Recharge, explore campus, submit solution disputes.' },
+  { time: '2:00 PM',  title: 'Combinatorics Round',      subtitle: '50 minutes · 10 problems · individual.' },
+  { time: '3:15 PM',  title: 'Guts Round',               subtitle: '75 minutes · live-scored relay. Multiple sets of 3 problems.' },
+  { time: '4:30 PM',  title: 'Integration Bee & Talk',   subtitle: 'Integration Bee, guest lecture, final disputes.' },
+  { time: '6:00 PM',  title: 'Awards Ceremony',          subtitle: 'Team and individual awards, photos, celebration.' },
 ];
 
 const faqs = [
-  {
-    q: 'Who can participate?',
-    a: 'LAMT is open to students in grades 6–12 during the 2025–2026 academic year. We welcome both newcomers and seasoned contestants.',
-  },
-  {
-    q: 'When and where is the tournament held?',
-    a: 'LAMT will take place on May 17th. The tournament is held in the Court of Sciences at UCLA, Los Angeles. Rounds will be held in the Mathematical Sciences Building; room assignments will be emailed to registered teams closer to the date.',
-  },
-  {
-    q: 'Will middle school students be given a different exam?',
-    a: 'No. All students will be given the same exam. The exam is designed for the high school level, though middle school students may participate.',
-  },
-  {
-    q: 'Is LAMT only for advanced students?',
-    a: 'Rounds are written to provide a challenge for competitors at all levels. We design the experience to be welcoming and aspirational for anyone who loves math, while still providing a challenging set of questions for those at an advanced level.',
-  },
-  {
-    q: 'How many students per team?',
-    a: 'Teams may have up to 6 students. Schools and programs are welcome to register multiple teams. There is no restriction on age or grade level for teams; for example, a team may consist of 6th, 8th, and 11th grade students without any issues.',
-  },
-  {
-    q: 'Can individuals sign up without a team?',
-    a: 'Yes. We plan to offer individual registration and will help form composite teams when appropriate. Details will be shared upon registration.',
-  },
-  {
-    q: 'What is the registration fee?',
-    a: 'The final registration fee is currently TBD. Pricing will be announced soon and will cover contest materials, scoring, and on-campus logistics. Need-based accommodations may be available.',
-  },
-  {
-    q: 'Will lunch or tournament shirts be provided?',
-    a: 'We are currently finalizing logistics regarding provided lunches and tournament merchandise. We will update all registered teams as soon as these details are confirmed.',
-  },
-  {
-    q: 'Are calculators allowed?',
-    a: 'No. Calculators, smart devices, and other computational aids are strictly prohibited during all testing rounds to ensure a fair environment for all participants.',
-  },
-  {
-    q: 'Do teams need a chaperone?',
-    a: 'Yes. All students or teams must be accompanied by an adult chaperone (parent, teacher, or coach) who must remain on the UCLA campus for the duration of the event.',
-  },
+  { q: 'Who can participate?', a: 'LAMT is open to students in grades 6–12 during the 2025–2026 academic year. We welcome both newcomers and seasoned contestants.' },
+  { q: 'When and where is the tournament?', a: "LAMT takes place on May 17, 2026 at UCLA's Court of Sciences. Rounds are held in the Mathematical Sciences Building; room assignments will be emailed to registered teams closer to the date." },
+  { q: 'Will middle school students have a different exam?', a: 'No. All students receive the same exam. The problems are calibrated for the high school level, though middle school students are welcome to compete.' },
+  { q: 'How many students per team?', a: 'Teams may have up to 6 students. Schools may register multiple teams. There is no restriction on mixing grade levels within a team.' },
+  { q: 'Can individuals sign up without a team?', a: 'Yes. Individual registration is available and we will help form composite teams when appropriate. Details will be shared upon registration.' },
+  { q: 'What is the registration fee?', a: 'The final fee is currently TBD. Pricing will cover contest materials, scoring, and on-campus logistics. Need-based accommodations may be available.' },
+  { q: 'Are calculators allowed?', a: 'No. Calculators, smart devices, and all computational aids are strictly prohibited during testing rounds.' },
+  { q: 'Do teams need a chaperone?', a: 'Yes. All students must be accompanied by an adult chaperone (parent, teacher, or coach) who must remain on the UCLA campus for the duration of the event.' },
 ];
 
-// --- ANIMATION VARIANTS ----------------------------------------------------
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
-};
-
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
+};
 
 // --- PAGE ------------------------------------------------------------------
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   return (
-    <div className="relative overflow-hidden">
+    <div>
 
-      {/* HERO --------------------------------------------------------------- */}
-      <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-6 pt-16 pb-8 bg-gradient-to-br from-[#003B5C] to-[#006994] dark:from-black dark:to-black transition-colors duration-500">
-        <div className="absolute inset-0 -z-20 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 left-[-10%] w-[460px] h-[460px] bg-[#006994] opacity-[0.2] dark:opacity-[0.45] blur-[120px] rounded-full mix-blend-screen transition-opacity duration-500" />
-          <div className="absolute bottom-[-35%] right-[-15%] w-[520px] h-[520px] bg-[#FFD100] opacity-[0.15] dark:opacity-[0.25] blur-[140px] dark:blur-[170px] rounded-full mix-blend-screen transition-opacity duration-500" />
-        </div>
+      {/* HERO */}
+      <section
+        aria-label="Hero"
+        style={{
+          minHeight: '88dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: 'clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem)',
+          borderBottom: '1px solid var(--border)',
+          backgroundColor: 'var(--blue)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+            backgroundSize: '48px 48px',
+            pointerEvents: 'none',
+          }}
+        />
 
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="relative z-30 max-w-5xl mx-auto text-center">
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="inline-block py-1 px-4 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-black/40 text-[10px] font-semibold tracking-[0.3em] uppercase text-[#FFD100] dark:text-slate-100 backdrop-blur-md shadow-sm dark:shadow-none">
+        <div style={{ maxWidth: '1000px', marginInline: 'auto', width: '100%', position: 'relative', zIndex: 1 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2.5rem' }}
+          >
+            <span style={{ display: 'inline-block', width: '32px', height: '1px', backgroundColor: 'var(--gold)' }} />
+            <span style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              color: 'var(--gold)',
+              textTransform: 'uppercase',
+            }}>
               UCLA Court of Sciences · Sunday, May 17, 2026
             </span>
           </motion.div>
 
-          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-[7rem] font-black leading-[0.9] tracking-tight mb-8">
-            <span className="text-[#FFD100] dark:text-white">LOS ANGELES</span>
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 dark:from-[#006994] dark:to-[#003B5C]">
-              MATH TOURNAMENT
-            </span>
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontSize: 'var(--text-hero)',
+              fontWeight: 800,
+              lineHeight: 0.95,
+              letterSpacing: '-0.03em',
+              color: '#ffffff',
+              marginBottom: '2rem',
+            }}
+          >
+            Los Angeles<br />
+            <span style={{ color: 'var(--gold)' }}>Math</span><br />
+            Tournament
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="max-w-2xl mx-auto text-lg md:text-xl text-white/90 dark:text-[#D1D5DB] font-light mb-10 leading-relaxed">
-            A student-run mathematics competition hosted at UCLA,
-            bringing together middle and high school students for a full day of
-            rigorous problem solving across algebra, geometry, combinatorics, and number theory.
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="px-10 py-4 rounded-full bg-[#FFD100] text-[#003B5C] dark:text-black font-bold tracking-wide hover:scale-105 shadow-[0_0_30px_rgba(255,209,0,0.4)] dark:shadow-[0_0_40px_rgba(255,209,0,0.4)] transition-all duration-300"
-            >
-              Register on ContestDojo
-            </Link>
-            <a
-              href="#about"
-              className="px-10 py-4 rounded-full border border-white/30 dark:border-white/20 text-white font-medium hover:bg-white/10 dark:hover:bg-white/5 transition-colors duration-300"
-            >
-              Explore the rounds
-            </a>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ABOUT -------------------------------------------------------------- */}
-      <section id="about" className="py-24 px-6 bg-[#F5F7FB] dark:bg-black transition-colors duration-500">
-        <div className="max-w-4xl mx-auto">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-120px' }}
-            variants={fadeUp}
-            className="mb-10"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: '2rem',
+              paddingTop: '2rem',
+              borderTop: '1px solid rgba(255,255,255,0.12)',
+            }}
           >
-            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100] mb-3">
-              About the tournament
+            <p style={{
+              fontSize: 'var(--text-base)',
+              color: 'rgba(255,255,255,0.7)',
+              maxWidth: '44ch',
+              lineHeight: 1.65,
+            }}>
+              A student-run competition at UCLA for grades 6–12.
+              Algebra, geometry, combinatorics, and number theory — a full day of serious problem solving.
             </p>
-            <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white mb-4">
-              What is LAMT?
-            </h2>
-            <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
-              The Los Angeles Math Tournament (LAMT) is an annual, student-run mathematics competition
-              held at UCLA for middle and high school students. Teams tackle carefully crafted problems
-              in algebra, geometry, combinatorics, and number theory, with an emphasis on mathematical
-              depth and creative problem solving.
-            </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-xs font-semibold tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100] mb-4">
-              Rounds and format
-            </h3>
-            <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl mb-5">
-              LAMT is a full-day contest for teams of up to six students. The planned format is:
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {rounds.map((r) => (
-                <div
-                  key={r.label}
-                  className="p-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/8 hover:border-[#006994]/40 dark:hover:border-[#FFD100]/25 transition-colors duration-200 shadow-sm dark:shadow-none"
-                >
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{r.label}</span>
-                  </div>
-                  <span className="inline-block text-[10px] font-mono text-[#006994] dark:text-[#FFD100] bg-[#006994]/8 dark:bg-[#FFD100]/10 px-2 py-0.5 rounded-full mb-3">{r.duration}</span>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{r.detail}</p>
-                </div>
-              ))}
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <Link
+                href={REGISTER_URL}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.375rem',
+                  padding: '0.625rem 1.375rem',
+                  backgroundColor: 'var(--gold)',
+                  color: 'var(--blue)',
+                  fontWeight: 700,
+                  fontSize: 'var(--text-sm)',
+                  borderRadius: 'var(--radius-md)',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.15s',
+                  letterSpacing: '0.01em',
+                }}
+                className="hover:opacity-90"
+              >
+                Register on ContestDojo
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
+              </Link>
+              <a
+                href="#about"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '0.625rem 1.375rem',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  color: 'rgba(255,255,255,0.85)',
+                  fontWeight: 500,
+                  fontSize: 'var(--text-sm)',
+                  borderRadius: 'var(--radius-md)',
+                  textDecoration: 'none',
+                  transition: 'border-color 0.15s, color 0.15s',
+                }}
+                className="hover:!border-white/50 hover:!text-white"
+              >
+                Learn more
+              </a>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* SCHEDULE ----------------------------------------------------------- */}
-      <section id="schedule" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-500">
-        <div className="max-w-4xl mx-auto">
-          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-center text-[#003B5C] dark:text-white">
-            LAMT 2026 will be held on May 17th.
-          </motion.h2>
-          <div className="space-y-2">
+      {/* ABOUT */}
+      <section
+        id="about"
+        style={{
+          padding: 'clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem)',
+          backgroundColor: 'var(--bg)',
+        }}
+      >
+        <div style={{ maxWidth: '1000px', marginInline: 'auto' }}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+          >
+            <p style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--text-faint)',
+              marginBottom: '1rem',
+            }}>
+              About
+            </p>
+            <h2 style={{
+              fontSize: 'var(--text-2xl)',
+              fontWeight: 800,
+              letterSpacing: '-0.025em',
+              lineHeight: 1.1,
+              color: 'var(--text)',
+              marginBottom: '1.5rem',
+              maxWidth: '20ch',
+            }}>
+              What is LAMT?
+            </h2>
+          </motion.div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
+            gap: 'clamp(2rem, 5vw, 5rem)',
+            alignItems: 'start',
+          }}>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-60px' }}
+              variants={fadeUp}
+            >
+              <p style={{
+                fontSize: 'var(--text-base)',
+                color: 'var(--text-muted)',
+                lineHeight: 1.75,
+                marginBottom: '1.5rem',
+              }}>
+                The Los Angeles Math Tournament is an annual, student-run competition
+                hosted at UCLA for middle and high school students. Teams work through
+                carefully crafted problems in algebra, geometry, combinatorics, and number
+                theory — with an emphasis on depth and creative reasoning, not speed.
+              </p>
+              <p style={{
+                fontSize: 'var(--text-base)',
+                color: 'var(--text-muted)',
+                lineHeight: 1.75,
+              }}>
+                LAMT is designed to challenge students at every level, from first-time
+                competitors to seasoned veterans. The full-day format gives everyone time
+                to think carefully, collaborate with teammates, and experience serious
+                mathematics in a competitive setting.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-60px' }}
+              variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] } } }}
+            >
+              <div style={{ borderTop: '1px solid var(--border)' }}>
+                {[
+                  { label: 'Special Team Round', meta: '75 min', detail: 'Collaborative format revealed day-of. Teams of up to 6.' },
+                  { label: 'Individual Rounds', meta: '3 × 50 min', detail: 'Algebra/NT, Geometry, Combinatorics — 10 numerical-answer problems each.' },
+                  { label: 'Guts Round', meta: '75 min', detail: 'Live-scored relay. Multiple sets of 3 problems with a running scoreboard.' },
+                ].map((r) => (
+                  <div
+                    key={r.label}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr auto',
+                      gap: '0.5rem',
+                      padding: '1.25rem 0',
+                      borderBottom: '1px solid var(--border)',
+                    }}
+                  >
+                    <div>
+                      <div style={{
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 600,
+                        color: 'var(--text)',
+                        marginBottom: '0.25rem',
+                      }}>
+                        {r.label}
+                      </div>
+                      <div style={{
+                        fontSize: 'var(--text-xs)',
+                        color: 'var(--text-muted)',
+                        lineHeight: 1.55,
+                      }}>
+                        {r.detail}
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: 'var(--text-xs)',
+                        fontWeight: 600,
+                        color: 'var(--blue)',
+                        whiteSpace: 'nowrap',
+                        fontVariantNumeric: 'tabular-nums',
+                        paddingLeft: '1rem',
+                      }}
+                      className="dark:!text-[#4a9ac4]"
+                    >
+                      {r.meta}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* SCHEDULE */}
+      <section
+        id="schedule"
+        style={{
+          padding: 'clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem)',
+          borderTop: '1px solid var(--border)',
+        }}
+        className="[background-color:var(--surface-2)]"
+      >
+        <div style={{ maxWidth: '1000px', marginInline: 'auto' }}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            style={{ marginBottom: 'clamp(2rem, 4vw, 3.5rem)' }}
+          >
+            <p style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--text-faint)',
+              marginBottom: '0.75rem',
+            }}>
+              Day schedule
+            </p>
+            <h2 style={{
+              fontSize: 'var(--text-xl)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              color: 'var(--text)',
+            }}>
+              Sunday, May 17, 2026
+            </h2>
+          </motion.div>
+
+          <div>
             {daySchedule.map((row, idx) => (
               <motion.div
                 key={row.time + row.title}
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.5, delay: idx * 0.04 }}
-                className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10 p-5 rounded-2xl bg-white dark:bg-white/[0.01] border border-slate-200 dark:border-white/5 hover:border-[#006994]/40 dark:hover:border-[#FFD100]/30 transition-colors shadow-sm dark:shadow-none"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.4, delay: idx * 0.03 }}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '5.5rem 1fr',
+                  gap: '0 2rem',
+                  padding: '0.875rem 0',
+                  borderBottom: '1px solid var(--border)',
+                  alignItems: 'baseline',
+                }}
               >
-                <span className="w-28 text-xs font-bold font-mono tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100]">
+                <span style={{
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 700,
+                  color: 'var(--text-faint)',
+                  fontVariantNumeric: 'tabular-nums',
+                  letterSpacing: '0.04em',
+                  paddingTop: '0.125rem',
+                }}>
                   {row.time}
                 </span>
-                <div>
-                  <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white">{row.title}</h3>
-                  <p className="text-xs md:text-sm text-slate-500 dark:text-[#9CA3AF] mt-1">{row.subtitle}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '0 0.75rem' }}>
+                  <span style={{
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 600,
+                    color: 'var(--text)',
+                  }}>
+                    {row.title}
+                  </span>
+                  <span style={{
+                    fontSize: 'var(--text-xs)',
+                    color: 'var(--text-muted)',
+                  }}>
+                    {row.subtitle}
+                  </span>
                 </div>
               </motion.div>
             ))}
@@ -229,80 +398,177 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ ---------------------------------------------------------------- */}
-      <section id="faq" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-white dark:bg-black transition-colors duration-500">
-        <div className="max-w-3xl mx-auto">
-          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-12 text-center text-[#003B5C] dark:text-white">
-            Frequently Asked Questions
-          </motion.h2>
-          <div className="space-y-4">
-            {faqs.map((item, idx) => {
-              const open = openFaq === item.q;
+      {/* FAQ */}
+      <section
+        id="faq"
+        style={{
+          padding: 'clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem)',
+          borderTop: '1px solid var(--border)',
+          backgroundColor: 'var(--bg)',
+        }}
+      >
+        <div style={{ maxWidth: '720px', marginInline: 'auto' }}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            style={{ marginBottom: 'clamp(2rem, 4vw, 3.5rem)' }}
+          >
+            <p style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--text-faint)',
+              marginBottom: '0.75rem',
+            }}>
+              FAQs
+            </p>
+            <h2 style={{
+              fontSize: 'var(--text-xl)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              color: 'var(--text)',
+            }}>
+              Common questions
+            </h2>
+          </motion.div>
+
+          <div>
+            {faqs.map((item) => {
+              const isOpen = openFaq === item.q;
               return (
-                <motion.div
-                  key={item.q}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.06 }}
-                  className="border-b border-slate-200 dark:border-white/10 last:border-0"
-                >
+                <div key={item.q} style={{ borderBottom: '1px solid var(--border)' }}>
                   <button
-                    className="w-full py-4 flex items-center justify-between text-left"
-                    onClick={() => setOpenFaq(open ? null : item.q)}
+                    onClick={() => setOpenFaq(isOpen ? null : item.q)}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      padding: '1.125rem 0',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                    }}
                   >
-                    <span className="text-sm md:text-base font-semibold text-slate-800 dark:text-white">{item.q}</span>
-                    <span className="text-slate-400 dark:text-[#9CA3AF] text-xl font-light ml-4">{open ? '−' : '+'}</span>
+                    <span style={{
+                      fontSize: 'var(--text-sm)',
+                      fontWeight: 600,
+                      color: 'var(--text)',
+                      lineHeight: 1.4,
+                    }}>
+                      {item.q}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        flexShrink: 0,
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--text-muted)',
+                        transform: isOpen ? 'rotate(45deg)' : 'none',
+                        transition: 'transform 0.2s',
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                    </span>
                   </button>
                   <AnimatePresence initial={false}>
-                    {open && (
+                    {isOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
+                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ overflow: 'hidden' }}
                       >
-                        <p className="pb-4 text-xs md:text-sm text-slate-600 dark:text-[#D1D5DB] leading-relaxed">{item.a}</p>
+                        <p style={{
+                          paddingBottom: '1.25rem',
+                          fontSize: 'var(--text-sm)',
+                          color: 'var(--text-muted)',
+                          lineHeight: 1.7,
+                          maxWidth: '62ch',
+                        }}>
+                          {item.a}
+                        </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* LOCATION ----------------------------------------------------------- */}
-      <section id="location" className="py-28 px-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#030712] transition-colors duration-500">
-        <div className="max-w-4xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-10">
-            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#006994] dark:text-[#FFD100] mb-3">
-              Getting there
+      {/* LOCATION */}
+      <section
+        id="location"
+        style={{
+          padding: 'clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem)',
+          borderTop: '1px solid var(--border)',
+        }}
+        className="[background-color:var(--surface-2)]"
+      >
+        <div style={{ maxWidth: '1000px', marginInline: 'auto' }}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            style={{ marginBottom: '2rem' }}
+          >
+            <p style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--text-faint)',
+              marginBottom: '0.75rem',
+            }}>
+              Venue
             </p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#003B5C] dark:text-white mb-4">
-              UCLA Court of Sciences
+            <h2 style={{
+              fontSize: 'var(--text-xl)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              color: 'var(--text)',
+              marginBottom: '0.5rem',
+            }}>
+              UCLA Mathematical Sciences Building
             </h2>
-            <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
-              Mathematical Sciences Building, 520 Portola Plaza, Los Angeles, CA 90095
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+              520 Portola Plaza, Los Angeles, CA 90095
             </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm"
-            style={{ aspectRatio: '16/7' }}
+            transition={{ duration: 0.5 }}
+            style={{
+              borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden',
+              border: '1px solid var(--border)',
+              aspectRatio: '16/7',
+            }}
           >
             <iframe
               title="UCLA Mathematical Sciences Building"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.738!2d-118.4427!3d34.0689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc85cbbb5827%3A0x76b2f6b7e4b2ef8a!2sMathematical%20Sciences%20Building%2C%20Los%20Angeles%2C%20CA%2090095!5e0!3m2!1sen!2sus!4v1"
               width="100%"
               height="100%"
-              style={{ border: 0 }}
+              style={{ border: 0, display: 'block' }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -311,77 +577,147 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REGISTER ----------------------------------------------------------- */}
+      {/* REGISTER */}
       <section
         id="register"
-        className="relative overflow-hidden border-t border-slate-200 dark:border-white/10 bg-[#FAFAFA] dark:bg-[#020617] py-24 sm:py-32 px-6"
+        style={{
+          padding: 'clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 3rem)',
+          borderTop: '1px solid var(--border)',
+          backgroundColor: 'var(--blue)',
+        }}
       >
-        <div className="pointer-events-none absolute inset-x-0 bottom-[-25%] mx-auto h-[380px] w-[780px] -translate-y-8 rounded-full bg-[#006994] dark:bg-[#FFD100] opacity-[0.09] blur-[140px]" />
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-balance text-3xl md:text-5xl font-semibold tracking-tight text-[#003B5C] dark:text-white"
-          >
-            Registration is now open.
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="mt-4 text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto"
-          >
-            LAMT 2026 takes place on May 17, 2026 at UCLA. Register your team on ContestDojo
-            and share this opportunity with students who may be interested in participating.
-          </motion.p>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="mt-8"
-          >
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-[#FFD100] px-8 md:px-12 py-3 md:py-4 text-sm md:text-base font-semibold text-[#003B5C] dark:text-black tracking-wide shadow-[0_8px_30px_rgba(255,209,0,0.30)] dark:shadow-[0_0_45px_rgba(255,209,0,0.45)] transition-transform duration-200 hover:translate-y-[1px] hover:shadow-[0_10px_35px_rgba(255,209,0,0.35)]"
+        <div style={{ maxWidth: '1000px', marginInline: 'auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
+            gap: 'clamp(2.5rem, 5vw, 5rem)',
+            alignItems: 'start',
+          }}>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
             >
-              Register on ContestDojo →
-            </Link>
-          </motion.div>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="mt-14 grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-4 text-left"
-          >
-            {[
-              { title: 'Email', val: 'team@lamt.net', link: 'mailto:team@lamt.net' },
-              { title: 'Instagram', val: '@lamathtournament', link: 'https://www.instagram.com/lamathtournament/' },
-              { title: 'Facebook', val: 'LAMT Community Group', link: 'https://www.facebook.com/groups/1429462591976204/' },
-              { title: 'LinkedIn', val: 'Los Angeles Math Tournament', link: 'https://www.linkedin.com/company/la-math-tournament/' },
-            ].map((contact) => (
-              <a
-                key={contact.title}
-                href={contact.link}
+              <p style={{
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.45)',
+                marginBottom: '1rem',
+              }}>
+                Registration
+              </p>
+              <h2 style={{
+                fontSize: 'var(--text-2xl)',
+                fontWeight: 800,
+                letterSpacing: '-0.025em',
+                lineHeight: 1.1,
+                color: '#ffffff',
+                marginBottom: '1.25rem',
+              }}>
+                Registration is now open.
+              </h2>
+              <p style={{
+                fontSize: 'var(--text-sm)',
+                color: 'rgba(255,255,255,0.6)',
+                lineHeight: 1.7,
+                maxWidth: '44ch',
+                marginBottom: '2rem',
+              }}>
+                LAMT 2026 takes place May 17 at UCLA. Register your team on ContestDojo
+                and share with any students interested in competing.
+              </p>
+              <Link
+                href={REGISTER_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/90 p-5 sm:p-6 text-sm shadow-sm ring-1 ring-transparent transition-all duration-200 hover:-translate-y-[2px] hover:border-[#006994]/30 hover:ring-[#006994]/10 dark:border-white/10 dark:bg-white/5 dark:hover:border-[#FFD100]/40 dark:hover:ring-[#FFD100]/15"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.375rem',
+                  padding: '0.6875rem 1.5rem',
+                  backgroundColor: 'var(--gold)',
+                  color: 'var(--blue)',
+                  fontWeight: 700,
+                  fontSize: 'var(--text-sm)',
+                  borderRadius: 'var(--radius-md)',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.15s',
+                  letterSpacing: '0.01em',
+                }}
+                className="hover:opacity-90"
               >
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#006994] dark:text-[#FFD100]">{contact.title}</span>
-                <span className="mt-3 text-slate-800 dark:text-slate-50 break-words">{contact.val}</span>
-                <span className="mt-3 inline-flex items-center text-[11px] font-medium text-[#006994]/80 dark:text-[#FFD100]/80">
-                  Open link
-                  <span className="ml-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">→</span>
-                </span>
-              </a>
-            ))}
-          </motion.div>
+                Register on ContestDojo
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] } } }}
+            >
+              <p style={{
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.45)',
+                marginBottom: '1.25rem',
+              }}>
+                Get in touch
+              </p>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
+                {[
+                  { label: 'Email', val: 'team@lamt.net', href: 'mailto:team@lamt.net' },
+                  { label: 'Instagram', val: '@lamathtournament', href: 'https://www.instagram.com/lamathtournament/' },
+                  { label: 'Facebook', val: 'LAMT Community Group', href: 'https://www.facebook.com/groups/1429462591976204/' },
+                  { label: 'LinkedIn', val: 'Los Angeles Math Tournament', href: 'https://www.linkedin.com/company/la-math-tournament/' },
+                ].map((c) => (
+                  <a
+                    key={c.label}
+                    href={c.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      padding: '0.875rem 0',
+                      borderBottom: '1px solid rgba(255,255,255,0.12)',
+                      textDecoration: 'none',
+                      transition: 'opacity 0.15s',
+                    }}
+                    className="hover:opacity-75"
+                  >
+                    <span style={{
+                      fontSize: 'var(--text-xs)',
+                      color: 'rgba(255,255,255,0.4)',
+                      letterSpacing: '0.04em',
+                      minWidth: '5rem',
+                    }}>
+                      {c.label}
+                    </span>
+                    <span style={{
+                      fontSize: 'var(--text-sm)',
+                      color: 'rgba(255,255,255,0.85)',
+                      fontWeight: 500,
+                      flex: 1,
+                      textAlign: 'right',
+                    }}>
+                      {c.val}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

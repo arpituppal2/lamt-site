@@ -4,40 +4,12 @@ import './globals.css';
 import type React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
 
-// --- ICONS ---
-const SunIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="5" />
-    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-  </svg>
-);
-
-const MoonIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-
-const MenuIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
-
-// --- THEME TOGGLE (floating, original position) ---
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -46,31 +18,35 @@ function ThemeToggle() {
 
   if (!mounted) return null;
 
-  const toggleTheme = () => {
+  const toggle = () => {
     const root = document.documentElement;
-    if (root.classList.contains('dark')) {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
+    const next = !isDark;
+    root.classList.toggle('dark', next);
+    try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch (_) {}
+    setIsDark(next);
   };
 
   return (
     <button
-      onClick={toggleTheme}
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center p-4 rounded-full bg-white dark:bg-[#111] text-slate-800 dark:text-[#FFD100] border border-slate-200 dark:border-white/10 shadow-xl dark:shadow-[0_0_20px_rgba(255,209,0,0.15)] hover:scale-110 transition-all duration-300"
-      aria-label="Toggle Dark Mode"
+      onClick={toggle}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="flex items-center justify-center w-8 h-8 rounded-md text-[var(--text-muted)] hover:text-[var(--text)] transition-colors duration-200"
+      style={{ border: '1px solid var(--border)' }}
     >
-      {isDark ? <SunIcon /> : <MoonIcon />}
+      {isDark ? (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      ) : (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      )}
     </button>
   );
 }
 
-// --- NAVBAR ---
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -83,44 +59,137 @@ function NavBar() {
   ];
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const navStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0, left: 0, right: 0,
+    zIndex: 40,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 clamp(1rem, 4vw, 3rem)',
+    height: '60px',
+    backgroundColor: scrolled ? 'color-mix(in srgb, var(--bg) 94%, transparent)' : 'var(--bg)',
+    borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
+    backdropFilter: scrolled ? 'blur(12px)' : 'none',
+    transition: 'background-color 0.25s, border-color 0.25s, backdrop-filter 0.25s',
+  };
+
   return (
     <>
-      <motion.nav
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-12 py-5 transition-all duration-500 ${
-          scrolled
-            ? 'bg-white/80 dark:bg-black/70 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 shadow-sm'
-            : 'bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-slate-200 dark:border-white/10'
-        }`}
-      >
-        <Link href="/" className="flex items-center gap-4 group">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white overflow-hidden shadow-sm">
-            <Image src="/LAMTBear.png" alt="LAMT Bear" width={44} height={44} className="object-contain" />
+      <nav style={navStyle}>
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md overflow-hidden"
+               style={{ backgroundColor: 'var(--blue)' }}>
+            <Image src="/LAMTBear.png" alt="LAMT" width={28} height={28} className="object-contain" />
           </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-xs font-semibold tracking-[0.3em] uppercase text-slate-900 dark:text-slate-100">
-              LAMT 2026
-            </span>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-              Los Angeles Math Tournament
-            </span>
+          <div className="flex flex-col" style={{ gap: '1px' }}>
+            <span style={{
+              fontSize: 'var(--text-xs)',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              color: 'var(--text)',
+              lineHeight: 1.2,
+            }}>LAMT 2026</span>
+            <span style={{
+              fontSize: '0.6875rem',
+              color: 'var(--text-muted)',
+              lineHeight: 1.2,
+            }}>May 17 · UCLA</span>
           </div>
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-600 dark:text-slate-300 md:flex">
+        <div className="hidden md:flex items-center" style={{ gap: 'var(--s8)' }}>
           {links.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className="relative transition-colors duration-300 hover:text-[#2774AE] dark:hover:text-white"
+              style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--text-muted)',
+                fontWeight: 500,
+                transition: 'color 0.15s',
+                textDecoration: 'none',
+              }}
+              className="hover:!text-[var(--text)]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex items-center" style={{ gap: 'var(--s3)' }}>
+          <ThemeToggle />
+          <Link
+            href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden md:inline-flex items-center justify-center"
+            style={{
+              fontSize: 'var(--text-sm)',
+              fontWeight: 600,
+              padding: '0.4375rem 1rem',
+              backgroundColor: 'var(--blue)',
+              color: '#fff',
+              borderRadius: 'var(--radius-md)',
+              textDecoration: 'none',
+              transition: 'background-color 0.15s',
+            }}
+          >
+            Register
+          </Link>
+
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            className="md:hidden flex items-center justify-center w-8 h-8 rounded-md"
+            style={{
+              border: '1px solid var(--border)',
+              color: 'var(--text)',
+              backgroundColor: 'transparent',
+            }}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {menuOpen ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {menuOpen && (
+        <div
+          className="md:hidden fixed left-0 right-0 z-30 flex flex-col"
+          style={{
+            top: '60px',
+            backgroundColor: 'var(--bg)',
+            borderBottom: '1px solid var(--border)',
+            padding: 'var(--s4) clamp(1rem, 4vw, 3rem) var(--s6)',
+            gap: 'var(--s1)',
+          }}
+        >
+          {links.map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontSize: 'var(--text-base)',
+                fontWeight: 500,
+                color: 'var(--text)',
+                padding: 'var(--s3) 0',
+                borderBottom: '1px solid var(--border)',
+                textDecoration: 'none',
+              }}
             >
               {link.label}
             </Link>
@@ -129,87 +198,85 @@ function NavBar() {
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
             target="_blank"
             rel="noreferrer"
-            className="ml-4 rounded-full bg-[#FFD100] px-6 py-2.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#003B5C] dark:text-black transition-transform duration-200 hover:scale-105 shadow-md dark:shadow-none"
+            onClick={() => setMenuOpen(false)}
+            className="mt-3 flex items-center justify-center"
+            style={{
+              fontSize: 'var(--text-base)',
+              fontWeight: 600,
+              padding: 'var(--s3) var(--s6)',
+              backgroundColor: 'var(--blue)',
+              color: '#fff',
+              borderRadius: 'var(--radius-md)',
+              textDecoration: 'none',
+            }}
           >
-            Register
+            Register on ContestDojo
           </Link>
         </div>
-
-        {/* Mobile hamburger */}
-        <div className="flex items-center md:hidden">
-          <button
-            onClick={() => setMenuOpen(v => !v)}
-            className="flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 dark:border-white/15 bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          >
-            {menuOpen ? <CloseIcon /> : <MenuIcon />}
-          </button>
-        </div>
-      </motion.nav>
-
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-[73px] left-4 right-4 z-50 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-xl shadow-xl md:hidden overflow-hidden"
-          >
-            <div className="flex flex-col p-3 gap-1">
-              {links.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="px-4 py-3 rounded-xl text-sm font-semibold tracking-[0.18em] uppercase text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors duration-150"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="mt-1 px-2 pb-2">
-                <Link
-                  href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center w-full rounded-full bg-[#FFD100] py-3 text-sm font-bold uppercase tracking-[0.2em] text-[#003B5C]"
-                >
-                  Register Now
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      )}
     </>
   );
 }
 
-// --- FOOTER ---
 function Footer() {
+  const links = [
+    { href: '/#about', label: 'About' },
+    { href: '/#schedule', label: 'Schedule' },
+    { href: '/#faq', label: 'FAQ' },
+    { href: '/#location', label: 'Location' },
+    { href: 'mailto:team@lamt.net', label: 'Contact' },
+  ];
+
   return (
-    <footer className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black transition-colors duration-500">
-      <div className="mx-auto flex flex-col md:flex-row h-auto md:h-24 gap-4 md:gap-0 max-w-6xl items-center justify-between px-6 md:px-10 py-6 md:py-0 text-[11px] text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white overflow-hidden shadow-sm">
-            <Image src="/LAMTBear.png" alt="LAMT Bear" width={32} height={32} className="object-contain" />
+    <footer style={{
+      borderTop: '1px solid var(--border)',
+      backgroundColor: 'var(--bg)',
+    }}>
+      <div className="container" style={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 'var(--s4)',
+        paddingTop: 'var(--s8)',
+        paddingBottom: 'var(--s8)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s3)' }}>
+          <div style={{
+            width: '28px', height: '28px',
+            borderRadius: 'var(--radius-sm)',
+            backgroundColor: 'var(--blue)',
+            overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Image src="/LAMTBear.png" alt="LAMT" width={24} height={24} className="object-contain" />
           </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-[10px] font-semibold tracking-[0.26em] uppercase text-slate-700 dark:text-slate-200">
-              LAMT 2026
-            </span>
-            <span className="text-[10px]">© 2026 Los Angeles Math Tournament</span>
-          </div>
+          <span style={{
+            fontSize: 'var(--text-xs)',
+            color: 'var(--text-muted)',
+          }}>
+            © 2026 Los Angeles Math Tournament
+          </span>
         </div>
-        <div className="flex items-center gap-4 text-[10px] font-semibold uppercase tracking-[0.24em]">
-          <Link href="/#about" className="hover:text-slate-800 dark:hover:text-slate-200">About</Link>
-          <Link href="/#schedule" className="hover:text-slate-800 dark:hover:text-slate-200">Schedule</Link>
-          <Link href="/#faq" className="hover:text-slate-800 dark:hover:text-slate-200">FAQ</Link>
-          <Link href="/#location" className="hover:text-slate-800 dark:hover:text-slate-200">Location</Link>
-          <a href="mailto:team@lamt.net" className="hover:text-slate-800 dark:hover:text-slate-200">Contact</a>
-        </div>
+
+        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s6)' }}>
+          {links.map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              style={{
+                fontSize: 'var(--text-xs)',
+                color: 'var(--text-muted)',
+                textDecoration: 'none',
+                transition: 'color 0.15s',
+              }}
+              className="hover:!text-[var(--text)]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   );
@@ -239,14 +306,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body
-        className="min-h-screen bg-[#FAFAFA] dark:bg-black text-slate-900 dark:text-[#F5F5F7] antialiased selection:bg-[#FFD100] selection:text-[#003B5C]"
-        suppressHydrationWarning
-      >
+      <body suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -262,8 +326,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <KaTeXLoader />
         <NavBar />
-        <ThemeToggle />
-        <main className="relative min-h-screen">{children}</main>
+        <main style={{ paddingTop: '60px' }}>{children}</main>
         <Footer />
       </body>
     </html>
