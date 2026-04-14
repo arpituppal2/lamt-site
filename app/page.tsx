@@ -6,17 +6,19 @@ import { useState } from 'react';
 
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
 
-const daySchedule = [
-  { time: '8:00 AM',  title: 'Check-in & Registration',   note: '' },
-  { time: '8:45 AM',  title: 'Opening Ceremony',           note: '' },
-  { time: '9:15 AM',  title: 'Special Team Round',         note: '75 min' },
-  { time: '10:45 AM', title: 'Algebra & Number Theory',    note: '50 min · individual' },
-  { time: '12:00 PM', title: 'Geometry Round',             note: '50 min · individual' },
-  { time: '1:00 PM',  title: 'Lunch & Disputes',           note: '' },
-  { time: '2:00 PM',  title: 'Combinatorics Round',        note: '50 min · individual' },
-  { time: '3:15 PM',  title: 'Guts Round',                 note: '75 min · live-scored' },
-  { time: '4:30 PM',  title: 'Integration Bee & Talk',     note: '' },
-  { time: '6:00 PM',  title: 'Awards Ceremony',            note: '' },
+// Event type classification for schedule visual treatment (#14)
+type RowType = 'ceremony' | 'break' | 'round';
+const daySchedule: { time: string; title: string; note: string; type: RowType }[] = [
+  { time: '8:00 AM',  title: 'Check-in & Registration',   note: '',                  type: 'ceremony' },
+  { time: '8:45 AM',  title: 'Opening Ceremony',           note: '',                  type: 'ceremony' },
+  { time: '9:15 AM',  title: 'Special Team Round',         note: '75 min',            type: 'round' },
+  { time: '10:45 AM', title: 'Algebra & Number Theory',    note: '50 min · individual', type: 'round' },
+  { time: '12:00 PM', title: 'Geometry Round',             note: '50 min · individual', type: 'round' },
+  { time: '1:00 PM',  title: 'Lunch & Disputes',           note: '',                  type: 'break' },
+  { time: '2:00 PM',  title: 'Combinatorics Round',        note: '50 min · individual', type: 'round' },
+  { time: '3:15 PM',  title: 'Guts Round',                 note: '75 min · live-scored', type: 'round' },
+  { time: '4:30 PM',  title: 'Integration Bee & Talk',     note: '',                  type: 'ceremony' },
+  { time: '6:00 PM',  title: 'Awards Ceremony',            note: '',                  type: 'ceremony' },
 ];
 
 const faqs = [
@@ -45,12 +47,14 @@ export default function HomePage() {
     <div>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      {/* #5 — no dead top space: use flex column + justify-end, fixed height */}
       <section
         aria-label="Hero"
         style={{
-          minHeight: '90dvh',
-          display: 'grid',
-          gridTemplateRows: '1fr auto',
+          minHeight: '80dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
           backgroundColor: 'var(--blue)',
           padding: 'clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem)',
           position: 'relative',
@@ -64,18 +68,8 @@ export default function HomePage() {
           backgroundSize: '28px 28px',
         }} />
 
-        {/* top-right year stamp */}
+        {/* main content */}
         <div style={{
-          position: 'absolute', top: 'clamp(1.25rem, 3vw, 2rem)', right: 'clamp(1rem, 4vw, 3rem)',
-          fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.25)',
-          fontWeight: 600, letterSpacing: '0.12em', zIndex: 1,
-        }}>
-          2026
-        </div>
-
-        {/* main content — anchored to bottom of hero */}
-        <div style={{
-          gridRow: 2,
           maxWidth: '1000px',
           marginInline: 'auto',
           width: '100%',
@@ -85,88 +79,67 @@ export default function HomePage() {
           <div style={{
             paddingTop: 'clamp(2rem, 6vw, 4rem)',
             borderTop: '1px solid rgba(255,255,255,0.1)',
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'flex-end',
-            gap: '2rem',
-          }}
-          className="max-sm:!grid-cols-1"
-          >
+          }}>
+            {/* #7 — supertitle dateline */}
+            <p style={{
+              fontSize: '0.75rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.65)',
+              marginBottom: '1.25rem',
+            }}>
+              Los Angeles Math Tournament · UCLA · Court of Sciences · May 17, 2026
+            </p>
+
+            {/* #8 — CTA in copy flow (left-aligned column); #9 — headline is the statement */}
             <div>
-              <p style={{
-                fontSize: 'var(--text-sm)',
-                color: 'rgba(255,255,255,0.45)',
-                marginBottom: '0.875rem',
-                fontWeight: 400,
-              }}>
-                UCLA · Court of Sciences · May 17, 2026
-              </p>
+              {/* #6 — no single-word gold coloring; full title white; #9 — "A full day..." is the hero statement */}
               <h1 style={{
                 fontSize: 'var(--text-hero)',
                 fontWeight: 800,
                 lineHeight: 0.92,
                 letterSpacing: '-0.035em',
                 color: '#fff',
+                marginBottom: '2rem',
               }}>
-                Los Angeles<br />
-                <em style={{
-                  fontStyle: 'normal',
-                  color: 'var(--gold)',
-                }}>Math</em><br />
-                Tournament
+                A full day of<br />serious math.
               </h1>
-            </div>
 
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              gap: '0.75rem',
-              paddingBottom: '0.25rem',
-            }}
-            className="max-sm:!flex-row max-sm:!items-start"
-            >
+              {/* #8 — button flush-left under headline */}
               <Link
                 href={REGISTER_URL}
                 target="_blank"
                 rel="noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.625rem 1.25rem',
-                  backgroundColor: 'var(--gold)',
-                  color: 'var(--blue)',
-                  fontWeight: 700,
-                  fontSize: 'var(--text-sm)',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap',
-                  transition: 'opacity 0.15s',
-                }}
-                className="hover:opacity-90"
+                className="btn-primary"
+                style={{ marginBottom: '1.5rem' }}
               >
                 Register now
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
               </Link>
-              <a
-                href="#about"
-                style={{
-                  fontSize: 'var(--text-sm)',
-                  color: 'rgba(255,255,255,0.45)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s',
-                }}
-                className="hover:!text-white/70"
-              >
-                What is LAMT? ↓
-              </a>
+
+              <div style={{ marginTop: '0.5rem' }}>
+                <a
+                  href="#about"
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'rgba(255,255,255,0.45)',
+                    textDecoration: 'none',
+                    transition: 'color 0.15s',
+                    display: 'inline-block',
+                  }}
+                  className="hover:!text-white/70"
+                >
+                  What is LAMT? ↓
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── ABOUT ────────────────────────────────────────────────────────── */}
+      {/* #10 #31 — no section banding, same bg surface */}
       <section id="about" style={{
         padding: 'clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 3rem)',
         backgroundColor: 'var(--bg)',
@@ -183,7 +156,6 @@ export default function HomePage() {
               <h2 style={{
                 fontSize: 'var(--text-2xl)',
                 fontWeight: 800,
-                letterSpacing: '-0.03em',
                 lineHeight: 1.05,
                 color: 'var(--text)',
                 marginBottom: '1.5rem',
@@ -195,7 +167,6 @@ export default function HomePage() {
                 color: 'var(--text-muted)',
                 lineHeight: 1.75,
                 marginBottom: '1.125rem',
-                maxWidth: '50ch',
               }}>
                 LAMT is a student-run competition held at UCLA for grades 6–12.
                 Problems span algebra, geometry, combinatorics, and number theory —
@@ -205,7 +176,6 @@ export default function HomePage() {
                 fontSize: 'var(--text-base)',
                 color: 'var(--text-muted)',
                 lineHeight: 1.75,
-                maxWidth: '50ch',
               }}>
                 From first-time competitors to Olympiad veterans, the full-day format
                 is designed to give everyone room to think, collaborate, and experience
@@ -213,19 +183,41 @@ export default function HomePage() {
               </p>
             </div>
 
+            {/* #11 — no card scaffolding, hairline rows only; #12 — distinct round descriptions */}
             <div>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <tbody>
                   {[
-                    { round: 'Special Team Round',      dur: '75 min', desc: 'Collaborative format revealed on contest day. Up to 6 per team.' },
-                    { round: 'Algebra & Number Theory', dur: '50 min', desc: 'Individual. 10 problems, numerical answers.' },
-                    { round: 'Geometry',                dur: '50 min', desc: 'Individual. 10 problems, numerical answers.' },
-                    { round: 'Combinatorics',           dur: '50 min', desc: 'Individual. 10 problems, numerical answers.' },
-                    { round: 'Guts Round',              dur: '75 min', desc: 'Live-scored relay. Sets of 3 problems, running leaderboard.' },
+                    {
+                      round: 'Special Team Round',
+                      dur: '75 min',
+                      // #13 — rewritten Special Team Round description
+                      desc: 'Format announced day-of. Teams of up to 6 — no spoilers.',
+                    },
+                    {
+                      round: 'Algebra & Number Theory',
+                      dur: '50 min',
+                      desc: '10 problems. Numerical answers. Emphasizes algebraic manipulation and classical number theory.',
+                    },
+                    {
+                      round: 'Geometry',
+                      dur: '50 min',
+                      desc: '10 problems. Figure-based and proof-adjacent reasoning, no coordinates required.',
+                    },
+                    {
+                      round: 'Combinatorics',
+                      dur: '50 min',
+                      desc: '10 problems. Counting, probability, and combinatorial reasoning.',
+                    },
+                    {
+                      round: 'Guts Round',
+                      dur: '75 min',
+                      desc: 'Live-scored relay. Sets of 3 problems released continuously with a running leaderboard.',
+                    },
                   ].map((r, i) => (
                     <tr key={r.round} style={{
-                      borderTop: i === 0 ? '1px solid var(--border)' : 'none',
-                      borderBottom: '1px solid var(--border)',
+                      borderTop: '1px solid oklch(0 0 0 / 0.08)',
+                      borderBottom: i === 4 ? '1px solid oklch(0 0 0 / 0.08)' : 'none',
                     }}>
                       <td style={{ padding: '0.9rem 0.75rem 0.9rem 0', verticalAlign: 'top', width: '55%' }}>
                         <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text)', marginBottom: '0.2rem' }}>
@@ -253,9 +245,11 @@ export default function HomePage() {
       </section>
 
       {/* ── SCHEDULE ─────────────────────────────────────────────────────── */}
+      {/* #10 #16 — same bg as rest of page, top border separator */}
       <section id="schedule" style={{
         padding: 'clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 3rem)',
-        backgroundColor: 'var(--surface-2)',
+        backgroundColor: 'var(--bg)',
+        borderTop: '1px solid var(--border)',
         borderBottom: '1px solid var(--border)',
       }}>
         <div style={{ maxWidth: '680px', marginInline: 'auto' }}>
@@ -263,7 +257,6 @@ export default function HomePage() {
             <h2 style={{
               fontSize: 'var(--text-xl)',
               fontWeight: 800,
-              letterSpacing: '-0.025em',
               color: 'var(--text)',
               marginBottom: '0.375rem',
             }}>Schedule</h2>
@@ -273,39 +266,44 @@ export default function HomePage() {
           </div>
 
           <div>
-            {daySchedule.map((row, idx) => (
-              <div key={row.time} style={{
-                display: 'grid',
-                gridTemplateColumns: '5.5rem 1fr auto',
-                gap: '0 1.25rem',
-                padding: '0.8rem 0',
-                borderBottom: '1px solid var(--border)',
-                alignItems: 'baseline',
-              }}>
-                <span style={{
-                  fontSize: 'var(--text-xs)',
-                  color: 'var(--text-faint)',
-                  fontVariantNumeric: 'tabular-nums',
-                  fontWeight: 600,
-                }}>{row.time}</span>
-                <span style={{
-                  fontSize: 'var(--text-sm)',
-                  fontWeight: idx === 0 || idx === daySchedule.length - 1 ? 700 : 500,
-                  color: 'var(--text)',
-                }}>{row.title}</span>
-                <span style={{
-                  fontSize: 'var(--text-xs)',
-                  color: 'var(--text-faint)',
-                  textAlign: 'right',
-                  whiteSpace: 'nowrap',
-                }}>{row.note}</span>
-              </div>
-            ))}
+            {daySchedule.map((row) => {
+              // #14 — visual distinction by event type
+              const isRound = row.type === 'round';
+              return (
+                <div key={row.time} style={{
+                  display: 'grid',
+                  gridTemplateColumns: '5.5rem 1fr auto',
+                  gap: '0 1.25rem',
+                  padding: '0.8rem 0',
+                  borderBottom: '1px solid var(--border)',
+                  alignItems: 'baseline',
+                }}>
+                  <span style={{
+                    fontSize: 'var(--text-xs)',
+                    color: 'var(--text-faint)',
+                    fontVariantNumeric: 'tabular-nums',
+                    fontWeight: 600,
+                  }}>{row.time}</span>
+                  <span style={{
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: isRound ? 600 : 400,
+                    color: isRound ? 'var(--text)' : 'var(--text-muted)',
+                  }}>{row.title}</span>
+                  <span style={{
+                    fontSize: 'var(--text-xs)',
+                    color: 'var(--text-faint)',
+                    textAlign: 'right',
+                    whiteSpace: 'nowrap',
+                  }}>{row.note}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+      {/* #17 — renamed to FAQ; #10 — same bg */}
       <section id="faq" style={{
         padding: 'clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 3rem)',
         backgroundColor: 'var(--bg)',
@@ -315,10 +313,9 @@ export default function HomePage() {
           <h2 style={{
             fontSize: 'var(--text-xl)',
             fontWeight: 800,
-            letterSpacing: '-0.025em',
             color: 'var(--text)',
             marginBottom: 'clamp(2rem, 4vw, 3rem)',
-          }}>Questions</h2>
+          }}>FAQ</h2>
 
           <div>
             {faqs.map((item) => {
@@ -333,7 +330,8 @@ export default function HomePage() {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       gap: '1.5rem',
-                      padding: '1.0625rem 0',
+                      // #18 — compressed vertical padding
+                      padding: '0.75rem 0',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
@@ -346,15 +344,16 @@ export default function HomePage() {
                       color: 'var(--text)',
                       lineHeight: 1.4,
                     }}>{item.q}</span>
+                    {/* #19 — chevron SVG that rotates */}
                     <span aria-hidden="true" style={{
                       flexShrink: 0,
                       color: 'var(--text-faint)',
-                      transform: isOpen ? 'rotate(45deg)' : 'none',
-                      transition: 'transform 0.18s ease',
+                      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 200ms ease',
                       display: 'flex',
                     }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M12 5v14M5 12h14"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
                       </svg>
                     </span>
                   </button>
@@ -368,11 +367,10 @@ export default function HomePage() {
                         style={{ overflow: 'hidden' }}
                       >
                         <p style={{
-                          paddingBottom: '1.125rem',
+                          paddingBottom: '0.75rem',
                           fontSize: 'var(--text-sm)',
                           color: 'var(--text-muted)',
                           lineHeight: 1.7,
-                          maxWidth: '60ch',
                         }}>{item.a}</p>
                       </motion.div>
                     )}
@@ -385,42 +383,33 @@ export default function HomePage() {
       </section>
 
       {/* ── LOCATION ─────────────────────────────────────────────────────── */}
+      {/* #10 #21 — same bg, stripped description paragraph */}
       <section id="location" style={{
         padding: 'clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 3rem)',
-        backgroundColor: 'var(--surface-2)',
+        backgroundColor: 'var(--bg)',
         borderBottom: '1px solid var(--border)',
       }}>
         <div style={{ maxWidth: '1000px', marginInline: 'auto' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-            gap: 'clamp(2rem, 5vw, 5rem)',
-            alignItems: 'start',
-            marginBottom: '2rem',
-          }}>
-            <div>
-              <h2 style={{
-                fontSize: 'var(--text-xl)',
-                fontWeight: 800,
-                letterSpacing: '-0.025em',
-                color: 'var(--text)',
-                marginBottom: '0.5rem',
-              }}>UCLA Mathematical<br />Sciences Building</h2>
-              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                520 Portola Plaza<br />Los Angeles, CA 90095
-              </p>
-            </div>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-              The Mathematical Sciences Building sits at the center of UCLA's academic core.
-              Parking is available in Lot 8 off Westholme Ave. All rounds take place in MSB —
-              specific room assignments will be emailed the week before the event.
+          <div style={{ marginBottom: '1.75rem' }}>
+            <h2 style={{
+              fontSize: 'var(--text-xl)',
+              fontWeight: 800,
+              color: 'var(--text)',
+              marginBottom: '0.5rem',
+            }}>UCLA Mathematical Sciences Building</h2>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              520 Portola Plaza, Los Angeles, CA 90095
+            </p>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', marginTop: '0.375rem' }}>
+              Rounds take place in MSB. Room assignments emailed one week before the event.
             </p>
           </div>
+          {/* #22 — map capped at 280px, border-radius, border */}
           <div style={{
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
             border: '1px solid var(--border)',
-            aspectRatio: '21/8',
+            height: '280px',
           }}>
             <iframe
               title="UCLA Mathematical Sciences Building"
@@ -435,9 +424,11 @@ export default function HomePage() {
       </section>
 
       {/* ── REGISTER ─────────────────────────────────────────────────────── */}
+      {/* #24 — no dark teal band; same bg surface; border-top separator */}
       <section id="register" style={{
         padding: 'clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 3rem)',
-        backgroundColor: 'var(--blue)',
+        backgroundColor: 'var(--bg)',
+        borderTop: '1px solid var(--border)',
       }}>
         <div style={{
           maxWidth: '1000px', marginInline: 'auto',
@@ -450,32 +441,25 @@ export default function HomePage() {
             <h2 style={{
               fontSize: 'var(--text-2xl)',
               fontWeight: 800,
-              letterSpacing: '-0.03em',
               lineHeight: 1.05,
-              color: '#fff',
+              color: 'var(--text)',
               marginBottom: '1.125rem',
-            }}>Registration<br />is open.</h2>
+            }}>
+              {/* #23 — specific CTA copy */}
+              Register your team<br />on ContestDojo.
+            </h2>
             <p style={{
               fontSize: 'var(--text-base)',
-              color: 'rgba(255,255,255,0.5)',
+              color: 'var(--text-muted)',
               lineHeight: 1.7,
-              maxWidth: '42ch',
               marginBottom: '2rem',
             }}>
-              LAMT 2026 takes place May 17 at UCLA. Register your team on ContestDojo —
-              spaces are limited so sign up early.
+              Spots are limited — register before they fill. LAMT 2026 takes place May 17 at UCLA.
             </p>
             <Link
               href={REGISTER_URL}
               target="_blank" rel="noreferrer"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                padding: '0.6875rem 1.375rem',
-                backgroundColor: 'var(--gold)', color: 'var(--blue)',
-                fontWeight: 700, fontSize: 'var(--text-sm)',
-                borderRadius: '6px', textDecoration: 'none', transition: 'opacity 0.15s',
-              }}
-              className="hover:opacity-90"
+              className="btn-primary"
             >
               Register on ContestDojo
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
@@ -483,15 +467,17 @@ export default function HomePage() {
           </div>
 
           <div>
+            {/* #25 — keep CONTACT uppercase tracked label */}
             <p style={{
               fontSize: 'var(--text-xs)',
-              color: 'rgba(255,255,255,0.3)',
+              color: 'var(--text-faint)',
               fontWeight: 600,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               marginBottom: '1.25rem',
             }}>Contact</p>
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ borderTop: '1px solid var(--border)' }}>
+              {/* #26 — all contact links clickable */}
               {[
                 { label: 'Email',     val: 'team@lamt.net',            href: 'mailto:team@lamt.net' },
                 { label: 'Instagram', val: '@lamathtournament',         href: 'https://www.instagram.com/lamathtournament/' },
@@ -502,13 +488,13 @@ export default function HomePage() {
                   display: 'flex', alignItems: 'baseline',
                   justifyContent: 'space-between', gap: '1rem',
                   padding: '0.8125rem 0',
-                  borderBottom: '1px solid rgba(255,255,255,0.1)',
+                  borderBottom: '1px solid var(--border)',
                   textDecoration: 'none', transition: 'opacity 0.15s',
                 }}
                 className="hover:opacity-70"
                 >
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.35)', minWidth: '5rem', fontWeight: 500 }}>{c.label}</span>
-                  <span style={{ fontSize: 'var(--text-sm)', color: 'rgba(255,255,255,0.8)', fontWeight: 500, textAlign: 'right' }}>{c.val}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-faint)', minWidth: '5rem', fontWeight: 500 }}>{c.label}</span>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text)', fontWeight: 500, textAlign: 'right' }}>{c.val}</span>
                 </a>
               ))}
             </div>

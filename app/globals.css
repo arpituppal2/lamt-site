@@ -10,10 +10,10 @@
   --gold:        #FFD100;
   --gold-dim:    #e6bc00;
 
-  /* Surfaces */
+  /* Surfaces — one unified content surface */
   --bg:          #fafaf8;
   --surface:     #ffffff;
-  --surface-2:   #f4f3f0;
+  --surface-2:   #fafaf8; /* same as bg — no section banding */
   --border:      rgba(0, 59, 92, 0.10);
   --border-strong: rgba(0, 59, 92, 0.18);
 
@@ -22,14 +22,14 @@
   --text-muted:  #5a5a5a;
   --text-faint:  #9a9a9a;
 
-  /* Type scale — floors are real readable sizes */
-  --text-xs:   clamp(0.8125rem, 0.78rem + 0.18vw, 0.875rem);  /* 13px → 14px */
-  --text-sm:   clamp(0.9375rem, 0.9rem  + 0.25vw, 1rem);      /* 15px → 16px */
-  --text-base: clamp(1.0625rem, 1rem    + 0.3vw,  1.125rem);  /* 17px → 18px */
-  --text-lg:   clamp(1.25rem,  1.1rem  + 0.75vw, 1.5rem);     /* 20px → 24px */
-  --text-xl:   clamp(1.625rem, 1.3rem  + 1.5vw,  2.25rem);    /* 26px → 36px */
-  --text-2xl:  clamp(2.25rem,  1.4rem  + 2.5vw,  3.5rem);     /* 36px → 56px */
-  --text-hero: clamp(3.25rem,  0.75rem + 7vw,    8rem);        /* 52px → 128px */
+  /* Type scale */
+  --text-xs:   clamp(0.8125rem, 0.78rem + 0.18vw, 0.875rem);
+  --text-sm:   clamp(0.9375rem, 0.9rem  + 0.25vw, 1rem);
+  --text-base: clamp(1.0625rem, 1rem    + 0.3vw,  1.125rem);
+  --text-lg:   clamp(1.25rem,  1.1rem  + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.625rem, 1.3rem  + 1.5vw,  2.25rem);
+  --text-2xl:  clamp(2.25rem,  1.4rem  + 2.5vw,  3.5rem);
+  --text-hero: clamp(3.25rem,  0.75rem + 7vw,    8rem);
 
   /* Spacing */
   --s1: 0.25rem; --s2: 0.5rem; --s3: 0.75rem; --s4: 1rem;
@@ -45,7 +45,7 @@
 .dark {
   --bg:          #111010;
   --surface:     #181716;
-  --surface-2:   #1f1e1d;
+  --surface-2:   #111010; /* same as bg in dark mode */
   --border:      rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
   --text:        #e8e6e1;
@@ -74,8 +74,12 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* #32 — cap prose width */
+p { text-wrap: pretty; max-width: 65ch; }
+
+/* #33 — negative tracking on large headings */
 h1, h2, h3, h4 { text-wrap: balance; line-height: 1.15; }
-p { text-wrap: pretty; }
+h1, h2 { letter-spacing: -0.02em; }
 
 img, svg { display: block; max-width: 100%; }
 
@@ -85,7 +89,7 @@ img, svg { display: block; max-width: 100%; }
 }
 
 :focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -108,3 +112,21 @@ img, svg { display: block; max-width: 100%; }
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 3rem);
 }
+
+/* #30 — unified button system */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background-color: var(--gold);
+  color: var(--blue);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  border-radius: 4px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.88; }

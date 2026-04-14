@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import KaTeXLoader from './components/KaTeXLoader';
 
-// ── THEME TOGGLE (fixed bottom-right) ──────────────────────────────────────
+// ── THEME TOGGLE (inline in nav) ────────────────────────────────────────────
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -31,23 +31,20 @@ function ThemeToggle() {
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       style={{
-        position: 'fixed',
-        bottom: '1.5rem',
-        right: '1.5rem',
-        zIndex: 50,
-        width: '40px',
-        height: '40px',
+        width: '32px',
+        height: '32px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '50%',
-        backgroundColor: 'var(--surface)',
-        border: '1px solid var(--border-strong)',
+        borderRadius: '4px',
+        backgroundColor: 'transparent',
+        border: 'none',
         color: 'var(--text-muted)',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
         cursor: 'pointer',
-        transition: 'color 0.15s, background-color 0.15s',
+        transition: 'color 0.15s',
+        flexShrink: 0,
       }}
+      className="hover:!text-[var(--text)]"
     >
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -85,7 +82,7 @@ function NavBar() {
     <>
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
-        height: '58px',
+        height: '62px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 clamp(1rem, 4vw, 3rem)',
         backgroundColor: scrolled ? 'var(--bg)' : 'transparent',
@@ -93,40 +90,49 @@ function NavBar() {
         backdropFilter: scrolled ? 'blur(8px)' : 'none',
         transition: 'background-color 0.2s, border-color 0.2s',
       }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
+        {/* #1 #2 — enlarged logo lockup, no subtext */}
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
           <div style={{
-            width: '30px', height: '30px', borderRadius: '6px',
+            width: '48px', height: '48px', borderRadius: '8px',
             backgroundColor: 'var(--blue)', overflow: 'hidden',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <Image src="/LAMTBear.png" alt="LAMT" width={26} height={26} style={{ objectFit: 'contain' }} />
+            <Image src="/LAMTBear.png" alt="LAMT" width={42} height={42} style={{ objectFit: 'contain' }} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-            <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text)', lineHeight: 1.15 }}>LAMT 2026</span>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', lineHeight: 1.15 }}>May 17 · UCLA</span>
-          </div>
+          <span style={{
+            fontSize: '1rem',
+            fontWeight: 600,
+            color: 'var(--text)',
+            lineHeight: 1,
+            letterSpacing: '-0.01em',
+          }}>LAMT 2026</span>
         </Link>
 
+        {/* #4 — nav links: 500 weight, 0.875rem, letter-spacing, hover underline */}
         <div className="hidden md:flex items-center" style={{ gap: 'var(--s8)' }}>
           {links.map(l => (
             <Link key={l.href} href={l.href}
-              className="hover:!text-[var(--text)]"
-              style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', fontWeight: 500, textDecoration: 'none', transition: 'color 0.15s' }}
+              style={{
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                letterSpacing: '0.02em',
+                color: 'var(--text-muted)',
+                textDecoration: 'none',
+                transition: 'color 0.15s',
+                paddingBottom: '2px',
+              }}
+              className="hover:!text-[var(--text)] hover:underline"
             >{l.label}</Link>
           ))}
         </div>
 
+        {/* #3 — nav CTA: gold, same as hero; #28 — theme toggle in nav */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s3)' }}>
+          <ThemeToggle />
           <Link
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
             target="_blank" rel="noreferrer"
-            className="hidden md:inline-flex items-center justify-center hover:opacity-85"
-            style={{
-              fontSize: 'var(--text-sm)', fontWeight: 600,
-              padding: '0.4375rem 1rem',
-              backgroundColor: 'var(--blue)', color: '#fff',
-              borderRadius: '6px', textDecoration: 'none', transition: 'opacity 0.15s',
-            }}
+            className="hidden md:inline-flex items-center justify-center btn-primary"
           >Register</Link>
 
           <button
@@ -134,7 +140,7 @@ function NavBar() {
             className="md:hidden flex items-center justify-center"
             style={{
               width: '36px', height: '36px',
-              border: '1px solid var(--border)', borderRadius: '6px',
+              border: '1px solid var(--border)', borderRadius: '4px',
               color: 'var(--text)', backgroundColor: 'transparent', cursor: 'pointer',
             }}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -149,7 +155,7 @@ function NavBar() {
 
       {menuOpen && (
         <div className="md:hidden" style={{
-          position: 'fixed', top: '58px', left: 0, right: 0, zIndex: 30,
+          position: 'fixed', top: '62px', left: 0, right: 0, zIndex: 30,
           backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)',
           padding: 'var(--s3) clamp(1rem, 4vw, 3rem) var(--s5)',
         }}>
@@ -163,11 +169,10 @@ function NavBar() {
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
             target="_blank" rel="noreferrer"
             onClick={() => setMenuOpen(false)}
+            className="btn-primary"
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginTop: 'var(--s3)', fontSize: 'var(--text-base)', fontWeight: 600,
-              padding: 'var(--s3) var(--s6)',
-              backgroundColor: 'var(--blue)', color: '#fff', borderRadius: '6px', textDecoration: 'none',
+              marginTop: 'var(--s3)', fontSize: 'var(--text-base)',
             }}
           >Register on ContestDojo</Link>
         </div>
@@ -186,16 +191,22 @@ function Footer() {
         display: 'flex', flexWrap: 'wrap',
         alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s4)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--s3)' }}>
-          <div style={{
-            width: '26px', height: '26px', borderRadius: '5px',
-            backgroundColor: 'var(--blue)', overflow: 'hidden',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
-            <Image src="/LAMTBear.png" alt="LAMT" width={22} height={22} style={{ objectFit: 'contain' }} />
+        {/* #27 — footer logo matches header size; #29 — tagline */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '8px',
+              backgroundColor: 'var(--blue)', overflow: 'hidden',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Image src="/LAMTBear.png" alt="LAMT" width={42} height={42} style={{ objectFit: 'contain' }} />
+            </div>
+            <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1, letterSpacing: '-0.01em' }}>
+              LAMT 2026
+            </span>
           </div>
-          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-            © 2026 Los Angeles Math Tournament
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '60px' }}>
+            Student-run · UCLA · Since 2024
           </span>
         </div>
         <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s5)' }}>
@@ -240,8 +251,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
         <KaTeXLoader />
         <NavBar />
-        <ThemeToggle />
-        <main style={{ paddingTop: '58px' }}>{children}</main>
+        {/* #28 — ThemeToggle moved into NavBar, no floating FAB */}
+        <main style={{ paddingTop: '62px' }}>{children}</main>
         <Footer />
       </body>
     </html>
