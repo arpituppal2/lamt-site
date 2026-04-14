@@ -66,9 +66,9 @@ function NavBar() {
       >
         <div className="flex items-center justify-between px-6 md:px-12 h-[68px]">
 
-          {/* Logo lockup */}
+          {/* Logo lockup — always white bg so transparent PNG is legible in both modes */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2774AE] dark:bg-[#005587] overflow-hidden flex-shrink-0 shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white overflow-hidden flex-shrink-0 shadow-sm ring-1 ring-[#DAEBFE] dark:ring-[#2774AE]">
               <Image src="/LAMTBear.png" alt="LAMT Bear" width={40} height={40} className="object-contain" />
             </div>
             <div className="flex flex-col leading-tight">
@@ -154,7 +154,8 @@ function Footer() {
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
         <div className="flex flex-col md:flex-row md:items-start gap-8 mb-10">
           <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#005587] overflow-hidden">
+            {/* Always white bg so transparent PNG shows correctly on the dark footer */}
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white overflow-hidden shadow-sm">
               <Image src="/LAMTBear.png" alt="LAMT Bear" width={52} height={52} className="object-contain" />
             </div>
             <div>
