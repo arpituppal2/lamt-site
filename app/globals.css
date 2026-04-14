@@ -1,132 +1,46 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
+/* UCLA identity tokens */
 :root {
-  /* UCLA brand palette */
-  --blue:        #003B5C;
-  --blue-mid:    #005281;
-  --blue-light:  #1a6a94;
-  --gold:        #FFD100;
-  --gold-dim:    #e6bc00;
-
-  /* Surfaces — one unified content surface */
-  --bg:          #fafaf8;
-  --surface:     #ffffff;
-  --surface-2:   #fafaf8; /* same as bg — no section banding */
-  --border:      rgba(0, 59, 92, 0.10);
-  --border-strong: rgba(0, 59, 92, 0.18);
-
-  /* Text */
-  --text:        #1a1a1a;
-  --text-muted:  #5a5a5a;
-  --text-faint:  #9a9a9a;
-
-  /* Type scale */
-  --text-xs:   clamp(0.8125rem, 0.78rem + 0.18vw, 0.875rem);
-  --text-sm:   clamp(0.9375rem, 0.9rem  + 0.25vw, 1rem);
-  --text-base: clamp(1.0625rem, 1rem    + 0.3vw,  1.125rem);
-  --text-lg:   clamp(1.25rem,  1.1rem  + 0.75vw, 1.5rem);
-  --text-xl:   clamp(1.625rem, 1.3rem  + 1.5vw,  2.25rem);
-  --text-2xl:  clamp(2.25rem,  1.4rem  + 2.5vw,  3.5rem);
-  --text-hero: clamp(3.25rem,  0.75rem + 7vw,    8rem);
-
-  /* Spacing */
-  --s1: 0.25rem; --s2: 0.5rem; --s3: 0.75rem; --s4: 1rem;
-  --s5: 1.25rem; --s6: 1.5rem; --s8: 2rem; --s10: 2.5rem;
-  --s12: 3rem; --s16: 4rem; --s20: 5rem; --s24: 6rem;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.875rem;
+  --ucla-blue:   #003B5C;
+  --ucla-gold:   #FFD100;
+  --ucla-light:  #8BB8E8; /* UCLA light blue */
+  --font-display: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Dark mode */
-.dark {
-  --bg:          #111010;
-  --surface:     #181716;
-  --surface-2:   #111010; /* same as bg in dark mode */
-  --border:      rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --text:        #e8e6e1;
-  --text-muted:  #8a8680;
-  --text-faint:  #504d4a;
-  --blue-light:  #4a9ac4;
-}
-
+/* ── Base ──────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; scroll-padding-top: 4rem; }
+body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: #1a1a1a; background: #fff; }
+.dark body { color: #e8e8e8; background: #050505; }
 
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+/* Display headings use EB Garamond */
+.font-display { font-family: var(--font-display); }
+
+/* ── UCLA gold rule — the single most UCLA-coded element on the page */
+.gold-rule {
+  display: block;
+  width: 3rem;
+  height: 3px;
+  background: var(--ucla-gold);
 }
 
-body {
-  min-height: 100dvh;
-  line-height: 1.65;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: var(--text-base);
-  color: var(--text);
-  background-color: var(--bg);
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* ── Section label (small tracked uppercase above headings) ─────────── */
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ucla-blue);
 }
+.dark .section-label { color: var(--ucla-gold); }
 
-/* #32 — cap prose width */
-p { text-wrap: pretty; max-width: 65ch; }
-
-/* #33 — negative tracking on large headings */
-h1, h2, h3, h4 { text-wrap: balance; line-height: 1.15; }
-h1, h2 { letter-spacing: -0.02em; }
-
-img, svg { display: block; max-width: 100%; }
-
-::selection {
-  background: var(--gold);
-  color: var(--blue);
+/* ── Hairline table rows ─────────────────────────────────────────────── */
+.table-row-hairline {
+  border-bottom: 1px solid rgba(0,0,0,0.07);
 }
-
-:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: var(--radius-sm);
+.dark .table-row-hairline {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-.container {
-  max-width: 1000px;
-  margin-inline: auto;
-  padding-inline: clamp(1rem, 4vw, 3rem);
-}
-
-.container-narrow {
-  max-width: 720px;
-  margin-inline: auto;
-  padding-inline: clamp(1rem, 4vw, 3rem);
-}
-
-/* #30 — unified button system */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 1.25rem;
-  background-color: var(--gold);
-  color: var(--blue);
-  font-weight: 600;
-  font-size: var(--text-sm);
-  border-radius: 4px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.btn-primary:hover { opacity: 0.88; }
