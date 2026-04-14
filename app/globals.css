@@ -2,23 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-/* UCLA identity tokens */
+/* ─────────────────────────────────────────────────────────────────────────
+   OFFICIAL UCLA BRAND PALETTE
+   Source: UCLA Brand Guidelines
+───────────────────────────────────────────────────────────────────────── */
 :root {
-  --ucla-blue:    #003B5C;
-  --ucla-gold:    #FFD100;
-  --ucla-light:   #8BB8E8;
-  --font-display: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  /* Primary */
+  --ucla-blue:          #2774AE;
+  --ucla-gold:          #FFD100;
+  --ucla-white:         #FFFFFF;
+
+  /* Secondary blues */
+  --ucla-blue-darkest:  #003B5C;
+  --ucla-blue-darker:   #005587;
+  --ucla-blue-lighter:  #8BB8E8;
+  --ucla-blue-lightest: #DAEBFE;
+
+  /* Secondary golds */
+  --ucla-gold-darkest:  #FFB81C;
+  --ucla-gold-darker:   #FFC72C;
+
+  /* Fonts */
+  --font-display: 'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif;
   --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ── Base ──────────────────────────────────────────────────────────────── */
-html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; scroll-padding-top: 4rem; }
-body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; }
+/* ── Light mode surfaces ─────────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --color-bg:        #FFFFFF;
+  --color-surface:   #DAEBFE;
+  --color-surface-2: #F4F9FF;
+  --color-border:    #8BB8E8;
+  --color-text:      #003B5C;
+  --color-text-muted:#005587;
+  --color-text-faint:#2774AE;
+  --color-accent:    #2774AE;
+  --color-accent-hover: #005587;
+  --color-cta-bg:    #FFD100;
+  --color-cta-text:  #003B5C;
+}
 
-/* Display font utility */
-.font-display { font-family: var(--font-display); }
+/* ── Dark mode surfaces ──────────────────────────────────────────────── */
+.dark,
+[data-theme="dark"] {
+  --color-bg:        #003B5C;
+  --color-surface:   #005587;
+  --color-surface-2: #002A45;
+  --color-border:    #2774AE;
+  --color-text:      #DAEBFE;
+  --color-text-muted:#8BB8E8;
+  --color-text-faint:#2774AE;
+  --color-accent:    #8BB8E8;
+  --color-accent-hover: #DAEBFE;
+  --color-cta-bg:    #FFD100;
+  --color-cta-text:  #003B5C;
+}
 
-/* ── UCLA gold rule ───────────────────────────────────────────────────── */
+/* ── Base ────────────────────────────────────────────────────────────── */
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+}
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* ── UCLA gold rule ──────────────────────────────────────────────────── */
 .gold-rule {
   display: block;
   width: 3rem;
@@ -27,16 +82,14 @@ body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; }
   background: var(--ucla-gold);
 }
 
-/* ── Section label ────────────────────────────────────────────────────── */
+/* ── Section label ───────────────────────────────────────────────────── */
 .section-label {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ucla-blue);
+  color: var(--color-accent);
 }
-.dark .section-label { color: var(--ucla-gold); }
 
-/* ── Hairline rows ────────────────────────────────────────────────────── */
-.table-row-hairline        { border-bottom: 1px solid rgba(0,0,0,0.07); }
-.dark .table-row-hairline  { border-bottom: 1px solid rgba(255,255,255,0.07); }
+/* ── Hairline rows ───────────────────────────────────────────────────── */
+.table-row-hairline       { border-bottom: 1px solid var(--color-border); opacity: 0.4; }

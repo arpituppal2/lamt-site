@@ -30,7 +30,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="fixed bottom-6 right-6 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-[#111] border border-slate-200 dark:border-white/10 shadow-md text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
+      className="fixed bottom-6 right-6 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-[#005587] border border-[#8BB8E8] dark:border-[#2774AE] shadow-md text-[#2774AE] dark:text-[#DAEBFE] hover:bg-[#DAEBFE] dark:hover:bg-[#2774AE] transition-colors"
     >
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -62,38 +62,32 @@ function NavBar() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#050505] border-b border-slate-200 dark:border-white/8 transition-colors duration-300"
+        className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] transition-colors duration-300"
       >
         <div className="flex items-center justify-between px-6 md:px-12 h-[68px]">
 
-          {/* Logo lockup — bear large enough to read, with name beside it */}
+          {/* Logo lockup */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-[#003B5C] overflow-hidden flex-shrink-0 shadow-sm">
-              <Image
-                src="/LAMTBear.png"
-                alt="LAMT Bear"
-                width={40}
-                height={40}
-                className="object-contain"
-              />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2774AE] dark:bg-[#005587] overflow-hidden flex-shrink-0 shadow-sm">
+              <Image src="/LAMTBear.png" alt="LAMT Bear" width={40} height={40} className="object-contain" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-[13px] font-bold tracking-[0.08em] text-slate-900 dark:text-white">
+              <span className="text-[13px] font-bold tracking-[0.04em] text-[#003B5C] dark:text-[#DAEBFE]">
                 Los Angeles Math Tournament
               </span>
-              <span className="text-[11px] font-medium tracking-[0.06em] text-slate-400 dark:text-slate-500">
+              <span className="text-[11px] font-medium text-[#2774AE] dark:text-[#8BB8E8]">
                 UCLA · May 17, 2026
               </span>
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+          <div className="hidden md:flex items-center gap-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#005587] dark:text-[#8BB8E8]">
             {links.map(l => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="hover:text-slate-900 dark:hover:text-white transition-colors duration-150"
+                className="hover:text-[#2774AE] dark:hover:text-[#DAEBFE] transition-colors duration-150"
               >
                 {l.label}
               </Link>
@@ -105,13 +99,13 @@ function NavBar() {
               href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
               target="_blank"
               rel="noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 bg-[#FFD100] text-[#003B5C] rounded-lg px-5 py-2 text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#f5c800] transition-colors duration-150 shadow-sm"
+              className="hidden md:inline-flex items-center bg-[#FFD100] text-[#003B5C] rounded-lg px-5 py-2 text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#FFC72C] transition-colors duration-150 shadow-sm"
             >
               Register
             </Link>
             <button
               onClick={() => setMenuOpen(v => !v)}
-              className="md:hidden text-slate-700 dark:text-slate-200 p-1"
+              className="md:hidden text-[#003B5C] dark:text-[#DAEBFE] p-1"
               aria-label="Toggle menu"
             >
               {menuOpen
@@ -123,23 +117,21 @@ function NavBar() {
         </div>
       </motion.nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-[#050505] border-b border-slate-200 dark:border-white/8 shadow-lg">
+        <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] shadow-lg">
           {links.map(l => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="block px-6 py-4 text-sm font-semibold text-slate-800 dark:text-white border-b border-slate-100 dark:border-white/5"
+              className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#005587]"
             >{l.label}</Link>
           ))}
           <Link
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-            target="_blank"
-            rel="noreferrer"
+            target="_blank" rel="noreferrer"
             onClick={() => setMenuOpen(false)}
-            className="block px-6 py-4 text-sm font-bold text-[#003B5C] dark:text-[#FFD100]"
+            className="block px-6 py-4 text-sm font-bold text-[#2774AE] dark:text-[#FFD100]"
           >Register →</Link>
         </div>
       )}
@@ -158,44 +150,34 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-[#003B5C] dark:bg-[#040c14] border-t border-white/10">
+    <footer className="bg-[#003B5C] dark:bg-[#002A45] border-t border-[#005587]">
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
-
-        {/* Top: logo block + nav links */}
         <div className="flex flex-col md:flex-row md:items-start gap-8 mb-10">
-
-          {/* Logo + tagline */}
           <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/10 overflow-hidden">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#005587] overflow-hidden">
               <Image src="/LAMTBear.png" alt="LAMT Bear" width={52} height={52} className="object-contain" />
             </div>
             <div>
               <p className="text-[14px] font-bold text-white tracking-wide">Los Angeles Math Tournament</p>
-              <p className="text-[12px] text-white/50 mt-0.5">Student-run · UCLA · Est. 2026</p>
+              <p className="text-[12px] text-[#8BB8E8] mt-0.5">Student-run · UCLA · Est. 2026</p>
               <p className="text-[12px] font-semibold text-[#FFD100] mt-0.5">Free to attend</p>
             </div>
           </div>
-
-          {/* Spacer */}
           <div className="flex-1" />
-
-          {/* Nav links */}
           <nav className="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-2.5">
             {links.map(l => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-[12px] font-semibold uppercase tracking-[0.12em] text-white/50 hover:text-white transition-colors duration-150"
+                className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8BB8E8] hover:text-white transition-colors duration-150"
               >
                 {l.label}
               </Link>
             ))}
           </nav>
         </div>
-
-        {/* Divider */}
-        <div className="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[11px] text-white/30">© 2026 Los Angeles Math Tournament · UCLA</p>
+        <div className="border-t border-[#005587] pt-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-[11px] text-[#2774AE]">© 2026 Los Angeles Math Tournament · UCLA</p>
           <div className="flex gap-5">
             {[
               { label: 'Instagram', href: 'https://www.instagram.com/lamathtournament/' },
@@ -206,9 +188,8 @@ function Footer() {
               <a
                 key={s.label}
                 href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30 hover:text-white/70 transition-colors duration-150"
+                target="_blank" rel="noreferrer"
+                className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2774AE] hover:text-[#8BB8E8] transition-colors duration-150"
               >
                 {s.label}
               </a>
@@ -227,11 +208,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <title>Los Angeles Math Tournament 2026</title>
         <meta name="description" content="LAMT 2026 — A free, student-run math competition at UCLA on May 17, 2026." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#003B5C" />
+        <meta name="theme-color" content="#2774AE" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@300..700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&family=Inter:wght@300..700&display=swap"
           rel="stylesheet"
         />
       </head>
