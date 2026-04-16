@@ -120,7 +120,7 @@ const faqs: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: 'Can I sign up as an individual?',
-    a: 'Yes. Individual registration is available; we will place you on a composite team.',
+    a: 'Yes. Individual registration is available; If you want to find a team, join the tournament discord <a href="https://discord.gg/cV6EHtfcD" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here</a>..',
   },
 {
   q: 'Do you have a guide for how to register on ContestDojo?',
