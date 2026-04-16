@@ -227,36 +227,36 @@ export default function HomePage() {
 
   return (
     <div>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#003B5C]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-16">
-          <Link
-            href="/"
-            className="text-sm font-bold uppercase tracking-[0.18em] text-white"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
-            LAMT 2026
-          </Link>
+      <header className="sticky top-0 z-50 border-b border-[#DAEBFE] bg-white/95 backdrop-blur-md">
+  <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-16">
+    <Link
+      href="/"
+      className="text-sm font-bold uppercase tracking-[0.18em] text-[#003B5C]"
+      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+    >
+      LAMT 2026
+    </Link>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href={DISCORD_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-lg border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white hover:border-white/40 hover:bg-white/10 transition-colors duration-200"
-            >
-              Discord
-            </Link>
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-lg bg-[#FFD100] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#003B5C] hover:bg-[#FFC72C] transition-colors duration-200"
-            >
-              Register
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="flex items-center gap-3">
+      <Link
+        href={DISCORD_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-lg border border-[#DAEBFE] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#003B5C] hover:border-[#8BB8E8] hover:bg-[#DAEBFE]/50 transition-colors duration-200"
+      >
+        Discord
+      </Link>
+      <Link
+        href={REGISTER_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-lg bg-[#FFD100] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#003B5C] hover:bg-[#FFC72C] transition-colors duration-200"
+      >
+        Register
+      </Link>
+    </div>
+  </div>
+</header>
 
       <section className="relative min-h-[calc(100dvh-73px)] flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-[#003B5C] transition-colors duration-300 overflow-hidden">
         <div
