@@ -127,7 +127,7 @@ const faqs: { q: string; a: React.ReactNode }[] = [
   a: (
     <>
       Yes. You can access it{" "}
-      <a href="https://drive.google.com/file/d/1XvAfkTCIKJ5cmLnLh2kojqGqlcx27NaQ/view?usp=drive_link" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here!</a>.
+      <a href="https://drive.google.com/file/d/1XvAfkTCIKJ5cmLnLh2kojqGqlcx27NaQ/view?usp=drive_link" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here</a>.
     </>
   ),
 },
