@@ -122,16 +122,19 @@ const faqs: { q: string; a: React.ReactNode }[] = [
     q: 'Can I sign up as an individual?',
     a: 'Yes. Individual registration is available; we will place you on a composite team.',
   },
+    {
+    q: 'Do you have a guide for how to register on ContestDojo?',
+    a: 'Yes. You can access it <a href="  https://drive.google.com/file/d/1XvAfkTCIKJ5cmLnLh2kojqGqlcx27NaQ/view?usp=drive_link" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here.</a>,{' '}
+',
+  },
   {
     q: 'How should I prepare? Are sample problems available?',
     a: (
       <span>
-        We are not releasing sample problems from LAMT, but past papers from similar competitions are excellent
-        preparation. We recommend:{' '}
+        We are not releasing sample problems from LAMT, but past papers from similar competitions are excellent preparation. We recommend:{' '}
         <a href="https://bmt.berkeley.edu" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">BMT (Berkeley)</a>,{' '}
         <a href="https://www.stanfordmathtournament.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">SMT (Stanford)</a>,{' '}
-        <a href="https://socalmathcircle.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">SCMC</a>, and{' '}
-        <a href="https://jhmt.net" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">JHMT</a>.
+        <a href="https://jhmt.net" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">JHMT (Johns Hopkins)</a>.
         HMMT is also a great resource for harder problems.
       </span>
     ),
