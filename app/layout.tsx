@@ -50,9 +50,9 @@ function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const links = [
-    { href: '/#about',    label: 'About' },
+    { href: '/#about', label: 'About' },
     { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq',      label: 'FAQ' },
+    { href: '/#faq', label: 'FAQ' },
     { href: '/#location', label: 'Location' },
   ];
 
@@ -65,8 +65,6 @@ function NavBar() {
         className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] transition-colors duration-300"
       >
         <div className="flex items-center justify-between px-6 md:px-12 h-[68px]">
-
-          {/* Logo lockup — always white bg so transparent PNG is legible in both modes */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white overflow-hidden flex-shrink-0 shadow-sm ring-1 ring-[#DAEBFE] dark:ring-[#2774AE]">
               <Image src="/LAMTBear.png" alt="LAMT Bear" width={40} height={40} className="object-contain" />
@@ -81,9 +79,8 @@ function NavBar() {
             </div>
           </Link>
 
-          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#005587] dark:text-[#8BB8E8]">
-            {links.map(l => (
+            {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -92,6 +89,14 @@ function NavBar() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              href="https://discord.gg/cV6EHtfcD"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#2774AE] dark:hover:text-[#DAEBFE] transition-colors duration-150"
+            >
+              Discord
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -104,14 +109,19 @@ function NavBar() {
               Register
             </Link>
             <button
-              onClick={() => setMenuOpen(v => !v)}
+              onClick={() => setMenuOpen((v) => !v)}
               className="md:hidden text-[#003B5C] dark:text-[#DAEBFE] p-1"
               aria-label="Toggle menu"
             >
-              {menuOpen
-                ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-              }
+              {menuOpen ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -119,20 +129,34 @@ function NavBar() {
 
       {menuOpen && (
         <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] shadow-lg">
-          {links.map(l => (
+          {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
               className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#005587]"
-            >{l.label}</Link>
+            >
+              {l.label}
+            </Link>
           ))}
           <Link
+            href="https://discord.gg/cV6EHtfcD"
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setMenuOpen(false)}
+            className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#005587]"
+          >
+            Discord
+          </Link>
+          <Link
             href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
             onClick={() => setMenuOpen(false)}
             className="block px-6 py-4 text-sm font-bold text-[#2774AE] dark:text-[#FFD100]"
-          >Register →</Link>
+          >
+            Register →
+          </Link>
         </div>
       )}
     </>
