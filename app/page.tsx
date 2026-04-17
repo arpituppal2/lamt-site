@@ -227,7 +227,8 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative min-h-[calc(100dvh-73px)] flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-[#003B5C] transition-colors duration-300 overflow-hidden">
+      {/* HERO */}
+      <section className="relative min-h-[calc(100dvh-73px)] flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 opacity-[0.07]"
@@ -236,7 +237,7 @@ export default function HomePage() {
             backgroundSize: '40px 40px',
           }}
         />
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-[#003B5C] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent" />
 
         <motion.div
           initial="hidden"
@@ -302,9 +303,10 @@ export default function HomePage() {
         </motion.div>
       </section>
 
+      {/* ABOUT */}
       <section
         id="about"
-        className="py-28 px-6 md:px-16 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] transition-colors"
+        className="py-28 px-6 md:px-16 bg-white dark:bg-[#0d0d0d] border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors"
       >
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger}>
@@ -323,7 +325,7 @@ export default function HomePage() {
             <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#2774AE] dark:text-[#8BB8E8] mb-8 text-center">
               Rounds &amp; Format
             </motion.p>
-            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#DAEBFE] dark:divide-[#005587]">
+            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#DAEBFE] dark:divide-[#1e2e3d]">
               {rounds.map((r) => (
                 <motion.div key={r.label} variants={fadeUp} className="py-8 md:py-0 md:px-10 first:md:pl-0 last:md:pr-0 text-center">
                   <div className="text-[11px] font-mono font-bold tracking-[0.18em] uppercase text-[#2774AE] dark:text-[#8BB8E8] mb-3">
@@ -338,9 +340,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SCHEDULE */}
       <section
         id="schedule"
-        className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#002A45] border-b border-[#8BB8E8] dark:border-[#005587] transition-colors"
+        className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#141414] border-b border-[#8BB8E8] dark:border-[#1e2e3d] transition-colors"
       >
         <div className="max-w-3xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -359,7 +362,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.3, delay: idx * 0.025 }}
-                className="grid grid-cols-[6rem_1fr] gap-6 py-5 border-b border-[#8BB8E8]/40 dark:border-[#005587] last:border-0"
+                className="grid grid-cols-[6rem_1fr] gap-6 py-5 border-b border-[#8BB8E8]/40 dark:border-[#1e2e3d] last:border-0"
               >
                 <span className="text-[12px] font-mono font-bold uppercase tracking-[0.08em] text-[#2774AE] dark:text-[#8BB8E8] pt-0.5">
                   {row.time}
@@ -374,9 +377,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* FAQ */}
       <section
         id="faq"
-        className="py-28 px-6 md:px-16 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] transition-colors"
+        className="py-28 px-6 md:px-16 bg-white dark:bg-[#0d0d0d] border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors"
       >
         <div className="max-w-3xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -394,7 +398,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: idx * 0.03 }}
-                  className="border-b border-[#DAEBFE] dark:border-[#005587] last:border-0"
+                  className="border-b border-[#DAEBFE] dark:border-[#1e2e3d] last:border-0"
                 >
                   <button
                     className="w-full py-5 flex items-start justify-between text-left gap-6"
@@ -430,9 +434,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* LOCATION */}
       <section
         id="location"
-        className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#002A45] border-b border-[#8BB8E8] dark:border-[#005587] transition-colors"
+        className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#141414] border-b border-[#8BB8E8] dark:border-[#1e2e3d] transition-colors"
       >
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -460,12 +465,14 @@ export default function HomePage() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+              className="map-iframe"
             />
           </motion.div>
         </div>
       </section>
 
-      <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-[#003B5C] transition-colors">
+      {/* REGISTER */}
+      <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors">
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
             <motion.div variants={fadeUp}>
@@ -519,7 +526,7 @@ export default function HomePage() {
                   href={c.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="group flex flex-col gap-1.5 bg-[#2774AE] dark:bg-[#003B5C] px-6 py-5 hover:bg-[#005587] transition-colors duration-200"
+                  className="group flex flex-col gap-1.5 bg-[#2774AE] dark:bg-[#0d0d0d] px-6 py-5 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
                 >
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">{c.title}</span>
                   <span className="text-sm text-[#DAEBFE] group-hover:text-white transition-colors">{c.val}</span>

@@ -43,20 +43,20 @@
   --color-cta-text:  #003B5C;
 }
 
-/* ── Dark mode surfaces ──────────────────────────────────────────────── */
+/* ── Dark mode surfaces — OLED black + UCLA blue accents ─────────────── */
 .dark,
 [data-theme="dark"] {
-  --color-bg:        #003B5C;
-  --color-surface:   #005587;
-  --color-surface-2: #002A45;
-  --color-border:    #2774AE;
+  --color-bg:        #000000;
+  --color-surface:   #0d0d0d;
+  --color-surface-2: #141414;
+  --color-border:    #1e2e3d;
   --color-text:      #DAEBFE;
   --color-text-muted:#8BB8E8;
   --color-text-faint:#2774AE;
-  --color-accent:    #8BB8E8;
-  --color-accent-hover: #DAEBFE;
+  --color-accent:    #2774AE;
+  --color-accent-hover: #8BB8E8;
   --color-cta-bg:    #FFD100;
-  --color-cta-text:  #003B5C;
+  --color-cta-text:  #000000;
 }
 
 /* ── Base ────────────────────────────────────────────────────────────── */
@@ -92,4 +92,9 @@ body {
 }
 
 /* ── Hairline rows ───────────────────────────────────────────────────── */
-.table-row-hairline       { border-bottom: 1px solid var(--color-border); opacity: 0.4; }
+.table-row-hairline { border-bottom: 1px solid var(--color-border); opacity: 0.4; }
+
+/* ── Dark map invert ─────────────────────────────────────────────────── */
+.dark .map-iframe {
+  filter: invert(1) hue-rotate(180deg);
+}

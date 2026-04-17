@@ -30,7 +30,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="fixed bottom-6 right-6 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-[#005587] border border-[#8BB8E8] dark:border-[#2774AE] shadow-md text-[#2774AE] dark:text-[#DAEBFE] hover:bg-[#DAEBFE] dark:hover:bg-[#2774AE] transition-colors"
+      className="fixed bottom-6 right-6 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-[#0d0d0d] border border-[#8BB8E8] dark:border-[#2774AE] shadow-md text-[#2774AE] dark:text-[#8BB8E8] hover:bg-[#DAEBFE] dark:hover:bg-[#1a1a1a] transition-colors"
     >
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -62,7 +62,7 @@ function NavBar() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] transition-colors duration-300"
+        className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors duration-300"
       >
         <div className="flex items-center justify-between px-6 md:px-12 h-[68px]">
           <Link href="/" className="flex items-center gap-3 group">
@@ -128,13 +128,13 @@ function NavBar() {
       </motion.nav>
 
       {menuOpen && (
-        <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-[#003B5C] border-b border-[#DAEBFE] dark:border-[#005587] shadow-lg">
+        <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-black border-b border-[#DAEBFE] dark:border-[#1e2e3d] shadow-lg">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#005587]"
+              className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#1e2e3d]"
             >
               {l.label}
             </Link>
@@ -144,7 +144,7 @@ function NavBar() {
             target="_blank"
             rel="noreferrer"
             onClick={() => setMenuOpen(false)}
-            className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#005587]"
+            className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#1e2e3d]"
           >
             Discord
           </Link>
@@ -174,11 +174,10 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-[#003B5C] dark:bg-[#002A45] border-t border-[#005587]">
+    <footer className="bg-[#003B5C] dark:bg-black border-t border-[#005587] dark:border-[#1e2e3d]">
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
         <div className="flex flex-col md:flex-row md:items-start gap-8 mb-10">
           <div className="flex items-center gap-4 flex-shrink-0">
-            {/* Always white bg so transparent PNG shows correctly on the dark footer */}
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white overflow-hidden shadow-sm">
               <Image src="/LAMTBear.png" alt="LAMT Bear" width={52} height={52} className="object-contain" />
             </div>
@@ -201,8 +200,8 @@ function Footer() {
             ))}
           </nav>
         </div>
-        <div className="border-t border-[#005587] pt-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[11px] text-[#2774AE]">© 2026 Los Angeles Math Tournament · UCLA</p>
+        <div className="border-t border-[#005587] dark:border-[#1e2e3d] pt-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-[11px] text-[#2774AE] dark:text-[#8BB8E8]">© 2026 Los Angeles Math Tournament · UCLA</p>
           <div className="flex gap-5">
             {[
               { label: 'Instagram', href: 'https://www.instagram.com/lamathtournament/' },
@@ -214,7 +213,7 @@ function Footer() {
                 key={s.label}
                 href={s.href}
                 target="_blank" rel="noreferrer"
-                className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2774AE] hover:text-[#8BB8E8] transition-colors duration-150"
+                className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2774AE] dark:text-[#8BB8E8] hover:text-[#8BB8E8] dark:hover:text-white transition-colors duration-150"
               >
                 {s.label}
               </a>
