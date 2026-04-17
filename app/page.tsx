@@ -110,7 +110,7 @@ const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
 const faqs: { q: string; a: React.ReactNode }[] = [
   {
     q: 'Who can participate?',
-    a: 'Any student in grades 6–12 during the 2025–2026 academic year. No prior competition experience needed.',
+    a: 'Any student currently enrolled in elementary, middle, or high school (through 12th grade) during the 2025–2026 academic year. All contestants — from elementary through high school — take the same exam. No prior competition experience needed.',
   },
   {
     q: 'When and where is the tournament?',
@@ -267,8 +267,8 @@ export default function HomePage() {
             variants={fadeUp}
             className="text-base md:text-lg font-light text-[#DAEBFE] mb-10 max-w-lg mx-auto leading-relaxed"
           >
-            A student-run competition for grades 6–12 covering algebra, geometry, combinatorics, and number theory.{' '}
-            <strong className="font-semibold text-white">Free to attend.</strong>
+            A student-run competition open to all K–12 students, covering algebra, geometry, combinatorics, and number theory.{' '}
+            <strong className="font-semibold text-white">Everyone takes the same exam. Free to attend.</strong>
           </motion.p>
 
           <motion.div variants={fadeUp} className="mb-12">
@@ -313,7 +313,7 @@ export default function HomePage() {
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
               <motion.p variants={fadeUp} className="text-base md:text-lg text-[#005587] dark:text-[#8BB8E8] leading-relaxed">
-                The Los Angeles Math Tournament is a student-run competition at UCLA, open to students in grades 6–12. Problems reward careful reasoning over rote technique, spanning algebra, geometry, combinatorics, and number theory.
+                The Los Angeles Math Tournament is a student-run competition at UCLA, open to any student currently enrolled in elementary, middle, or high school. Problems reward careful reasoning over rote technique, spanning algebra, geometry, combinatorics, and number theory.
               </motion.p>
               <motion.p variants={fadeUp} className="text-base md:text-lg text-[#005587] dark:text-[#8BB8E8] leading-relaxed">
                 Organized entirely by UCLA students and free to attend. May 17, 2026 — a full day of competition, followed by an integration bee, a guest math talk, and an awards ceremony.
