@@ -82,7 +82,7 @@ export default function HomePage() {
             alt=""
             width={700}
             height={700}
-            className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-15"
+            className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40"
             priority
           />
         </div>
