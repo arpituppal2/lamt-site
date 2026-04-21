@@ -1,227 +1,108 @@
 'use client';
 
-import './globals.css';
-import type React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import KaTeXLoader from './components/KaTeXLoader';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import './globals.css';
 
-function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/tournament', label: 'Tournament' },
+  { href: '/rules', label: 'Rules' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/about', label: 'About' },
+];
+
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true);
-    setIsDark(document.documentElement.classList.contains('dark'));
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  if (!mounted) return null;
-
-  const toggle = () => {
-    const next = !isDark;
-    document.documentElement.classList.toggle('dark', next);
-    try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch (_) {}
-    setIsDark(next);
-  };
-
   return (
-    <button
-      onClick={toggle}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="fixed bottom-6 right-6 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-[#0d0d0d] border border-[#8BB8E8] dark:border-[#2774AE] shadow-md text-[#2774AE] dark:text-[#8BB8E8] hover:bg-[#DAEBFE] dark:hover:bg-[#1a1a1a] transition-colors"
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-[var(--color-bg)]/90 backdrop-blur-md border-b border-[var(--color-border)]'
+          : 'bg-transparent'
+      }`}
     >
-      {isDark ? (
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="5"/>
-          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-        </svg>
-      ) : (
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      )}
-    </button>
-  );
-}
+      <div className="max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between h-16 md:h-20">
+        <Link
+          href="/"
+          className="text-[var(--color-gold)] font-bold tracking-widest uppercase text-sm hover:opacity-80 transition-opacity"
+        >
+          LAMT
+        </Link>
 
-function NavBar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const links = [
-    { href: '/#about', label: 'About' },
-    { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq', label: 'FAQ' },
-    { href: '/#location', label: 'Location' },
-  ];
-
-  return (
-    <>
-      <motion.nav
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors duration-300"
-      >
-        <div className="flex items-center justify-between px-6 md:px-12 h-[68px]">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white overflow-hidden flex-shrink-0 shadow-sm ring-1 ring-[#DAEBFE] dark:ring-[#2774AE]">
-              <Image src="/LAMTBear.png" alt="LAMT Bear" width={40} height={40} className="object-contain" />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-[13px] font-bold tracking-[0.04em] text-[#003B5C] dark:text-[#DAEBFE]">
-                Los Angeles Math Tournament
-              </span>
-              <span className="text-[11px] font-medium text-[#2774AE] dark:text-[#8BB8E8]">
-                UCLA · May 17, 2026
-              </span>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#005587] dark:text-[#8BB8E8]">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="hover:text-[#2774AE] dark:hover:text-[#DAEBFE] transition-colors duration-150"
-              >
-                {l.label}
-              </Link>
-            ))}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map(({ href, label }) => (
             <Link
-              href="https://discord.gg/cV6EHtfcD"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-[#2774AE] dark:hover:text-[#DAEBFE] transition-colors duration-150"
+              key={href}
+              href={href}
+              className={`text-sm tracking-wide transition-colors duration-200 ${
+                pathname === href
+                  ? 'text-[var(--color-gold)]'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+              }`}
             >
-              Discord
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link
-              href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden md:inline-flex items-center bg-[#FFD100] text-[#003B5C] rounded-lg px-5 py-2 text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#FFC72C] transition-colors duration-150 shadow-sm"
-            >
-              Register
-            </Link>
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="md:hidden text-[#003B5C] dark:text-[#DAEBFE] p-1"
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-      </motion.nav>
-
-      {menuOpen && (
-        <div className="md:hidden fixed top-[68px] left-0 right-0 z-30 bg-white dark:bg-black border-b border-[#DAEBFE] dark:border-[#1e2e3d] shadow-lg">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setMenuOpen(false)}
-              className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#1e2e3d]"
-            >
-              {l.label}
+              {label}
             </Link>
           ))}
-          <Link
-            href="https://discord.gg/cV6EHtfcD"
+        </nav>
+
+        <div className="hidden md:block">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSftpbL0NKSC4t4RqQeX4G3rCHpN4MrtKp8UhHpkEQqCvbN_hQ/viewform"
             target="_blank"
-            rel="noreferrer"
-            onClick={() => setMenuOpen(false)}
-            className="block px-6 py-4 text-sm font-semibold text-[#003B5C] dark:text-[#DAEBFE] border-b border-[#DAEBFE] dark:border-[#1e2e3d]"
+            rel="noopener noreferrer"
+            className="btn-cta text-sm"
           >
-            Discord
-          </Link>
-          <Link
-            href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
+            Register
+          </a>
+        </div>
+
+        <button
+          className="md:hidden text-[var(--color-text)] flex flex-col gap-1.5 p-1"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-6 h-px bg-current transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-6 h-px bg-current transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-px bg-current transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div className="md:hidden bg-[var(--color-bg)] border-t border-[var(--color-border)] px-6 py-4 flex flex-col gap-4">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+              className={`text-sm tracking-wide ${
+                pathname === href ? 'text-[var(--color-gold)]' : 'text-[var(--color-text-secondary)]'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSftpbL0NKSC4t4RqQeX4G3rCHpN4MrtKp8UhHpkEQqCvbN_hQ/viewform"
             target="_blank"
-            rel="noreferrer"
-            onClick={() => setMenuOpen(false)}
-            className="block px-6 py-4 text-sm font-bold text-[#2774AE] dark:text-[#FFD100]"
+            rel="noopener noreferrer"
+            className="btn-cta text-sm w-fit"
           >
-            Register →
-          </Link>
+            Register
+          </a>
         </div>
       )}
-    </>
-  );
-}
-
-function Footer() {
-  const links = [
-    { href: '/#about',    label: 'About' },
-    { href: '/#schedule', label: 'Schedule' },
-    { href: '/#faq',      label: 'FAQ' },
-    { href: '/#location', label: 'Location' },
-    { href: '/#register', label: 'Register' },
-    { href: 'mailto:team@lamt.net', label: 'Contact' },
-  ];
-
-  return (
-    <footer className="bg-[#003B5C] dark:bg-black border-t border-[#005587] dark:border-[#1e2e3d]">
-      <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
-        <div className="flex flex-col md:flex-row md:items-start gap-8 mb-10">
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white overflow-hidden shadow-sm">
-              <Image src="/LAMTBear.png" alt="LAMT Bear" width={52} height={52} className="object-contain" />
-            </div>
-            <div>
-              <p className="text-[14px] font-bold text-white tracking-wide">Los Angeles Math Tournament</p>
-              <p className="text-[12px] text-[#8BB8E8] mt-0.5">Student-run · UCLA · Est. 2026</p>
-              <p className="text-[12px] font-semibold text-[#FFD100] mt-0.5">Free to attend</p>
-            </div>
-          </div>
-          <div className="flex-1" />
-          <nav className="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-2.5">
-            {links.map(l => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8BB8E8] hover:text-white transition-colors duration-150"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="border-t border-[#005587] dark:border-[#1e2e3d] pt-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[11px] text-[#2774AE] dark:text-[#8BB8E8]">© 2026 Los Angeles Math Tournament · UCLA</p>
-          <div className="flex gap-5">
-            {[
-              { label: 'Instagram', href: 'https://www.instagram.com/lamathtournament/' },
-              { label: 'Facebook',  href: 'https://www.facebook.com/groups/1429462591976204/' },
-              { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/la-math-tournament/' },
-              { label: 'Email',     href: 'mailto:team@lamt.net' },
-            ].map(s => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank" rel="noreferrer"
-                className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2774AE] dark:text-[#8BB8E8] hover:text-[#8BB8E8] dark:hover:text-white transition-colors duration-150"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
+    </header>
   );
 }
 
@@ -229,28 +110,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>Los Angeles Math Tournament 2026</title>
-        <meta name="description" content="LAMT 2026 — A free, student-run math competition at UCLA on May 17, 2026." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#2774AE" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&family=Inter:wght@300..700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body suppressHydrationWarning>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.theme==='dark'||(!('theme' in localStorage)&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(_){}`,
-          }}
-        />
-        <KaTeXLoader />
-        <NavBar />
-        <ThemeToggle />
-        <main className="min-h-screen pt-[68px]">{children}</main>
-        <Footer />
+      <body>
+        <Navbar />
+        <main>{children}</main>
+        <footer className="border-t border-[var(--color-border)] mt-24 py-10 px-6 md:px-10">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-6">
+            <div className="flex flex-col gap-2">
+              <span className="text-[var(--color-gold)] font-bold tracking-widest uppercase text-sm">LAMT 2026</span>
+              <span className="text-[var(--color-text-muted)] text-xs max-w-sm leading-relaxed">
+                We are a student group acting independently of the University of California.
+                We take full responsibility for our organization and this web site.
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 md:text-right">
+              <span className="text-[var(--color-text-muted)] text-xs">Los Angeles Math Tournament</span>
+              <span className="text-[var(--color-text-muted)] text-xs">UCLA Campus &mdash; May 17, 2026</span>
+              <a
+                href="mailto:lamt@math.ucla.edu"
+                className="text-[var(--color-text-muted)] text-xs hover:text-[var(--color-gold)] transition-colors"
+              >
+                lamt@math.ucla.edu
+              </a>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   );
