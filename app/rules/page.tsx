@@ -1,38 +1,42 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import KaTeXLoader from "../components/KaTeXLoader"; // <-- FIXED PATH
 
 /**
- * Helper component to render KaTeX strings safely.
+ * Inline KaTeX renderer with safe fallback.
  */
 function InlineMath({ math }: { math: string }) {
-  const [html, setHtml] = useState<string>("");
+  const [html, setHtml] = useState<string | null>(null);
 
   useEffect(() => {
-    const render = () => {
-      if ((window as any).katex) {
-        const rendered = (window as any).katex.renderToString(math, {
+    const tryRender = () => {
+      const katex = (window as any).katex;
+      if (!katex) return false;
+
+      setHtml(
+        katex.renderToString(math, {
           throwOnError: false,
           displayMode: false,
-        });
-        setHtml(rendered);
-      }
+        })
+      );
+      return true;
     };
 
-    render();
-
-    if (!(window as any).katex) {
-      const interval = setInterval(() => {
-        if ((window as any).katex) {
-          render();
-          clearInterval(interval);
-        }
-      }, 100);
-      return () => clearInterval(interval);
+    // Try immediately
+    if (!tryRender()) {
+      // Poll until KaTeX loads
+      const id = setInterval(() => {
+        if (tryRender()) clearInterval(id);
+      }, 50);
+      return () => clearInterval(id);
     }
   }, [math]);
 
-  return <span dangerouslySetInnerHTML={{ __html: html || math }} />;
+  // Safe fallback: raw TeX as text, NOT HTML
+  if (!html) return <span>{math}</span>;
+
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 export default function RulesPage() {
@@ -61,6 +65,8 @@ export default function RulesPage() {
 
   return (
     <div className="pt-32 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
+      <KaTeXLoader /> {/* Optional: safe to include here too */}
+
       <h1 
         className="font-bold text-[var(--color-text)] leading-tight mb-6"
         style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}
@@ -129,11 +135,11 @@ export default function RulesPage() {
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-8">
           Answers must be written in correct mathematical notation. Unless otherwise specified, 
           all answers must be exact and simplified. Graders will take a reasonably lenient interpretation of
-          &ldquo;simplified.&rdquo; The decisions of the LAMT coordinators are final.
+          “simplified.” The decisions of the LAMT coordinators are final.
         </p>
 
         <div className="grid grid-cols-1 gap-12">
-          {/* Table 1 Container */}
+          {/* Table 1 */}
           <div className="rounded-xl border border-[var(--color-border)] p-6 overflow-hidden">
             <h3 className="text-sm font-bold text-[var(--color-text)] mb-6 text-center uppercase tracking-widest opacity-80">
               Examples of Acceptable Answers
@@ -158,7 +164,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          {/* Table 2 Container */}
+          {/* Table 2 */}
           <div className="rounded-xl border border-[var(--color-border)] p-6 overflow-hidden">
             <h3 className="text-sm font-bold text-[var(--color-text)] mb-6 text-center uppercase tracking-widest opacity-80">
               Examples of Unacceptable Answers
@@ -192,6 +198,7 @@ export default function RulesPage() {
               </table>
             </div>
           </div>
+
         </div>
       </section>
     </div>
