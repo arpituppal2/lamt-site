@@ -77,7 +77,7 @@ function Navbar() {
           />
         </Link>
 
-        <nav className="flex items-center gap-20">
+        <nav className="flex items-center gap-17">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             const className = "text-white font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200";
