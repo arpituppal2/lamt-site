@@ -23,7 +23,6 @@ const navLinks = [
 
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
 
-/* ---------------- ANIMATIONS ---------------- */
 const fadeUp = {
   hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 }
@@ -33,12 +32,9 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.05 } }
 };
 
-/* ---------------- ICONS ---------------- */
 const InstagramIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-    <circle cx="12" cy="12" r="4"/>
-    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
   </svg>
 );
 
@@ -48,7 +44,6 @@ const FacebookIcon = () => (
   </svg>
 );
 
-/* ---------------- NAVBAR ---------------- */
 function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [lastY, setLastY]   = useState(0);
@@ -71,38 +66,25 @@ function Navbar() {
       style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
     >
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
-        <Link
-          href="/"
-          className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3"
-        >
-          {/* Logo on the LEFT */}
-          <Image src="/LAMTBear.png" alt="Logo" width={32} height={32} className="brightness-0 invert" />
+        <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3">
+          <Image 
+            src="/LAMTBear.png" 
+            alt="Logo" 
+            width={40} 
+            height={40} 
+            className="brightness-0 invert object-contain" 
+          />
           Los Angeles Math Tournament
         </Link>
 
-        {/* Doubled gap to 20 */}
         <nav className="flex items-center gap-20">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             const className = "text-white font-extrabold text-sm tracking-widest uppercase hover:opacity-70 transition-opacity duration-200";
-
-            if (external) {
-              return (
-                <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
-              );
-            }
-
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={className}
-                style={{
-                  textDecoration: active ? 'underline' : 'none',
-                  textUnderlineOffset: '6px',
-                  textDecorationThickness: '2px',
-                }}
-              >
+            return external ? (
+              <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
+            ) : (
+              <Link key={href} href={href} className={className} style={{ textDecoration: active ? 'underline' : 'none', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>
                 {label}
               </Link>
             );
@@ -110,32 +92,21 @@ function Navbar() {
         </nav>
       </div>
 
-      {/* Mobile Nav */}
       <div className="md:hidden flex items-center justify-between px-4 h-16">
         <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase flex items-center gap-2">
-          <Image src="/LAMTBear.png" alt="Logo" width={24} height={24} className="brightness-0 invert" />
-          LAMT
+           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="brightness-0 invert" />
+           LAMT
         </Link>
-        <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
-      {menuOpen && (
-        <div className="md:hidden bg-[#2774AE] border-t border-white/10 px-4 py-5 flex flex-col gap-5">
-          {navLinks.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={() => setMenuOpen(false)} className="text-white font-extrabold text-lg uppercase">
-              {label}
-            </Link>
-          ))}
-        </div>
-      )}
     </header>
   );
 }
 
-/* ---------------- FOOTER ---------------- */
 function Footer() {
   const socialLinks = [
     { title: 'Email',     val: 'team@lamt.net',        href: 'mailto:team@lamt.net', icon: <EnvelopeClosedIcon /> },
@@ -147,39 +118,35 @@ function Footer() {
 
   return (
     <footer className="bg-[#2774AE] dark:bg-black text-white border-t border-white/10">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-12">
-        
-        {/* Horizontal Layout: Big Logo | Schpeal | Contact Grid */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           
-          {/* 1. Big Logo (160x160) - Home Link */}
+          {/* BIG LOGO - NO RINGS OR OUTLINES */}
           <Link href="/" className="shrink-0 transition-transform hover:scale-105">
-            <div className="rounded-full border-2 border-white/20 p-2 bg-white/5 backdrop-blur-sm">
-              <Image
-                src="/LAMTBear.png"
-                alt="LAMT Bear Logo"
-                width={160}
-                height={160}
-                className="object-contain brightness-0 invert"
-              />
-            </div>
+            <Image
+              src="/LAMTBear.png"
+              alt="LAMT Bear Logo"
+              width={160}
+              height={160}
+              className="object-contain brightness-0 invert"
+            />
           </Link>
 
-          {/* 2. The Schpeal */}
+          {/* SCHPEAL */}
           <div className="max-w-xs text-center lg:text-left">
-            <p className="text-xs md:text-sm text-[#DAEBFE] leading-relaxed opacity-80 mt-4">
+            <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
               We are a student group acting independently of the University of California. 
               We take full responsibility for our organization and this web site.
             </p>
           </div>
 
-          {/* 3. Contact Grid (Exactly as given, but py-2 to condense) */}
+          {/* CONTACT GRID */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10 w-full lg:w-auto"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10 w-full lg:w-auto"
           >
             {socialLinks.map((c) => (
               <motion.a
@@ -188,19 +155,13 @@ function Footer() {
                 href={c.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col gap-1 bg-[#2774AE] dark:bg-black px-6 py-2.5 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
+                className="group flex flex-col gap-1 bg-[#2774AE] dark:bg-black px-5 py-2 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[#8BB8E8] group-hover:text-white transition-colors">
-                    {c.icon}
-                  </span>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">
-                    {c.title}
-                  </span>
+                  <span className="text-[#8BB8E8] group-hover:text-white transition-colors scale-90">{c.icon}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">{c.title}</span>
                 </div>
-                <span className="text-[11px] text-[#DAEBFE] group-hover:text-white transition-colors truncate">
-                  {c.val}
-                </span>
+                <span className="text-[11px] text-[#DAEBFE] group-hover:text-white transition-colors truncate">{c.val}</span>
               </motion.a>
             ))}
           </motion.div>
@@ -210,7 +171,6 @@ function Footer() {
   );
 }
 
-/* ---------------- DARK MODE & ROOT ---------------- */
 function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
@@ -244,7 +204,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-[#DAEBFE] dark:bg-black min-h-screen transition-colors duration-300">
         <Navbar />
         <DarkModeToggle />
-        <main className="pt-20 min-h-[calc(100vh-200px)]">
+        <main className="pt-20">
           {children}
         </main>
         <Footer />
