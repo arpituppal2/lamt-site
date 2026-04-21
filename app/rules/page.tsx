@@ -1,31 +1,67 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-// Assuming you have a KaTeX component or global processor 
-// that renders content inside $...$ or $$...$$
+/**
+ * Helper component to render KaTeX strings safely.
+ * It waits until the window.katex object is available.
+ */
+function InlineMath({ math }: { math: string }) {
+  const [html, setHtml] = useState<string>("");
+
+  useEffect(() => {
+    const render = () => {
+      if ((window as any).katex) {
+        const rendered = (window as any).katex.renderToString(math, {
+          throwOnError: false,
+          displayMode: false,
+        });
+        setHtml(rendered);
+      }
+    };
+
+    // Initial attempt
+    render();
+
+    // If not loaded yet, check again shortly
+    if (!(window as any).katex) {
+      const interval = setInterval(() => {
+        if ((window as any).katex) {
+          render();
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [math]);
+
+  return <span dangerouslySetInnerHTML={{ __html: html || math }} />;
+}
 
 export default function RulesPage() {
   const acceptableExamples = [
-    { math: '$879$' },
-    { math: '$2^{57} + 1$' },
-    { math: '$\\frac{2}{7}$' },
-    { math: '$\\sqrt{\\pi}$' },
-    { math: '$\\frac{11}{3}$' },
-    { math: '$\\frac{\\sqrt{2}}{2}$' },
-    { math: '$420!$' },
-    { math: '$\\cos(1)$' },
-    { math: '$\\binom{200}{4}$' },
-    { math: '$11 \\sqrt[11]{\\frac{27}{4}}$' },
+    { math: '879' },
+    { math: '2^{57} + 1' },
+    { math: '\\frac{2}{7}' },
+    { math: '\\sqrt{\\pi}' },
+    { math: '\\frac{11}{3}' },
+    { math: '\\frac{\\sqrt{2}}{2}' },
+    { math: '420!' },
+    { math: '\\cos(1)' },
+    { math: '\\binom{200}{4}' },
+    { math: '11 \\sqrt[11]{\\frac{27}{4}}' },
   ];
 
   const unacceptableExamples = [
-    { unsimplified: '$61 \\times 17$', acceptable: '$1037$' },
-    { unsimplified: '$\\sin(\\frac{\\pi}{7}) - \\sin(\\frac{6\\pi}{7})$', acceptable: '$0$' },
-    { unsimplified: '$\\frac{61}{31415}$', acceptable: '$\\frac{1}{515}$' },
-    { unsimplified: '$\\sqrt{3 + 2\\sqrt{2}}$', acceptable: '$1 + \\sqrt{2}$' },
-    { unsimplified: '$\\sqrt{\\frac{7}{9}}$', acceptable: '$\\frac{\\sqrt{7}}{3}$' },
-    { unsimplified: '$\\sin(\\frac{\\pi}{10})$', acceptable: '$\\frac{\\sqrt{5}-1}{4}$' },
-    { unsimplified: '$1 / \\sqrt{3}$', acceptable: '$\\frac{\\sqrt{3}}{3}$' },
+    { unsimplified: '61 \\times 17', acceptable: '1037' },
+    { unsimplified: '\\sin(\\frac{\\pi}{7}) - \\sin(\\frac{6\\pi}{7})', acceptable: '0' },
+    { unsimplified: '\\frac{61}{31415}', acceptable: '\\frac{1}{515}' },
+    { unsimplified: '\\sqrt{3 + 2\\sqrt{2}}', acceptable: '1 + \\sqrt{2}' },
+    { unsimplified: '\\sqrt{\\frac{7}{9}}', acceptable: '\\frac{\\sqrt{7}}{3}' },
+    { unsimplified: '\\sin(\\frac{\\pi}{10})', acceptable: '\\frac{\\sqrt{5}-1}{4}' },
+    { unsimplified: '1 / \\sqrt{3}', acceptable: '\\frac{\\sqrt{3}}{3}' },
   ];
 
   return (
@@ -101,64 +137,67 @@ export default function RulesPage() {
           &ldquo;simplified.&rdquo; The decisions of the LAMT coordinators are final.
         </p>
 
-        {/* Table 1: Examples of Acceptable Answers */}
-        <Card className="p-6 mb-10 border-[var(--color-border)] bg-transparent">
-          <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
-            Examples of Acceptable Answers
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-[var(--color-border)]">
-              <tbody>
-                {/* Rendering in a 2-column grid to match the reference images */}
-                {Array.from({ length: Math.ceil(acceptableExamples.length / 2) }).map((_, rowIndex) => (
-                  <tr key={rowIndex} className="border-b border-[var(--color-border)] last:border-b-0">
-                    <td className="w-1/2 p-4 text-center border-r border-[var(--color-border)] text-[var(--color-text)]">
-                      {acceptableExamples[rowIndex * 2].math}
-                    </td>
-                    <td className="w-1/2 p-4 text-center text-[var(--color-text)]">
-                      {acceptableExamples[rowIndex * 2 + 1]?.math || ""}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+        <div className="grid grid-cols-1 gap-12">
+          {/* Table 1: Examples of Acceptable Answers */}
+          <Card className="p-6 border-[var(--color-border)] bg-transparent overflow-hidden">
+            <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
+              Examples of Acceptable Answers
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-[var(--color-border)]">
+                <tbody>
+                  {Array.from({ length: Math.ceil(acceptableExamples.length / 2) }).map((_, rowIndex) => (
+                    <tr key={rowIndex} className="border-b border-[var(--color-border)] last:border-b-0">
+                      <td className="w-1/2 p-6 text-center border-r border-[var(--color-border)] text-[var(--color-text)] text-lg">
+                        <InlineMath math={acceptableExamples[rowIndex * 2].math} />
+                      </td>
+                      <td className="w-1/2 p-6 text-center text-[var(--color-text)] text-lg">
+                        {acceptableExamples[rowIndex * 2 + 1] && (
+                          <InlineMath math={acceptableExamples[rowIndex * 2 + 1].math} />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
 
-        {/* Table 2: Examples of Unacceptable Answers */}
-        <Card className="p-6 border-[var(--color-border)] bg-transparent">
-          <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
-            Examples of Unacceptable Answers
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-[var(--color-border)]">
-              <thead>
-                <tr className="border-b border-[var(--color-border)] bg-[var(--color-border)]/5">
-                  <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)] border-r border-[var(--color-border)]">
-                    Unsimplified Answer
-                  </th>
-                  <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)]">
-                    Equivalent Simplified Answer
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {unacceptableExamples.map((item, index) => (
-                  <tr key={index} className="border-b border-[var(--color-border)] last:border-b-0">
-                    <td className="w-1/2 p-4 text-center border-r border-[var(--color-border)]">
-                      <span className="opacity-50 line-through text-[var(--color-text-secondary)]">
-                        {item.unsimplified}
-                      </span>
-                    </td>
-                    <td className="w-1/2 p-4 text-center text-[var(--color-text)]">
-                      {item.acceptable}
-                    </td>
+          {/* Table 2: Examples of Unacceptable Answers */}
+          <Card className="p-6 border-[var(--color-border)] bg-transparent overflow-hidden">
+            <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
+              Examples of Unacceptable Answers
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-[var(--color-border)]">
+                <thead>
+                  <tr className="border-b border-[var(--color-border)] bg-[var(--color-border)]/5">
+                    <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)] border-r border-[var(--color-border)]">
+                      Unsimplified Answer
+                    </th>
+                    <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)]">
+                      Equivalent Simplified Answer
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                </thead>
+                <tbody>
+                  {unacceptableExamples.map((item, index) => (
+                    <tr key={index} className="border-b border-[var(--color-border)] last:border-b-0">
+                      <td className="w-1/2 p-6 text-center border-r border-[var(--color-border)]">
+                        <span className="opacity-40 line-through text-[var(--color-text-secondary)]">
+                          <InlineMath math={item.unsimplified} />
+                        </span>
+                      </td>
+                      <td className="w-1/2 p-6 text-center text-[var(--color-text)] text-lg">
+                        <InlineMath math={item.acceptable} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
       </section>
     </div>
   );
