@@ -35,7 +35,7 @@ function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] transition-transform duration-300"
+      className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] dark:bg-black transition-transform duration-300"
       style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
     >
 {/* Desktop */}
@@ -150,7 +150,7 @@ function DarkModeToggle() {
 
 function Footer() {
   return (
-    <footer className="bg-[#2774AE] mt-0">
+    <footer className="bg-[#2774AE] dark:bg-black mt-0">
       <div className="max-w-[1400px] mx-auto px-10 py-12 flex flex-col md:flex-row justify-between gap-8">
         {/* Left: brand + disclaimer */}
         <div className="flex flex-col gap-3 max-w-sm">
