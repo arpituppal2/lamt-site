@@ -8,7 +8,7 @@ import {
   EnvelopeClosedIcon, 
   LinkedInLogoIcon 
 } from '@radix-ui/react-icons';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import './globals.css';
 import KaTeXLoader from "./components/KaTeXLoader";
@@ -49,27 +49,26 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  // close menu on route change
+  useEffect(() => { setMenuOpen(false); }, [pathname]);
+
+  const linkClass = "font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200 text-white";
+
   return (
     <header className="w-full bg-[#2774AE] dark:bg-black transition-colors duration-300">
+      {/* Desktop */}
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
         <Link href="/" className="font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3 text-white">
-          <Image 
-            src="/LAMTBear.png" 
-            alt="Logo" 
-            width={60} 
-            height={60} 
-            className="object-contain" 
-          />
+          <Image src="/LAMTBear.png" alt="Logo" width={60} height={60} className="object-contain" />
         </Link>
 
         <nav className="flex items-center gap-16">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
-            const className = "font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200 text-white";
             return external ? (
-              <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
+              <a key={href} href={href} target="_blank" rel="noreferrer" className={linkClass}>{label}</a>
             ) : (
-              <Link key={href} href={href} className={className} style={{ textDecoration: active ? 'underline' : 'none', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>
+              <Link key={href} href={href} className={linkClass} style={{ textDecoration: active ? 'underline' : 'none', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>
                 {label}
               </Link>
             );
@@ -77,17 +76,57 @@ function Navbar() {
         </nav>
       </div>
 
+      {/* Mobile bar */}
       <div className="md:hidden flex items-center justify-between px-4 h-16">
         <Link href="/" className="font-extrabold text-lg tracking-wide uppercase flex items-center gap-2 text-white">
           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
           LAMT
         </Link>
-        <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          className="flex flex-col gap-1.5 p-1"
+        >
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
+
+      {/* Mobile dropdown */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.nav
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden overflow-hidden bg-[#2774AE] dark:bg-black border-t border-white/20"
+          >
+            <div className="flex flex-col px-6 py-4 gap-6">
+              {navLinks.map(({ href, label, external }) => {
+                const active = pathname === href;
+                return external ? (
+                  <a key={href} href={href} target="_blank" rel="noreferrer"
+                    className="font-extrabold text-lg tracking-widest uppercase text-white hover:opacity-70 transition-opacity"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link key={href} href={href}
+                    className="font-extrabold text-lg tracking-widest uppercase text-white hover:opacity-70 transition-opacity"
+                    style={{ textDecoration: active ? 'underline' : 'none', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
@@ -108,13 +147,7 @@ function Footer() {
 
           <div className="flex justify-center lg:justify-start">
             <Link href="/" className="shrink-0 transition-transform hover:scale-105">
-              <Image
-                src="/LAMTBear.png"
-                alt="LAMT Bear Logo"
-                width={160}
-                height={160}
-                className="object-contain"
-              />
+              <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={160} height={160} className="object-contain" />
             </Link>
           </div>
 
@@ -134,16 +167,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={c.title}
-                  className="
-                    flex items-center justify-center
-                    w-11 h-11 rounded-full
-                    bg-white dark:bg-black
-                    text-[#2774AE] dark:text-white
-                    border-2 border-white dark:border-white
-                    shadow-md
-                    hover:scale-110 hover:shadow-xl
-                    transition-all duration-200
-                  "
+                  className="flex items-center justify-center w-11 h-11 rounded-full bg-white dark:bg-black text-[#2774AE] dark:text-white border-2 border-white dark:border-white shadow-md hover:scale-110 hover:shadow-xl transition-all duration-200"
                 >
                   {c.icon}
                 </motion.a>
