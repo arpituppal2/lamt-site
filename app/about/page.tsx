@@ -17,9 +17,6 @@ export default function AboutPage() {
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
           We strive to encourage mathematical exploration and understanding by introducing concepts not covered in the typical pre-college curricula to students with high mathematical aptitude and interest. Each contest emphasizes collaboration between team members, while still allowing individuals to prove their own ability.
         </p>
-        <p className="text-[var(--color-text-secondary)] leading-relaxed">
-          Any individual currently enrolled in a pre-college institute for youth is welcome to compete as long as their primary enrollment is in grade 12 or below by the Tournament Date.
-        </p>
       </section>
 
       {/* Team section — scaffold for contributors */}
