@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { DiscordLogoIcon } from '@radix-ui/react-icons';
+
+const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
+const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
 
 // ─── COUNTDOWN ───────────────────────────────────────────────────────────────
 function Countdown() {
@@ -29,12 +32,12 @@ function Countdown() {
     <div className="flex items-end justify-center gap-8 tabular-nums select-none">
       {[
         { val: String(d), label: 'days' },
-        { val: pad(h), label: 'hrs' },
-        { val: pad(m), label: 'min' },
-        { val: pad(s), label: 'sec' },
+        { val: pad(h),    label: 'hrs'  },
+        { val: pad(m),    label: 'min'  },
+        { val: pad(s),    label: 'sec'  },
       ].map(({ val, label }) => (
         <div key={label} className="flex flex-col items-center">
-          <span className="text-4xl md:text-5xl font-light text-white leading-none tracking-tight">
+          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">
             {val}
           </span>
           <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">
@@ -46,147 +49,22 @@ function Countdown() {
   );
 }
 
-// ─── SECTION HEADER ──────────────────────────────────────────────────────────
-function SectionHead({
-  eyebrow,
-  title,
-  light = false,
-}: {
-  eyebrow: string;
-  title: string;
-  light?: boolean;
-}) {
-  return (
-    <div className="mb-12 text-center">
-      <p className={`text-[11px] font-bold tracking-[0.24em] uppercase mb-4 ${
-        light ? 'text-[#8BB8E8]' : 'text-[#2774AE] dark:text-[#8BB8E8]'
-      }`}>
-        {eyebrow}
-      </p>
-      <div className="w-10 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-5" />
-      <h2
-        className={`text-4xl md:text-5xl font-bold leading-tight ${
-          light ? 'text-white' : 'text-[#003B5C] dark:text-[#DAEBFE]'
-        }`}
-        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-const daySchedule = [
-  { time: '8:00 AM',  title: 'Check-in',                  note: 'Arrive on campus and register your team.' },
-  { time: '8:45 AM',  title: 'Opening Ceremony',           note: 'Welcome from the LAMT team.' },
-  { time: '9:15 AM',  title: 'Special Team Round',         note: '75 min · collaborative, format revealed day-of.' },
-  { time: '10:45 AM', title: 'Algebra & Number Theory',    note: '50 min · 10 problems · individual.' },
-  { time: '12:00 PM', title: 'Geometry',                   note: '50 min · 10 problems · individual.' },
-  { time: '1:00 PM',  title: 'Lunch & Disputes',           note: 'Dispute submission window.' },
-  { time: '2:00 PM',  title: 'Combinatorics',              note: '50 min · 10 problems · individual.' },
-  { time: '3:15 PM',  title: 'Guts Round',                 note: '75 min · live-scored relay.' },
-  { time: '4:30 PM',  title: 'Integration Bee & Talk',     note: 'Integration Bee + guest math talk.' },
-  { time: '6:00 PM',  title: 'Awards Ceremony',            note: 'Team and individual awards.' },
-];
-
-const rounds = [
-  {
-    label: 'Special Team Round',
-    duration: '75 min',
-    detail: 'Collaborative format. Teams of up to 6. Format revealed on contest day.',
-  },
-  {
-    label: 'Individual Rounds',
-    duration: '3 × 50 min',
-    detail: 'Algebra & Number Theory, Geometry, Combinatorics. Ten numerical-answer problems each.',
-  },
-  {
-    label: 'Guts Round',
-    duration: '75 min',
-    detail: 'Live-scored relay with a running leaderboard.',
-  },
-];
-
-const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
-const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
-
-const faqs: { q: string; a: React.ReactNode }[] = [
-  { q: 'Who can participate?', a: 'Any student enrolled in elementary, middle, or high school during the 2025–2026 academic year is welcome to attend. All contestants take the same exam, written at a high school contest level.' },
-  { q: 'Is there more than one division?', a: 'No. LAMT runs a single division for all participants. There are no separate awards for elementary or middle school students — everyone is in the same awards pool.' },
-  { q: 'What are the team requirements?', a: 'Teams may have up to 6 students, with no restriction on grade mixture — for example, 4th and 12th graders can be on the same team. Teams will need at least 4 students to be eligible for team awards.' },
-  { q: 'How are scoring and awards structured?', a: 'We will release full scoring details, including the breakdown between individual and team rounds, on this website soon. All published rules will apply uniformly across all ages.' },
-  { q: 'When and where is the tournament?', a: 'Sunday, May 17, 2026 at the UCLA Court of Sciences. Rounds are held in the Mathematical Sciences Building, 520 Portola Plaza, Los Angeles, CA 90095. Room assignments are emailed to registered teams the week before.' },
-  { q: 'How much does it cost?', a: 'LAMT 2026 is completely free to attend. There is no registration fee.' },
-  {
-    q: 'Can I sign up as an individual?',
-    a: (<>Yes. Individual registration is available. If you want to find a team, join the tournament Discord{' '}<a href={DISCORD_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here</a>.</>),
-  },
-  {
-    q: 'Do you have a guide for how to register on ContestDojo?',
-    a: (<>Yes. You can access it{' '}<a href="https://drive.google.com/file/d/1XvAfkTCIKJ5cmLnLh2kojqGqlcx27NaQ/view?usp=drive_link" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">here</a>.</>),
-  },
-  {
-    q: 'How should I prepare? Are sample problems available?',
-    a: (<span>We are not releasing sample problems from LAMT, but past papers from similar competitions are excellent preparation. We recommend{' '}<a href="https://bmt.berkeley.edu" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">BMT (Berkeley)</a>,{' '}<a href="https://www.stanfordmathtournament.org" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">SMT (Stanford)</a>,{' '}<a href="https://jhmt.net" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#003B5C] dark:hover:text-[#FFD100] transition-colors">JHMT (Johns Hopkins)</a>. HMMT and other university-run contests are also great resources for harder problems.</span>),
-  },
-  { q: 'Do middle and high schoolers take the same exam?', a: 'Yes. All contestants receive the same set of problems and are scored on the same scale.' },
-  { q: 'What difficulty should I expect?', a: 'Problems emphasize creative problem solving and are broadly comparable to other university-run high school tournaments. Students without prior contest experience are still very welcome.' },
-  { q: 'Are calculators allowed?', a: 'No. Calculators, phones, and all computational aids are strictly prohibited during testing rounds.' },
-  { q: 'Does each team need a chaperone?', a: 'Yes. An adult chaperone must accompany students and remain on campus throughout the event.' },
-  { q: 'Will lunch be provided?', a: 'We are finalizing catering logistics and will update registered teams once confirmed. Campus dining is available nearby.' },
-];
-
 const fadeUp = {
-  hidden:   { opacity: 0, y: 24 },
-  visible:  { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
+  hidden:  { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
 };
 const stagger = {
-  hidden:   {},
-  visible:  { transition: { staggerChildren: 0.09 } },
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.09 } },
 };
+
 export default function HomePage() {
-  const [openFaq, setOpenFaq] = useState<string | null>(null);
-  const [dark, setDark] = useState(false);
-
-  // sync with system preference on first render
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    setDark(mq.matches);
-    document.documentElement.classList.toggle('dark', mq.matches);
-  }, []);
-
-  const toggleDark = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle('dark', next);
-  };
-
   return (
     <div>
 
-      {/* ── DARK MODE TOGGLE (bottom-right, always visible) ── */}
-      <button
-        onClick={toggleDark}
-        aria-label="Toggle dark mode"
-        className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full flex items-center justify-center
-          bg-[#003B5C] dark:bg-[#DAEBFE] text-white dark:text-[#003B5C]
-          shadow-lg hover:scale-105 active:scale-95 transition-transform duration-200"
-      >
-        {dark ? (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        )}
-      </button>
-
       {/* ── HERO ── */}
-      <section className="relative min-h-[calc(100dvh-73px)] flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden -mt-20">
+
         {/* dot grid */}
         <div
           aria-hidden
@@ -197,19 +75,19 @@ export default function HomePage() {
           }}
         />
 
-        {/* LAMT Bear — full color, no white filter */}
+        {/* LAMT Bear — raw, no filter */}
         <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none overflow-hidden">
           <Image
             src="/LAMTBear.png"
             alt=""
             width={700}
             height={700}
-            className="h-[85vh] w-auto object-contain opacity-25 dark:opacity-15"
+            className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-15"
             priority
           />
         </div>
 
-        {/* fade-out at bottom */}
+        {/* bottom fade into page bg */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
 
         <motion.div
@@ -261,162 +139,28 @@ export default function HomePage() {
               <DiscordLogoIcon className="h-4 w-4" />
               Join Discord
             </Link>
-            <a href="#about" className="text-sm font-medium text-[#DAEBFE] hover:text-white transition-colors duration-200">
-              Learn more ↓
-            </a>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── ABOUT ── */}
-      <section id="about" className="py-28 px-6 md:px-16 bg-white dark:bg-[#0d0d0d] border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger}>
-            <motion.div variants={fadeUp}><SectionHead eyebrow="About" title="What is LAMT?" /></motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-[#005587] dark:text-[#8BB8E8] leading-relaxed">
-                The Los Angeles Math Tournament is a student-run competition at UCLA open to students from late elementary school through high school. Problems reward careful reasoning over rote technique, spanning algebra, geometry, combinatorics, and number theory.
-              </motion.p>
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-[#005587] dark:text-[#8BB8E8] leading-relaxed">
-                The contest is organized entirely by UCLA students and is free to attend. May 17, 2026 is a full day of rounds, followed by an integration bee, a guest math talk, and an awards ceremony.
-              </motion.p>
-            </div>
-            <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#2774AE] dark:text-[#8BB8E8] mb-8 text-center">
-              Rounds &amp; Format
-            </motion.p>
-            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#DAEBFE] dark:divide-[#1e2e3d]">
-              {rounds.map((r) => (
-                <motion.div key={r.label} variants={fadeUp} className="py-8 md:py-0 md:px-10 first:md:pl-0 last:md:pr-0 text-center">
-                  <div className="text-[11px] font-mono font-bold tracking-[0.18em] uppercase text-[#2774AE] dark:text-[#8BB8E8] mb-3">{r.duration}</div>
-                  <div className="text-base font-bold text-[#003B5C] dark:text-[#DAEBFE] mb-2">{r.label}</div>
-                  <p className="text-sm text-[#005587] dark:text-[#8BB8E8] leading-relaxed">{r.detail}</p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── SCHEDULE ── */}
-      <section id="schedule" className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#141414] border-b border-[#8BB8E8] dark:border-[#1e2e3d] transition-colors">
-        <div className="max-w-3xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp}><SectionHead eyebrow="Schedule" title="Sunday, May 17" /></motion.div>
-            <motion.p variants={fadeUp} className="text-sm text-[#2774AE] dark:text-[#8BB8E8] -mt-6 mb-10 text-center">All times approximate.</motion.p>
-          </motion.div>
-          <div>
-            {daySchedule.map((row, idx) => (
-              <motion.div
-                key={row.time + row.title}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.3, delay: idx * 0.025 }}
-                className="grid grid-cols-[6rem_1fr] gap-6 py-5 border-b border-[#8BB8E8]/40 dark:border-[#1e2e3d] last:border-0"
-              >
-                <span className="text-[12px] font-mono font-bold uppercase tracking-[0.08em] text-[#2774AE] dark:text-[#8BB8E8] pt-0.5">{row.time}</span>
-                <div>
-                  <span className="text-base font-bold text-[#003B5C] dark:text-[#DAEBFE]">{row.title}</span>
-                  <span className="ml-3 text-sm text-[#005587] dark:text-[#8BB8E8]">{row.note}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
-      <section id="faq" className="py-28 px-6 md:px-16 bg-white dark:bg-[#0d0d0d] border-b border-[#DAEBFE] dark:border-[#1e2e3d] transition-colors">
-        <div className="max-w-3xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp}><SectionHead eyebrow="Questions" title="Frequently Asked" /></motion.div>
-          </motion.div>
-          <div>
-            {faqs.map((item, idx) => {
-              const open = openFaq === item.q;
-              return (
-                <motion.div
-                  key={item.q}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: idx * 0.03 }}
-                  className="border-b border-[#DAEBFE] dark:border-[#1e2e3d] last:border-0"
-                >
-                  <button
-                    className="w-full py-5 flex items-start justify-between text-left gap-6"
-                    onClick={() => setOpenFaq(open ? null : item.q)}
-                  >
-                    <span className="text-base font-semibold text-[#003B5C] dark:text-[#DAEBFE] leading-snug">{item.q}</span>
-                    <span
-                      className="flex-shrink-0 text-[#8BB8E8] mt-1 transition-transform duration-200"
-                      style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                        <path d="M7 1v12M1 7h12" />
-                      </svg>
-                    </span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {open && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-6 text-base text-[#005587] dark:text-[#8BB8E8] leading-relaxed">{item.a}</div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-            {/* ── LOCATION ── */}
-      <section id="location" className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-[#141414] border-b border-[#8BB8E8] dark:border-[#1e2e3d] transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp}><SectionHead eyebrow="Location" title="UCLA Court of Sciences" /></motion.div>
-            <motion.p variants={fadeUp} className="text-base text-[#005587] dark:text-[#8BB8E8] -mt-6 mb-10 text-center">
-              Mathematical Sciences Building · 520 Portola Plaza · Los Angeles, CA 90095
-            </motion.p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="overflow-hidden rounded-xl border border-[#8BB8E8] dark:border-[#2774AE]"
-            style={{ aspectRatio: '16/6' }}
-          >
-            <iframe
-              title="UCLA Mathematical Sciences Building"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d826.0!2d-118.44273!3d34.06893!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc85cbbb5827%3A0x76b2f6b7e4b2ef8a!2sMathematical%20Sciences%20Building%2C%20Los%20Angeles%2C%20CA%2090095!5e0!3m2!1sen!2sus!4v1"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="map-iframe"
-            />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── REGISTER ── */}
+      {/* ── REGISTER + CONTACT ── */}
       <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors">
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp}><SectionHead eyebrow="Register" title="Registration is open." light /></motion.div>
-            <motion.p variants={fadeUp} className="text-base md:text-lg text-[#DAEBFE] max-w-lg mx-auto -mt-4 mb-10 leading-relaxed text-center">
+
+            <motion.div variants={fadeUp} className="mb-12 text-center">
+              <p className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#8BB8E8] mb-4">Register</p>
+              <div className="w-10 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-5" />
+              <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Registration is open.
+              </h2>
+            </motion.div>
+
+            <motion.p variants={fadeUp} className="text-base md:text-lg text-[#DAEBFE] max-w-lg mx-auto mb-10 leading-relaxed text-center">
               LAMT 2026 takes place May 17 at UCLA. Registration is through ContestDojo and is{' '}
               <strong className="text-white font-bold">completely free</strong>.
             </motion.p>
+
             <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href={REGISTER_URL}
@@ -438,6 +182,7 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
+          {/* Contact grid */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -450,11 +195,11 @@ export default function HomePage() {
             </motion.p>
             <motion.div variants={stagger} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10">
               {[
-                { title: 'Email',     val: 'team@lamt.net',         href: 'mailto:team@lamt.net' },
-                { title: 'Instagram', val: '@lamathtournament',      href: 'https://www.instagram.com/lamathtournament/' },
-                { title: 'Facebook',  val: 'LAMT Community',         href: 'https://www.facebook.com/groups/1429462591976204/' },
-                { title: 'LinkedIn',  val: 'LA Math Tournament',     href: 'https://www.linkedin.com/company/la-math-tournament/' },
-                { title: 'Discord',   val: 'Join server',            href: DISCORD_URL },
+                { title: 'Email',     val: 'team@lamt.net',       href: 'mailto:team@lamt.net' },
+                { title: 'Instagram', val: '@lamathtournament',    href: 'https://www.instagram.com/lamathtournament/' },
+                { title: 'Facebook',  val: 'LAMT Community',       href: 'https://www.facebook.com/groups/1429462591976204/' },
+                { title: 'LinkedIn',  val: 'LA Math Tournament',   href: 'https://www.linkedin.com/company/la-math-tournament/' },
+                { title: 'Discord',   val: 'Join server',          href: DISCORD_URL },
               ].map((c) => (
                 <motion.a
                   key={c.title}
