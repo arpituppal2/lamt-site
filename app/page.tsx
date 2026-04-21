@@ -37,10 +37,10 @@ function Countdown() {
         { val: pad(s),    label: 'sec'  },
       ].map(({ val, label }) => (
         <div key={label} className="flex flex-col items-center">
-          <span className="text-4xl md:text-6xl font-light text-[#003B5C] dark:text-white leading-none tracking-tight">
+          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">
             {val}
           </span>
-          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#2774AE] dark:text-[#8BB8E8]">
+          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">
             {label}
           </span>
         </div>
@@ -63,14 +63,14 @@ export default function HomePage() {
     <div>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#DAEBFE] dark:bg-black transition-colors duration-300 overflow-hidden -mt-20">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden -mt-20">
 
         {/* dot grid */}
         <div
           aria-hidden
           className="absolute inset-0 opacity-[0.07] pointer-events-none"
           style={{
-            backgroundImage: 'radial-gradient(circle, #2774AE 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)',
             backgroundSize: '40px 40px',
           }}
         />
@@ -82,32 +82,32 @@ export default function HomePage() {
             alt=""
             width={700}
             height={700}
-            className="h-[85vh] w-auto object-contain opacity-10 dark:opacity-40"
+            className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40"
             priority
           />
         </div>
 
-        {/* bottom fade into next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#DAEBFE] dark:from-black to-transparent pointer-events-none" />
+        {/* bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
 
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="relative z-10 max-w-4xl w-full"
+          className="relative z-10 max-w-4xl w-full pt-24 pb-8"
         >
           <motion.h1
             variants={fadeUp}
-            className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-[#003B5C] dark:text-white mb-4"
+            className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white mb-6"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             Los Angeles<br />
-            <span style={{ color: '#2774AE' }} className="dark:text-[#FFD100]">Math Tournament</span>
+            <span style={{ color: '#FFD100' }}>Math Tournament</span>
           </motion.h1>
 
-          <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#2774AE] dark:bg-[#FFD100] mx-auto mb-8" />
+          <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
 
-          <motion.div variants={fadeUp} className="mb-12">
+          <motion.div variants={fadeUp} className="mb-14">
             <Countdown />
           </motion.div>
 
@@ -115,8 +115,7 @@ export default function HomePage() {
             <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
               Register
             </Link>
-            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost-blue">
-              <DiscordLogoIcon className="h-4 w-4" />
+            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
               Join Discord
             </Link>
           </motion.div>
@@ -124,27 +123,26 @@ export default function HomePage() {
       </section>
 
       {/* ── REGISTER + CONTACT ── */}
-      <section id="register" className="py-28 px-6 md:px-16 bg-[#DAEBFE] dark:bg-black transition-colors">
+      <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors">
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
 
             <motion.div variants={fadeUp} className="mb-12 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-[#003B5C] dark:text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 Registration is open.
               </h2>
             </motion.div>
 
-            <motion.p variants={fadeUp} className="text-base md:text-lg text-[#005587] dark:text-[#DAEBFE] max-w-lg mx-auto mb-10 leading-relaxed text-center">
+            <motion.p variants={fadeUp} className="text-base md:text-lg text-[#DAEBFE] max-w-lg mx-auto mb-10 leading-relaxed text-center">
               LAMT 2026 takes place May 17 at UCLA. Registration is through ContestDojo and is{' '}
-              <strong className="text-[#003B5C] dark:text-white font-bold">completely free</strong>.
+              <strong className="text-white font-bold">completely free</strong>.
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
               <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
                 Register on ContestDojo →
               </Link>
-              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost-blue">
-                <DiscordLogoIcon className="h-4 w-4" />
+              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
                 Join Discord
               </Link>
             </motion.div>
