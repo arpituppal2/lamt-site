@@ -6,7 +6,7 @@ export default function TournamentPage() {
       <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6"
         style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}
       >
-        Los Angeles Math Tournamant 2026
+        LAMT 2026
       </h1>
       <div className="gold-rule mb-16" />
 
