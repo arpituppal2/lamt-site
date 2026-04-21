@@ -51,9 +51,9 @@ function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#DAEBFE] dark:bg-black transition-colors duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] dark:bg-black transition-colors duration-300">
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
-        <Link href="/" className="font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3 text-[#003B5C] dark:text-white">
+        <Link href="/" className="font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3 text-white">
           <Image 
             src="/LAMTBear.png" 
             alt="Logo" 
@@ -66,7 +66,7 @@ function Navbar() {
         <nav className="flex items-center gap-16">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
-            const className = "font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200 text-[#003B5C] dark:text-white";
+            const className = "font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200 text-white";
             return external ? (
               <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
             ) : (
@@ -79,14 +79,14 @@ function Navbar() {
       </div>
 
       <div className="md:hidden flex items-center justify-between px-4 h-16">
-        <Link href="/" className="font-extrabold text-lg tracking-wide uppercase flex items-center gap-2 text-[#003B5C] dark:text-white">
+        <Link href="/" className="font-extrabold text-lg tracking-wide uppercase flex items-center gap-2 text-white">
           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
           LAMT
         </Link>
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
-          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
     </header>
