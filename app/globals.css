@@ -4,26 +4,17 @@
 
 /* ─────────────────────────────────────────────────────────────────────────
    UCLA OFFICIAL BRAND PALETTE
-   Source: UCLA Brand Guidelines — brand.ucla.edu/identity/colors
-   All hex values are exact per official specs. Do not substitute.
 ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Primary */
   --ucla-blue:          #2774AE;
   --ucla-gold:          #FFD100;
   --ucla-white:         #FFFFFF;
-
-  /* Secondary blues */
   --ucla-blue-darkest:  #003B5C;
   --ucla-blue-darker:   #005587;
   --ucla-blue-lighter:  #8BB8E8;
   --ucla-blue-lightest: #DAEBFE;
-
-  /* Secondary golds */
   --ucla-gold-darkest:  #FFB81C;
   --ucla-gold-darker:   #FFC72C;
-
-  /* Tertiary (graphics only — never use for text) */
   --ucla-yellow:        #FFFF00;
   --ucla-green:         #00FF87;
   --ucla-magenta:       #FF00A5;
@@ -31,11 +22,9 @@
   --ucla-purple:        #8237FF;
   --ucla-black:         #000000;
 
-  /* Typography */
   --font-display: 'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif;
   --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Fluid type scale */
   --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
   --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
   --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
@@ -45,7 +34,6 @@
   --text-3xl:  clamp(2.5rem,   1rem    + 4vw,    5rem);
   --text-hero: clamp(3rem,     0.5rem  + 7vw,    8rem);
 
-  /* 4px spacing system */
   --space-1:  0.25rem;
   --space-2:  0.5rem;
   --space-3:  0.75rem;
@@ -60,27 +48,19 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  /* Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
 
-  /* Transitions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --transition-ui: 180ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Content widths */
   --content-narrow:  640px;
   --content-default: 960px;
   --content-wide:    1200px;
 }
 
-/* ── LIGHT MODE ─────────────────────────────────────────────────────────
-   Blue-on-white. UCLA blue as primary text + accent.
-   Gold reserved for CTAs and key highlights only.
-   Accessibility: all text/bg combos are AA/AAA per UCLA color chart.
-───────────────────────────────────────────────────────────────────────── */
 :root,
 [data-theme="light"] {
   --color-bg:             #FFFFFF;
@@ -89,30 +69,24 @@
   --color-surface-offset: #EBF4FF;
   --color-divider:        rgba(139, 184, 232, 0.35);
   --color-border:         rgba(39, 116, 174, 0.18);
-
-  --color-text:           #003B5C;   /* Darkest Blue — AAA on white */
-  --color-text-muted:     #005587;   /* Darker Blue — AA on white */
-  --color-text-faint:     #2774AE;   /* UCLA Blue — AA on white (large text) */
+  --color-text:           #003B5C;
+  --color-text-muted:     #005587;
+  --color-text-faint:     #2774AE;
   --color-text-inverse:   #FFFFFF;
-
   --color-accent:         #2774AE;
   --color-accent-hover:   #005587;
   --color-accent-active:  #003B5C;
-
   --color-cta-bg:         #FFD100;
-  --color-cta-text:       #003B5C;   /* AAA contrast on gold */
+  --color-cta-text:       #003B5C;
   --color-cta-hover:      #FFC72C;
-
   --color-nav-bg:         transparent;
   --color-nav-scrolled:   rgba(255, 255, 255, 0.88);
   --color-nav-border:     rgba(39, 116, 174, 0.12);
-
   --shadow-sm: 0 1px 3px rgba(0, 59, 92, 0.06);
   --shadow-md: 0 4px 16px rgba(0, 59, 92, 0.08);
   --shadow-lg: 0 12px 40px rgba(0, 59, 92, 0.10);
 }
 
-/* ── DARK MODE — OLED black + UCLA blue accents ──────────────────────── */
 .dark,
 [data-theme="dark"] {
   --color-bg:             #000000;
@@ -121,30 +95,24 @@
   --color-surface-offset: #0d0d0d;
   --color-divider:        rgba(39, 116, 174, 0.2);
   --color-border:         rgba(139, 184, 232, 0.12);
-
-  --color-text:           #DAEBFE;   /* Lightest Blue — AAA on black */
-  --color-text-muted:     #8BB8E8;   /* Lighter Blue — AA on black */
-  --color-text-faint:     #2774AE;   /* UCLA Blue — AA large text on black */
+  --color-text:           #DAEBFE;
+  --color-text-muted:     #8BB8E8;
+  --color-text-faint:     #2774AE;
   --color-text-inverse:   #000000;
-
   --color-accent:         #8BB8E8;
   --color-accent-hover:   #DAEBFE;
   --color-accent-active:  #FFFFFF;
-
   --color-cta-bg:         #FFD100;
   --color-cta-text:       #000000;
   --color-cta-hover:      #FFC72C;
-
   --color-nav-bg:         transparent;
   --color-nav-scrolled:   rgba(0, 0, 0, 0.88);
   --color-nav-border:     rgba(139, 184, 232, 0.1);
-
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* ── BASE RESET ──────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -170,34 +138,15 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
 ul[role="list"], ol[role="list"] { list-style: none; }
-
 input, button, textarea, select { font: inherit; color: inherit; }
-
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-  line-height: 1.1;
-  font-family: var(--font-display);
-}
-
-p, li, figcaption {
-  text-wrap: pretty;
-  max-width: none;
-}
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; line-height: 1.1; font-family: var(--font-display); }
+p, li, figcaption { text-wrap: pretty; max-width: none; }
 button { cursor: pointer; background: none; border: none; }
-
 table { border-collapse: collapse; width: 100%; }
 
-::selection {
-  background: rgba(39, 116, 174, 0.2);
-  color: var(--color-text);
-}
+::selection { background: rgba(39, 116, 174, 0.2); color: var(--color-text); }
 
 :focus-visible {
   outline: 2px solid var(--ucla-blue);
@@ -226,76 +175,43 @@ a, button, [role="button"] {
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
-/* ── TRANSPARENT NAV ─────────────────────────────────────────────────── */
-.nav-transparent {
-  background: var(--color-nav-bg);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-bottom: 1px solid transparent;
-}
-
-.nav-scrolled {
-  background: var(--color-nav-scrolled);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border-bottom: 1px solid var(--color-nav-border);
-}
-
-/* ── CTA BUTTON ──────────────────────────────────────────────────────── */
-.btn-cta {
+/* ── OUTLINE BUTTON ──────────────────────────────────────────────────────
+   Inactive: transparent bg, white border, white text
+   Hover light: yellow fill, yellow border, dark text
+   Hover dark:  UCLA blue fill, blue border, white text
+───────────────────────────────────────────────────────────────────────── */
+.btn-outline {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  background: var(--color-cta-bg);
-  color: var(--color-cta-text);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  transition: background-color var(--transition-ui);
-}
-
-.btn-cta:hover {
-  background: var(--color-cta-hover);
-}
-
-/* ── GHOST BUTTON ────────────────────────────────────────────────────── */
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+  justify-content: center;
   background: transparent;
-  color: var(--color-text-inverse);
+  color: #ffffff;
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 2rem;
+  border: 2px solid #ffffff;
   cursor: pointer;
-  transition: border-color var(--transition-ui), background-color var(--transition-ui);
+  transition:
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color     200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color            200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.08);
+/* light mode hover → gold fill */
+.btn-outline:hover {
+  background: #FFD100;
+  border-color: #FFD100;
+  color: #003B5C;
 }
 
-/* Ghost on light bg */
-.btn-ghost-blue {
-  color: var(--color-accent);
-  border: 1px solid var(--color-border);
-}
-.btn-ghost-blue:hover {
-  border-color: var(--color-accent);
-  background: rgba(39, 116, 174, 0.06);
+/* dark mode hover → UCLA blue fill */
+.dark .btn-outline:hover {
+  background: #2774AE;
+  border-color: #2774AE;
+  color: #ffffff;
 }
 
 /* ── GOLD RULE ───────────────────────────────────────────────────────── */
@@ -318,35 +234,16 @@ a, button, [role="button"] {
 }
 
 /* ── PROSE ───────────────────────────────────────────────────────────── */
-.prose {
-  font-size: var(--text-base);
-  line-height: 1.75;
-  color: var(--color-text-muted);
-}
-
-.prose p + p {
-  margin-top: var(--space-4);
-}
-
-.prose a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.prose a:hover {
-  color: var(--color-accent-hover);
-}
+.prose { font-size: var(--text-base); line-height: 1.75; color: var(--color-text-muted); }
+.prose p + p { margin-top: var(--space-4); }
+.prose a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
+.prose a:hover { color: var(--color-accent-hover); }
 
 /* ── DARK MAP ────────────────────────────────────────────────────────── */
-.dark .map-iframe {
-  filter: invert(1) hue-rotate(180deg);
-}
+.dark .map-iframe { filter: invert(1) hue-rotate(180deg); }
 
-/* ── PAGE TRANSITION WRAPPER ─────────────────────────────────────────── */
-.page-content {
-  animation: fadeUp 0.5s var(--ease-out-expo) both;
-}
+/* ── PAGE TRANSITION ─────────────────────────────────────────────────── */
+.page-content { animation: fadeUp 0.5s var(--ease-out-expo) both; }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }

@@ -8,7 +8,6 @@ import Image from 'next/image';
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
 
-// ─── COUNTDOWN ───────────────────────────────────────────────────────────────
 function Countdown() {
   const target = new Date('2026-05-17T08:00:00-07:00').getTime();
   const [diff, setDiff] = useState(target - Date.now());
@@ -36,12 +35,8 @@ function Countdown() {
         { val: pad(s),    label: 'sec'  },
       ].map(({ val, label }) => (
         <div key={label} className="flex flex-col items-center">
-          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">
-            {val}
-          </span>
-          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">
-            {label}
-          </span>
+          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">{val}</span>
+          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
         </div>
       ))}
     </div>
@@ -57,46 +52,19 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
-const linkClass = "font-extrabold text-xl tracking-widest uppercase text-white hover:opacity-70 transition-opacity duration-200";
-
 export default function HomePage() {
   return (
     <div>
 
-      {/* ── HERO ── */}
+      {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
-
-        {/* dot grid */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-
-        {/* LAMT Bear */}
+        <div aria-hidden className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none overflow-hidden">
-          <Image
-            src="/LAMTBear.png"
-            alt=""
-            width={700}
-            height={700}
-            className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40"
-            priority
-          />
+          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40" priority />
         </div>
-
-        {/* bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="relative z-10 max-w-4xl w-full py-8"
-        >
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="relative z-10 max-w-4xl w-full py-8">
           <motion.h1
             variants={fadeUp}
             className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white mb-6"
@@ -105,36 +73,31 @@ export default function HomePage() {
             Los Angeles<br />
             <span style={{ color: '#FFD100' }}>Math Tournament</span>
           </motion.h1>
-
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
-
           <motion.div variants={fadeUp}>
             <Countdown />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── REGISTER + CONTACT ── */}
+      {/* REGISTER SECTION */}
       <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors">
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-
             <motion.div variants={fadeUp} className="mb-12 text-center">
               <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 Registration is open.
               </h2>
             </motion.div>
-
             <motion.p variants={fadeUp} className="text-base md:text-lg text-[#DAEBFE] max-w-lg mx-auto mb-10 leading-relaxed text-center">
               LAMT 2026 takes place May 17 at UCLA. Registration is through ContestDojo and is{' '}
               <strong className="text-white font-bold">completely free</strong>.
             </motion.p>
-
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-16">
-              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className={linkClass}>
+            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-6">
+              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-outline">
                 REGISTER ON CONTESTDOJO
               </Link>
-              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className={linkClass}>
+              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-outline">
                 JOIN DISCORD
               </Link>
             </motion.div>
