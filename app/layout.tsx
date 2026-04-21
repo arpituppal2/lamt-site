@@ -11,6 +11,8 @@ import {
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import './globals.css';
+import KaTeXLoader from "./components/KaTeXLoader";
+
 
 const navLinks = [
   { href: '/',           label: 'HOME' },
@@ -200,6 +202,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-[#DAEBFE] dark:bg-black min-h-screen transition-colors duration-300">
+        <KaTeXLoader />
         <Navbar />
         <DarkModeToggle />
         <main className="pt-20">
