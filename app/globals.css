@@ -176,6 +176,7 @@ a, button, [role="button"] {
 }
 
 /* ── OUTLINE BUTTON ──────────────────────────────────────────────────────
+   Used on the home page hero/register section (sits on UCLA Blue bg).
    Inactive: transparent bg, white border, white text
    Hover light: yellow fill, yellow border, dark text
    Hover dark:  UCLA blue fill, blue border, white text
@@ -209,6 +210,52 @@ a, button, [role="button"] {
 
 /* dark mode hover → UCLA blue fill */
 .dark .btn-outline:hover {
+  background: #2774AE;
+  border-color: #2774AE;
+  color: #ffffff;
+}
+
+/* ── FILLED BUTTON ───────────────────────────────────────────────────────
+   Used on non-home pages (white/light backgrounds).
+   Light mode — default: UCLA Blue fill; hover: UCLA Gold fill
+   Dark mode  — default: UCLA Gold fill; hover: UCLA Blue fill
+───────────────────────────────────────────────────────────────────────── */
+.btn-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2774AE;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.75rem 2rem;
+  border: 2px solid #2774AE;
+  cursor: pointer;
+  transition:
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color     200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color            200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* light mode hover → gold fill */
+.btn-filled:hover {
+  background: #FFD100;
+  border-color: #FFD100;
+  color: #003B5C;
+}
+
+/* dark mode — default: gold fill */
+.dark .btn-filled {
+  background: #FFD100;
+  border-color: #FFD100;
+  color: #000000;
+}
+
+/* dark mode hover → UCLA blue fill */
+.dark .btn-filled:hover {
   background: #2774AE;
   border-color: #2774AE;
   color: #ffffff;

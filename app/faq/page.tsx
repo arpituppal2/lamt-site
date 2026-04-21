@@ -36,7 +36,7 @@ export default function FAQPage() {
         <p className="text-[var(--color-text-muted)] text-sm leading-relaxed mb-6">
           Have a question not answered here?
         </p>
-        <a href="mailto:lamt@math.ucla.edu" className="btn-outline">
+        <a href="mailto:lamt@math.ucla.edu" className="btn-filled">
           EMAIL US
         </a>
       </div>

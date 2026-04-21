@@ -61,7 +61,7 @@ export default function TournamentPage() {
       </section>
 
       <div className="border-t border-[var(--color-border)] pt-12">
-        <a href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u" target="_blank" rel="noopener noreferrer" className="btn-outline">
+        <a href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u" target="_blank" rel="noopener noreferrer" className="btn-filled">
           REGISTER NOW
         </a>
       </div>
