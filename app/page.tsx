@@ -96,9 +96,6 @@ export default function HomePage() {
           variants={stagger}
           className="relative z-10 max-w-4xl w-full"
         >
-          <motion.p variants={fadeUp} className="text-sm font-semibold tracking-[0.22em] uppercase text-[#DAEBFE] mb-6">
-            UCLA · May 17, 2026 · Los Angeles, California
-          </motion.p>
 
           <motion.h1
             variants={fadeUp}
