@@ -136,7 +136,7 @@ function Footer() {
           <div className="max-w-xs text-center lg:text-left">
             <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
               We are a student group acting independently of the University of California. 
-              We take full responsibility for our organization and this web site.
+              We take full responsibility for our organization and website.
             </p>
           </div>
 
