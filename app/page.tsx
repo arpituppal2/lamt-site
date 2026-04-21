@@ -170,40 +170,6 @@ export default function HomePage() {
               </Link>
             </motion.div>
           </motion.div>
-
-          {/* Contact grid */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="mt-20 pt-12 border-t border-white/20"
-          >
-            <motion.div variants={stagger} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10">
-              {[
-                { title: 'Email',     val: 'team@lamt.net',       href: 'mailto:team@lamt.net' },
-                { title: 'Instagram', val: '@lamathtournament',    href: 'https://www.instagram.com/lamathtournament/' },
-                { title: 'Facebook',  val: 'LAMT Community',       href: 'https://www.facebook.com/groups/1429462591976204/' },
-                { title: 'LinkedIn',  val: 'LA Math Tournament',   href: 'https://www.linkedin.com/company/la-math-tournament/' },
-                { title: 'Discord',   val: 'Join server',          href: DISCORD_URL },
-              ].map((c) => (
-                <motion.a
-                  key={c.title}
-                  variants={fadeUp}
-                  href={c.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex flex-col gap-1.5 bg-[#2774AE] dark:bg-[#0d0d0d] px-6 py-5 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
-                >
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">{c.title}</span>
-                  <span className="text-sm text-[#DAEBFE] group-hover:text-white transition-colors">{c.val}</span>
-                </motion.a>
-              ))}
-            </motion.div>
-
-            <motion.div variants={fadeUp} className="mt-10 flex justify-center">
-            </motion.div>
-          </motion.div>
         </div>
       </section>
 
