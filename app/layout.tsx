@@ -8,7 +8,7 @@ import './globals.css';
 
 const navLinks = [
   { href: '/',           label: 'HOME' },
-  { href: '/tournament', label: 'TOURNAMENT' },
+  { href: '/tournament', label: 'LAMT 2026' },
   { href: '/rules',      label: 'RULES' },
   { href: '/faq',        label: 'FAQ' },
   { href: '/about',      label: 'ABOUT' },
