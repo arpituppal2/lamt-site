@@ -13,10 +13,7 @@ export default function TournamentPage() {
       {/* Overview */}
       <section className="mb-20">
         <p className="text-[var(--color-text)] text-lg md:text-xl leading-relaxed max-w-2xl">
-          LAMT 2026 will take place on <strong>May 17, 2026</strong> on the UCLA Campus.
-          We will be inviting approximately <strong>250 students (~60&ndash;75 teams)</strong> to compete.
-          There is <strong>no registration fee</strong> for this tournament, but each participant
-          is responsible for their own travel, housing, and related expenses.
+          LAMT 2026 will take place on <strong>May 17, 2026</strong> on the UCLA Campus. We will be inviting approximately <strong>250 students (~60&ndash;75 teams)</strong> to compete. There is <strong>no registration fee</strong> for this tournament, but each participant is responsible for their own travel, housing, and related expenses.
         </p>
       </section>
 
