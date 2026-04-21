@@ -111,68 +111,75 @@ function Navbar() {
 
 function Footer() {
   const socialLinks = [
-    { title: 'Email',     href: 'mailto:team@lamt.net',                                   icon: <EnvelopeClosedIcon width={18} height={18} /> },
-    { title: 'Instagram', href: 'https://www.instagram.com/lamathtournament/',             icon: <InstagramIcon /> },
-    { title: 'Facebook',  href: 'https://www.facebook.com/groups/1429462591976204/',       icon: <FacebookIcon /> },
-    { title: 'LinkedIn',  href: 'https://www.linkedin.com/company/la-math-tournament/',    icon: <LinkedInLogoIcon width={18} height={18} /> },
-    { title: 'Discord',   href: DISCORD_URL,                                               icon: <DiscordLogoIcon width={18} height={18} /> },
+    { title: 'Email',     href: 'mailto:team@lamt.net',                                 icon: <EnvelopeClosedIcon width={18} height={18} /> },
+    { title: 'Instagram', href: 'https://www.instagram.com/lamathtournament/',          icon: <InstagramIcon /> },
+    { title: 'Facebook',  href: 'https://www.facebook.com/groups/1429462591976204/',    icon: <FacebookIcon /> },
+    { title: 'LinkedIn',  href: 'https://www.linkedin.com/company/la-math-tournament/', icon: <LinkedInLogoIcon width={18} height={18} /> },
+    { title: 'Discord',   href: DISCORD_URL,                                            icon: <DiscordLogoIcon width={18} height={18} /> },
   ];
 
   return (
     <footer className="bg-[#2774AE] dark:bg-black text-white border-t border-white/10">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+        {/* 3‑column grid: left (logo), center (icons), right (text) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] items-center gap-10">
+          
+          {/* Logo (left) */}
+          <div className="flex justify-center lg:justify-start">
+            <Link href="/" className="shrink-0 transition-transform hover:scale-105">
+              <Image
+                src="/LAMTBear.png"
+                alt="LAMT Bear Logo"
+                width={160}
+                height={160}
+                className="object-contain"
+              />
+            </Link>
+          </div>
 
-          {/* Logo */}
-          <Link href="/" className="shrink-0 transition-transform hover:scale-105">
-            <Image
-              src="/LAMTBear.png"
-              alt="LAMT Bear Logo"
-              width={160}
-              height={160}
-              className="object-contain"
-            />
-          </Link>
+          {/* Contact circles (center) */}
+          <div className="flex justify-center">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={stagger}
+              className="flex items-center gap-4"
+            >
+              {socialLinks.map((c) => (
+                <motion.a
+                  key={c.title}
+                  variants={fadeUp}
+                  href={c.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={c.title}
+                  className="
+                    group
+                    flex items-center justify-center
+                    w-11 h-11 rounded-full
+                    bg-white dark:bg-black
+                    text-[#2774AE] dark:text-white
+                    border-2 border-white dark:border-white
+                    shadow-md
+                    hover:scale-110 hover:shadow-xl
+                    transition-all duration-200
+                  "
+                >
+                  {c.icon}
+                </motion.a>
+              ))}
+            </motion.div>
+          </div>
 
-          {/* Contact circles */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="flex items-center gap-4"
-          >
-            {socialLinks.map((c) => (
-              <motion.a
-                key={c.title}
-                variants={fadeUp}
-                href={c.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={c.title}
-                className="
-                  group
-                  flex items-center justify-center
-                  w-11 h-11 rounded-full
-                  bg-white dark:bg-black
-                  text-[#2774AE] dark:text-white
-                  border-2 border-white dark:border-white
-                  shadow-md
-                  hover:scale-110 hover:shadow-xl
-                  transition-all duration-200
-                "
-              >
-                {c.icon}
-              </motion.a>
-            ))}
-          </motion.div>
-
-          {/* Non-affiliation text */}
-          <div className="max-w-xs text-center lg:text-right">
-            <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
-              We are a student group acting independently of the University of California.
-              We take full responsibility for our organization and this web site.
-            </p>
+          {/* Non‑affiliation text (right) */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="max-w-xs text-center lg:text-right">
+              <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
+                We are a student group acting independently of the University of California. 
+                We take full responsibility for our organization and this web site.
+              </p>
+            </div>
           </div>
 
         </div>
@@ -180,6 +187,7 @@ function Footer() {
     </footer>
   );
 }
+
 function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
