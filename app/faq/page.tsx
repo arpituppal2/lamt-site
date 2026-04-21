@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 const faqs = [
   {
     q: 'Who is eligible to compete at LAMT?',
@@ -41,55 +39,47 @@ const faqs = [
   },
   {
     q: 'How do I register?',
-    a: 'Registration is through the Google Form linked on this site. Click \'Register Now\' on the home page or in the navigation bar.',
+    a: 'Registration is through the Google Form linked on this site. Click "Register Now" on the home page or in the navigation bar.',
   },
 ];
-
-function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-t border-[var(--color-border)]">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full text-left py-5 flex justify-between items-start gap-4 group"
-      >
-        <span className={`text-[var(--color-text)] leading-snug transition-colors duration-200 ${open ? 'text-[var(--color-gold)]' : 'group-hover:text-[var(--color-gold)]'}`}>
-          {q}
-        </span>
-        <span className={`text-[var(--color-gold)] text-xl font-light shrink-0 mt-0.5 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>
-          +
-        </span>
-      </button>
-      {open && (
-        <p className="text-[var(--color-text-secondary)] leading-relaxed pb-6 pr-8">
-          {a}
-        </p>
-      )}
-    </div>
-  );
-}
 
 export default function FAQPage() {
   return (
     <div className="pt-32 pb-24 px-6 md:px-16 max-w-3xl mx-auto">
-      <p className="text-[var(--color-gold)] text-xs tracking-[0.3em] uppercase mb-4">LAMT 2026</p>
-      <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6"
+      <p className="text-[var(--color-gold)] text-xs tracking-[0.3em] uppercase mb-4">
+        LAMT 2026
+      </p>
+
+      <h1
+        className="font-bold text-[var(--color-text)] leading-tight mb-6"
         style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}
       >
         FAQ
       </h1>
+
       <div className="gold-rule mb-16" />
 
       <div>
         {faqs.map(({ q, a }) => (
-          <FAQItem key={q} q={q} a={a} />
+          <div key={q} className="border-t border-[var(--color-border)] py-6">
+            <p className="text-[var(--color-text)] font-medium mb-2">
+              {q}
+            </p>
+            <p className="text-[var(--color-text-secondary)] leading-relaxed">
+              {a}
+            </p>
+          </div>
         ))}
+
         <div className="border-t border-[var(--color-border)]" />
       </div>
 
       <p className="mt-12 text-[var(--color-text-muted)] text-sm leading-relaxed">
         Have a question not answered here?{' '}
-        <a href="mailto:lamt@math.ucla.edu" className="text-[var(--color-gold)] hover:underline underline-offset-4">
+        <a
+          href="mailto:lamt@math.ucla.edu"
+          className="text-[var(--color-gold)] hover:underline underline-offset-4"
+        >
           Email us
         </a>.
       </p>
