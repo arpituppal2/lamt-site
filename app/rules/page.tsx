@@ -1,12 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 /**
  * Helper component to render KaTeX strings safely.
- * It waits until the window.katex object is available.
  */
 function InlineMath({ math }: { math: string }) {
   const [html, setHtml] = useState<string>("");
@@ -22,10 +19,8 @@ function InlineMath({ math }: { math: string }) {
       }
     };
 
-    // Initial attempt
     render();
 
-    // If not loaded yet, check again shortly
     if (!(window as any).katex) {
       const interval = setInterval(() => {
         if ((window as any).katex) {
@@ -76,7 +71,7 @@ export default function RulesPage() {
 
       {/* Test Format */}
       <section className="mb-20">
-        <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Test Format</h2>
+        <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight text-left">Test Format</h2>
         <div className="space-y-6">
           {[
             {
@@ -92,7 +87,7 @@ export default function RulesPage() {
               desc: '8 sets of 3 problems plus 1 set of estimation problems, delivered to teams in sequential order.',
             },
           ].map(({ name, desc }) => (
-            <div key={name} className="border-t border-[var(--color-border)] pt-6">
+            <div key={name} className="border-t border-[var(--color-border)] pt-6 text-left">
               <p className="text-[var(--color-text)] font-medium mb-2">{name}</p>
               <p className="text-[var(--color-text-secondary)] leading-relaxed">{desc}</p>
             </div>
@@ -101,7 +96,7 @@ export default function RulesPage() {
       </section>
 
       {/* Honor Code */}
-      <section className="mb-20">
+      <section className="mb-20 text-left">
         <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Honor Code</h2>
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-8">
           We expect that when taking their individual tests, the only aid or resource students will use
@@ -129,7 +124,7 @@ export default function RulesPage() {
       </section>
 
       {/* Acceptable Answers */}
-      <section className="mb-20">
+      <section className="mb-20 text-left">
         <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Acceptable Answers</h2>
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-8">
           Answers must be written in correct mathematical notation. Unless otherwise specified, 
@@ -138,13 +133,13 @@ export default function RulesPage() {
         </p>
 
         <div className="grid grid-cols-1 gap-12">
-          {/* Table 1: Examples of Acceptable Answers */}
-          <Card className="p-6 border-[var(--color-border)] bg-transparent overflow-hidden">
-            <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
+          {/* Table 1 Container */}
+          <div className="rounded-xl border border-[var(--color-border)] p-6 overflow-hidden">
+            <h3 className="text-sm font-bold text-[var(--color-text)] mb-6 text-center uppercase tracking-widest opacity-80">
               Examples of Acceptable Answers
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-[var(--color-border)]">
+              <table className="w-full border-collapse border border-[var(--color-border)] bg-transparent">
                 <tbody>
                   {Array.from({ length: Math.ceil(acceptableExamples.length / 2) }).map((_, rowIndex) => (
                     <tr key={rowIndex} className="border-b border-[var(--color-border)] last:border-b-0">
@@ -161,22 +156,22 @@ export default function RulesPage() {
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
 
-          {/* Table 2: Examples of Unacceptable Answers */}
-          <Card className="p-6 border-[var(--color-border)] bg-transparent overflow-hidden">
-            <h3 className="text-lg font-medium text-[var(--color-text)] mb-6 text-center uppercase tracking-wider">
+          {/* Table 2 Container */}
+          <div className="rounded-xl border border-[var(--color-border)] p-6 overflow-hidden">
+            <h3 className="text-sm font-bold text-[var(--color-text)] mb-6 text-center uppercase tracking-widest opacity-80">
               Examples of Unacceptable Answers
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-[var(--color-border)]">
+              <table className="w-full border-collapse border border-[var(--color-border)] bg-transparent">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] bg-[var(--color-border)]/5">
-                    <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)] border-r border-[var(--color-border)]">
-                      Unsimplified Answer
+                    <th className="w-1/2 p-4 text-center font-semibold text-[var(--color-text)] border-r border-[var(--color-border)]">
+                      Unsimplified
                     </th>
-                    <th className="w-1/2 p-4 text-center font-medium text-[var(--color-text)]">
-                      Equivalent Simplified Answer
+                    <th className="w-1/2 p-4 text-center font-semibold text-[var(--color-text)]">
+                      Simplified
                     </th>
                   </tr>
                 </thead>
@@ -196,7 +191,7 @@ export default function RulesPage() {
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
         </div>
       </section>
     </div>
