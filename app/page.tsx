@@ -108,12 +108,6 @@ export default function HomePage() {
 
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-8" />
 
-          <motion.p variants={fadeUp} className="text-base md:text-lg font-light text-[#DAEBFE] mb-10 max-w-lg mx-auto leading-relaxed">
-            A student-run competition at UCLA for motivated math students,
-            featuring algebra, geometry, combinatorics, and number theory.{' '}
-            <strong className="font-semibold text-white">Everyone takes the same exam. Free to attend.</strong>
-          </motion.p>
-
           <motion.div variants={fadeUp} className="mb-12">
             <Countdown />
           </motion.div>
@@ -146,8 +140,6 @@ export default function HomePage() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
 
             <motion.div variants={fadeUp} className="mb-12 text-center">
-              <p className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#8BB8E8] mb-4">Register</p>
-              <div className="w-10 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-5" />
               <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 Registration is open.
               </h2>
