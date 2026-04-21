@@ -51,7 +51,7 @@ function Navbar() {
         </Link>
 
         {/* Nav */}
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-10">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
 
