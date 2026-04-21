@@ -75,7 +75,7 @@ export default function HomePage() {
           }}
         />
 
-        {/* LAMT Bear — raw, no filter */}
+        {/* LAMT Bear */}
         <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none overflow-hidden">
           <Image
             src="/LAMTBear.png"
@@ -87,7 +87,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* bottom fade into page bg */}
+        {/* bottom fade into next section */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
 
         <motion.div
@@ -96,7 +96,6 @@ export default function HomePage() {
           variants={stagger}
           className="relative z-10 max-w-4xl w-full"
         >
-
           <motion.h1
             variants={fadeUp}
             className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white mb-4"
@@ -113,20 +112,10 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-[#FFD100] rounded-lg px-8 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-[#003B5C] hover:bg-[#FFC72C] transition-colors duration-200 shadow-sm"
-            >
+            <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
               Register
             </Link>
-            <Link
-              href={DISCORD_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-8 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-white hover:border-white/50 hover:bg-white/10 transition-colors duration-200"
-            >
+            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
               <DiscordLogoIcon className="h-4 w-4" />
               Join Discord
             </Link>
@@ -151,20 +140,10 @@ export default function HomePage() {
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href={REGISTER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block bg-[#FFD100] rounded-lg px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-[#003B5C] hover:bg-[#FFC72C] transition-colors duration-200"
-              >
+              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
                 Register on ContestDojo →
               </Link>
-              <Link
-                href={DISCORD_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white hover:border-white/50 hover:bg-white/10 transition-colors duration-200"
-              >
+              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
                 <DiscordLogoIcon className="h-4 w-4" />
                 Join Discord
               </Link>
