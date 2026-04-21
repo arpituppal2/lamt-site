@@ -66,7 +66,7 @@ function Navbar() {
       style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
     >
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
-        <Link href="/" className="text-white font-extrabold text-2xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3">
+        <Link href="/" className="text-white font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3">
           {/* Removed brightness-0 invert filters */}
           <Image 
             src="/LAMTBear.png" 
@@ -81,7 +81,7 @@ function Navbar() {
         <nav className="flex items-center gap-20">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
-            const className = "text-white font-extrabold text-2xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200";
+            const className = "text-white font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200";
             return external ? (
               <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
             ) : (
