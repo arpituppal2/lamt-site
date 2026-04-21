@@ -71,8 +71,8 @@ function Navbar() {
           <Image 
             src="/LAMTBear.png" 
             alt="Logo" 
-            width={50} 
-            height={50} 
+            width={60} 
+            height={60} 
             className="object-contain" 
           />
         </Link>
