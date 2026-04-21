@@ -89,15 +89,12 @@ export default function TournamentPage() {
       {/* CTA */}
       <div className="border-t border-[var(--color-border)] pt-12 flex flex-col sm:flex-row gap-4 items-start">
         <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSftpbL0NKSC4t4RqQeX4G3rCHpN4MrtKp8UhHpkEQqCvbN_hQ/viewform"
+          href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-cta"
         >
           Register Now
-        </a>
-        <a href="/rules" className="btn-ghost">
-          View Rules
         </a>
       </div>
     </div>
