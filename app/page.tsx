@@ -64,7 +64,7 @@ export default function HomePage() {
     <div>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden -mt-20">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
 
         {/* dot grid */}
         <div
@@ -95,7 +95,7 @@ export default function HomePage() {
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="relative z-10 max-w-4xl w-full pt-24 pb-8"
+          className="relative z-10 max-w-4xl w-full py-8"
         >
           <motion.h1
             variants={fadeUp}
@@ -108,17 +108,8 @@ export default function HomePage() {
 
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
 
-          <motion.div variants={fadeUp} className="mb-14">
+          <motion.div variants={fadeUp}>
             <Countdown />
-          </motion.div>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-16">
-            <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className={linkClass}>
-              REGISTER
-            </Link>
-            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className={linkClass}>
-              JOIN DISCORD
-            </Link>
           </motion.div>
         </motion.div>
       </section>
