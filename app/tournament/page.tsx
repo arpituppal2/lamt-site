@@ -1,6 +1,6 @@
 export default function TournamentPage() {
   return (
-    <div className="pt-32 pb-24 px-6 md:px-16 max-w-4xl mx-auto">
+    <div className="pt-32 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
 
       {/* Header */}
       <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6"
