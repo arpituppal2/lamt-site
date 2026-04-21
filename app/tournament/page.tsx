@@ -3,11 +3,10 @@ export default function TournamentPage() {
     <div className="pt-32 pb-24 px-6 md:px-16 max-w-4xl mx-auto">
 
       {/* Header */}
-      <p className="text-[var(--color-gold)] text-xs tracking-[0.3em] uppercase mb-4">LAMT 2026</p>
       <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6"
         style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}
       >
-        Tournament
+        Los Angeles Math Tournamant 2026
       </h1>
       <div className="gold-rule mb-16" />
 
