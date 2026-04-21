@@ -205,15 +205,6 @@ export default function HomePage() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="mt-10 flex justify-center">
-              <Link
-                href={DISCORD_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[#DAEBFE] hover:text-white transition-colors duration-200"
-              >
-                <DiscordLogoIcon className="h-4 w-4" />
-                Join our Discord
-              </Link>
             </motion.div>
           </motion.div>
         </div>
