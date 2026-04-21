@@ -47,7 +47,7 @@ function Navbar() {
           href="/"
           className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-opacity duration-200"
         >
-          LAMT
+          Los Angeles Math Tournament
         </Link>
 
         {/* Nav */}
