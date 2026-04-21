@@ -12,12 +12,11 @@ const navLinks = [
   { href: '/rules',      label: 'RULES' },
   { href: '/faq',        label: 'FAQ' },
   { href: '/about',      label: 'ABOUT' },
+  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
 ];
 
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
-
-/* ---------------- NAVBAR ---------------- */
 
 function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -41,25 +40,43 @@ function Navbar() {
       style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
     >
       {/* Desktop */}
-      <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-[72px] max-w-[1680px] mx-auto">
+      <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
 
-        {/* LEFT: LAMT */}
+        {/* LAMT */}
         <Link
           href="/"
-          className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-opacity"
+          className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-opacity duration-200"
         >
           LAMT
         </Link>
 
-        {/* CENTER: NAV */}
+        {/* Nav */}
         <nav className="flex items-center gap-6">
-          {navLinks.map(({ href, label }) => {
+          {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
+
+            const className =
+              "text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-opacity duration-200";
+
+            if (external) {
+              return (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={className}
+                >
+                  {label}
+                </a>
+              );
+            }
+
             return (
               <Link
                 key={href}
                 href={href}
-                className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-opacity"
+                className={className}
                 style={{
                   textDecoration: active ? 'underline' : 'none',
                   textUnderlineOffset: '6px',
@@ -71,46 +88,54 @@ function Navbar() {
             );
           })}
         </nav>
-
-        {/* RIGHT: REGISTER */}
-        <div className="flex items-center gap-4">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            className="bg-[#FFD100] text-[#003B5C] font-extrabold text-sm tracking-widest uppercase px-4 py-2 rounded-md hover:bg-[#FFC72C] transition-colors"
-          >
-            REGISTER
-          </Link>
-        </div>
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden flex items-center justify-between px-4 h-14">
+      <div className="md:hidden flex items-center justify-between px-4 h-16">
         <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase">
           LAMT
         </Link>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex flex-col gap-1.5 p-1"
           aria-label="Toggle menu"
+          className="flex flex-col gap-1.5 p-1"
         >
-          <span className={`block w-6 h-0.5 bg-white transition ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-[#2774AE] border-t border-white/10 px-4 py-4 flex flex-col gap-4">
-          {navLinks.map(({ href, label }) => {
+        <div className="md:hidden bg-[#2774AE] border-t border-white/10 px-4 py-5 flex flex-col gap-5">
+          {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
+
+            const className =
+              "text-white font-extrabold text-lg tracking-wide uppercase";
+
+            if (external) {
+              return (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className={className}
+                >
+                  {label}
+                </a>
+              );
+            }
+
             return (
               <Link
                 key={href}
                 href={href}
                 onClick={() => setMenuOpen(false)}
-                className="text-white font-extrabold text-lg tracking-wide uppercase"
+                className={className}
                 style={{
                   textDecoration: active ? 'underline' : 'none',
                   textUnderlineOffset: '6px',
@@ -120,14 +145,6 @@ function Navbar() {
               </Link>
             );
           })}
-
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            className="bg-[#FFD100] text-[#003B5C] font-extrabold text-sm tracking-widest uppercase px-4 py-2 rounded-md text-center"
-          >
-            REGISTER
-          </Link>
         </div>
       )}
     </header>
@@ -153,8 +170,10 @@ function DarkModeToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed bottom-5 right-5 z-50 w-11 h-11 rounded-full flex items-center justify-center
-      bg-[#003B5C] dark:bg-[#DAEBFE] text-white dark:text-[#003B5C] shadow-lg"
+      aria-label="Toggle dark mode"
+      className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full flex items-center justify-center
+        bg-[#003B5C] dark:bg-[#DAEBFE] text-white dark:text-[#003B5C]
+        shadow-lg hover:scale-105 active:scale-95 transition-transform duration-200"
     />
   );
 }
@@ -164,9 +183,9 @@ function DarkModeToggle() {
 function Footer() {
   return (
     <footer className="bg-[#2774AE] dark:bg-black mt-0">
-      <div className="max-w-[1680px] mx-auto px-4 md:px-6 py-6 flex flex-col md:flex-row justify-between gap-6">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-10 flex flex-col md:flex-row justify-between gap-6">
 
-        {/* LEFT */}
+        {/* Left */}
         <div className="flex flex-col gap-2 max-w-sm">
           <span className="text-white font-extrabold text-lg tracking-wide uppercase">
             LAMT 2026
@@ -175,53 +194,45 @@ function Footer() {
             We are a student group acting independently of the University of California.
             We take full responsibility for our organization and this website.
           </span>
-
           <a
             href={DISCORD_URL}
             target="_blank"
             className="text-[#DAEBFE] hover:text-white text-sm flex items-center gap-2"
           >
             <DiscordLogoIcon className="h-4 w-4" />
-            Join Discord
+            Discord
           </a>
         </div>
 
-        {/* CENTER */}
+        {/* Center */}
         <nav className="flex flex-col gap-2">
           <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
             Pages
           </span>
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-[#DAEBFE] hover:text-white text-sm font-semibold uppercase"
-            >
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ href, label, external }) =>
+            external ? null : (
+              <Link
+                key={href}
+                href={href}
+                className="text-[#DAEBFE] hover:text-white text-sm font-semibold uppercase"
+              >
+                {label}
+              </Link>
+            )
+          )}
         </nav>
 
-        {/* RIGHT */}
+        {/* Right */}
         <div className="flex flex-col gap-2">
           <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
             Contact
           </span>
-
           <a className="text-[#DAEBFE] text-sm">team@lamt.net</a>
           <a className="text-[#DAEBFE] text-sm">@lamathtournament</a>
-
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            className="mt-2 bg-[#FFD100] text-[#003B5C] font-extrabold text-sm px-4 py-2 rounded-md w-fit"
-          >
-            Register
-          </Link>
         </div>
       </div>
 
-      <div className="border-t border-white/10 max-w-[1680px] mx-auto px-4 md:px-6 py-3">
+      <div className="border-t border-white/10 max-w-[1600px] mx-auto px-4 md:px-6 py-3">
         <span className="text-[#8BB8E8] text-xs">
           © 2026 LAMT · UCLA · May 17, 2026
         </span>
@@ -235,10 +246,10 @@ function Footer() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-[#DAEBFE] dark:bg-black min-h-screen transition-colors">
+      <body className="bg-[#DAEBFE] dark:bg-black min-h-screen transition-colors duration-300">
         <Navbar />
         <DarkModeToggle />
-        <main className="pt-[72px]">{children}</main>
+        <main className="pt-20">{children}</main>
         <Footer />
       </body>
     </html>
