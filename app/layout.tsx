@@ -222,43 +222,7 @@ function Footer() {
             Register
           </a>
         </div>
-        
-      </div>
-    </footer>
-  );
-}
-        {/* Center */}
-        <nav className="flex flex-col gap-2">
-          <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
-            Pages
-          </span>
-          {navLinks.map(({ href, label, external }) =>
-            external ? null : (
-              <Link
-                key={href}
-                href={href}
-                className="text-[#DAEBFE] hover:text-white text-sm font-semibold uppercase"
-              >
-                {label}
-              </Link>
-            )
-          )}
-        </nav>
 
-        {/* Right */}
-        <div className="flex flex-col gap-2">
-          <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
-            Contact
-          </span>
-          <a className="text-[#DAEBFE] text-sm">team@lamt.net</a>
-          <a className="text-[#DAEBFE] text-sm">@lamathtournament</a>
-        </div>
-      </div>
-
-      <div className="border-t border-white/10 max-w-[1600px] mx-auto px-4 md:px-6 py-3">
-        <span className="text-[#8BB8E8] text-xs">
-          © 2026 LAMT · UCLA · May 17, 2026
-        </span>
       </div>
     </footer>
   );
