@@ -183,27 +183,50 @@ function DarkModeToggle() {
 function Footer() {
   return (
     <footer className="bg-[#2774AE] dark:bg-black mt-0">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-10 flex flex-col md:flex-row justify-between gap-6">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-10 grid grid-cols-2 gap-10">
 
-        {/* Left */}
-        <div className="flex flex-col gap-2 max-w-sm">
-          <span className="text-white font-extrabold text-lg tracking-wide uppercase">
-            LAMT 2026
+        {/* Column 1: Pages */}
+        <div className="flex flex-col gap-2">
+          <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
+            Pages
           </span>
-          <span className="text-[#DAEBFE] text-xs leading-snug">
-            We are a student group acting independently of the University of California.
-            We take full responsibility for our organization and this website.
-          </span>
-          <a
-            href={DISCORD_URL}
-            target="_blank"
-            className="text-[#DAEBFE] hover:text-white text-sm flex items-center gap-2"
-          >
-            <DiscordLogoIcon className="h-4 w-4" />
-            Discord
-          </a>
+
+          {navLinks
+            .filter(({ external }) => !external)
+            .map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-[#DAEBFE] hover:text-white text-sm font-semibold uppercase"
+              >
+                {label}
+              </Link>
+            ))}
         </div>
 
+        {/* Column 2: Contact */}
+        <div className="flex flex-col gap-2">
+          <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
+            Contact
+          </span>
+
+          <a className="text-[#DAEBFE] text-sm">team@lamt.net</a>
+          <a className="text-[#DAEBFE] text-sm">@lamathtournament</a>
+
+          <a
+            href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#DAEBFE] text-sm font-semibold uppercase mt-2"
+          >
+            Register
+          </a>
+        </div>
+        
+      </div>
+    </footer>
+  );
+}
         {/* Center */}
         <nav className="flex flex-col gap-2">
           <span className="text-[#8BB8E8] text-[10px] font-bold uppercase tracking-wide">
