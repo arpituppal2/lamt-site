@@ -67,12 +67,13 @@ function Navbar() {
     >
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
         <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3">
+          {/* Removed brightness-0 invert filters */}
           <Image 
             src="/LAMTBear.png" 
             alt="Logo" 
             width={40} 
             height={40} 
-            className="brightness-0 invert object-contain" 
+            className="object-contain" 
           />
           Los Angeles Math Tournament
         </Link>
@@ -94,7 +95,7 @@ function Navbar() {
 
       <div className="md:hidden flex items-center justify-between px-4 h-16">
         <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase flex items-center gap-2">
-           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="brightness-0 invert" />
+           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
            LAMT
         </Link>
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
@@ -121,26 +122,24 @@ function Footer() {
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           
-          {/* BIG LOGO - NO RINGS OR OUTLINES */}
+          {/* Removed filters and rings - shows the pure PNG */}
           <Link href="/" className="shrink-0 transition-transform hover:scale-105">
             <Image
               src="/LAMTBear.png"
               alt="LAMT Bear Logo"
               width={160}
               height={160}
-              className="object-contain brightness-0 invert"
+              className="object-contain"
             />
           </Link>
 
-          {/* SCHPEAL */}
           <div className="max-w-xs text-center lg:text-left">
             <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
               We are a student group acting independently of the University of California. 
-              We take full responsibility for our organization and website.
+              We take full responsibility for our organization and this web site.
             </p>
           </div>
 
-          {/* CONTACT GRID */}
           <motion.div
             initial="hidden"
             whileInView="visible"
