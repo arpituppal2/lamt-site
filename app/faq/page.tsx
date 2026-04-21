@@ -46,9 +46,6 @@ const faqs = [
 export default function FAQPage() {
   return (
     <div className="pt-32 pb-24 px-6 md:px-16 max-w-3xl mx-auto">
-      <p className="text-[var(--color-gold)] text-xs tracking-[0.3em] uppercase mb-4">
-        LAMT 2026
-      </p>
 
       <h1
         className="font-bold text-[var(--color-text)] leading-tight mb-6"
