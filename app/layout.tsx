@@ -22,7 +22,6 @@ const navLinks = [
 ];
 
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
-const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
 
 /* ---------------- ANIMATIONS ---------------- */
 const fadeUp = {
@@ -74,13 +73,14 @@ function Navbar() {
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
         <Link
           href="/"
-          className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-2"
+          className="text-white font-extrabold text-lg tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3"
         >
+          {/* Logo on the LEFT */}
+          <Image src="/LAMTBear.png" alt="Logo" width={32} height={32} className="brightness-0 invert" />
           Los Angeles Math Tournament
-          <span className="text-xl">🐻</span>
         </Link>
 
-        {/* Gap increased to 20 (double original 10) */}
+        {/* Doubled gap to 20 */}
         <nav className="flex items-center gap-20">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
@@ -88,9 +88,7 @@ function Navbar() {
 
             if (external) {
               return (
-                <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>
-                  {label}
-                </a>
+                <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
               );
             }
 
@@ -115,9 +113,10 @@ function Navbar() {
       {/* Mobile Nav */}
       <div className="md:hidden flex items-center justify-between px-4 h-16">
         <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase flex items-center gap-2">
-          LAMT 🐻
+          <Image src="/LAMTBear.png" alt="Logo" width={24} height={24} className="brightness-0 invert" />
+          LAMT
         </Link>
-        <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5">
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
           <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
@@ -125,13 +124,8 @@ function Navbar() {
       </div>
       {menuOpen && (
         <div className="md:hidden bg-[#2774AE] border-t border-white/10 px-4 py-5 flex flex-col gap-5">
-          {navLinks.map(({ href, label, external }) => (
-            <Link 
-              key={href} 
-              href={href} 
-              onClick={() => setMenuOpen(false)}
-              className="text-white font-extrabold text-lg tracking-wide uppercase"
-            >
+          {navLinks.map(({ href, label }) => (
+            <Link key={href} href={href} onClick={() => setMenuOpen(false)} className="text-white font-extrabold text-lg uppercase">
               {label}
             </Link>
           ))}
@@ -143,7 +137,7 @@ function Navbar() {
 
 /* ---------------- FOOTER ---------------- */
 function Footer() {
-  const contactItems = [
+  const socialLinks = [
     { title: 'Email',     val: 'team@lamt.net',        href: 'mailto:team@lamt.net', icon: <EnvelopeClosedIcon /> },
     { title: 'Instagram', val: '@lamathtournament',    href: 'https://www.instagram.com/lamathtournament/', icon: <InstagramIcon /> },
     { title: 'Facebook',  val: 'LAMT Community',       href: 'https://www.facebook.com/groups/1429462591976204/', icon: <FacebookIcon /> },
@@ -152,56 +146,65 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-white dark:bg-black border-t border-[var(--color-border)]">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-16 flex flex-col items-end text-right">
+    <footer className="bg-[#2774AE] dark:bg-black text-white border-t border-white/10">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-12">
         
-        {/* Logo - Doubled to 160x160 with Home Link */}
-        <Link href="/" className="group mb-8 transition-transform hover:scale-105">
-          <div className="rounded-full border-2 border-[#2774AE] p-2">
-            <Image
-              src="/LAMTBear.png"
-              alt="LAMT Bear Logo"
-              width={160}
-              height={160}
-              className="object-contain"
-            />
+        {/* Horizontal Layout: Big Logo | Schpeal | Contact Grid */}
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12">
+          
+          {/* 1. Big Logo (160x160) - Home Link */}
+          <Link href="/" className="shrink-0 transition-transform hover:scale-105">
+            <div className="rounded-full border-2 border-white/20 p-2 bg-white/5 backdrop-blur-sm">
+              <Image
+                src="/LAMTBear.png"
+                alt="LAMT Bear Logo"
+                width={160}
+                height={160}
+                className="object-contain brightness-0 invert"
+              />
+            </div>
+          </Link>
+
+          {/* 2. The Schpeal */}
+          <div className="max-w-xs text-center lg:text-left">
+            <p className="text-xs md:text-sm text-[#DAEBFE] leading-relaxed opacity-80 mt-4">
+              We are a student group acting independently of the University of California. 
+              We take full responsibility for our organization and this web site.
+            </p>
           </div>
-        </Link>
 
-        {/* Disclaimer - Positioned between logo and contacts */}
-        <p className="max-w-md text-[10px] md:text-xs text-[var(--color-text-secondary)] leading-relaxed mb-10 opacity-70">
-          We are a student group acting independently of the University of California. 
-          We take full responsibility for our organization and this web site.
-        </p>
-
-        {/* Contact info - Condensed vertically and right aligned */}
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-          className="flex flex-wrap justify-end gap-3"
-        >
-          {contactItems.map((c) => (
-            <motion.a
-              key={c.title}
-              variants={fadeUp}
-              href={c.href}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center gap-3 bg-[#2774AE]/5 dark:bg-white/5 pl-2 pr-5 py-1.5 rounded-full border border-[var(--color-border)] hover:bg-[#2774AE] hover:text-white transition-all duration-200"
-            >
-              {/* Icon Circle */}
-              <div className="w-7 h-7 rounded-full bg-[#2774AE] dark:bg-white/10 flex items-center justify-center text-white shrink-0">
-                {c.icon}
-              </div>
-              <div className="flex flex-col items-start text-left">
-                <span className="text-[7px] font-bold uppercase tracking-[0.1em] opacity-60">{c.title}</span>
-                <span className="text-[11px] font-medium leading-tight">{c.val}</span>
-              </div>
-            </motion.a>
-          ))}
-        </motion.div>
+          {/* 3. Contact Grid (Exactly as given, but py-2 to condense) */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10 w-full lg:w-auto"
+          >
+            {socialLinks.map((c) => (
+              <motion.a
+                key={c.title}
+                variants={fadeUp}
+                href={c.href}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex flex-col gap-1 bg-[#2774AE] dark:bg-black px-6 py-2.5 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-[#8BB8E8] group-hover:text-white transition-colors">
+                    {c.icon}
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">
+                    {c.title}
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#DAEBFE] group-hover:text-white transition-colors truncate">
+                  {c.val}
+                </span>
+              </motion.a>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </footer>
   );
@@ -224,7 +227,7 @@ function DarkModeToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full flex items-center justify-center bg-[#003B5C] dark:bg-[#DAEBFE] text-white dark:text-[#003B5C] shadow-lg transition-transform hover:scale-105 active:scale-95"
+      className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full flex items-center justify-center bg-[#003B5C] dark:bg-white text-white dark:text-[#003B5C] shadow-lg transition-transform hover:scale-105"
     >
       {dark ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
