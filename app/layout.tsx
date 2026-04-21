@@ -23,7 +23,7 @@ const navLinks = [
   { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
 ];
 
-const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
+const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 10 },
@@ -35,41 +35,25 @@ const stagger = {
 };
 
 const InstagramIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
   </svg>
 );
 
 const FacebookIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
   </svg>
 );
 
 function Navbar() {
-  const [hidden, setHidden] = useState(false);
-  const [lastY, setLastY]   = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setHidden(y > lastY && y > 80);
-      setLastY(y);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [lastY]);
-
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] dark:bg-black transition-transform duration-300"
-      style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#DAEBFE] dark:bg-black transition-colors duration-300">
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
-        <Link href="/" className="text-white font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3">
-          {/* Removed brightness-0 invert filters */}
+        <Link href="/" className="font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3 text-[#003B5C] dark:text-white">
           <Image 
             src="/LAMTBear.png" 
             alt="Logo" 
@@ -82,7 +66,7 @@ function Navbar() {
         <nav className="flex items-center gap-16">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
-            const className = "text-white font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200";
+            const className = "font-extrabold text-xl tracking-widest uppercase hover:opacity-70 transition-opacity duration-200 text-[#003B5C] dark:text-white";
             return external ? (
               <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>{label}</a>
             ) : (
@@ -95,14 +79,14 @@ function Navbar() {
       </div>
 
       <div className="md:hidden flex items-center justify-between px-4 h-16">
-        <Link href="/" className="text-white font-extrabold text-lg tracking-wide uppercase flex items-center gap-2">
-           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
-           LAMT
+        <Link href="/" className="font-extrabold text-lg tracking-wide uppercase flex items-center gap-2 text-[#003B5C] dark:text-white">
+          <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
+          LAMT
         </Link>
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col gap-1.5 p-1">
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-[#003B5C] dark:bg-white transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
     </header>
@@ -119,11 +103,10 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-[#2774AE] dark:bg-black text-white border-t border-white/10">
+    <footer className="bg-[#2774AE] dark:bg-black text-white">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
-        {/* 3‑column grid: left (logo), center (icons), right (text) */}
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] items-center gap-10">
-          
+
           {/* Logo (left) */}
           <div className="flex justify-center lg:justify-start">
             <Link href="/" className="shrink-0 transition-transform hover:scale-105">
@@ -137,8 +120,8 @@ function Footer() {
             </Link>
           </div>
 
-          {/* Contact circles (center) */}
-          <div className="flex justify-center">
+          {/* Contact circles (center, nudged slightly right) */}
+          <div className="flex justify-center pl-8">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -155,7 +138,6 @@ function Footer() {
                   rel="noreferrer"
                   aria-label={c.title}
                   className="
-                    group
                     flex items-center justify-center
                     w-11 h-11 rounded-full
                     bg-white dark:bg-black
@@ -172,11 +154,11 @@ function Footer() {
             </motion.div>
           </div>
 
-          {/* Non‑affiliation text (right) */}
+          {/* Non-affiliation text (right) */}
           <div className="flex justify-center lg:justify-end">
             <div className="max-w-xs text-center lg:text-right">
               <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
-                We are a student group acting independently of the University of California. 
+                We are a student group acting independently of the University of California.
                 We take full responsibility for our organization and this web site.
               </p>
             </div>
