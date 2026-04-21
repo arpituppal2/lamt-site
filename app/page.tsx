@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { DiscordLogoIcon } from '@radix-ui/react-icons';
 
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
@@ -57,6 +56,8 @@ const stagger = {
   hidden:  {},
   visible: { transition: { staggerChildren: 0.09 } },
 };
+
+const linkClass = "font-extrabold text-xl tracking-widest uppercase text-white hover:opacity-70 transition-opacity duration-200";
 
 export default function HomePage() {
   return (
@@ -111,12 +112,12 @@ export default function HomePage() {
             <Countdown />
           </motion.div>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-            <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
-              Register
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-16">
+            <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className={linkClass}>
+              REGISTER
             </Link>
-            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
-              Join Discord
+            <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className={linkClass}>
+              JOIN DISCORD
             </Link>
           </motion.div>
         </motion.div>
@@ -138,12 +139,12 @@ export default function HomePage() {
               <strong className="text-white font-bold">completely free</strong>.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-cta">
-                Register on ContestDojo →
+            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-16">
+              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className={linkClass}>
+                REGISTER ON CONTESTDOJO
               </Link>
-              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-ghost">
-                Join Discord
+              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className={linkClass}>
+                JOIN DISCORD
               </Link>
             </motion.div>
           </motion.div>
