@@ -38,37 +38,37 @@ function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] transition-transform duration-300"
       style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
     >
-      {/* Desktop */}
-      <div className="hidden md:flex items-center justify-between px-10 h-20 max-w-[1400px] mx-auto">
-        {/* Nav links — left/center */}
-        <nav className="flex items-center gap-10">
-          {navLinks.map(({ href, label }) => {
-            const active = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="text-white font-extrabold text-base tracking-widest uppercase transition-opacity duration-200 hover:opacity-70"
-                style={{
-                  textDecoration: active ? 'underline' : 'none',
-                  textUnderlineOffset: '6px',
-                  textDecorationThickness: '2px',
-                }}
-              >
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+{/* Desktop */}
+<div className="hidden md:flex items-center justify-between px-10 h-20 max-w-[1400px] mx-auto">
+  {/* LAMT — far left */}
+  <Link
+    href="/"
+    className="text-white font-extrabold text-base tracking-widest uppercase hover:opacity-70 transition-opacity duration-200"
+  >
+    LAMT
+  </Link>
 
-        {/* LAMT — far right */}
+  {/* Nav links — right */}
+  <nav className="flex items-center gap-10">
+    {navLinks.map(({ href, label }) => {
+      const active = pathname === href;
+      return (
         <Link
-          href="/"
-          className="text-white font-extrabold text-base tracking-widest uppercase hover:opacity-70 transition-opacity duration-200"
+          key={href}
+          href={href}
+          className="text-white font-extrabold text-base tracking-widest uppercase transition-opacity duration-200 hover:opacity-70"
+          style={{
+            textDecoration: active ? 'underline' : 'none',
+            textUnderlineOffset: '6px',
+            textDecorationThickness: '2px',
+          }}
         >
-          LAMT
+          {label}
         </Link>
-      </div>
+      );
+    })}
+  </nav>
+</div>
 
       {/* Mobile */}
       <div className="md:hidden flex items-center justify-between px-6 h-16">
