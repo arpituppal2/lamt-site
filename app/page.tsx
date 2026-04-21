@@ -179,9 +179,6 @@ export default function HomePage() {
             variants={stagger}
             className="mt-20 pt-12 border-t border-white/20"
           >
-            <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#8BB8E8] mb-6 text-center">
-              Contact
-            </motion.p>
             <motion.div variants={stagger} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10">
               {[
                 { title: 'Email',     val: 'team@lamt.net',       href: 'mailto:team@lamt.net' },
