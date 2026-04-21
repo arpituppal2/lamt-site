@@ -39,13 +39,15 @@ const faqs = [
   },
   {
     q: 'How do I register?',
-    a: 'Registration is through the Google Form linked on this site. Click "Register Now" on the home page or in the navigation bar.',
+    a: 'Registration is through ContestDojo. Click "Register Now" on the home page or in the navigation bar.',
   },
 ];
 
+const linkClass = "font-extrabold text-xl tracking-widest uppercase text-[#003B5C] dark:text-white hover:opacity-70 transition-opacity duration-200";
+
 export default function FAQPage() {
   return (
-    <div className="pt-32 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
+    <div className="pt-16 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
 
       <h1
         className="font-bold text-[var(--color-text)] leading-tight mb-6"
@@ -75,10 +77,10 @@ export default function FAQPage() {
         Have a question not answered here?{' '}
         <a
           href="mailto:lamt@math.ucla.edu"
-          className="text-[var(--color-gold)] hover:underline underline-offset-4"
+          className={linkClass}
         >
-          Email us
-        </a>.
+          EMAIL US
+        </a>
       </p>
     </div>
   );

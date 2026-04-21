@@ -1,6 +1,8 @@
+const linkClass = "font-extrabold text-xl tracking-widest uppercase text-[#003B5C] dark:text-white hover:opacity-70 transition-opacity duration-200";
+
 export default function TournamentPage() {
   return (
-    <div className="pt-32 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
+    <div className="pt-16 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
 
       {/* Header */}
       <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6"
@@ -83,14 +85,14 @@ export default function TournamentPage() {
       </section>
 
       {/* CTA */}
-      <div className="border-t border-[var(--color-border)] pt-12 flex flex-col sm:flex-row gap-4 items-start">
+      <div className="border-t border-[var(--color-border)] pt-12">
         <a
           href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-cta"
+          className={linkClass}
         >
-          Register Now
+          REGISTER NOW
         </a>
       </div>
     </div>

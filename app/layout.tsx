@@ -13,7 +13,6 @@ import Image from 'next/image';
 import './globals.css';
 import KaTeXLoader from "./components/KaTeXLoader";
 
-
 const navLinks = [
   { href: '/',           label: 'HOME' },
   { href: '/tournament', label: 'LAMT 2026' },
@@ -51,7 +50,7 @@ function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#2774AE] dark:bg-black transition-colors duration-300">
+    <header className="w-full bg-[#2774AE] dark:bg-black transition-colors duration-300">
       <div className="hidden md:flex items-center justify-between px-4 md:px-6 h-20 max-w-[1600px] mx-auto">
         <Link href="/" className="font-extrabold text-xl tracking-wide uppercase hover:opacity-70 transition-all flex items-center gap-3 text-white">
           <Image 
@@ -107,7 +106,6 @@ function Footer() {
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] items-center gap-10">
 
-          {/* Logo (left) */}
           <div className="flex justify-center lg:justify-start">
             <Link href="/" className="shrink-0 transition-transform hover:scale-105">
               <Image
@@ -120,7 +118,6 @@ function Footer() {
             </Link>
           </div>
 
-          {/* Contact circles (center, nudged slightly right) */}
           <div className="flex justify-center pl-8">
             <motion.div
               initial="hidden"
@@ -154,7 +151,6 @@ function Footer() {
             </motion.div>
           </div>
 
-          {/* Non-affiliation text (right) */}
           <div className="flex justify-center lg:justify-end">
             <div className="max-w-xs text-center lg:text-right">
               <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
@@ -204,7 +200,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <KaTeXLoader />
         <Navbar />
         <DarkModeToggle />
-        <main className="pt-20">
+        <main>
           {children}
         </main>
         <Footer />
