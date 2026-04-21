@@ -12,19 +12,13 @@ export default function AboutPage() {
       {/* Mission */}
       <section className="mb-20 max-w-2xl">
         <p className="text-[var(--color-text)] text-lg md:text-xl leading-relaxed mb-6">
-          The Los Angeles Math Tournament Group hosts and organizes mathematical contests
-          for middle and high school students.
+          The Los Angeles Math Tournament Group hosts and organizes mathematical contests for middle and high school students.
         </p>
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
-          We strive to encourage mathematical exploration and understanding by introducing
-          concepts not covered in the typical pre-college curricula to students with high
-          mathematical aptitude and interest. Each contest emphasizes collaboration between
-          team members, while still allowing individuals to prove their own ability.
+          We strive to encourage mathematical exploration and understanding by introducing concepts not covered in the typical pre-college curricula to students with high mathematical aptitude and interest. Each contest emphasizes collaboration between team members, while still allowing individuals to prove their own ability.
         </p>
         <p className="text-[var(--color-text-secondary)] leading-relaxed">
-          Any individual currently enrolled in a pre-college institute for youth is welcome
-          to compete as long as their primary enrollment is in grade 12 or below by the
-          Tournament Date.
+          Any individual currently enrolled in a pre-college institute for youth is welcome to compete as long as their primary enrollment is in grade 12 or below by the Tournament Date.
         </p>
       </section>
 
@@ -39,8 +33,7 @@ export default function AboutPage() {
       {/* UC Disclaimer */}
       <section className="border-t border-[var(--color-border)] pt-10">
         <p className="text-[var(--color-text-muted)] text-sm leading-relaxed max-w-xl">
-          We are a student group acting independently of the University of California.
-          We take full responsibility for our organization and this web site.
+          We are a student group acting independently of the University of California; We take full responsibility for our organization and this web site.
         </p>
       </section>
 
