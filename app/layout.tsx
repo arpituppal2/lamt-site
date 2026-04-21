@@ -111,19 +111,19 @@ function Navbar() {
 
 function Footer() {
   const socialLinks = [
-    { title: 'Email',     val: 'team@lamt.net',        href: 'mailto:team@lamt.net', icon: <EnvelopeClosedIcon /> },
-    { title: 'Instagram', val: '@lamathtournament',    href: 'https://www.instagram.com/lamathtournament/', icon: <InstagramIcon /> },
-    { title: 'Facebook',  val: 'LAMT Community',       href: 'https://www.facebook.com/groups/1429462591976204/', icon: <FacebookIcon /> },
-    { title: 'LinkedIn',  val: 'LA Math Tournament',   href: 'https://www.linkedin.com/company/la-math-tournament/', icon: <LinkedInLogoIcon /> },
-    { title: 'Discord',   val: 'Join server',          href: DISCORD_URL, icon: <DiscordLogoIcon /> },
+    { title: 'Email',     href: 'mailto:team@lamt.net',                                   icon: <EnvelopeClosedIcon width={18} height={18} /> },
+    { title: 'Instagram', href: 'https://www.instagram.com/lamathtournament/',             icon: <InstagramIcon /> },
+    { title: 'Facebook',  href: 'https://www.facebook.com/groups/1429462591976204/',       icon: <FacebookIcon /> },
+    { title: 'LinkedIn',  href: 'https://www.linkedin.com/company/la-math-tournament/',    icon: <LinkedInLogoIcon width={18} height={18} /> },
+    { title: 'Discord',   href: DISCORD_URL,                                               icon: <DiscordLogoIcon width={18} height={18} /> },
   ];
 
   return (
     <footer className="bg-[#2774AE] dark:bg-black text-white border-t border-white/10">
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-          
-          {/* Removed filters and rings - shows the pure PNG */}
+
+          {/* Logo */}
           <Link href="/" className="shrink-0 transition-transform hover:scale-105">
             <Image
               src="/LAMTBear.png"
@@ -134,19 +134,13 @@ function Footer() {
             />
           </Link>
 
-          <div className="max-w-xs text-center lg:text-left">
-            <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
-              We are a student group acting independently of the University of California. 
-              We take full responsibility for our organization and this web site.
-            </p>
-          </div>
-
+          {/* Contact circles */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10 w-full lg:w-auto"
+            className="flex items-center gap-4"
           >
             {socialLinks.map((c) => (
               <motion.a
@@ -155,22 +149,37 @@ function Footer() {
                 href={c.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex flex-col gap-1 bg-[#2774AE] dark:bg-black px-5 py-2 hover:bg-[#005587] dark:hover:bg-[#1a1a1a] transition-colors duration-200"
+                aria-label={c.title}
+                className="
+                  group
+                  flex items-center justify-center
+                  w-11 h-11 rounded-full
+                  bg-white dark:bg-black
+                  text-[#2774AE] dark:text-white
+                  border-2 border-white dark:border-white
+                  shadow-md
+                  hover:scale-110 hover:shadow-xl
+                  transition-all duration-200
+                "
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-[#8BB8E8] group-hover:text-white transition-colors scale-90">{c.icon}</span>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8BB8E8]">{c.title}</span>
-                </div>
-                <span className="text-[11px] text-[#DAEBFE] group-hover:text-white transition-colors truncate">{c.val}</span>
+                {c.icon}
               </motion.a>
             ))}
           </motion.div>
+
+          {/* Non-affiliation text */}
+          <div className="max-w-xs text-center lg:text-right">
+            <p className="text-[11px] md:text-xs text-[#DAEBFE] leading-relaxed opacity-80">
+              We are a student group acting independently of the University of California.
+              We take full responsibility for our organization and this web site.
+            </p>
+          </div>
+
         </div>
       </div>
     </footer>
   );
 }
-
 function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
