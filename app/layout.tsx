@@ -115,10 +115,9 @@ function DarkModeToggle() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    setDark(mq.matches);
-    document.documentElement.classList.toggle('dark', mq.matches);
-  }, []);
+  document.documentElement.classList.remove('dark');
+  setDark(false);
+}, []);
 
   const toggle = () => {
     const next = !dark;
