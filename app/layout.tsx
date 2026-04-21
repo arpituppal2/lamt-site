@@ -71,8 +71,8 @@ function Navbar() {
           <Image 
             src="/LAMTBear.png" 
             alt="Logo" 
-            width={40} 
-            height={40} 
+            width={50} 
+            height={50} 
             className="object-contain" 
           />
           Los Angeles Math Tournament
