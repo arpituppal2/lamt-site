@@ -61,7 +61,7 @@ export default function TournamentPage() {
       </section>
 
       <section className="mb-20">
-        <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Schedule</h2>
+        <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Tentative Schedule</h2>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-[var(--color-border)] bg-transparent">
             <thead>
@@ -87,11 +87,11 @@ export default function TournamentPage() {
       <section className="mb-20">
         <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Location</h2>
         <p className="text-[var(--color-text-secondary)] leading-relaxed mb-8">
-          The tournament will be held on the UCLA campus in Los Angeles, California. Specific venue details will be announced closer to the event date.
+          The tournament will be held at the <strong>Court of Sciences</strong> on the UCLA campus in Los Angeles, California.
         </p>
         <div className="w-full rounded-sm overflow-hidden border border-[var(--color-border)]" style={{ height: '360px' }}>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.4!2d-118.4452!3d34.0689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc85aa5cf12b%3A0xe4c3e0e00f2b3a0a!2sUCLA!5e0!3m2!1sen!2sus!4v1617000000000!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7!2d-118.4417!3d34.0683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc85b3b3b3b3%3A0x0!2sCourt+of+Sciences%2C+UCLA!5e0!3m2!1sen!2sus!4v1617000000000!5m2!1sen!2sus"
             width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
