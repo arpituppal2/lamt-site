@@ -1,9 +1,22 @@
 export default function TournamentPage() {
+  const schedule = [
+    { time: '8:00 AM',  event: 'Contestant Check-In',             location: 'Outside MS 4000A' },
+    { time: '8:45 AM',  event: 'Opening Ceremony',                location: 'MS 4000A' },
+    { time: '9:00 AM',  event: 'Secret Team Round',               location: 'MS 4000A, 5200' },
+    { time: '10:45 AM', event: 'Algebra / Number Theory',         location: 'MS 4000A, 5200' },
+    { time: '11:45 AM', event: 'Combinatorics',                   location: 'MS 4000A, 5200' },
+    { time: '12:45 PM', event: 'Lunch & Disputes',                location: 'Court of Sciences' },
+    { time: '1:45 PM',  event: 'Geometry',                        location: 'MS 4000A, 5200' },
+    { time: '3:00 PM',  event: 'Guts Round',                      location: 'MS 4000A, 5200' },
+    { time: '4:30 PM',  event: 'Activities',                      location: 'MS 4000A, 5200' },
+    { time: '6:00 PM',  event: 'Awards Ceremony',                 location: 'MS 4000A' },
+  ];
+
   return (
     <div className="pt-16 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
 
       <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
-        LAMT '26: May 17th, 2026
+        LAMT &apos;26: May 17th, 2026
       </h1>
       <div className="gold-rule mb-16" />
 
@@ -44,6 +57,30 @@ export default function TournamentPage() {
               <p className="text-[var(--color-text-secondary)] leading-relaxed">{desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mb-20">
+        <h2 className="text-[var(--color-text)] font-semibold text-xl mb-8 tracking-tight">Schedule</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-[var(--color-border)] bg-transparent">
+            <thead>
+              <tr className="border-b border-[var(--color-border)] bg-[var(--color-border)]/5">
+                <th className="p-4 text-left font-semibold text-[var(--color-text)] border-r border-[var(--color-border)] w-28">Time</th>
+                <th className="p-4 text-left font-semibold text-[var(--color-text)] border-r border-[var(--color-border)]">Event</th>
+                <th className="p-4 text-left font-semibold text-[var(--color-text)]">Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map(({ time, event, location }, i) => (
+                <tr key={i} className="border-b border-[var(--color-border)] last:border-b-0">
+                  <td className="p-4 text-[var(--color-text-secondary)] border-r border-[var(--color-border)] tabular-nums whitespace-nowrap">{time}</td>
+                  <td className="p-4 text-[var(--color-text)] font-medium border-r border-[var(--color-border)]">{event}</td>
+                  <td className="p-4 text-[var(--color-text-secondary)]">{location}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
