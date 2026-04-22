@@ -59,7 +59,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
         <div aria-hidden className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-end pr-[5%] pointer-events-none select-none overflow-hidden">
           <Image src="/LAMTBear.png" alt="" width={700} height={700} className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40" priority />
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
