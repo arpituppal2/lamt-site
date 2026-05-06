@@ -18,10 +18,10 @@ const TIER_CONFIG: Record<Tier, {
   imgHeight: string;
   imgWidth: string;
 }> = {
-  gold:    { label: 'Gold',    imgHeight: 'h-20 md:h-24', imgWidth: 'w-48 md:w-60' },
-  silver:  { label: 'Silver',  imgHeight: 'h-16 md:h-20', imgWidth: 'w-40 md:w-52' },
-  bronze:  { label: 'Bronze',  imgHeight: 'h-12 md:h-16', imgWidth: 'w-32 md:w-44' },
-  friends: { label: 'Friends of LAMT', imgHeight: 'h-10 md:h-12', imgWidth: 'w-28 md:w-36' },
+  gold:    { label: 'Gold',            imgHeight: 'h-[38px]', imgWidth: 'w-48 md:w-60' },
+  silver:  { label: 'Silver',          imgHeight: 'h-[32px]', imgWidth: 'w-40 md:w-52' },
+  bronze:  { label: 'Bronze',          imgHeight: 'h-[26px]', imgWidth: 'w-32 md:w-44' },
+  friends: { label: 'Friends of LAMT', imgHeight: 'h-[20px]', imgWidth: 'w-28 md:w-36' },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
@@ -46,7 +46,6 @@ export default function SponsorsSection({
           viewport={{ once: true }}
           variants={stagger}
         >
-          {/* Heading */}
           <motion.div variants={fadeUp} className="mb-12 text-center">
             <h2
               className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4"
@@ -97,7 +96,6 @@ export default function SponsorsSection({
             </motion.div>
           )}
 
-          {/* CTA */}
           <motion.div variants={fadeUp} className="mt-14 text-center">
             <p className="text-[#DAEBFE] text-sm mb-4">Interested in sponsoring LAMT?</p>
             <a href="mailto:team@lamt.net" className="btn-outline">
