@@ -18,10 +18,10 @@ const TIER_CONFIG: Record<Tier, {
   imgHeight: string;
   imgWidth: string;
 }> = {
-  gold:    { label: 'Gold',            imgHeight: 'h-[38px]', imgWidth: 'w-48 md:w-60' },
-  silver:  { label: 'Silver',          imgHeight: 'h-[32px]', imgWidth: 'w-40 md:w-52' },
-  bronze:  { label: 'Bronze',          imgHeight: 'h-[26px]', imgWidth: 'w-32 md:w-44' },
-  friends: { label: 'Friends of LAMT', imgHeight: 'h-[20px]', imgWidth: 'w-28 md:w-36' },
+  gold:    { label: 'Gold',            imgHeight: 'h-80 md:h-96',  imgWidth: 'w-[192px] md:w-[240px]' },
+  silver:  { label: 'Silver',          imgHeight: 'h-64 md:h-80',  imgWidth: 'w-[160px] md:w-[208px]' },
+  bronze:  { label: 'Bronze',          imgHeight: 'h-48 md:h-64',  imgWidth: 'w-[128px] md:w-[176px]' },
+  friends: { label: 'Friends of LAMT', imgHeight: 'h-40 md:h-48',  imgWidth: 'w-[112px] md:w-[144px]' },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
