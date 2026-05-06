@@ -15,13 +15,14 @@ const stagger = {
 
 const TIER_CONFIG: Record<Tier, {
   label: string;
-  imgHeight: string;
-  imgWidth: string;
+  labelSize: string;
+  imgW: number;
+  imgH: number;
 }> = {
-  gold:    { label: 'Gold',            imgHeight: 'h-80 md:h-96',  imgWidth: 'w-[192px] md:w-[240px]' },
-  silver:  { label: 'Silver',          imgHeight: 'h-64 md:h-80',  imgWidth: 'w-[160px] md:w-[208px]' },
-  bronze:  { label: 'Bronze',          imgHeight: 'h-48 md:h-64',  imgWidth: 'w-[128px] md:w-[176px]' },
-  friends: { label: 'Friends of LAMT', imgHeight: 'h-40 md:h-48',  imgWidth: 'w-[112px] md:w-[144px]' },
+  gold:    { label: 'Gold',            labelSize: 'text-xl md:text-2xl',  imgW: 480, imgH: 240 },
+  silver:  { label: 'Silver',          labelSize: 'text-lg md:text-xl',   imgW: 360, imgH: 180 },
+  bronze:  { label: 'Bronze',          labelSize: 'text-base md:text-lg', imgW: 280, imgH: 140 },
+  friends: { label: 'Friends of LAMT', labelSize: 'text-sm md:text-base', imgW: 200, imgH: 100 },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
@@ -39,14 +40,15 @@ export default function SponsorsSection({
       id="sponsors"
       className="py-20 px-6 md:px-16 bg-[#2774AE] dark:bg-black border-t border-white/10 transition-colors"
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={stagger}
         >
-          <motion.div variants={fadeUp} className="mb-12 text-center">
+          {/* Heading */}
+          <motion.div variants={fadeUp} className="mb-14 text-center">
             <h2
               className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -59,27 +61,26 @@ export default function SponsorsSection({
           </motion.div>
 
           {hasAny ? (
-            <div className="flex flex-col gap-14">
+            <div className="flex flex-col gap-16">
               {activeTiers.map((tier) => {
-                const { label, imgHeight, imgWidth } = TIER_CONFIG[tier];
+                const { label, labelSize, imgW, imgH } = TIER_CONFIG[tier];
                 const images = sponsorsByTier[tier];
                 return (
                   <motion.div key={tier} variants={fadeUp}>
-                    <p className="text-center text-[11px] font-semibold uppercase tracking-[0.25em] text-[#8BB8E8] mb-6">
+                    <p className={`text-center font-bold uppercase tracking-[0.2em] text-white mb-8 ${labelSize}`}
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
                       {label}
                     </p>
-                    <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+                    <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
                       {images.map((src) => (
-                        <div
-                          key={src}
-                          className={`relative ${imgHeight} ${imgWidth} flex items-center justify-center`}
-                        >
+                        <div key={src} className="flex items-center justify-center">
                           <Image
                             src={src}
                             alt="Sponsor"
-                            fill
+                            width={imgW}
+                            height={imgH}
                             className="object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
-                            sizes="(max-width: 768px) 160px, 240px"
                           />
                         </div>
                       ))}
@@ -96,7 +97,8 @@ export default function SponsorsSection({
             </motion.div>
           )}
 
-          <motion.div variants={fadeUp} className="mt-14 text-center">
+          {/* CTA */}
+          <motion.div variants={fadeUp} className="mt-16 text-center">
             <p className="text-[#DAEBFE] text-sm mb-4">Interested in sponsoring LAMT?</p>
             <a href="mailto:team@lamt.net" className="btn-outline">
               CONTACT US
