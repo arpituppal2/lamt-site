@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import type { Tier } from '../page';
 
 const fadeUp = {
@@ -16,13 +15,12 @@ const stagger = {
 const TIER_CONFIG: Record<Tier, {
   label: string;
   labelSize: string;
-  imgW: number;
-  imgH: number;
+  imgHeight: number;
 }> = {
-  gold:    { label: 'Gold',            labelSize: 'text-xl md:text-2xl',  imgW: 480, imgH: 240 },
-  silver:  { label: 'Silver',          labelSize: 'text-lg md:text-xl',   imgW: 360, imgH: 180 },
-  bronze:  { label: 'Bronze',          labelSize: 'text-base md:text-lg', imgW: 280, imgH: 140 },
-  friends: { label: 'Friends of LAMT', labelSize: 'text-sm md:text-base', imgW: 200, imgH: 100 },
+  gold:    { label: 'Gold',            labelSize: 'text-xl md:text-2xl',  imgHeight: 240 },
+  silver:  { label: 'Silver',          labelSize: 'text-lg md:text-xl',   imgHeight: 180 },
+  bronze:  { label: 'Bronze',          labelSize: 'text-base md:text-lg', imgHeight: 140 },
+  friends: { label: 'Friends of LAMT', labelSize: 'text-sm md:text-base', imgHeight: 100 },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
@@ -63,11 +61,12 @@ export default function SponsorsSection({
           {hasAny ? (
             <div className="flex flex-col gap-16">
               {activeTiers.map((tier) => {
-                const { label, labelSize, imgW, imgH } = TIER_CONFIG[tier];
+                const { label, labelSize, imgHeight } = TIER_CONFIG[tier];
                 const images = sponsorsByTier[tier];
                 return (
                   <motion.div key={tier} variants={fadeUp}>
-                    <p className={`text-center font-bold uppercase tracking-[0.2em] text-white mb-8 ${labelSize}`}
+                    <p
+                      className={`text-center font-bold uppercase tracking-[0.2em] text-white mb-8 ${labelSize}`}
                       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
                       {label}
@@ -75,12 +74,13 @@ export default function SponsorsSection({
                     <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
                       {images.map((src) => (
                         <div key={src} className="flex items-center justify-center">
-                          <Image
+                          {/* height-only: width is auto so wide logos stay proportional */}
+                          <img
                             src={src}
                             alt="Sponsor"
-                            width={imgW}
-                            height={imgH}
+                            style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
                             className="object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+                            loading="lazy"
                           />
                         </div>
                       ))}
