@@ -52,6 +52,11 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
+const sponsors: { name: string; tier: 'gold' | 'silver' | 'bronze' }[] = [
+  // Add sponsor entries here, e.g.:
+  // { name: 'Sponsor Name', tier: 'gold' },
+];
+
 export default function HomePage() {
   return (
     <div>
@@ -100,6 +105,58 @@ export default function HomePage() {
               <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-outline">
                 JOIN DISCORD
               </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* SPONSORS SECTION */}
+      <section id="sponsors" className="py-20 px-6 md:px-16 bg-[#2774AE] dark:bg-black border-t border-white/10 transition-colors">
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="mb-12 text-center">
+              <h2
+                className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Our Sponsors
+              </h2>
+              <p className="text-[#DAEBFE] text-sm md:text-base max-w-md mx-auto">
+                LAMT 2026 is made possible by the generous support of our sponsors.
+              </p>
+            </motion.div>
+
+            {sponsors.length > 0 ? (
+              <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-10">
+                {sponsors.map((s) => (
+                  <div
+                    key={s.name}
+                    className={`flex items-center justify-center px-8 py-5 rounded-xl bg-white/10 border border-white/20 text-white font-semibold tracking-wide ${
+                      s.tier === 'gold' ? 'text-[#FFD100] text-xl' :
+                      s.tier === 'silver' ? 'text-[#C0C0C0] text-lg' :
+                      'text-[#CD7F32] text-base'
+                    }`}
+                  >
+                    {s.name}
+                  </div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div variants={fadeUp} className="text-center">
+                <p className="text-[#8BB8E8] text-sm tracking-wide uppercase">
+                  Sponsor announcements coming soon.
+                </p>
+              </motion.div>
+            )}
+
+            <motion.div variants={fadeUp} className="mt-14 text-center">
+              <p className="text-[#DAEBFE] text-sm mb-4">Interested in sponsoring LAMT?</p>
+              <a
+                href="mailto:team@lamt.net"
+                className="btn-outline"
+              >
+                CONTACT US
+              </a>
             </motion.div>
           </motion.div>
         </div>
