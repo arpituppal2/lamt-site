@@ -1,167 +1,35 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import SponsorsSection from './components/SponsorsSection';
+import HomeClient from './components/HomeClient';
+import fs from 'fs';
+import path from 'path';
 
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
 const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
 
-function Countdown() {
-  const target = new Date('2026-05-17T08:00:00-07:00').getTime();
-  const [diff, setDiff] = useState(target - Date.now());
+const SUPPORTED_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg'];
 
-  useEffect(() => {
-    const id = setInterval(() => setDiff(target - Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [target]);
-
-  if (diff <= 0)
-    return <span className="text-[#FFD100] text-base tracking-widest">Today</span>;
-
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  const pad = (n: number) => String(n).padStart(2, '0');
-
-  return (
-    <div className="flex items-end justify-center gap-8 tabular-nums select-none">
-      {[
-        { val: String(d), label: 'days' },
-        { val: pad(h),    label: 'hrs'  },
-        { val: pad(m),    label: 'min'  },
-        { val: pad(s),    label: 'sec'  },
-      ].map(({ val, label }) => (
-        <div key={label} className="flex flex-col items-center">
-          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">{val}</span>
-          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
-        </div>
-      ))}
-    </div>
-  );
+function getSponsorImages(): string[] {
+  const dir = path.join(process.cwd(), 'public', 'sponsors');
+  try {
+    return fs.readdirSync(dir)
+      .filter(f => SUPPORTED_EXTS.includes(path.extname(f).toLowerCase()))
+      .map(f => `/sponsors/${f}`);
+  } catch {
+    return [];
+  }
 }
 
-const fadeUp = {
-  hidden:  { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
-};
-const stagger = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.09 } },
-};
-
-const sponsors: { name: string; tier: 'gold' | 'silver' | 'bronze' }[] = [
-  // Add sponsor entries here, e.g.:
-  // { name: 'Sponsor Name', tier: 'gold' },
-];
-
 export default function HomePage() {
+  const sponsorImages = getSponsorImages();
+
   return (
     <div>
-
-      {/* HERO */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors duration-300 overflow-hidden">
-        <div aria-hidden className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute inset-0 flex items-center justify-end pr-[5%] pointer-events-none select-none overflow-hidden">
-          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="h-[85vh] w-auto object-contain opacity-20 dark:opacity-40" priority />
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
-
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="relative z-10 max-w-4xl w-full py-8">
-          <motion.h1
-            variants={fadeUp}
-            className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white mb-6"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
-            Los Angeles<br />
-            <span style={{ color: '#FFD100' }}>Math Tournament</span>
-          </motion.h1>
-          <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
-          <motion.div variants={fadeUp}>
-            <Countdown />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* REGISTER SECTION */}
-      <section id="register" className="py-28 px-6 md:px-16 bg-[#2774AE] dark:bg-black transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp} className="mb-12 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                Registration is open.
-              </h2>
-            </motion.div>
-            <motion.p variants={fadeUp} className="text-base md:text-lg text-[#DAEBFE] max-w-lg mx-auto mb-10 leading-relaxed text-center">
-              LAMT 2026 takes place May 17 at UCLA. Registration is through ContestDojo and is{' '}
-              <strong className="text-white font-bold">completely free</strong>.
-            </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-6">
-              <Link href={REGISTER_URL} target="_blank" rel="noreferrer" className="btn-outline">
-                REGISTER ON CONTESTDOJO
-              </Link>
-              <Link href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn-outline">
-                JOIN DISCORD
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* SPONSORS SECTION */}
-      <section id="sponsors" className="py-20 px-6 md:px-16 bg-[#2774AE] dark:bg-black border-t border-white/10 transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fadeUp} className="mb-12 text-center">
-              <h2
-                className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                Our Sponsors
-              </h2>
-              <p className="text-[#DAEBFE] text-sm md:text-base max-w-md mx-auto">
-                LAMT 2026 is made possible by the generous support of our sponsors.
-              </p>
-            </motion.div>
-
-            {sponsors.length > 0 ? (
-              <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-10">
-                {sponsors.map((s) => (
-                  <div
-                    key={s.name}
-                    className={`flex items-center justify-center px-8 py-5 rounded-xl bg-white/10 border border-white/20 text-white font-semibold tracking-wide ${
-                      s.tier === 'gold' ? 'text-[#FFD100] text-xl' :
-                      s.tier === 'silver' ? 'text-[#C0C0C0] text-lg' :
-                      'text-[#CD7F32] text-base'
-                    }`}
-                  >
-                    {s.name}
-                  </div>
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div variants={fadeUp} className="text-center">
-                <p className="text-[#8BB8E8] text-sm tracking-wide uppercase">
-                  Sponsor announcements coming soon.
-                </p>
-              </motion.div>
-            )}
-
-            <motion.div variants={fadeUp} className="mt-14 text-center">
-              <p className="text-[#DAEBFE] text-sm mb-4">Interested in sponsoring LAMT?</p>
-              <a
-                href="mailto:team@lamt.net"
-                className="btn-outline"
-              >
-                CONTACT US
-              </a>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
+      <HomeClient
+        registerUrl={REGISTER_URL}
+        discordUrl={DISCORD_URL}
+      />
+      <SponsorsSection images={sponsorImages} />
     </div>
   );
 }
