@@ -14,36 +14,79 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
-function useIsExpired(targetISO: string) {
+function useCountdown(targetISO: string) {
   const target = new Date(targetISO).getTime();
-  const [expired, setExpired] = useState(Date.now() >= target);
+  const [diff, setDiff] = useState(target - Date.now());
   useEffect(() => {
-    if (expired) return;
-    const id = setInterval(() => {
-      if (Date.now() >= target) { setExpired(true); clearInterval(id); }
-    }, 1000);
+    const id = setInterval(() => setDiff(target - Date.now()), 1000);
     return () => clearInterval(id);
-  }, [target, expired]);
-  return expired;
+  }, [target]);
+  return diff;
 }
 
-function RegistrationDeadline() {
-  const expired = useIsExpired('2026-05-10T23:59:59-07:00');
+function CountdownTiles({ diff, expiredLabel }: { diff: number; expiredLabel: string }) {
+  if (diff <= 0)
+    return <span className="text-[#FFD100] text-base tracking-widest">{expiredLabel}</span>;
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className={`rounded-2xl border px-6 py-5 text-center ${
-      expired ? 'border-gray-500/40 bg-white/5' : 'border-[#FFD100]/40 bg-[#FFD100]/5'
-    }`}>
-      <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-2 ${
-        expired ? 'text-gray-400' : 'text-[#FFD100]'
-      }`}>
-        Registration Deadline
-      </p>
-      <p className={`text-sm font-semibold ${
-        expired ? 'text-gray-400' : 'text-white'
-      }`}>
-        {expired ? 'Registration is now closed.' : 'May 10 at 11:59 PM PST'}
-      </p>
+    <div className="flex items-end justify-center gap-8 tabular-nums select-none">
+      {[
+        { val: String(d), label: 'days' },
+        { val: pad(h),    label: 'hrs'  },
+        { val: pad(m),    label: 'min'  },
+      ].map(({ val, label }) => (
+        <div key={label} className="flex flex-col items-center">
+          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">{val}</span>
+          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RegistrationDeadlineCountdown() {
+  const diff = useCountdown('2026-05-10T23:59:59-07:00');
+  const expired = diff <= 0;
+
+  if (expired) {
+    return (
+      <div className="text-center">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-2">Registration Deadline</p>
+        <p className="text-sm font-semibold text-[#8BB8E8]">Registration is now closed.</p>
+      </div>
+    );
+  }
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  return (
+    <div className="text-center">
+      {/* Gold rule above */}
+      <div className="w-10 h-[2px] bg-[#FFD100] mx-auto mb-5" />
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFD100] mb-4">Registration Deadline</p>
+      <div className="flex items-end justify-center gap-8 tabular-nums select-none mb-3">
+        {[
+          { val: String(d), label: 'days' },
+          { val: pad(h),    label: 'hrs'  },
+          { val: pad(m),    label: 'min'  },
+        ].map(({ val, label }) => (
+          <div key={label} className="flex flex-col items-center">
+            <span className="text-3xl md:text-5xl font-light text-[#FFD100] leading-none tracking-tight">{val}</span>
+            <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-[#8BB8E8] tracking-wide">May 10 &mdash; 11:59 PM PST</p>
+      {/* Gold rule below */}
+      <div className="w-10 h-[2px] bg-[#FFD100] mx-auto mt-5" />
     </div>
   );
 }
@@ -55,7 +98,8 @@ export default function HomeClient({
   registerUrl: string;
   discordUrl: string;
 }) {
-  const regClosed = useIsExpired('2026-05-10T23:59:59-07:00');
+  const regDeadlineDiff = useCountdown('2026-05-10T23:59:59-07:00');
+  const regClosed = regDeadlineDiff <= 0;
 
   return (
     <>
@@ -78,15 +122,15 @@ export default function HomeClient({
           </motion.h1>
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
 
-          {/* Tournament date */}
+          {/* Tournament Countdown */}
           <motion.div variants={fadeUp} className="mb-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-2">Tournament</p>
-            <p className="text-2xl md:text-4xl font-light text-white tracking-tight">May 17, 2026</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-4">Tournament &mdash; May 17</p>
+            <CountdownTiles diff={useCountdown('2026-05-17T08:00:00-07:00')} expiredLabel="Today" />
           </motion.div>
 
-          {/* Registration Deadline */}
-          <motion.div variants={fadeUp} className="mt-10 max-w-sm mx-auto w-full">
-            <RegistrationDeadline />
+          {/* Registration Deadline Countdown */}
+          <motion.div variants={fadeUp} className="mt-12">
+            <RegistrationDeadlineCountdown />
           </motion.div>
         </motion.div>
       </section>
