@@ -24,43 +24,37 @@ function useCountdown(targetISO: string) {
   return diff;
 }
 
-function CountdownTiles({ diff, expiredLabel }: { diff: number; expiredLabel: string }) {
+/** Tournament countdown — days / hrs / min / sec, white tiles */
+function TournamentCountdown({ diff }: { diff: number }) {
   if (diff <= 0)
-    return <span className="text-[#FFD100] text-base tracking-widest">{expiredLabel}</span>;
+    return <span className="text-[#FFD100] text-base tracking-widest">Today</span>;
 
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="flex items-end justify-center gap-8 tabular-nums select-none">
+    <div className="flex items-end justify-center gap-5 md:gap-7 tabular-nums select-none">
       {[
         { val: String(d), label: 'days' },
         { val: pad(h),    label: 'hrs'  },
         { val: pad(m),    label: 'min'  },
+        { val: pad(s),    label: 'sec'  },
       ].map(({ val, label }) => (
         <div key={label} className="flex flex-col items-center">
-          <span className="text-4xl md:text-6xl font-light text-white leading-none tracking-tight">{val}</span>
-          <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
+          <span className="text-3xl md:text-5xl font-light text-white leading-none tracking-tight">{val}</span>
+          <span className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
         </div>
       ))}
     </div>
   );
 }
 
-function RegistrationDeadlineCountdown() {
-  const diff = useCountdown('2026-05-10T23:59:59-07:00');
-  const expired = diff <= 0;
-
-  if (expired) {
-    return (
-      <div className="text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-2">Registration Deadline</p>
-        <p className="text-sm font-semibold text-[#8BB8E8]">Registration is now closed.</p>
-      </div>
-    );
-  }
+/** Registration deadline countdown — days / hrs / min only, gold tiles. Returns null once expired. */
+function RegistrationCountdown({ diff }: { diff: number }) {
+  if (diff <= 0) return null;
 
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
@@ -68,25 +62,17 @@ function RegistrationDeadlineCountdown() {
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="text-center">
-      {/* Gold rule above */}
-      <div className="w-10 h-[2px] bg-[#FFD100] mx-auto mb-5" />
-      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFD100] mb-4">Registration Deadline</p>
-      <div className="flex items-end justify-center gap-8 tabular-nums select-none mb-3">
-        {[
-          { val: String(d), label: 'days' },
-          { val: pad(h),    label: 'hrs'  },
-          { val: pad(m),    label: 'min'  },
-        ].map(({ val, label }) => (
-          <div key={label} className="flex flex-col items-center">
-            <span className="text-3xl md:text-5xl font-light text-[#FFD100] leading-none tracking-tight">{val}</span>
-            <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
-          </div>
-        ))}
-      </div>
-      <p className="text-[11px] text-[#8BB8E8] tracking-wide">May 10 &mdash; 11:59 PM PST</p>
-      {/* Gold rule below */}
-      <div className="w-10 h-[2px] bg-[#FFD100] mx-auto mt-5" />
+    <div className="flex items-end justify-center gap-5 md:gap-7 tabular-nums select-none">
+      {[
+        { val: String(d), label: 'days' },
+        { val: pad(h),    label: 'hrs'  },
+        { val: pad(m),    label: 'min'  },
+      ].map(({ val, label }) => (
+        <div key={label} className="flex flex-col items-center">
+          <span className="text-3xl md:text-5xl font-light text-[#FFD100] leading-none tracking-tight">{val}</span>
+          <span className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8]">{label}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -98,8 +84,9 @@ export default function HomeClient({
   registerUrl: string;
   discordUrl: string;
 }) {
-  const regDeadlineDiff = useCountdown('2026-05-10T23:59:59-07:00');
-  const regClosed = regDeadlineDiff <= 0;
+  const tournamentDiff = useCountdown('2026-05-17T08:00:00-07:00');
+  const regDiff        = useCountdown('2026-05-10T23:59:59-07:00');
+  const regClosed      = regDiff <= 0;
 
   return (
     <>
@@ -111,7 +98,7 @@ export default function HomeClient({
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2774AE] dark:from-black to-transparent pointer-events-none" />
 
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="relative z-10 max-w-4xl w-full py-8">
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="relative z-10 max-w-5xl w-full py-8">
           <motion.h1
             variants={fadeUp}
             className="text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white mb-6"
@@ -122,15 +109,29 @@ export default function HomeClient({
           </motion.h1>
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
 
-          {/* Tournament Countdown */}
-          <motion.div variants={fadeUp} className="mb-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-4">Tournament &mdash; May 17</p>
-            <CountdownTiles diff={useCountdown('2026-05-17T08:00:00-07:00')} expiredLabel="Today" />
-          </motion.div>
+          {/* Countdowns — side by side when reg is open, centered alone when closed */}
+          <motion.div
+            variants={fadeUp}
+            className={`flex flex-col md:flex-row items-center justify-center ${
+              regClosed ? '' : 'md:divide-x md:divide-white/20'
+            } gap-10 md:gap-0`}
+          >
+            {/* Tournament */}
+            <div className={`flex flex-col items-center ${
+              regClosed ? '' : 'md:pr-14'
+            }`}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-4">Tournament &mdash; May 17</p>
+              <TournamentCountdown diff={tournamentDiff} />
+            </div>
 
-          {/* Registration Deadline Countdown */}
-          <motion.div variants={fadeUp} className="mt-12">
-            <RegistrationDeadlineCountdown />
+            {/* Registration Deadline — only shown while open */}
+            {!regClosed && (
+              <div className="flex flex-col items-center md:pl-14">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFD100] mb-4">Registration Deadline</p>
+                <RegistrationCountdown diff={regDiff} />
+                <p className="mt-3 text-[11px] text-[#8BB8E8] tracking-wide">May 10 &mdash; 11:59 PM PST</p>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </section>
