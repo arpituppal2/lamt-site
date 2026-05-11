@@ -87,27 +87,6 @@ export default function AboutPage() {
         "ICMT: Kaity, Oliver Ni, Arpit Ranasaria, Taman Truong",
       ],
     },
-    {
-      title: "Volunteers",
-      people: [
-        "Patrick Bian",
-        "Richard Cai",
-        "Richard Chen",
-        "Hyein Choi",
-        "Ricky Hu",
-        "Nathan Jiang",
-        "Luke Jones",
-        "Andrew Li",
-        "William Li",
-        "Vivian Loh",
-        "Pierre Nguyen",
-        "Nish Tharakan",
-        "Greg Payton",
-        "Alex Torres",
-        "Taman Truong",
-        "Eric Wang",
-      ],
-    },
   ];
 
   return (
