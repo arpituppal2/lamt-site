@@ -21,6 +21,7 @@ export default function AboutPage() {
         "Jian Kweon",
         "Andrew Li",
         "Aliya Ling",
+        "Anthony Mui",
         "Kenneth Ren",
         "Gautham Subramanian",
         "Muztaba Syed",
