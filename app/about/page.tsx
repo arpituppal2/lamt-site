@@ -79,7 +79,7 @@ export default function AboutPage() {
     {
       title: "Advising / Friends",
       people: [
-        "Richard Chen (SCMC)"
+        "Richard Chen (SCMC)",
         "Aedan Hui (BMT)",
         "Vivian Loh (CMM)",
         "Oliver Ni (BMT, ICMT)",
