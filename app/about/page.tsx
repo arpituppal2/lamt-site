@@ -79,12 +79,15 @@ export default function AboutPage() {
     {
       title: "Advising / Friends",
       people: [
-        "BMT: Entirety of BMT, especially Aedan (logs help), Oliver (CD), and Nathan ([Ag])",
-        "BrUMO: Grace Yang",
-        "CMM: Vivian Loh",
-        "SCMC: Richard Chen, Taman Truong, Yibo Zhang",
-        "SMT: Arpit Ranasaria",
-        "ICMT: Kaity, Oliver Ni, Arpit Ranasaria, Taman Truong",
+        "Richard Chen (SCMC)"
+        "Aedan Hui (BMT)",
+        "Vivian Loh (CMM)",
+        "Oliver Ni (BMT, ICMT)",
+        "Arpit Ranasaria (ICMT, SMT)",
+        "Taman Truong (ICMT, SCMC)",
+        "Nathan Wong (BMT)",
+        "Grace Yang (BrUMO)",
+        "Yibo Zhang (SCMC)",
       ],
     },
   ];
