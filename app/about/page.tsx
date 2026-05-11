@@ -53,12 +53,12 @@ export default function AboutPage() {
     {
       title: "General Members",
       people: [
-        "Eva Chung-Yoon",
         "Patrick Bian",
         "Richard Cai",
         "Betty Chang",
         "Allan Chen",
         "Arahat Chikkatur",
+        "Eva Chung-Yoon",
         "Aryan Dalal",
         "Sean He",
         "Kyle Hess",
