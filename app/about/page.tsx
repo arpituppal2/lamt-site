@@ -12,7 +12,7 @@ export default function AboutPage() {
       ],
     },
     {
-      title: "Problem Writing (PW)",
+      title: "Problem Writing",
       people: [
         "Arahat Chikkatur",
         "Kyle Hess",
@@ -32,11 +32,11 @@ export default function AboutPage() {
       ],
     },
     {
-      title: "Website & Tech (WT)",
+      title: "Website & Tech",
       people: ["Aryan Dalal", "Nish Tharakan", "Arpit Uppal"],
     },
     {
-      title: "Design and Outreach (DO)",
+      title: "Design and Outreach",
       people: [
         "Patrick Bian",
         "Eva Chung-Yoon",
@@ -46,11 +46,11 @@ export default function AboutPage() {
       ],
     },
     {
-      title: "Tournament Development (TD)",
-      people: ["Muztaba Syed", "Arpit Uppal", "Brooks Wang", "Vicky Zhang"],
+      title: "Tournament Development",
+      people: ["Patrick Bian", "Kenneth Ren", "Muztaba Syed", "Arpit Uppal", "Brooks Wang", "Vicky Zhang"],
     },
     {
-      title: "Other Members",
+      title: "General Members",
       people: [
         "Eva Chung-Yoon",
         "Patrick Bian",
