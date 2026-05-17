@@ -26,8 +26,7 @@ function useCountdown(targetISO: string) {
 
 /** Tournament countdown — days / hrs / min / sec, white tiles */
 function TournamentCountdown({ diff }: { diff: number }) {
-  if (diff <= 0)
-    return <span className="text-[#FFD100] text-base tracking-widest">Today</span>;
+  if (diff <= 0) return null;
 
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
@@ -87,6 +86,7 @@ export default function HomeClient({
   const tournamentDiff = useCountdown('2026-05-17T08:00:00-07:00');
   const regDiff        = useCountdown('2026-05-10T23:59:59-07:00');
   const regClosed      = regDiff <= 0;
+  const tournamentLive = tournamentDiff <= 0;
 
   return (
     <>
@@ -109,30 +109,51 @@ export default function HomeClient({
           </motion.h1>
           <motion.div variants={fadeUp} className="w-12 h-[3px] rounded-full bg-[#FFD100] mx-auto mb-10" />
 
-          {/* Countdowns — side by side when reg is open, centered alone when closed */}
-          <motion.div
-            variants={fadeUp}
-            className={`flex flex-col md:flex-row items-center justify-center ${
-              regClosed ? '' : 'md:divide-x md:divide-white/20'
-            } gap-10 md:gap-0`}
-          >
-            {/* Tournament */}
-            <div className={`flex flex-col items-center ${
-              regClosed ? '' : 'md:pr-14'
-            }`}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-4">Tournament &mdash; May 17</p>
-              <TournamentCountdown diff={tournamentDiff} />
-            </div>
-
-            {/* Registration Deadline — only shown while open */}
-            {!regClosed && (
-              <div className="flex flex-col items-center md:pl-14">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFD100] mb-4">Registration Deadline</p>
-                <RegistrationCountdown diff={regDiff} />
-                <p className="mt-3 text-[11px] text-[#8BB8E8] tracking-wide">May 10 &mdash; 11:59 PM PST</p>
+          {tournamentLive ? (
+            /* ── TOURNAMENT DAY STATE ─────────────────────────── */
+            <motion.div variants={fadeUp} className="flex flex-col items-center gap-6">
+              <p className="text-[#8BB8E8] text-sm md:text-base font-medium tracking-wide max-w-md leading-relaxed">
+                Tournament Day is here! Follow live updates, the schedule, and campus info on the Tournament Day site.
+              </p>
+              <Link
+                href="/live"
+                className="btn-outline inline-flex items-center gap-3 group"
+              >
+                <span>Go to Tournament Day Site</span>
+                <svg
+                  width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </Link>
+            </motion.div>
+          ) : (
+            /* ── COUNTDOWN STATE ──────────────────────────────── */
+            <motion.div
+              variants={fadeUp}
+              className={`flex flex-col md:flex-row items-center justify-center ${
+                regClosed ? '' : 'md:divide-x md:divide-white/20'
+              } gap-10 md:gap-0`}
+            >
+              {/* Tournament */}
+              <div className={`flex flex-col items-center ${regClosed ? '' : 'md:pr-14'}`}>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8BB8E8] mb-4">Tournament &mdash; May 17</p>
+                <TournamentCountdown diff={tournamentDiff} />
               </div>
-            )}
-          </motion.div>
+
+              {/* Registration Deadline — only shown while open */}
+              {!regClosed && (
+                <div className="flex flex-col items-center md:pl-14">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFD100] mb-4">Registration Deadline</p>
+                  <RegistrationCountdown diff={regDiff} />
+                  <p className="mt-3 text-[11px] text-[#8BB8E8] tracking-wide">May 10 &mdash; 11:59 PM PST</p>
+                </div>
+              )}
+            </motion.div>
+          )}
         </motion.div>
       </section>
 
