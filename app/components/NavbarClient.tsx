@@ -1,18 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
+  { href: '/', label: 'HOME' },
   { href: '/tournament', label: 'LAMT 2026' },
-  { href: '/live', label: 'Live' },
-  { href: '/rules', label: 'Rules' },
+  { href: '/rules', label: 'RULES' },
   { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'About' },
-  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'Register', external: true },
+  { href: '/about', label: 'ABOUT' },
+  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
 ];
 
 export default function NavbarClient() {
@@ -23,63 +22,79 @@ export default function NavbarClient() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const renderLink = ({ href, label, external }: typeof navLinks[number], mobile = false) => {
-    const active = !external && (pathname === href || (href !== '/' && pathname.startsWith(href)));
-    const className = `site-nav-link ${mobile ? 'site-nav-link--mobile' : ''} ${active ? 'is-active' : ''}`;
-
-    if (external) {
-      return (
-        <a key={href} href={href} target="_blank" rel="noreferrer" className={className}>
-          {label}
-        </a>
-      );
-    }
-
-    return (
-      <Link key={href} href={href} className={className}>
-        {label}
-      </Link>
-    );
-  };
+  const linkClass = 'font-extrabold text-xl tracking-widest uppercase text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
-    <header className="site-header site-pad">
-      <div className="site-header__inner">
-        <Link href="/" className="site-brand" aria-label="LAMT home">
-          <Image src="/LAMTBear.png" alt="LAMT" width={56} height={56} className="site-brand__mark" priority />
-          <span>LAMT</span>
+    <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
+      <div className="mx-auto hidden h-20 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
+        <Link href="/" className="flex items-center gap-3 font-extrabold uppercase tracking-wide text-white transition-all hover:opacity-70">
+          <Image src="/LAMTBear.png" alt="Logo" width={60} height={60} className="object-contain" />
         </Link>
-
-        <nav className="site-nav" aria-label="Main navigation">
-          {navLinks.map((link) => renderLink(link))}
-        </nav>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-label="Toggle menu"
-          className="site-menu-button"
-        >
-          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-            {menuOpen ? (
-              <>
-                <path d="M5 5L17 17" />
-                <path d="M17 5L5 17" />
-              </>
+        <nav className="flex items-center gap-16">
+          {navLinks.map(({ href, label, external }) => {
+            const active = pathname === href;
+            return external ? (
+              <a key={href} href={href} target="_blank" rel="noreferrer" className={linkClass}>
+                {label}
+              </a>
             ) : (
-              <>
-                <path d="M3 7H19" />
-                <path d="M3 15H19" />
-              </>
-            )}
-          </svg>
+              <Link
+                key={href}
+                href={href}
+                className={linkClass}
+                style={{
+                  textDecoration: active ? 'underline' : 'none',
+                  textUnderlineOffset: '6px',
+                  textDecorationThickness: '2px',
+                }}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="flex h-16 items-center justify-between px-4 md:hidden">
+        <Link href="/" className="flex items-center gap-2 font-extrabold uppercase tracking-wide text-white">
+          <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
+          LAMT
+        </Link>
+        <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu" className="flex flex-col gap-1.5 p-1">
+          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
         </button>
       </div>
 
       {menuOpen && (
-        <nav className="site-mobile-nav" aria-label="Mobile navigation">
-          {navLinks.map((link) => renderLink(link, true))}
+        <nav className="overflow-hidden border-t border-white/20 bg-[#2774AE] dark:bg-black md:hidden">
+          <div className="flex flex-col gap-6 px-6 py-4">
+            {navLinks.map(({ href, label, external }) => {
+              const active = pathname === href;
+              const mobileClass = 'text-lg font-extrabold uppercase tracking-widest text-white transition-opacity hover:opacity-70';
+
+              return external ? (
+                <a key={href} href={href} target="_blank" rel="noreferrer" className={mobileClass} onClick={() => setMenuOpen(false)}>
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  className={mobileClass}
+                  style={{
+                    textDecoration: active ? 'underline' : 'none',
+                    textUnderlineOffset: '6px',
+                    textDecorationThickness: '2px',
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
       )}
     </header>

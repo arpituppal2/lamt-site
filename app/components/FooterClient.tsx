@@ -1,14 +1,14 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { DiscordLogoIcon, EnvelopeClosedIcon, LinkedInLogoIcon } from '@radix-ui/react-icons';
 
 const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
 
 const InstagramIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
-    <rect x="2" y="2" width="20" height="20" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
     <circle cx="12" cy="12" r="4" />
     <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
   </svg>
@@ -30,34 +30,39 @@ export default function FooterClient() {
   ];
 
   return (
-    <footer className="site-footer site-pad">
-      <div className="site-footer__inner">
-        <Link href="/" className="site-footer__brand" aria-label="LAMT home">
-          <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={96} height={96} className="site-footer__mark" />
-          <div>
-            <p>Los Angeles Math Tournament</p>
-            <strong>LAMT 2026</strong>
+    <footer className="bg-[#2774AE] text-white dark:bg-black">
+      <div className="mx-auto max-w-[1600px] px-4 py-10 md:px-8">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[auto_1fr_auto]">
+          <div className="flex justify-center lg:justify-start">
+            <Link href="/" className="shrink-0 transition-transform hover:scale-105">
+              <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={160} height={160} className="object-contain" />
+            </Link>
           </div>
-        </Link>
-
-        <div className="site-footer__socials">
-          {socialLinks.map((item) => (
-            <a
-              key={item.title}
-              href={item.href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={item.title}
-              className="site-social-link"
-            >
-              {item.icon}
-            </a>
-          ))}
+          <div className="flex justify-center pl-8">
+            <div className="flex items-center gap-4">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={item.title}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-white text-[#2774AE] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
+                >
+                  {item.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-center lg:justify-end">
+            <div className="max-w-xs text-center lg:text-right">
+              <p className="text-[11px] leading-relaxed text-[#DAEBFE] opacity-80 md:text-xs">
+                We are a student group acting independently of the University of California.
+                We take full responsibility for our organization and this web site.
+              </p>
+            </div>
+          </div>
         </div>
-
-        <p className="site-footer__note">
-          We are a student group acting independently of the University of California. We take full responsibility for our organization and this web site.
-        </p>
       </div>
     </footer>
   );

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
-const DISCORD_URL  = 'https://discord.gg/cV6EHtfcD';
+const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
 
 const SUPPORTED_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg'];
 const TIERS = ['gold', 'silver', 'bronze', 'friends'] as const;
@@ -17,8 +17,8 @@ function getSponsorsByTier(): Record<Tier, string[]> {
     const dir = path.join(base, tier);
     try {
       result[tier] = fs.readdirSync(dir)
-        .filter(f => SUPPORTED_EXTS.includes(path.extname(f).toLowerCase()))
-        .map(f => `/sponsors/${tier}/${f}`);
+        .filter((file) => SUPPORTED_EXTS.includes(path.extname(file).toLowerCase()))
+        .map((file) => `/sponsors/${tier}/${file}`);
     } catch {
       result[tier] = [];
     }
