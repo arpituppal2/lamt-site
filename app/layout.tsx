@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import NavbarClient from './components/NavbarClient';
 import FooterClient from './components/FooterClient';
+import DarkModeToggle from './components/DarkModeToggle';
 import KaTeXLoader from './components/KaTeXLoader';
 import './globals.css';
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen transition-colors duration-300">
         <KaTeXLoader />
         <NavbarClient />
+        <DarkModeToggle />
         <main>{children}</main>
         <FooterClient />
       </body>

@@ -381,6 +381,9 @@ export default function LivePage() {
               Schedule status, staff announcements, UCLA venue directions, and tournament-day help for Sunday, May 17, 2026.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#announcements" className="btn-filled">
+                Announcements
+              </a>
               <a href="#schedule" className="btn-filled">
                 Schedule
               </a>
@@ -398,6 +401,11 @@ export default function LivePage() {
         </div>
       </header>
 
+      <section id="announcements" className="section-row">
+        <h2 className="section-title">Announcements</h2>
+        <UpdatesFeed updates={updates} />
+      </section>
+
       <section id="schedule" className="section-row">
         <h2 className="section-title">Today</h2>
         <div className="grid gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
@@ -407,11 +415,6 @@ export default function LivePage() {
       </section>
 
       <MapSection />
-
-      <section className="section-row">
-        <h2 className="section-title">Announcements</h2>
-        <UpdatesFeed updates={updates} />
-      </section>
 
       <div id="help">
         <HelpSection />
