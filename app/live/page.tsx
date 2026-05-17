@@ -1,60 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import type { ScheduleItem, Update, ContactMessage } from "./types";
+import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "./types";
 
 // ─── TOURNAMENT OVER FLAG ───────────────────────────────────────────────────
-// Set to true after the event ends to show the thank-you state
+// Set to true after the event ends
 const TOURNAMENT_OVER = false;
-
-// ─── SCHEDULE DATA ──────────────────────────────────────────────────────────
-// To adjust a time: change `time`/`end`, set `originalTime`/`originalEnd` to
-// the original values, and add an `adjustmentReason` string.
-export type ScheduleItem = {
-  time: string;
-  end: string;
-  originalTime?: string;
-  originalEnd?: string;
-  adjustmentReason?: string;
-  event: string;
-  location: string;
-};
-
-export const SCHEDULE: ScheduleItem[] = [
-  { time: "8:00 AM",  end: "8:45 AM",  event: "Contestant Check-In",    location: "Outside MS 4000A" },
-  { time: "8:45 AM",  end: "9:15 AM",  event: "Opening Ceremony",       location: "MS 4000A" },
-  { time: "9:15 AM",  end: "10:30 AM", event: "Secret Team Round",      location: "MS 4000A, MS 5200" },
-  { time: "10:30 AM", end: "11:30 AM", event: "Algebra / Number Theory", location: "MS 4000A, MS 5200" },
-  { time: "11:30 AM", end: "12:30 PM", event: "Combinatorics",          location: "MS 4000A, MS 5200" },
-  { time: "12:30 PM", end: "1:30 PM",  event: "Lunch & Disputes",       location: "Court of Sciences" },
-  { time: "1:30 PM",  end: "2:45 PM",  event: "Geometry",               location: "MS 4000A, MS 5200" },
-  { time: "2:45 PM",  end: "4:15 PM",  event: "Guts Round",             location: "MS 4000A, MS 5200" },
-  { time: "4:15 PM",  end: "6:00 PM",  event: "Activities",             location: "MS 4000A, MS 5200" },
-  { time: "6:00 PM",  end: "7:00 PM",  event: "Awards Ceremony",        location: "MS 4000A" },
-];
-
-// ─── LIVE UPDATES ────────────────────────────────────────────────────────────
-// Prepend new updates to the top. Format: { id, timestamp, title, body }
-export type Update = { id: number; timestamp: string; title: string; body: string };
-
-export const UPDATES: Update[] = [
-  // TEMPLATE — uncomment and fill in:
-  // {
-  //   id: 1,
-  //   timestamp: "8:45 AM",
-  //   title: "Opening Ceremony starting now",
-  //   body: "Please make your way to MS 4000A. We begin in 5 minutes.",
-  // },
-];
-
-// ─── LOCATIONS ───────────────────────────────────────────────────────────────
-const LOCATIONS = [
-  { name: "MS 4000A",         label: "Mathematical Sciences 4000A", directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Mathematical+Sciences+Building+UCLA" },
-  { name: "MS 5200",          label: "Mathematical Sciences 5200",  directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Mathematical+Sciences+Building+UCLA" },
-  { name: "MS 5138",          label: "Mathematical Sciences 5138",  directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Mathematical+Sciences+Building+UCLA" },
-  { name: "Court of Sciences",label: "Court of Sciences",          directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Court+of+Sciences+UCLA" },
-];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function parseTime(t: string): number {
@@ -66,24 +20,38 @@ function parseTime(t: string): number {
   return hrs * 60 + m;
 }
 
-function getCurrentIdx(now: Date): number {
+function getCurrentIdx(schedule: ScheduleItem[], now: Date): number {
   const mins = now.getHours() * 60 + now.getMinutes();
   let cur = -1;
-  for (let i = 0; i < SCHEDULE.length; i++) {
-    const s = parseTime(SCHEDULE[i].time);
-    const e = parseTime(SCHEDULE[i].end);
+  for (let i = 0; i < schedule.length; i++) {
+    const s = parseTime(schedule[i].time);
+    const e = parseTime(schedule[i].end);
     if (mins >= s && mins < e) return i;
     if (mins >= s) cur = i;
   }
   return cur;
 }
 
-function getProgress(now: Date, idx: number): number {
+function getProgress(schedule: ScheduleItem[], now: Date, idx: number): number {
   if (idx < 0) return 0;
   const mins = now.getHours() * 60 + now.getMinutes();
-  const s = parseTime(SCHEDULE[idx].time);
-  const e = parseTime(SCHEDULE[idx].end);
+  const s = parseTime(schedule[idx].time);
+  const e = parseTime(schedule[idx].end);
   return Math.min(100, Math.max(0, ((mins - s) / (e - s)) * 100));
+}
+
+// ─── SECTION HEADER ──────────────────────────────────────────────────────────
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
+      <span style={{
+        fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.6875rem",
+        letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--color-text-faint)",
+        whiteSpace: "nowrap",
+      }}>{title}</span>
+      <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
+    </div>
+  );
 }
 
 // ─── SCHEDULE SECTION ────────────────────────────────────────────────────────
@@ -96,31 +64,31 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
     return () => clearInterval(id);
   }, []);
 
-  const currentIdx = getCurrentIdx(now);
-  const progress   = getProgress(now, currentIdx);
+  const currentIdx = getCurrentIdx(schedule, now);
+  const progress   = getProgress(schedule, now, currentIdx);
   const current    = schedule[currentIdx];
   const next       = schedule[currentIdx + 1];
 
   return (
     <section style={{ marginBottom: "2rem" }}>
-      {/* Collapsed bar */}
+      <SectionHeader title="Schedule" />
       <button
         onClick={() => setExpanded(!expanded)}
         style={{
-          width: "100%",
-          textAlign: "left",
+          width: "100%", textAlign: "left",
           background: "var(--color-surface)",
           border: "1px solid var(--color-border)",
-          padding: "1rem 1.25rem",
-          cursor: "pointer",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5rem",
+          borderBottom: expanded ? "none" : "1px solid var(--color-border)",
+          padding: "1rem 1.25rem", cursor: "pointer",
+          display: "flex", flexDirection: "column", gap: "0.5rem",
         }}
         aria-expanded={expanded}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span className="section-label">Schedule</span>
+          <span style={{
+            fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.6875rem",
+            letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--color-text-muted)",
+          }}>Sunday, May 17, 2026</span>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {current && (
               <span style={{
@@ -128,30 +96,27 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
                 fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em",
                 textTransform: "uppercase", color: "var(--ucla-gold)",
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ucla-gold)", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ucla-gold)",
+                  display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
                 Live
               </span>
             )}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
               strokeLinecap="round" strokeLinejoin="round"
               style={{ color: "var(--color-text-faint)", transform: expanded ? "rotate(180deg)" : "none", transition: "transform 200ms" }}
-              aria-hidden>
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+              aria-hidden><path d="M6 9l6 6 6-6" /></svg>
           </div>
         </div>
         {current ? (
           <>
             <div>
-              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--text-base)", color: "var(--color-text)", marginBottom: "0.25rem" }}>
-                {current.event}
-              </p>
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--text-base)",
+                color: "var(--color-text)", marginBottom: "0.25rem" }}>{current.event}</p>
               <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)" }}>
                 {current.time}–{current.end} · {current.location}
               </p>
             </div>
-            {/* Progress bar */}
-            <div style={{ height: 3, background: "var(--color-surface-2)", marginTop: "0.25rem" }}>
+            <div style={{ height: 3, background: "var(--color-surface-2)", marginTop: "0.125rem" }}>
               <div style={{ height: "100%", width: `${progress}%`, background: "var(--ucla-blue)", transition: "width 2s linear" }} />
             </div>
             {next && (
@@ -161,17 +126,19 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
             )}
           </>
         ) : (
-          <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)" }}>Tournament begins at {schedule[0].time}</p>
+          <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)" }}>
+            Tournament begins at {schedule[0].time}
+          </p>
         )}
       </button>
 
-      {/* Expanded full schedule */}
       {expanded && (
-        <div style={{ border: "1px solid var(--color-border)", borderTop: "none", background: "var(--color-surface)" }}>
-          <div style={{ borderBottom: "1px solid var(--color-border)", padding: "0.75rem 1.25rem" }}>
-            <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.8125rem",
-              letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--color-text)" }}>
-              Tentative Schedule — Sunday, May 17, 2026
+        <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
+          <div style={{ borderBottom: "1px solid var(--color-border)", padding: "0.625rem 1.25rem",
+            background: "var(--color-surface-2)" }}>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)" }}>
+              Tentative Schedule
             </p>
           </div>
           {schedule.map((item, i) => (
@@ -179,19 +146,16 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
               padding: "0.875rem 1.25rem",
               borderBottom: i < schedule.length - 1 ? "1px solid var(--color-divider)" : "none",
               background: i === currentIdx ? "rgba(39,116,174,0.07)" : "transparent",
-              display: "grid",
-              gridTemplateColumns: "5.5rem 1fr",
-              gap: "0.75rem",
-              alignItems: "start",
+              display: "grid", gridTemplateColumns: "5.5rem 1fr", gap: "0.75rem", alignItems: "start",
             }}>
               <div>
-                <p style={{ fontSize: "0.75rem", fontWeight: 700, color: i === currentIdx ? "var(--ucla-blue)" : "var(--color-text-faint)", fontVariantNumeric: "tabular-nums" }}>
+                <p style={{ fontSize: "0.75rem", fontWeight: 700, fontVariantNumeric: "tabular-nums",
+                  color: i === currentIdx ? "var(--ucla-blue)" : "var(--color-text-faint)" }}>
                   {item.time}
                 </p>
-                {/* Strikethrough original if adjusted */}
                 {item.originalTime && (
                   <p style={{ fontSize: "0.6875rem", color: "var(--color-text-faint)", textDecoration: "line-through" }}>
-                    {item.originalTime}
+                    was {item.originalTime}
                   </p>
                 )}
               </div>
@@ -209,7 +173,7 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
                   {item.location}
                 </p>
                 {item.adjustmentReason && (
-                  <p style={{ fontSize: "0.6875rem", color: "var(--color-text-muted)", marginTop: "0.25rem",
+                  <p style={{ fontSize: "0.6875rem", color: "#c0392b", marginTop: "0.25rem",
                     paddingTop: "0.25rem", borderTop: "1px solid var(--color-divider)" }}>
                     {item.adjustmentReason}
                   </p>
@@ -225,63 +189,76 @@ function ScheduleSection({ schedule }: { schedule: ScheduleItem[] }) {
 
 // ─── UPDATES SECTION ─────────────────────────────────────────────────────────
 function UpdatesSection({ updates }: { updates: Update[] }) {
-  if (updates.length === 0) {
-    return (
-      <section style={{ marginBottom: "2rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
-          <span className="section-label">Live Updates</span>
-          <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
-        </div>
+  return (
+    <section style={{ marginBottom: "2rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
+        <span style={{
+          fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.6875rem",
+          letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--color-text-faint)",
+          whiteSpace: "nowrap",
+        }}>Live Updates</span>
+        <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
+        {updates.length > 0 && (
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: "0.375rem",
+            fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em",
+            textTransform: "uppercase", color: "var(--ucla-gold)",
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ucla-gold)",
+              display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
+            Latest
+          </span>
+        )}
+      </div>
+      {updates.length === 0 ? (
         <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
           padding: "2.5rem 1.25rem", textAlign: "center" }}>
           <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
             Updates will appear here throughout the day.
           </p>
         </div>
-      </section>
-    );
-  }
-
-  return (
-    <section style={{ marginBottom: "2rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
-        <span className="section-label">Live Updates</span>
-        <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem",
-          fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em",
-          textTransform: "uppercase", color: "var(--ucla-gold)" }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ucla-gold)",
-            display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
-          Latest
-        </span>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {updates.map((u) => (
-          <div key={u.id} style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)", padding: "1rem 1.25rem" }}>
-            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em",
-              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.375rem" }}>
-              {u.timestamp}
-            </p>
-            {u.title && (
-              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--text-base)",
-                color: "var(--color-text)", marginBottom: "0.5rem" }}>
-                {u.title}
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          {updates.map((u) => (
+            <div key={u.id} style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
+              padding: "1rem 1.25rem" }}>
+              <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em",
+                textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.375rem" }}>
+                {u.timestamp}
               </p>
-            )}
-            <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", lineHeight: 1.65, whiteSpace: "pre-line" }}>
-              {u.body}
-            </p>
-          </div>
-        ))}
-      </div>
+              {u.title && (
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--text-base)",
+                  color: "var(--color-text)", marginBottom: "0.5rem" }}>{u.title}</p>
+              )}
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", lineHeight: 1.65, whiteSpace: "pre-line" }}>
+                {u.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
 // ─── MAP SECTION ─────────────────────────────────────────────────────────────
+// Location pin data: approximate pixel positions on the 540×420 campus map image
+const MAP_PINS = [
+  { id: "ms",  label: "MS Building",     shortLabel: "MS",  top: "52%", left: "61%",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Mathematical+Sciences+Building+UCLA" },
+  { id: "cos", label: "Court of Sciences", shortLabel: "CoS", top: "74%", left: "55%",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Court+of+Sciences+UCLA" },
+  { id: "lot8",label: "Lot 8 Parking",   shortLabel: "P8",  top: "38%", left: "78%",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=UCLA+Parking+Structure+8" },
+  { id: "bru", label: "Bruin Walk Entry", shortLabel: "BW",  top: "64%", left: "35%",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Bruin+Walk+UCLA" },
+];
+
 function MapSection() {
+  const [expanded, setExpanded] = useState(false);
   const [locPerms, setLocPerms] = useState<"idle"|"granted"|"denied">("idle");
   const [coords,  setCoords]   = useState<{ lat: number; lng: number } | null>(null);
+  const [activePin, setActivePin] = useState<string | null>(null);
 
   function requestLocation() {
     if (!navigator.geolocation) { setLocPerms("denied"); return; }
@@ -291,266 +268,506 @@ function MapSection() {
     );
   }
 
+  function dirUrl(pin: typeof MAP_PINS[0]) {
+    if (locPerms === "granted" && coords) {
+      return `https://www.google.com/maps/dir/${coords.lat},${coords.lng}/${encodeURIComponent(pin.label + " UCLA")}`;
+    }
+    return pin.directionsUrl;
+  }
+
   return (
     <section style={{ marginBottom: "2rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
-        <span className="section-label">Map & Locations</span>
-        <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
-      </div>
-      <div style={{ border: "1px solid var(--color-border)", height: 220, marginBottom: "0.5rem", overflow: "hidden" }}>
-        <iframe
-          src="https://maps.google.com/maps?q=Mathematical+Sciences+Building+UCLA&z=16&output=embed"
-          width="100%" height="100%" style={{ border: 0 }}
-          allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-          title="UCLA Campus Map" className="map-iframe"
-        />
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.375rem", marginBottom: "0.5rem" }}>
-        {LOCATIONS.map((loc) => (
-          <a key={loc.name}
-            href={locPerms === "granted" && coords
-              ? `https://www.google.com/maps/dir/${coords.lat},${coords.lng}/${encodeURIComponent(loc.label + " UCLA")}`
-              : loc.directionsUrl}
-            target="_blank" rel="noopener noreferrer"
-            style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem",
-              border: "1px solid var(--color-border)", background: "var(--color-surface)",
-              padding: "0.625rem 0.75rem", textDecoration: "none",
-              transition: "border-color var(--transition-ui)" }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round"
-              style={{ color: "var(--ucla-blue)", marginTop: 2, flexShrink: 0 }} aria-hidden>
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-            </svg>
-            <div>
-              <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-text)" }}>{loc.name}</p>
-              <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", marginTop: 2 }}>Directions →</p>
-            </div>
-          </a>
-        ))}
-      </div>
-      {locPerms === "idle" && (
-        <button onClick={requestLocation}
-          style={{ width: "100%", border: "1px solid var(--color-border)", background: "transparent",
-            color: "var(--color-text-muted)", fontSize: "0.75rem", fontWeight: 700,
-            letterSpacing: "0.1em", textTransform: "uppercase", padding: "0.625rem",
-            cursor: "pointer", transition: "border-color var(--transition-ui), color var(--transition-ui)" }}
-        >
-          Use My Location for Directions
-        </button>
-      )}
-      {locPerms === "granted" && (
-        <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", fontWeight: 700, textAlign: "center" }}>
-          ✓ Location active — directions route from your position
-        </p>
-      )}
-      {locPerms === "denied" && (
-        <p style={{ fontSize: "0.6875rem", color: "var(--color-text-faint)", textAlign: "center" }}>
-          Enable location in browser settings for routing.
-        </p>
-      )}
-      <p style={{ marginTop: "0.5rem", textAlign: "center" }}>
-        <a href="https://www.maps.ucla.edu/?id=2043#!ct/75713?s/" target="_blank" rel="noopener noreferrer"
-          style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", fontWeight: 700,
-            letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none" }}>
-          Full UCLA Campus Map →
-        </a>
-      </p>
-    </section>
-  );
-}
+      <SectionHeader title="Map & Locations" />
 
-// ─── INFO DRAWER ─────────────────────────────────────────────────────────────
-function InfoDrawer() {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
+      {/* ── COLLAPSED: annotated campus map thumbnail ── */}
       <button
-        onClick={() => setOpen(true)}
-        aria-label="Info & Help"
+        onClick={() => setExpanded(true)}
         style={{
-          position: "fixed", bottom: "1.5rem", right: "1.5rem", zIndex: 40,
-          width: 44, height: 44,
-          background: "var(--ucla-blue)", color: "#fff",
-          border: "none", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "background var(--transition-ui)",
+          width: "100%", background: "none", border: "1px solid var(--color-border)",
+          cursor: "pointer", padding: 0, display: "block", position: "relative", overflow: "hidden",
         }}
+        aria-label="Open full map"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-          strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        {/* Placeholder map — UCLA campus color-coded SVG */}
+        <svg viewBox="0 0 540 280" width="100%" style={{ display: "block" }} aria-hidden>
+          {/* Base campus ground */}
+          <rect width="540" height="280" fill="#e8e4dc" />
+          {/* Campus walkways */}
+          <rect x="240" y="0" width="18" height="280" fill="#d4cfc5" />
+          <rect x="0" y="130" width="540" height="16" fill="#d4cfc5" />
+          <rect x="120" y="80" width="12" height="200" fill="#d4cfc5" />
+          <rect x="380" y="60" width="12" height="220" fill="#d4cfc5" />
+          {/* Generic campus buildings (gray) */}
+          <rect x="30" y="30" width="70" height="55" rx="1" fill="#c8c4bc" />
+          <rect x="120" y="20" width="90" height="50" rx="1" fill="#c8c4bc" />
+          <rect x="300" y="20" width="65" height="45" rx="1" fill="#c8c4bc" />
+          <rect x="400" y="25" width="80" height="50" rx="1" fill="#c8c4bc" />
+          <rect x="30" y="155" width="75" height="55" rx="1" fill="#c8c4bc" />
+          <rect x="130" y="160" width="55" height="45" rx="1" fill="#c8c4bc" />
+          <rect x="420" y="155" width="85" height="60" rx="1" fill="#c8c4bc" />
+          <rect x="30" y="215" width="60" height="45" rx="1" fill="#c8c4bc" />
+          <rect x="410" y="220" width="90" height="45" rx="1" fill="#c8c4bc" />
+          {/* MS Building — highlighted blue */}
+          <rect x="300" y="115" width="70" height="60" rx="1" fill="#2774AE" opacity="0.85" />
+          <text x="335" y="149" textAnchor="middle" fill="white" fontSize="9" fontWeight="700" fontFamily="sans-serif">MS</text>
+          {/* Court of Sciences — highlighted gold */}
+          <rect x="255" y="185" width="80" height="45" rx="1" fill="#FFB81C" opacity="0.85" />
+          <text x="295" y="212" textAnchor="middle" fill="#003B5C" fontSize="8" fontWeight="700" fontFamily="sans-serif">CoS</text>
+          {/* Lot 8 Parking — highlighted */}
+          <rect x="395" y="85" width="55" height="38" rx="1" fill="#6b8e6e" opacity="0.8" />
+          <text x="422" y="108" textAnchor="middle" fill="white" fontSize="8" fontWeight="700" fontFamily="sans-serif">P8</text>
+          {/* Bruin Walk */}
+          <rect x="148" y="128" width="14" height="5" rx="1" fill="#888" />
+          {/* Compass */}
+          <text x="510" y="268" textAnchor="middle" fill="#888" fontSize="10" fontFamily="sans-serif">N ↑</text>
+          {/* "Tap to expand" overlay */}
+          <rect x="0" y="0" width="540" height="280" fill="rgba(0,0,0,0)" />
         </svg>
+        {/* Location labels overlay */}
+        <div style={{ position: "absolute", top: "41%", left: "61%", transform: "translate(-50%,-50%)" }}>
+          <span style={{ background: "var(--ucla-blue)", color: "#fff", fontSize: "0.5625rem",
+            fontWeight: 800, letterSpacing: "0.08em", padding: "2px 6px", textTransform: "uppercase" }}>
+            MS Building
+          </span>
+        </div>
+        <div style={{ position: "absolute", top: "73%", left: "54%", transform: "translate(-50%,-50%)" }}>
+          <span style={{ background: "var(--ucla-gold)", color: "#003B5C", fontSize: "0.5625rem",
+            fontWeight: 800, letterSpacing: "0.08em", padding: "2px 6px", textTransform: "uppercase" }}>
+            Court of Sciences
+          </span>
+        </div>
+        <div style={{ position: "absolute", top: "33%", left: "79%", transform: "translate(-50%,-50%)" }}>
+          <span style={{ background: "#3d6b40", color: "#fff", fontSize: "0.5625rem",
+            fontWeight: 800, letterSpacing: "0.08em", padding: "2px 6px", textTransform: "uppercase" }}>
+            Parking Lot 8
+          </span>
+        </div>
+        {/* Tap hint */}
+        <div style={{
+          position: "absolute", bottom: 8, right: 10,
+          background: "rgba(0,0,0,0.55)", color: "#fff",
+          fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.1em",
+          padding: "3px 8px", textTransform: "uppercase",
+        }}>
+          Tap to expand
+        </div>
       </button>
 
-      {open && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
-          role="dialog" aria-modal aria-label="Info & Help">
-          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} onClick={() => setOpen(false)} />
-          <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 1rem 1rem",
-            background: "var(--color-bg)", border: "1px solid var(--color-border)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "0.875rem 1.25rem", borderBottom: "1px solid var(--color-divider)" }}>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.9375rem",
-                color: "var(--color-text)", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                Info & Help
+      {/* ── EXPANDED MAP MODAL ── */}
+      {expanded && (
+        <div
+          style={{ position: "fixed", inset: 0, zIndex: 60,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0,0,0,0.75)" }}
+          onClick={() => { setExpanded(false); setActivePin(null); }}
+          role="dialog" aria-modal aria-label="Campus Map"
+        >
+          <div
+            style={{ position: "relative", width: "min(540px, 95vw)",
+              background: "var(--color-bg)", border: "2px solid var(--ucla-blue)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div style={{ background: "var(--ucla-blue)", padding: "0.625rem 1rem",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              borderBottom: "2px solid var(--ucla-gold)" }}>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.8125rem",
+                letterSpacing: "0.15em", textTransform: "uppercase", color: "#fff" }}>
+                UCLA Campus — LAMT Venues
               </span>
-              <button onClick={() => setOpen(false)} aria-label="Close"
-                style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center",
-                  background: "transparent", border: "none", cursor: "pointer", color: "var(--color-text-faint)" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+              <button onClick={() => { setExpanded(false); setActivePin(null); }}
+                style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.7)",
+                  cursor: "pointer", padding: "0.25rem", display: "flex" }} aria-label="Close map">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
                   strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
             </div>
-            <div style={{ padding: "1rem 1.25rem", maxHeight: "65vh", overflowY: "auto",
-              display: "flex", flexDirection: "column", gap: "1.25rem" }}>
 
-              {/* Wi-Fi */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Wi-Fi</p>
-                <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                  padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+            {/* Map + pins */}
+            <div style={{ position: "relative" }}>
+              <svg viewBox="0 0 540 320" width="100%" style={{ display: "block" }} aria-hidden>
+                <rect width="540" height="320" fill="#e8e4dc" />
+                <rect x="240" y="0" width="18" height="320" fill="#d4cfc5" />
+                <rect x="0" y="150" width="540" height="16" fill="#d4cfc5" />
+                <rect x="120" y="80" width="12" height="240" fill="#d4cfc5" />
+                <rect x="380" y="60" width="12" height="260" fill="#d4cfc5" />
+                <rect x="30" y="30" width="70" height="55" rx="1" fill="#c8c4bc" />
+                <rect x="120" y="20" width="90" height="50" rx="1" fill="#c8c4bc" />
+                <rect x="300" y="20" width="65" height="45" rx="1" fill="#c8c4bc" />
+                <rect x="400" y="25" width="80" height="50" rx="1" fill="#c8c4bc" />
+                <rect x="30" y="175" width="75" height="55" rx="1" fill="#c8c4bc" />
+                <rect x="130" y="180" width="55" height="45" rx="1" fill="#c8c4bc" />
+                <rect x="420" y="175" width="85" height="60" rx="1" fill="#c8c4bc" />
+                <rect x="30" y="245" width="60" height="50" rx="1" fill="#c8c4bc" />
+                <rect x="410" y="250" width="90" height="50" rx="1" fill="#c8c4bc" />
+                {/* MS Building */}
+                <rect x="300" y="130" width="70" height="65" rx="1" fill="#2774AE" opacity="0.9" />
+                <text x="335" y="168" textAnchor="middle" fill="white" fontSize="10" fontWeight="800" fontFamily="sans-serif">MS</text>
+                {/* Court of Sciences */}
+                <rect x="255" y="210" width="80" height="50" rx="1" fill="#FFB81C" opacity="0.9" />
+                <text x="295" y="239" textAnchor="middle" fill="#003B5C" fontSize="9" fontWeight="800" fontFamily="sans-serif">CoS</text>
+                {/* Lot 8 */}
+                <rect x="395" y="95" width="55" height="42" rx="1" fill="#3d6b40" opacity="0.85" />
+                <text x="422" y="120" textAnchor="middle" fill="white" fontSize="9" fontWeight="700" fontFamily="sans-serif">Lot 8</text>
+                <text x="510" y="308" textAnchor="middle" fill="#888" fontSize="11" fontFamily="sans-serif">N ↑</text>
+              </svg>
+              {/* Interactive pins */}
+              {MAP_PINS.map(pin => (
+                <button
+                  key={pin.id}
+                  onClick={() => setActivePin(activePin === pin.id ? null : pin.id)}
+                  style={{
+                    position: "absolute", top: pin.top, left: pin.left,
+                    transform: "translate(-50%,-100%)",
+                    background: "none", border: "none", cursor: "pointer", padding: 0,
+                  }}
+                  aria-label={pin.label}
+                >
+                  <svg width="22" height="28" viewBox="0 0 22 28" aria-hidden>
+                    <path d="M11 0C4.925 0 0 4.925 0 11c0 8.25 11 17 11 17s11-8.75 11-17C22 4.925 17.075 0 11 0z"
+                      fill={activePin === pin.id ? "var(--ucla-gold)" : "var(--ucla-blue)"} />
+                    <circle cx="11" cy="11" r="4" fill="white" />
                   </svg>
-                  <span style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--color-text)", letterSpacing: "0.05em" }}>UCLA-WEB</span>
-                </div>
-              </div>
+                </button>
+              ))}
+              {/* Active pin popup */}
+              {activePin && (() => {
+                const pin = MAP_PINS.find(p => p.id === activePin)!;
+                return (
+                  <div style={{
+                    position: "absolute", top: pin.top, left: pin.left,
+                    transform: "translate(-50%, -240%)",
+                    background: "var(--color-bg)", border: "2px solid var(--ucla-blue)",
+                    padding: "0.5rem 0.75rem", minWidth: 160, zIndex: 10,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+                  }}>
+                    <p style={{ fontWeight: 800, fontSize: "0.8125rem", color: "var(--color-text)",
+                      marginBottom: "0.375rem", letterSpacing: "0.02em" }}>{pin.label}</p>
+                    <a href={dirUrl(pin)} target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: "0.6875rem", fontWeight: 700, color: "var(--ucla-blue)",
+                        textDecoration: "none", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                      Get Directions →
+                    </a>
+                  </div>
+                );
+              })()}
+            </div>
 
-              {/* Emergency */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Emergency</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-                  <a href="tel:911"
+            {/* Location list */}
+            <div style={{ borderTop: "1px solid var(--color-border)", padding: "0.75rem 1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
+                {MAP_PINS.map(pin => (
+                  <a key={pin.id} href={dirUrl(pin)} target="_blank" rel="noopener noreferrer"
                     style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                      padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                      textDecoration: "none", transition: "border-color var(--transition-ui)" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c0392b" strokeWidth="2"
-                      strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 9.79 19.79 19.79 0 0 1 1.49 1.1 2 2 0 0 1 3.5-.09h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.08 6.08l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/>
-                    </svg>
-                    <div>
-                      <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>911</p>
-                      <p style={{ fontSize: "0.6875rem", color: "var(--color-text-muted)" }}>Emergency</p>
-                    </div>
-                  </a>
-                  <a href="tel:3108254321"
-                    style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                      padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                      textDecoration: "none", transition: "border-color var(--transition-ui)" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                      strokeLinecap="round" strokeLinejoin="round"
+                      padding: "0.5rem 0.75rem", textDecoration: "none",
+                      display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                       style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 9.79 19.79 19.79 0 0 1 1.49 1.1 2 2 0 0 1 3.5-.09h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.08 6.08l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/>
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                     </svg>
-                    <div>
-                      <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>310-825-4321</p>
-                      <p style={{ fontSize: "0.6875rem", color: "var(--color-text-muted)" }}>UCLA UCPD Non-Emergency</p>
-                    </div>
+                    <span style={{ fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-text)" }}>
+                      {pin.label}
+                    </span>
                   </a>
-                </div>
+                ))}
               </div>
-
-              {/* Restrooms */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Restrooms</p>
-                <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                  padding: "0.75rem 1rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}><strong>MS Building</strong> — near elevators on each floor</p>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}><strong>Court of Sciences</strong> — Geology & Life Sciences buildings</p>
-                </div>
-              </div>
-
-              {/* Disputes */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Disputes</p>
-                <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)", padding: "0.75rem 1rem" }}>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}>Submit during <strong>Lunch at Court of Sciences</strong></p>
-                </div>
-              </div>
-
-              {/* Contact */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Contact Staff</p>
-                <a href="mailto:uclamathtournament@gmail.com"
-                  style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                    padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                    textDecoration: "none" }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                  </svg>
-                  <p style={{ fontSize: "0.875rem", color: "var(--ucla-blue)", fontWeight: 600 }}>uclamathtournament@gmail.com</p>
-                </a>
-              </div>
-
-              {/* Campus Map */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Campus Map</p>
+              {locPerms === "idle" && (
+                <button onClick={requestLocation}
+                  style={{ width: "100%", marginTop: "0.5rem", border: "1px solid var(--color-border)",
+                    background: "transparent", color: "var(--color-text-muted)", fontSize: "0.6875rem",
+                    fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
+                    padding: "0.5rem", cursor: "pointer" }}>
+                  Use My Location for Directions
+                </button>
+              )}
+              {locPerms === "granted" && (
+                <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", fontWeight: 700,
+                  textAlign: "center", marginTop: "0.375rem" }}>
+                  Location active — routing from your position
+                </p>
+              )}
+              <p style={{ textAlign: "center", marginTop: "0.5rem" }}>
                 <a href="https://www.maps.ucla.edu/?id=2043#!ct/75713?s/" target="_blank" rel="noopener noreferrer"
-                  style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                    padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                    textDecoration: "none" }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-                    <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
-                  </svg>
-                  <p style={{ fontSize: "0.875rem", color: "var(--ucla-blue)", fontWeight: 600 }}>Interactive UCLA Campus Map →</p>
+                  style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", fontWeight: 700,
+                    letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none" }}>
+                  Full Interactive Campus Map →
                 </a>
-              </div>
-
-              {/* Parking */}
-              <div>
-                <p className="section-label" style={{ marginBottom: "0.5rem" }}>Parking</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-                  <a href="https://www.google.com/maps/dir/?api=1&destination=Lot+8+UCLA+Parking" target="_blank" rel="noopener noreferrer"
-                    style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                      padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                      textDecoration: "none" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                      style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                      <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>
-                      <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                    </svg>
-                    <div>
-                      <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>Lot 8 — Nearest to MS Building</p>
-                      <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)" }}>Get directions →</p>
-                    </div>
-                  </a>
-                  <a href="https://transportation.ucla.edu/campus-parking/visitor-parking" target="_blank" rel="noopener noreferrer"
-                    style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-                      padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
-                      textDecoration: "none" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                      style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
-                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                    <div>
-                      <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>All UCLA Visitor Parking</p>
-                      <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)" }}>transportation.ucla.edu →</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-
+              </p>
             </div>
           </div>
         </div>
       )}
-    </>
+    </section>
+  );
+}
+
+// ─── INFO & HELP SECTION (inline, not floating button) ────────────────────────
+function InfoSection() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <section style={{ marginBottom: "2rem" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%", textAlign: "left",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderBottom: open ? "none" : "1px solid var(--color-border)",
+          padding: "1rem 1.25rem", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}
+        aria-expanded={open}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            style={{ color: "var(--ucla-blue)" }} aria-hidden>
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.8125rem",
+            letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--color-text)" }}>
+            Info & Help
+          </span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round"
+          style={{ color: "var(--color-text-faint)", transform: open ? "rotate(180deg)" : "none", transition: "transform 200ms" }}
+          aria-hidden><path d="M6 9l6 6 6-6" /></svg>
+      </button>
+
+      {open && (
+        <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
+          padding: "1rem 1.25rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+
+          {/* Wi-Fi */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Wi-Fi</p>
+            <div style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+              padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
+                <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+              </svg>
+              <span style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--color-text)", letterSpacing: "0.05em" }}>UCLA-WEB</span>
+            </div>
+          </div>
+
+          {/* Emergency */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Emergency</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              {[
+                { href: "tel:911", label: "911", sub: "Emergency", stroke: "#c0392b" },
+                { href: "tel:3108254321", label: "310-825-4321", sub: "UCLA UCPD Non-Emergency", stroke: "var(--ucla-blue)" },
+              ].map(item => (
+                <a key={item.href} href={item.href}
+                  style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+                    padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
+                    textDecoration: "none" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={item.stroke} strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden>
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 9.79 19.79 19.79 0 0 1 1.49 1.1 2 2 0 0 1 3.5-.09h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.08 6.08l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/>
+                  </svg>
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>{item.label}</p>
+                    <p style={{ fontSize: "0.6875rem", color: "var(--color-text-muted)" }}>{item.sub}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Restrooms */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Restrooms</p>
+            <div style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+              padding: "0.75rem 1rem", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}><strong>MS Building</strong> — near elevators on each floor</p>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}><strong>Court of Sciences</strong> — Geology & Life Sciences buildings</p>
+            </div>
+          </div>
+
+          {/* Disputes */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Disputes</p>
+            <div style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)", padding: "0.75rem 1rem" }}>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text)" }}>Submit during <strong>Lunch at Court of Sciences</strong></p>
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Contact Staff</p>
+            <a href="mailto:uclamathtournament@gmail.com"
+              style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+                padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
+                textDecoration: "none" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <p style={{ fontSize: "0.875rem", color: "var(--ucla-blue)", fontWeight: 600 }}>uclamathtournament@gmail.com</p>
+            </a>
+          </div>
+
+          {/* Campus Map */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Campus Map</p>
+            <a href="https://www.maps.ucla.edu/?id=2043#!ct/75713?s/" target="_blank" rel="noopener noreferrer"
+              style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+                padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
+                textDecoration: "none" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
+                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+              </svg>
+              <p style={{ fontSize: "0.875rem", color: "var(--ucla-blue)", fontWeight: 600 }}>Interactive UCLA Campus Map →</p>
+            </a>
+          </div>
+
+          {/* Parking */}
+          <div>
+            <p style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>Parking</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              {[
+                { href: "https://www.google.com/maps/dir/?api=1&destination=Lot+8+UCLA+Parking", label: "Lot 8 — Nearest to MS Building", sub: "Get directions →" },
+                { href: "https://transportation.ucla.edu/campus-parking/visitor-parking", label: "All UCLA Visitor Parking", sub: "transportation.ucla.edu →" },
+              ].map(item => (
+                <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer"
+                  style={{ border: "1px solid var(--color-border)", background: "var(--color-bg)",
+                    padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.75rem",
+                    textDecoration: "none" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                    style={{ color: "var(--ucla-blue)", flexShrink: 0 }} aria-hidden>
+                    <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                  </svg>
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--color-text)" }}>{item.label}</p>
+                    <p style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)" }}>{item.sub}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ─── CONTACT / SEND MESSAGE SECTION ──────────────────────────────────────────
+function ContactSection() {
+  const [name,    setName]    = useState("");
+  const [email,   setEmail]   = useState("");
+  const [msg,     setMsg]     = useState("");
+  const [status,  setStatus]  = useState<"idle"|"sent"|"error">("idle");
+
+  const INPUT_S: React.CSSProperties = {
+    background: "var(--color-bg)", border: "1px solid var(--color-border)",
+    color: "var(--color-text)", fontFamily: "var(--font-body)",
+    fontSize: "0.875rem", padding: "0.625rem 0.75rem", width: "100%", outline: "none",
+  };
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name || !email || !msg) return;
+    try {
+      const existing: ContactMessage[] = JSON.parse(sessionStorage.getItem("lamt_messages") || "[]");
+      const newMsg: ContactMessage = {
+        id: Date.now(), name, email, message: msg,
+        timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+        resolved: false,
+      };
+      sessionStorage.setItem("lamt_messages", JSON.stringify([newMsg, ...existing]));
+      setStatus("sent");
+      setName(""); setEmail(""); setMsg("");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section style={{ marginBottom: "2rem" }}>
+      <SectionHeader title="Send a Message" />
+      {status === "sent" ? (
+        <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
+          padding: "1.5rem", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.9375rem",
+            color: "var(--ucla-blue)", marginBottom: "0.375rem" }}>Message received.</p>
+          <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)" }}>
+            Staff will reply to your email as soon as possible.
+          </p>
+          <button onClick={() => setStatus("idle")}
+            style={{ marginTop: "1rem", background: "transparent", border: "1px solid var(--color-border)",
+              color: "var(--color-text-muted)", fontSize: "0.6875rem", fontWeight: 700,
+              letterSpacing: "0.1em", textTransform: "uppercase", padding: "0.375rem 0.75rem",
+              cursor: "pointer" }}>
+            Send Another
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={submit}
+          style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
+            padding: "1.25rem", display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              <label style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "var(--color-text-faint)" }}>Name</label>
+              <input style={INPUT_S} value={name} onChange={e => setName(e.target.value)}
+                placeholder="Your name" required />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              <label style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "var(--color-text-faint)" }}>Email</label>
+              <input style={INPUT_S} type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="your@email.com" required />
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+            <label style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "var(--color-text-faint)" }}>Message</label>
+            <textarea style={{ ...INPUT_S, minHeight: 80, resize: "vertical" }}
+              value={msg} onChange={e => setMsg(e.target.value)}
+              placeholder="Questions, concerns, or anything else..." required />
+          </div>
+          {status === "error" && (
+            <p style={{ fontSize: "0.8125rem", color: "#c0392b", fontWeight: 600 }}>Something went wrong. Please try again.</p>
+          )}
+          <button type="submit"
+            disabled={!name || !email || !msg}
+            style={{
+              alignSelf: "flex-start",
+              background: "var(--ucla-blue)", color: "#fff",
+              border: "none", padding: "0.625rem 1.25rem",
+              fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "0.75rem",
+              letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
+              opacity: (!name || !email || !msg) ? 0.5 : 1,
+              transition: "opacity 150ms",
+            }}>
+            Send Message
+          </button>
+        </form>
+      )}
+    </section>
   );
 }
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function LivePage() {
-  // Allow admin-injected schedule/updates via sessionStorage (set by /admin)
-  const [schedule, setSchedule] = useState<ScheduleItem[]>(SCHEDULE);
-  const [updates,  setUpdates]  = useState<Update[]>(UPDATES);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>(DEFAULT_SCHEDULE);
+  const [updates,  setUpdates]  = useState<Update[]>(DEFAULT_UPDATES);
 
   useEffect(() => {
     try {
@@ -562,8 +779,8 @@ export default function LivePage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--color-bg)", transition: "background 0.3s" }}>
-      {/* ── HEADER ─ stands alone from main site nav ─────────────────── */}
+    <div style={{ minHeight: "100vh", background: "var(--color-bg)" }}>
+      {/* ── HEADER ── */}
       <header style={{
         position: "sticky", top: 0, zIndex: 30,
         background: "var(--ucla-blue)",
@@ -580,48 +797,53 @@ export default function LivePage() {
             letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff"
           }}>LAMT</span>
         </Link>
-        <span style={{
-          display: "inline-flex", alignItems: "center", gap: "0.4rem",
-          fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
-          textTransform: "uppercase", color: "var(--ucla-gold)",
-          border: "1px solid var(--ucla-gold)",
-          padding: "0.25rem 0.625rem",
-        }}>
-          <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--ucla-gold)",
-            display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
-          Live
-        </span>
+        {TOURNAMENT_OVER ? (
+          <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.1em",
+            textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
+            LAMT 2026
+          </span>
+        ) : (
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: "0.4rem",
+            fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.15em",
+            textTransform: "uppercase", color: "var(--ucla-gold)",
+            border: "1px solid var(--ucla-gold)",
+            padding: "0.25rem 0.625rem",
+          }}>
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--ucla-gold)",
+              display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
+            Live
+          </span>
+        )}
       </header>
 
-      {/* ── TOURNAMENT OVER banner ──────────────────────────────────── */}
+      {/* ── TOURNAMENT OVER BANNER ── */}
       {TOURNAMENT_OVER && (
-        <div style={{
-          background: "var(--ucla-blue)", borderBottom: "1px solid rgba(255,255,255,0.12)",
-          padding: "2rem 3%",
-        }}>
+        <div style={{ background: "var(--ucla-blue)", borderBottom: "1px solid rgba(255,255,255,0.1)",
+          padding: "2rem 3%" }}>
           <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "var(--text-lg)",
             color: "#fff", letterSpacing: "0.02em", marginBottom: "0.375rem" }}>
             Thank you for coming to LAMT 2026.
           </p>
-          <p style={{ fontSize: "0.9375rem", color: "var(--ucla-blue-lightest)" }}>
+          <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.75)" }}>
             We look forward to seeing you soon.
           </p>
         </div>
       )}
 
-      {/* ── MAIN CONTENT ────────────────────────────────────────────── */}
+      {/* ── CONTENT ── */}
       <main style={{ padding: "1.5rem 3% 4rem" }}>
         <UpdatesSection updates={updates} />
         <ScheduleSection schedule={schedule} />
         <MapSection />
+        <InfoSection />
+        <ContactSection />
       </main>
-
-      <InfoDrawer />
 
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
+          50% { opacity: 0.35; }
         }
       `}</style>
     </div>
