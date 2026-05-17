@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-[#DAEBFE] dark:bg-black min-h-screen transition-colors duration-300">
+      <body className="min-h-screen transition-colors duration-300">
         <KaTeXLoader />
         <NavbarClient />
         <DarkModeToggle />
