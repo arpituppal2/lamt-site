@@ -1,70 +1,90 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#2774AE] dark:bg-black flex flex-col items-center justify-center text-center px-6 overflow-hidden relative transition-colors duration-300">
-      {/* dot-grid background */}
-      <div
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--color-bg)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '3% 3% 0',
+      textAlign: 'center',
+    }}>
+      {/* ── Gold rule at top */}
+      <div style={{ width: '2.5rem', height: 2, background: 'var(--ucla-gold)', marginBottom: '2rem' }} />
+
+      {/* ── 404 */}
+      <p
         aria-hidden
-        className="absolute inset-0 opacity-[0.07] pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle, #FFD100 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          fontFamily: 'var(--font-display)',
+          fontWeight: 800,
+          fontSize: 'clamp(5rem, 18vw, 9rem)',
+          lineHeight: 1,
+          letterSpacing: '-0.04em',
+          color: 'var(--color-border)',
+          marginBottom: '1.5rem',
+          fontVariantNumeric: 'tabular-nums',
+          userSelect: 'none',
         }}
-      />
+      >
+        404
+      </p>
 
-      {/* faded bear */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <Image
-          src="/LAMTBear.png"
-          alt=""
-          width={600}
-          height={600}
-          className="h-[70vh] w-auto object-contain opacity-10 dark:opacity-20"
-          priority
-        />
-      </div>
+      {/* ── Headline */}
+      <h1
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 800,
+          fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
+          color: 'var(--color-text)',
+          lineHeight: 1.15,
+          marginBottom: '1rem',
+          letterSpacing: '-0.01em',
+        }}
+      >
+        Page not found.
+      </h1>
 
-      <div className="relative z-10 max-w-xl w-full">
-        {/* 404 */}
-        <p
-          className="text-[clamp(5rem,20vw,10rem)] font-bold leading-none text-white/20 select-none tabular-nums"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          aria-hidden
-        >
-          404
-        </p>
+      {/* ── Gold accent line under heading */}
+      <div style={{ width: '2.5rem', height: 2, background: 'var(--ucla-gold)', marginBottom: '1.25rem' }} />
 
-        <h1
-          className="text-[clamp(1.6rem,5vw,2.8rem)] font-bold text-white leading-tight mt-2 mb-4"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-        >
-          This page doesn't exist.<br />
-          <span style={{ color: '#FFD100' }}>Unlike the answer to problem 3.</span>
-        </h1>
+      {/* ── Subtext */}
+      <p
+        style={{
+          fontSize: 'var(--text-base)',
+          color: 'var(--color-text-muted)',
+          lineHeight: 1.65,
+          maxWidth: 420,
+          marginBottom: '0.5rem',
+        }}
+      >
+        This URL doesn't resolve to a page — much like{' '}
+        <span style={{ color: 'var(--color-text)', fontWeight: 600 }}>x = x + 1</span>{' '}
+        doesn't resolve to a value.
+      </p>
+      <p
+        style={{
+          fontSize: 'var(--text-sm)',
+          color: 'var(--color-text-faint)',
+          lineHeight: 1.65,
+          maxWidth: 380,
+          marginBottom: '2.5rem',
+        }}
+      >
+        You may have mistyped the URL, or this page was removed. Either way, no partial credit.
+      </p>
 
-        <p className="text-[#DAEBFE] text-base leading-relaxed max-w-sm mx-auto mb-8">
-          You've wandered somewhere off-campus. Maybe you mistyped the URL, maybe
-          a link is broken, or maybe you were trying to find the Guts Round answer key.
-          Either way — not here.
-        </p>
-
-        <Link
-          href="/"
-          className="btn-outline inline-flex items-center gap-3 group"
-        >
-          <svg
-            width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            className="transition-transform duration-200 group-hover:-translate-x-1"
-            aria-hidden="true"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          <span>Back to lamt.net</span>
-        </Link>
-      </div>
+      {/* ── CTA */}
+      <Link href="/" className="btn-filled" style={{ gap: '0.5rem', display: 'inline-flex', alignItems: 'center' }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Return to lamt.net
+      </Link>
     </div>
   );
 }
