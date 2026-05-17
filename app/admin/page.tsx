@@ -87,10 +87,11 @@ function MessagesTab() {
     if (!text.trim()) return;
     const msg = messages.find(m => m.id === id);
     if (!msg) return;
-    const updated = messages.map(m =>
+    const updated: ContactMessage[] = messages.map(m =>
       m.id === id
         ? { ...m, resolved: true, replies: [...(m.replies || []), {
-            text: text.trim(),
+            id: Date.now(),
+            body: text.trim(),
             timestamp: new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
           }]
         }
@@ -198,7 +199,7 @@ function MessagesTab() {
                       <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#1a1a1a" }}>Staff</span>
                       <span style={{ fontSize: "0.6875rem", color: "#bbb" }}>{r.timestamp}</span>
                     </div>
-                    <p style={{ fontSize: "0.875rem", color: "#333", lineHeight: 1.65 }}>{r.text}</p>
+                    <p style={{ fontSize: "0.875rem", color: "#333", lineHeight: 1.65 }}>{r.body}</p>
                   </div>
                 </div>
               ))}
@@ -265,7 +266,7 @@ function AnnouncementsTab({ updates, setUpdates }: {
   function addUpdate() {
     if (!body.trim()) return;
     const newUpdate: Update = {
-      id: Date.now().toString(),
+      id: Date.now(),
       title: title.trim(),
       body: body.trim(),
       timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
@@ -276,7 +277,7 @@ function AnnouncementsTab({ updates, setUpdates }: {
     setTitle(""); setBody("");
   }
 
-  function deleteUpdate(id: string) {
+  function deleteUpdate(id: number) {
     const next = updates.filter(u => u.id !== id);
     setUpdates(next);
     try { sessionStorage.setItem("lamt_updates", JSON.stringify(next)); } catch {}
