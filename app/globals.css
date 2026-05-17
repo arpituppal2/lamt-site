@@ -62,43 +62,40 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   LIGHT MODE — UCLA Blue base, white-on-blue typography
-   bg → #2774AE (UCLA Blue)
-   surfaces step through lighter blues up to semi-white cards
-   all text is white / very-light-blue
+   LIGHT MODE — UCLA Blue (#2774AE) as the page background.
+   All text is white/near-white. Gold is the accent.
 ─────────────────────────────────────────────────────────────────────────── */
 :root,
 [data-theme="light"] {
-  /* Page background = UCLA Blue */
-  --color-bg:             #2774AE;
-  /* Cards / raised surfaces: slightly lighter blue */
-  --color-surface:        #3580B8;
-  --color-surface-2:      #4490C8;
-  /* Offset / inset areas: slightly darker blue */
-  --color-surface-offset: #1F6099;
-  --color-divider:        rgba(255, 255, 255, 0.18);
-  --color-border:         rgba(255, 255, 255, 0.22);
+  --color-bg:              #2774AE;
+  --color-surface:         #3580B8;
+  --color-surface-2:       #4490C8;
+  --color-surface-offset:  #1F6099;
+  --color-divider:         rgba(255, 255, 255, 0.18);
+  --color-border:          rgba(255, 255, 255, 0.22);
 
-  /* All text is white / near-white */
-  --color-text:           #FFFFFF;
-  --color-text-muted:     rgba(255, 255, 255, 0.80);
-  --color-text-faint:     rgba(255, 255, 255, 0.50);
-  --color-text-inverse:   #003B5C;
+  /* Primary text: white. Muted: 80% white. Faint: 50% white. */
+  --color-text:            #FFFFFF;
+  --color-text-muted:      rgba(255, 255, 255, 0.80);
+  --color-text-faint:      rgba(255, 255, 255, 0.50);
+  --color-text-inverse:    #003B5C;
 
-  /* Accent = gold on blue */
-  --color-accent:         #FFD100;
-  --color-accent-hover:   #FFC72C;
-  --color-accent-active:  #FFB81C;
+  /* Aliases used by inner pages */
+  --color-text-secondary:  rgba(255, 255, 255, 0.80);
+  --color-gold:            #FFD100;
 
-  /* CTA = gold */
-  --color-cta-bg:         #FFD100;
-  --color-cta-text:       #003B5C;
-  --color-cta-hover:      #FFC72C;
+  /* Accent = gold */
+  --color-accent:          #FFD100;
+  --color-accent-hover:    #FFC72C;
+  --color-accent-active:   #FFB81C;
 
-  /* Nav */
-  --color-nav-bg:         transparent;
-  --color-nav-scrolled:   rgba(39, 116, 174, 0.95);
-  --color-nav-border:     rgba(255, 255, 255, 0.14);
+  --color-cta-bg:          #FFD100;
+  --color-cta-text:        #003B5C;
+  --color-cta-hover:       #FFC72C;
+
+  --color-nav-bg:          transparent;
+  --color-nav-scrolled:    rgba(39, 116, 174, 0.95);
+  --color-nav-border:      rgba(255, 255, 255, 0.14);
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.22);
@@ -107,25 +104,34 @@
 
 .dark,
 [data-theme="dark"] {
-  --color-bg:             #000000;
-  --color-surface:        #0a0a0a;
-  --color-surface-2:      #111111;
-  --color-surface-offset: #0d0d0d;
-  --color-divider:        rgba(39, 116, 174, 0.2);
-  --color-border:         rgba(139, 184, 232, 0.12);
-  --color-text:           #DAEBFE;
-  --color-text-muted:     #8BB8E8;
-  --color-text-faint:     #2774AE;
-  --color-text-inverse:   #000000;
-  --color-accent:         #8BB8E8;
-  --color-accent-hover:   #DAEBFE;
-  --color-accent-active:  #FFFFFF;
-  --color-cta-bg:         #FFD100;
-  --color-cta-text:       #000000;
-  --color-cta-hover:      #FFC72C;
-  --color-nav-bg:         transparent;
-  --color-nav-scrolled:   rgba(0, 0, 0, 0.88);
-  --color-nav-border:     rgba(139, 184, 232, 0.1);
+  --color-bg:              #000000;
+  --color-surface:         #0a0a0a;
+  --color-surface-2:       #111111;
+  --color-surface-offset:  #0d0d0d;
+  --color-divider:         rgba(39, 116, 174, 0.2);
+  --color-border:          rgba(139, 184, 232, 0.12);
+
+  --color-text:            #DAEBFE;
+  --color-text-muted:      #8BB8E8;
+  --color-text-faint:      rgba(139, 184, 232, 0.5);
+  --color-text-inverse:    #000000;
+
+  /* Aliases */
+  --color-text-secondary:  #8BB8E8;
+  --color-gold:            #FFD100;
+
+  --color-accent:          #8BB8E8;
+  --color-accent-hover:    #DAEBFE;
+  --color-accent-active:   #FFFFFF;
+
+  --color-cta-bg:          #FFD100;
+  --color-cta-text:        #000000;
+  --color-cta-hover:       #FFC72C;
+
+  --color-nav-bg:          transparent;
+  --color-nav-scrolled:    rgba(0, 0, 0, 0.88);
+  --color-nav-border:      rgba(139, 184, 232, 0.1);
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
@@ -137,6 +143,7 @@
   padding: 0;
 }
 
+/* Anchor bg on the root so there is never a flash of white */
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -144,6 +151,8 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   hanging-punctuation: first last;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 body {
@@ -193,10 +202,9 @@ a, button, [role="button"] {
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
-/* ── OUTLINE BUTTON ────────────────────────────────────────────────────────────────
-   Sits on any blue/dark bg. White border + text, gold on hover.
-────────────────────────────────────────────────────────────────────────────
-*/
+/* ── OUTLINE BUTTON ────────────────────────────────────────────────────────────
+   Transparent bg, white border + text. Hover → gold fill.
+──────────────────────────────────────────────────────────────────────────── */
 .btn-outline {
   display: inline-flex;
   align-items: center;
@@ -223,11 +231,9 @@ a, button, [role="button"] {
   color: #003B5C;
 }
 
-/* ── FILLED BUTTON ─────────────────────────────────────────────────────────────────
-   On blue bg: gold fill, dark text. Hover → darker gold.
-   Dark mode: same gold fill. Hover → white fill, dark text.
-────────────────────────────────────────────────────────────────────────────
-*/
+/* ── FILLED BUTTON ────────────────────────────────────────────────────────────
+   Gold fill, dark text. Hover → darker gold.
+──────────────────────────────────────────────────────────────────────────── */
 .btn-filled {
   display: inline-flex;
   align-items: center;
@@ -254,7 +260,6 @@ a, button, [role="button"] {
   color: #003B5C;
 }
 
-/* dark mode — same gold, hover → white */
 .dark .btn-filled {
   background: #FFD100;
   border-color: #FFD100;
