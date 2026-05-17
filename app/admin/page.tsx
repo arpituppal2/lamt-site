@@ -1,339 +1,336 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { ScheduleItem, Update, ContactMessage, Reply } from "../live/types";
+import Link from "next/link";
+import Image from "next/image";
+import type { ScheduleItem, Update, ContactMessage } from "../live/types";
 import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "../live/types";
 
-// ─── AUTH ─────────────────────────────────────────────────────────────────────
-const ADMIN_PASS = "lamt2026";
+// ─── ADMIN AUTH ───────────────────────────────────────────────────────────────
+const ADMIN_PW = "lamt2026admin";
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-function SL({ children }: { children: React.ReactNode }) {
+// ─── INLINE STYLES ────────────────────────────────────────────────────────────
+const IS: React.CSSProperties = {
+  background: "#fff", border: "1px solid #d4d4d8", borderRadius: 8,
+  color: "#1a1a1a", fontFamily: "inherit", fontSize: "0.875rem",
+  padding: "0.5625rem 0.75rem", width: "100%", outline: "none",
+};
+
+const BTN = (bg: string, fg = "#fff"): React.CSSProperties => ({
+  background: bg, color: fg, border: "none", borderRadius: 6,
+  fontWeight: 700, fontSize: "0.75rem", padding: "0.4rem 0.875rem",
+  cursor: "pointer", letterSpacing: "0.04em", transition: "opacity 150ms",
+});
+
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }: { onLogin: () => void }) {
+  const [pw, setPw]   = useState("");
+  const [err, setErr] = useState(false);
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (pw === ADMIN_PW) onLogin();
+    else { setErr(true); setTimeout(() => setErr(false), 1500); }
+  }
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.875rem" }}>
-      <span style={{
-        fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.25em",
-        textTransform: "uppercase", color: "var(--color-text-faint)", whiteSpace: "nowrap",
-      }}>{children}</span>
-      <div style={{ flex: 1, height: 1, background: "var(--color-divider)" }} />
+    <div style={{
+      minHeight: "100vh", background: "#2774AE",
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      <form onSubmit={submit} style={{
+        background: "#fff", borderRadius: 16, padding: "2.5rem",
+        width: "min(360px,92vw)", boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.75rem" }}>
+          <Image src="/LAMTBear.png" alt="LAMT" width={36} height={36} style={{ height: 36, width: "auto" }} />
+          <div>
+            <p style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.2em",
+              textTransform: "uppercase", color: "#999" }}>LAMT 2026</p>
+            <p style={{ fontSize: "1.0625rem", fontWeight: 800, color: "#1a1a1a" }}>Admin Panel</p>
+          </div>
+        </div>
+        <input
+          type="password" value={pw} onChange={e => setPw(e.target.value)}
+          placeholder="Password" autoFocus
+          style={{ ...IS, marginBottom: "0.75rem",
+            border: err ? "1.5px solid #e74c3c" : "1px solid #d4d4d8" }}
+        />
+        {err && <p style={{ fontSize: "0.75rem", color: "#e74c3c", marginBottom: "0.5rem" }}>Incorrect password</p>}
+        <button type="submit" style={{ ...BTN("#2774AE"), width: "100%", padding: "0.625rem" }}>Sign In</button>
+      </form>
     </div>
   );
 }
 
-const BTN = (props: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary"|"ghost"|"danger"|"gold" }) => {
-  const { variant = "ghost", style, ...rest } = props;
-  const base: React.CSSProperties = {
-    border: "none", cursor: "pointer", fontFamily: "var(--font-body)",
-    fontSize: "0.625rem", fontWeight: 800, letterSpacing: "0.15em",
-    textTransform: "uppercase", padding: "0.375rem 0.75rem",
-    display: "inline-flex", alignItems: "center", gap: "0.375rem",
-    transition: "opacity 150ms",
-  };
-  const variants: Record<string, React.CSSProperties> = {
-    primary: { background: "var(--ucla-blue)", color: "#fff" },
-    gold:    { background: "var(--ucla-gold)", color: "#003B5C" },
-    ghost:   { background: "transparent", color: "var(--color-text-muted)",
-               border: "1px solid var(--color-border)" },
-    danger:  { background: "transparent", color: "#c0392b",
-               border: "1px solid rgba(192,57,43,0.35)" },
-  };
-  return <button style={{ ...base, ...variants[variant], ...style }} {...rest} />;
-};
-
 // ─── MESSAGES TAB ─────────────────────────────────────────────────────────────
 function MessagesTab() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
-  const [replyDraft, setReplyDraft] = useState<Record<number, string>>({});
-  const [replyOpen, setReplyOpen] = useState<Record<number, boolean>>({});
+  const [replyMap,  setReplyMap]  = useState<Record<number, string>>({});
 
   useEffect(() => {
-    function load() {
-      try {
-        setMessages(JSON.parse(sessionStorage.getItem("lamt_messages") || "[]"));
-      } catch {}
-    }
-    load();
-    const id = setInterval(load, 3000);
-    return () => clearInterval(id);
+    try {
+      const raw = sessionStorage.getItem("lamt_messages");
+      if (raw) setMessages(JSON.parse(raw));
+    } catch {}
   }, []);
 
-  function save(msgs: ContactMessage[]) {
-    sessionStorage.setItem("lamt_messages", JSON.stringify(msgs));
-    setMessages(msgs);
+  function save(updated: ContactMessage[]) {
+    setMessages(updated);
+    try { sessionStorage.setItem("lamt_messages", JSON.stringify(updated)); } catch {}
   }
 
-  function markResolved(id: number) {
-    save(messages.map(m => m.id === id ? { ...m, resolved: true } : m));
+  function markResolved(id: number, resolved: boolean) {
+    save(messages.map(m => m.id === id ? { ...m, resolved } : m));
   }
-  function markUnresolved(id: number) {
-    save(messages.map(m => m.id === id ? { ...m, resolved: false } : m));
+
+  function sendReply(id: number) {
+    const text = replyMap[id] || "";
+    if (!text.trim()) return;
+    const msg = messages.find(m => m.id === id);
+    if (!msg) return;
+    const updated = messages.map(m =>
+      m.id === id
+        ? { ...m, resolved: true, replies: [...(m.replies || []), {
+            text: text.trim(),
+            timestamp: new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
+          }]
+        }
+        : m
+    );
+    save(updated);
+    setReplyMap(prev => ({ ...prev, [id]: "" }));
+    // open mailto
+    window.location.href = `mailto:${msg.email}?subject=Re: Your message to LAMT Staff&body=${encodeURIComponent(text.trim())}`;
   }
+
   function deleteMsg(id: number) {
     save(messages.filter(m => m.id !== id));
   }
-  function addReply(id: number) {
-    const body = replyDraft[id]?.trim();
-    if (!body) return;
-    const reply: Reply = {
-      id: Date.now(),
-      body,
-      timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-    };
-    save(messages.map(m =>
-      m.id === id
-        ? { ...m, resolved: true, replies: [...(m.replies || []), reply] }
-        : m
-    ));
-    setReplyDraft(d => ({ ...d, [id]: "" }));
-    setReplyOpen(r => ({ ...r, [id]: false }));
-  }
 
-  const unresolved = messages.filter(m => !m.resolved);
-  const resolved   = messages.filter(m =>  m.resolved);
+  const unresolved = messages.filter(m => !m.resolved).length;
 
-  const MSG_S: React.CSSProperties = {
-    background: "var(--color-bg)", border: "1px solid var(--color-border)",
-    color: "var(--color-text)", fontFamily: "var(--font-body)",
-    fontSize: "0.8125rem", padding: "0.5rem 0.75rem", width: "100%", outline: "none",
-  };
-
-  function renderCard(m: ContactMessage) {
-    const isOpen = replyOpen[m.id];
+  if (messages.length === 0) {
     return (
-      <div key={m.id} style={{
-        border: `1px solid ${m.resolved ? "var(--color-border)" : "var(--ucla-blue)"}`,
-        background: "var(--color-surface)",
-        marginBottom: "0.75rem",
-        opacity: m.resolved ? 0.72 : 1,
-      }}>
-        {/* Message header */}
-        <div style={{
-          padding: "0.875rem 1rem",
-          borderBottom: "1px solid var(--color-divider)",
-          display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem",
-        }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap",
-              marginBottom: "0.25rem" }}>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.875rem",
-                color: "var(--color-text)" }}>{m.name}</span>
-              <a href={`mailto:${m.email}`}
-                style={{ fontSize: "0.6875rem", color: "var(--ucla-blue)", textDecoration: "none" }}>
-                {m.email}
-              </a>
-              <span style={{ fontSize: "0.5625rem", color: "var(--color-text-faint)",
-                fontVariantNumeric: "tabular-nums" }}>{m.timestamp}</span>
-              {m.resolved && (
-                <span style={{ fontSize: "0.5rem", fontWeight: 800, letterSpacing: "0.2em",
-                  textTransform: "uppercase", background: "var(--color-surface-dynamic)",
-                  color: "var(--color-text-faint)", padding: "1px 5px" }}>Resolved</span>
-              )}
-            </div>
-            <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)",
-              lineHeight: 1.6, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-              {m.message}
-            </p>
-          </div>
-        </div>
-
-        {/* Replies thread */}
-        {(m.replies || []).length > 0 && (
-          <div style={{
-            borderBottom: "1px solid var(--color-divider)",
-            background: "var(--color-surface-2)",
-          }}>
-            {(m.replies || []).map(r => (
-              <div key={r.id} style={{
-                padding: "0.75rem 1rem 0.75rem 2.5rem",
-                borderBottom: "1px solid var(--color-divider)",
-                position: "relative",
-              }}>
-                {/* vertical thread line */}
-                <div style={{
-                  position: "absolute", left: "1.125rem", top: 0, bottom: 0,
-                  width: 2, background: "var(--ucla-blue)", opacity: 0.25,
-                }} />
-                {/* arrow connector */}
-                <div style={{
-                  position: "absolute", left: "1rem", top: "0.875rem",
-                  width: 12, height: 12,
-                  borderLeft: `2px solid var(--ucla-blue)`,
-                  borderBottom: `2px solid var(--ucla-blue)`,
-                  opacity: 0.4,
-                }} />
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem",
-                  marginBottom: "0.25rem" }}>
-                  <span style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.15em",
-                    textTransform: "uppercase", color: "var(--ucla-blue)" }}>Staff Reply</span>
-                  <span style={{ fontSize: "0.5625rem", color: "var(--color-text-faint)" }}>{r.timestamp}</span>
-                </div>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)",
-                  lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{r.body}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Actions row */}
-        <div style={{
-          padding: "0.625rem 1rem",
-          display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap",
-        }}>
-          {!isOpen && (
-            <BTN variant="primary" onClick={() => {
-              setReplyOpen(r => ({ ...r, [m.id]: true }));
-              // open native mail too
-              window.location.href = `mailto:${m.email}?subject=Re: LAMT 2026 Message&body=Hi ${m.name},%0A%0A`;
-            }}>Reply</BTN>
-          )}
-          {!m.resolved ? (
-            <BTN variant="ghost" onClick={() => markResolved(m.id)}>Mark Resolved</BTN>
-          ) : (
-            <BTN variant="ghost" onClick={() => markUnresolved(m.id)}>Unresolve</BTN>
-          )}
-          <BTN variant="danger" onClick={() => deleteMsg(m.id)}>Delete</BTN>
-        </div>
-
-        {/* Inline reply composer */}
-        {isOpen && (
-          <div style={{
-            borderTop: "1px solid var(--color-border)",
-            background: "var(--color-surface-2)",
-            padding: "0.875rem 1rem",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem",
-              marginBottom: "0.5rem" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ color: "var(--ucla-blue)" }} aria-hidden>
-                <polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/>
-              </svg>
-              <span style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.2em",
-                textTransform: "uppercase", color: "var(--ucla-blue)" }}>Write Reply</span>
-            </div>
-            <textarea
-              style={{ ...MSG_S, minHeight: 80, resize: "vertical", marginBottom: "0.5rem" }}
-              value={replyDraft[m.id] || ""}
-              onChange={e => setReplyDraft(d => ({ ...d, [m.id]: e.target.value }))}
-              placeholder={`Reply to ${m.name}…`}
-            />
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <BTN variant="primary"
-                onClick={() => addReply(m.id)}
-                disabled={!replyDraft[m.id]?.trim()}>
-                Save & Mark Resolved
-              </BTN>
-              <BTN variant="ghost" onClick={() =>
-                setReplyOpen(r => ({ ...r, [m.id]: false }))
-              }>Cancel</BTN>
-            </div>
-          </div>
-        )}
+      <div style={{ padding: "4rem 2rem", textAlign: "center" }}>
+        <p style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📭</p>
+        <p style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#1a1a1a", marginBottom: 4 }}>No messages yet</p>
+        <p style={{ fontSize: "0.8125rem", color: "#888" }}>Messages from the /live contact form will appear here.</p>
       </div>
     );
   }
 
   return (
     <div>
-      {messages.length === 0 ? (
-        <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-          padding: "3rem", textAlign: "center" }}>
-          <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>No messages yet.</p>
+      {unresolved > 0 && (
+        <div style={{
+          margin: "1rem 1.5rem 0",
+          background: "#fff3cd", border: "1px solid #ffc107",
+          borderRadius: 8, padding: "0.625rem 1rem",
+          fontSize: "0.8125rem", fontWeight: 600, color: "#856404",
+        }}>
+          ⚠️ {unresolved} unresolved {unresolved === 1 ? "message" : "messages"}
         </div>
-      ) : (
-        <>
-          {unresolved.length > 0 && (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <SL>Unresolved ({unresolved.length})</SL>
-              {unresolved.map(renderCard)}
-            </div>
-          )}
-          {resolved.length > 0 && (
-            <div>
-              <SL>Resolved ({resolved.length})</SL>
-              {resolved.map(renderCard)}
-            </div>
-          )}
-        </>
       )}
+      {messages.map(m => (
+        <div key={m.id} style={{
+          margin: "1rem 1.5rem",
+          border: m.resolved ? "1px solid #e8e8ea" : "1.5px solid #2774AE",
+          borderRadius: 12, overflow: "hidden",
+          opacity: m.resolved ? 0.7 : 1,
+          transition: "opacity 200ms",
+        }}>
+          {/* message header */}
+          <div style={{
+            padding: "0.875rem 1.25rem",
+            background: m.resolved ? "#fafafa" : "#f0f7ff",
+            borderBottom: "1px solid #f0f0f0",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            flexWrap: "wrap", gap: "0.5rem",
+          }}>
+            <div>
+              <p style={{ fontWeight: 700, fontSize: "0.9375rem", color: "#1a1a1a" }}>{m.name}</p>
+              <a href={`mailto:${m.email}`} style={{ fontSize: "0.8125rem", color: "#2774AE", textDecoration: "none" }}>{m.email}</a>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ fontSize: "0.6875rem", color: "#bbb" }}>{m.timestamp}</span>
+              {m.resolved ? (
+                <span style={{
+                  background: "#d4edda", color: "#155724", borderRadius: 99,
+                  fontSize: "0.625rem", fontWeight: 800, letterSpacing: "0.1em",
+                  textTransform: "uppercase", padding: "2px 8px",
+                }}>Resolved</span>
+              ) : (
+                <span style={{
+                  background: "#fff3cd", color: "#856404", borderRadius: 99,
+                  fontSize: "0.625rem", fontWeight: 800, letterSpacing: "0.1em",
+                  textTransform: "uppercase", padding: "2px 8px",
+                }}>Pending</span>
+              )}
+            </div>
+          </div>
+
+          {/* message body */}
+          <div style={{ padding: "1rem 1.25rem", background: "#fff" }}>
+            <p style={{ fontSize: "0.875rem", color: "#333", lineHeight: 1.7 }}>{m.message}</p>
+          </div>
+
+          {/* previous replies */}
+          {(m.replies || []).length > 0 && (
+            <div style={{ background: "#f8f9fa", borderTop: "1px solid #f0f0f0" }}>
+              {(m.replies || []).map((r, ri) => (
+                <div key={ri} style={{
+                  padding: "0.875rem 1.25rem",
+                  borderBottom: ri < (m.replies || []).length - 1 ? "1px solid #f0f0f0" : "none",
+                  display: "flex", gap: "0.875rem",
+                }}>
+                  <div style={{ flexShrink: 0, marginTop: 2 }}>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: "50%",
+                      background: "#2774AE", display: "flex", alignItems: "center",
+                      justifyContent: "center",
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: 4 }}>
+                      <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#1a1a1a" }}>Staff</span>
+                      <span style={{ fontSize: "0.6875rem", color: "#bbb" }}>{r.timestamp}</span>
+                    </div>
+                    <p style={{ fontSize: "0.875rem", color: "#333", lineHeight: 1.65 }}>{r.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* reply composer */}
+          <div style={{
+            padding: "0.875rem 1.25rem",
+            borderTop: "1px solid #f0f0f0", background: "#fafafa",
+            display: "flex", flexDirection: "column", gap: "0.5rem",
+          }}>
+            <textarea
+              value={replyMap[m.id] || ""}
+              onChange={e => setReplyMap(prev => ({ ...prev, [m.id]: e.target.value }))}
+              placeholder="Type a reply… (opens mail client on send)"
+              style={{
+                ...IS, minHeight: 64, resize: "vertical",
+                fontSize: "0.8125rem", borderRadius: 8,
+              }}
+            />
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+              <button
+                onClick={() => sendReply(m.id)}
+                disabled={!(replyMap[m.id] || "").trim()}
+                style={{
+                  ...BTN("#2774AE"),
+                  opacity: !(replyMap[m.id] || "").trim() ? 0.4 : 1,
+                }}
+              >
+                ↩ Reply & Mark Resolved
+              </button>
+              {m.resolved ? (
+                <button onClick={() => markResolved(m.id, false)}
+                  style={BTN("transparent", "#888")}>
+                  Unresolve
+                </button>
+              ) : (
+                <button onClick={() => markResolved(m.id, true)}
+                  style={BTN("#28a745")}>
+                  ✓ Mark Resolved
+                </button>
+              )}
+              <button onClick={() => deleteMsg(m.id)}
+                style={{ ...BTN("transparent", "#e74c3c"), marginLeft: "auto" }}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
 // ─── ANNOUNCEMENTS TAB ────────────────────────────────────────────────────────
-function AnnouncementsTab() {
-  const [updates, setUpdates] = useState<Update[]>([...DEFAULT_UPDATES]);
-  const [title,   setTitle]   = useState("");
-  const [body,    setBody]    = useState("");
+function AnnouncementsTab({ updates, setUpdates }: {
+  updates: Update[];
+  setUpdates: (u: Update[]) => void;
+}) {
+  const [title, setTitle] = useState("");
+  const [body,  setBody]  = useState("");
 
-  function post() {
+  function addUpdate() {
     if (!body.trim()) return;
-    const u: Update = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-      title: title.trim() || undefined,
+    const newUpdate: Update = {
+      id: Date.now().toString(),
+      title: title.trim(),
       body: body.trim(),
+      timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
     };
-    const next = [u, ...updates];
+    const next = [newUpdate, ...updates];
     setUpdates(next);
     try { sessionStorage.setItem("lamt_updates", JSON.stringify(next)); } catch {}
     setTitle(""); setBody("");
   }
 
-  function deleteUpdate(id: number) {
+  function deleteUpdate(id: string) {
     const next = updates.filter(u => u.id !== id);
     setUpdates(next);
     try { sessionStorage.setItem("lamt_updates", JSON.stringify(next)); } catch {}
   }
 
-  const IS: React.CSSProperties = {
-    background: "var(--color-bg)", border: "1px solid var(--color-border)",
-    color: "var(--color-text)", fontFamily: "var(--font-body)",
-    fontSize: "0.875rem", padding: "0.5rem 0.75rem", width: "100%", outline: "none",
-  };
-
   return (
-    <div>
-      <div style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)",
-        marginBottom: "1.5rem" }}>
-        <div style={{ padding: "0.75rem 1rem", borderBottom: "1px solid var(--color-border)",
-          background: "var(--color-surface-2)" }}>
-          <span style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.2em",
-            textTransform: "uppercase", color: "var(--color-text-faint)" }}>Post Update</span>
+    <div style={{ padding: "1.5rem" }}>
+      {/* composer */}
+      <div style={{
+        background: "#fff", border: "1.5px solid #2774AE",
+        borderRadius: 12, overflow: "hidden", marginBottom: "1.5rem",
+      }}>
+        <div style={{ padding: "0.875rem 1.25rem", background: "#f0f7ff",
+          borderBottom: "1px solid #d4e8f5" }}>
+          <span style={{ fontSize: "0.625rem", fontWeight: 800, letterSpacing: "0.2em",
+            textTransform: "uppercase", color: "#2774AE" }}>Post New Update</span>
         </div>
-        <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+        <div style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           <input style={IS} value={title} onChange={e => setTitle(e.target.value)}
             placeholder="Title (optional)" />
           <textarea style={{ ...IS, minHeight: 100, resize: "vertical" }}
             value={body} onChange={e => setBody(e.target.value)}
-            placeholder="Update text…" required />
-          <BTN variant="primary" onClick={post} disabled={!body.trim()}>Post Update</BTN>
+            placeholder="Update text…" />
+          <button onClick={addUpdate} disabled={!body.trim()}
+            style={{ ...BTN("#2774AE"), alignSelf: "flex-start",
+              padding: "0.5rem 1.25rem", opacity: !body.trim() ? 0.4 : 1 }}>
+            Post Update
+          </button>
         </div>
       </div>
 
+      {/* existing updates */}
       {updates.length === 0 ? (
-        <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", textAlign: "center",
-          padding: "2rem" }}>No updates posted yet.</p>
+        <p style={{ fontSize: "0.875rem", color: "#bbb", textAlign: "center", padding: "2rem" }}>No updates posted yet.</p>
       ) : (
         updates.map(u => (
-          <div key={u.id} style={{ border: "1px solid var(--color-border)",
-            background: "var(--color-surface)", marginBottom: "0.625rem" }}>
-            <div style={{ padding: "0.875rem 1rem", display: "flex",
-              alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem" }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: "0.5625rem", color: "var(--color-text-faint)",
-                  marginBottom: "0.25rem" }}>{u.timestamp}</p>
-                {u.title && (
-                  <p style={{ fontFamily: "var(--font-display)", fontWeight: 700,
-                    fontSize: "0.9375rem", color: "var(--color-text)", marginBottom: "0.25rem" }}>
-                    {u.title}
-                  </p>
-                )}
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)",
-                  lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{u.body}</p>
+          <div key={u.id} style={{
+            background: "#fff", border: "1px solid #e8e8ea",
+            borderRadius: 10, padding: "1rem 1.25rem",
+            marginBottom: "0.75rem",
+            display: "flex", justifyContent: "space-between",
+            gap: "0.75rem",
+          }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: 4 }}>
+                <span style={{ fontSize: "0.6875rem", fontWeight: 700, color: "#bbb" }}>{u.timestamp}</span>
               </div>
-              <BTN variant="danger" onClick={() => deleteUpdate(u.id)}>Delete</BTN>
+              {u.title && <p style={{ fontWeight: 700, fontSize: "0.9375rem", marginBottom: 4 }}>{u.title}</p>}
+              <p style={{ fontSize: "0.8125rem", color: "#555", lineHeight: 1.65 }}>{u.body}</p>
             </div>
+            <button onClick={() => deleteUpdate(u.id)}
+              style={{ ...BTN("transparent", "#e74c3c"), flexShrink: 0, alignSelf: "flex-start" }}>
+              Delete
+            </button>
           </div>
         ))
       )}
@@ -342,179 +339,136 @@ function AnnouncementsTab() {
 }
 
 // ─── SCHEDULE TAB ─────────────────────────────────────────────────────────────
-function ScheduleTab() {
-  const [schedule, setSchedule] = useState<ScheduleItem[]>([...DEFAULT_SCHEDULE]);
-
-  function update(i: number, key: keyof ScheduleItem, val: string) {
-    const next = schedule.map((s, j) => j === i ? { ...s, [key]: val } : s);
+function ScheduleTab({ schedule, setSchedule }: {
+  schedule: ScheduleItem[];
+  setSchedule: (s: ScheduleItem[]) => void;
+}) {
+  function update(i: number, field: keyof ScheduleItem, val: string) {
+    const next = schedule.map((s, idx) => idx === i ? { ...s, [field]: val } : s);
     setSchedule(next);
     try { sessionStorage.setItem("lamt_schedule", JSON.stringify(next)); } catch {}
   }
 
-  const IS: React.CSSProperties = {
-    background: "var(--color-bg)", border: "1px solid var(--color-border)",
-    color: "var(--color-text)", fontFamily: "var(--font-body)",
-    fontSize: "0.75rem", padding: "0.375rem 0.625rem", outline: "none",
-  };
-
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ borderCollapse: "collapse", width: "100%", fontSize: "0.8125rem" }}>
-        <thead>
-          <tr style={{ background: "var(--color-surface-2)", borderBottom: "1px solid var(--color-border)" }}>
-            {["Time","End","Event","Location","Original Time","Reason"].map(h => (
-              <th key={h} style={{ padding: "0.5rem 0.625rem", textAlign: "left",
-                fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.2em",
-                textTransform: "uppercase", color: "var(--color-text-faint)",
-                whiteSpace: "nowrap" }}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {schedule.map((s, i) => (
-            <tr key={i} style={{ borderBottom: "1px solid var(--color-divider)" }}>
-              {(["time","end","event","location","originalTime","adjustmentReason"] as (keyof ScheduleItem)[]).map(k => (
-                <td key={k} style={{ padding: "0.375rem 0.5rem" }}>
-                  <input
-                    style={{ ...IS, width: k === "event" || k === "location" || k === "adjustmentReason" ? 180 : 88 }}
-                    value={(s[k] as string) || ""}
-                    onChange={e => update(i, k, e.target.value)}
-                    placeholder="—"
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={{ padding: "1.5rem" }}>
+      <p style={{ fontSize: "0.8125rem", color: "#888", marginBottom: "1rem" }}>
+        Edit event times and notes. Changes live-sync to the /live page (this session).
+      </p>
+      {schedule.map((item, i) => (
+        <div key={i} style={{
+          background: "#fff", border: "1px solid #e8e8ea", borderRadius: 10,
+          padding: "1rem 1.25rem", marginBottom: "0.75rem",
+        }}>
+          <p style={{ fontWeight: 700, fontSize: "0.9375rem", marginBottom: "0.75rem" }}>{item.event}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem", marginBottom: "0.625rem" }}>
+            <div>
+              <label style={{ fontSize: "0.625rem", fontWeight: 700, color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 2 }}>Current Time</label>
+              <input style={IS} value={item.time} onChange={e => update(i, "time", e.target.value)} />
+            </div>
+            <div>
+              <label style={{ fontSize: "0.625rem", fontWeight: 700, color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 2 }}>Original (if delayed)</label>
+              <input style={IS} value={item.originalTime || ""} onChange={e => update(i, "originalTime", e.target.value)} placeholder="e.g. 8:00 AM" />
+            </div>
+          </div>
+          <div>
+            <label style={{ fontSize: "0.625rem", fontWeight: 700, color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 2 }}>Delay Reason (shown in red)</label>
+            <input style={IS} value={item.adjustmentReason || ""}
+              onChange={e => update(i, "adjustmentReason", e.target.value)}
+              placeholder="e.g. Check-in is running late." />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
-// ─── ADMIN PAGE ───────────────────────────────────────────────────────────────
+// ─── MAIN ADMIN PAGE ──────────────────────────────────────────────────────────
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(false);
-  const [pass,   setPass]   = useState("");
-  const [err,    setErr]    = useState(false);
-  const [tab,    setTab]    = useState<"updates"|"schedule"|"messages">("updates");
+  const [authed,   setAuthed]   = useState(false);
+  const [tab,      setTab]      = useState<"announcements" | "schedule" | "messages">("announcements");
+  const [updates,  setUpdates]  = useState<Update[]>(DEFAULT_UPDATES);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>(DEFAULT_SCHEDULE);
   const [msgCount, setMsgCount] = useState(0);
 
   useEffect(() => {
-    function count() {
-      try {
-        const msgs: ContactMessage[] = JSON.parse(sessionStorage.getItem("lamt_messages") || "[]");
-        setMsgCount(msgs.filter(m => !m.resolved).length);
-      } catch {}
-    }
-    count();
-    const id = setInterval(count, 3000);
-    return () => clearInterval(id);
-  }, []);
+    if (!authed) return;
+    try {
+      const s = sessionStorage.getItem("lamt_schedule");
+      const u = sessionStorage.getItem("lamt_updates");
+      const m = sessionStorage.getItem("lamt_messages");
+      if (s) setSchedule(JSON.parse(s));
+      if (u) setUpdates(JSON.parse(u));
+      if (m) setMsgCount(JSON.parse(m).filter((x: ContactMessage) => !x.resolved).length);
+    } catch {}
+  }, [authed]);
 
-  if (!authed) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center",
-      justifyContent: "center", background: "var(--color-bg)" }}>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          if (pass === ADMIN_PASS) setAuthed(true);
-          else { setErr(true); setPass(""); }
-        }}
-        style={{ background: "var(--color-surface)", border: "2px solid var(--ucla-blue)",
-          padding: "2rem", width: 320, display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.3em",
-            textTransform: "uppercase", color: "var(--color-text-faint)", marginBottom: "0.25rem" }}>
-            LAMT 2026
-          </div>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.125rem",
-            color: "var(--ucla-blue)", letterSpacing: "0.05em" }}>Admin</div>
-        </div>
-        <input type="password" value={pass} onChange={e => { setPass(e.target.value); setErr(false); }}
-          placeholder="Password"
-          style={{ background: "var(--color-bg)", border: `1px solid ${err ? "#c0392b" : "var(--color-border)"}`,
-            color: "var(--color-text)", fontFamily: "var(--font-body)",
-            fontSize: "0.9375rem", padding: "0.625rem 0.75rem", outline: "none" }}
-          autoFocus />
-        {err && <p style={{ fontSize: "0.75rem", color: "#c0392b", textAlign: "center" }}>Incorrect password</p>}
-        <button type="submit"
-          style={{ background: "var(--ucla-blue)", color: "#fff", border: "none",
-            fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "0.625rem",
-            letterSpacing: "0.2em", textTransform: "uppercase", padding: "0.625rem",
-            cursor: "pointer" }}>Sign In</button>
-      </form>
-    </div>
-  );
+  if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
 
-  const TABS: { id: typeof tab; label: string }[] = [
-    { id: "updates",  label: "Announcements" },
-    { id: "schedule", label: "Schedule" },
-    { id: "messages", label: `Messages${msgCount > 0 ? ` (${msgCount})` : ""}` },
+  const tabs: { key: typeof tab; label: string; badge?: number }[] = [
+    { key: "announcements", label: "Announcements" },
+    { key: "schedule",      label: "Schedule" },
+    { key: "messages",      label: "Messages", badge: msgCount },
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--color-bg)" }}>
+    <div style={{ minHeight: "100vh", background: "#f5f5f7", fontFamily: "var(--font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif)" }}>
       {/* header */}
       <header style={{
-        position: "sticky", top: 0, zIndex: 30,
-        background: "var(--ucla-blue)",
-        borderBottom: "2px solid var(--ucla-gold)",
+        background: "#2774AE", borderBottom: "2px solid #FFB81C",
         padding: "0.75rem 3%",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.9375rem",
-          letterSpacing: "0.15em", textTransform: "uppercase", color: "#fff" }}>
-          LAMT 2026 Admin
-        </span>
-        <a href="/live" target="_blank" rel="noopener noreferrer"
-          style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.15em",
-            textTransform: "uppercase", color: "var(--ucla-gold)", textDecoration: "none" }}>
-          View Live Page →
-        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <Image src="/LAMTBear.png" alt="LAMT" width={28} height={28} style={{ height: 28, width: "auto" }} />
+          <div>
+            <div style={{ fontSize: "0.5rem", fontWeight: 700, letterSpacing: "0.2em",
+              textTransform: "uppercase", color: "rgba(255,255,255,0.6)" }}>LAMT 2026</div>
+            <div style={{ fontWeight: 800, fontSize: "0.9375rem", letterSpacing: "0.1em",
+              textTransform: "uppercase", color: "#fff" }}>Admin Panel</div>
+          </div>
+        </div>
+        <Link href="/live" style={{ fontSize: "0.75rem", fontWeight: 700, color: "rgba(255,255,255,0.8)",
+          textDecoration: "none" }}>← Back to Live</Link>
       </header>
 
-      {/* tab bar */}
-      <div style={{
-        borderBottom: "1px solid var(--color-border)",
-        background: "var(--color-surface)",
-        padding: "0 3%",
-        display: "flex", gap: 0,
-      }}>
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
+      {/* tabs */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e8e8ea",
+        padding: "0 3%", display: "flex", gap: 0 }}>
+        {tabs.map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)}
             style={{
               background: "none", border: "none", cursor: "pointer",
-              padding: "0.75rem 1.25rem",
-              fontFamily: "var(--font-body)", fontSize: "0.75rem", fontWeight: 700,
-              letterSpacing: "0.08em",
-              color: tab === t.id ? "var(--ucla-blue)" : "var(--color-text-muted)",
-              borderBottom: tab === t.id ? "2px solid var(--ucla-blue)" : "2px solid transparent",
-              position: "relative",
+              padding: "0.875rem 1.125rem",
+              fontWeight: tab === t.key ? 700 : 500,
+              fontSize: "0.875rem",
+              color: tab === t.key ? "#2774AE" : "#888",
+              borderBottom: tab === t.key ? "2px solid #2774AE" : "2px solid transparent",
+              transition: "all 150ms",
+              display: "flex", alignItems: "center", gap: "0.375rem",
             }}
           >
             {t.label}
-            {t.id === "messages" && msgCount > 0 && (
+            {(t.badge ?? 0) > 0 && (
               <span style={{
-                position: "absolute", top: 6, right: 6,
-                background: "#c0392b", color: "#fff",
-                fontSize: "0.4375rem", fontWeight: 800,
-                borderRadius: "9999px", width: 14, height: 14,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>{msgCount}</span>
+                background: "#e74c3c", color: "#fff",
+                borderRadius: 99, fontSize: "0.5625rem", fontWeight: 800,
+                padding: "1px 6px", lineHeight: 1.5,
+              }}>{t.badge}</span>
             )}
           </button>
         ))}
       </div>
 
-      {/* content */}
-      <main style={{ padding: "1.5rem 3% 4rem", maxWidth: 900, margin: "0 auto" }}>
-        {tab === "updates"  && <AnnouncementsTab />}
-        {tab === "schedule" && <ScheduleTab />}
+      {/* tab content */}
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        {tab === "announcements" && (
+          <AnnouncementsTab updates={updates} setUpdates={setUpdates} />
+        )}
+        {tab === "schedule" && (
+          <ScheduleTab schedule={schedule} setSchedule={setSchedule} />
+        )}
         {tab === "messages" && <MessagesTab />}
-      </main>
+      </div>
     </div>
   );
 }
