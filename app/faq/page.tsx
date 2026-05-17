@@ -15,31 +15,41 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="pt-16 pb-24 px-4 md:px-8 max-w-5xl mx-auto">
+    <div className="page-shell">
+      <header className="page-hero">
+        <div>
+          <p className="page-kicker">Questions</p>
+          <span className="gold-rule" />
+        </div>
+        <div>
+          <h1 className="page-title">FAQ</h1>
+          <p className="page-summary mt-5">
+            Key information for teams, chaperones, individual competitors, and guests.
+          </p>
+        </div>
+      </header>
 
-      <h1 className="font-bold text-[var(--color-text)] leading-tight mb-6" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
-        FAQ
-      </h1>
-      <div className="gold-rule mb-16" />
+      <section className="section-row">
+        <h2 className="section-title">Answers</h2>
+        <div className="grid gap-0 border-t-2 border-[var(--color-border)]">
+          {faqs.map(({ q, a }) => (
+            <div key={q} className="grid gap-3 border-b-2 border-[var(--color-border)] py-6 lg:grid-cols-[minmax(16rem,34%)_1fr] lg:gap-8">
+              <h3 className="font-extrabold text-[var(--color-text)]">{q}</h3>
+              <p className="section-copy">{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      <div>
-        {faqs.map(({ q, a }) => (
-          <div key={q} className="border-t border-[var(--color-border)] py-6">
-            <p className="text-[var(--color-text)] font-medium mb-2">{q}</p>
-            <p className="text-[var(--color-text-secondary)] leading-relaxed">{a}</p>
-          </div>
-        ))}
-        <div className="border-t border-[var(--color-border)]" />
-      </div>
-
-      <div className="mt-12">
-        <p className="text-[var(--color-text-muted)] text-sm leading-relaxed mb-6">
-          Have a question not answered here?
-        </p>
-        <a href="mailto:lamt@math.ucla.edu" className="btn-filled">
-          EMAIL US
-        </a>
-      </div>
+      <section className="section-row">
+        <h2 className="section-title">Contact</h2>
+        <div>
+          <p className="section-copy mb-6">Have a question not answered here?</p>
+          <a href="mailto:lamt@math.ucla.edu" className="btn-outline">
+            Email Us
+          </a>
+        </div>
+      </section>
     </div>
   );
 }

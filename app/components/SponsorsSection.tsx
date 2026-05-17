@@ -1,26 +1,16 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import Image from 'next/image';
 import type { Tier } from '../page';
-
-const fadeUp = {
-  hidden:  { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
-};
-const stagger = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.08 } },
-};
 
 const TIER_CONFIG: Record<Tier, {
   label: string;
-  labelSize: string;
   imgHeight: number;
 }> = {
-  gold:    { label: 'Gold',            labelSize: 'text-xl md:text-2xl',  imgHeight: 240 },
-  silver:  { label: 'Silver',          labelSize: 'text-lg md:text-xl',   imgHeight: 180 },
-  bronze:  { label: 'Bronze',          labelSize: 'text-base md:text-lg', imgHeight: 140 },
-  friends: { label: 'Friends of LAMT', labelSize: 'text-sm md:text-base', imgHeight: 100 },
+  gold: { label: 'Gold', imgHeight: 220 },
+  silver: { label: 'Silver', imgHeight: 168 },
+  bronze: { label: 'Bronze', imgHeight: 132 },
+  friends: { label: 'Friends of LAMT', imgHeight: 96 },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
@@ -30,81 +20,65 @@ export default function SponsorsSection({
 }: {
   sponsorsByTier: Record<Tier, string[]>;
 }) {
-  const activeTiers = TIER_ORDER.filter(t => sponsorsByTier[t].length > 0);
-  const hasAny = activeTiers.length > 0;
+  const activeTiers = TIER_ORDER.filter((tier) => sponsorsByTier[tier].length > 0);
 
   return (
-    <section
-      id="sponsors"
-      className="py-20 px-6 md:px-16 bg-[#2774AE] dark:bg-black border-t border-white/10 transition-colors"
-    >
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-        >
-          {/* Heading */}
-          <motion.div variants={fadeUp} className="mb-14 text-center">
-            <h2
-              className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Our Sponsors
-            </h2>
-            <p className="text-[#DAEBFE] text-sm md:text-base max-w-md mx-auto">
-              LAMT 2026 is made possible by the generous support of our sponsors.
-            </p>
-          </motion.div>
+    <section id="sponsors" className="page-shell border-t-4 border-[var(--ucla-gold)] bg-[var(--color-surface)]">
+      <div className="page-hero">
+        <div>
+          <p className="page-kicker">Sponsors</p>
+          <span className="gold-rule" />
+        </div>
+        <div>
+          <h2 className="page-title">Our Sponsors</h2>
+          <p className="page-summary mt-5">
+            LAMT 2026 is made possible by the generous support of our sponsors.
+          </p>
+        </div>
+      </div>
 
-          {hasAny ? (
-            <div className="flex flex-col gap-16">
-              {activeTiers.map((tier) => {
-                const { label, labelSize, imgHeight } = TIER_CONFIG[tier];
-                const images = sponsorsByTier[tier];
-                return (
-                  <motion.div key={tier} variants={fadeUp}>
-                    <p
-                      className={`text-center font-bold uppercase tracking-[0.2em] text-white mb-8 ${labelSize}`}
-                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                    >
-                      {label}
-                    </p>
-                    <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
-                      {images.map((src) => (
-                        <div key={src} className="flex items-center justify-center">
-                          {/* height-only: width is auto so wide logos stay proportional */}
-                          <img
-                            src={src}
-                            alt="Sponsor"
-                            style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
-                            className="object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
-                            loading="lazy"
-                          />
-                        </div>
-                      ))}
+      {activeTiers.length > 0 ? (
+        <div className="grid gap-12">
+          {activeTiers.map((tier) => {
+            const { label, imgHeight } = TIER_CONFIG[tier];
+            return (
+              <section key={tier} className="section-row">
+                <h3 className="section-title">{label}</h3>
+                <div className="flex flex-wrap items-center gap-10">
+                  {sponsorsByTier[tier].map((src) => (
+                    <div key={src} className="border-2 border-[var(--color-border)] bg-white p-5">
+                      <Image
+                        src={src}
+                        alt={`${label} sponsor`}
+                        width={420}
+                        height={imgHeight}
+                        loading="eager"
+                        unoptimized
+                        style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
+                        className="object-contain"
+                      />
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          ) : (
-            <motion.div variants={fadeUp} className="text-center">
-              <p className="text-[#8BB8E8] text-sm tracking-wide uppercase">
-                Sponsor announcements coming soon.
-              </p>
-            </motion.div>
-          )}
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="section-row">
+          <h3 className="section-title">Sponsor Announcements</h3>
+          <p className="section-copy">Sponsor announcements are coming soon.</p>
+        </div>
+      )}
 
-          {/* CTA */}
-          <motion.div variants={fadeUp} className="mt-16 text-center">
-            <p className="text-[#DAEBFE] text-sm mb-4">Interested in sponsoring LAMT?</p>
-            <a href="mailto:team@lamt.net" className="btn-outline">
-              CONTACT US
-            </a>
-          </motion.div>
-        </motion.div>
+      <div className="section-row">
+        <h3 className="section-title">Sponsor LAMT</h3>
+        <div>
+          <p className="section-copy mb-6">Interested in sponsoring LAMT?</p>
+          <a href="mailto:team@lamt.net" className="btn-outline">
+            Contact Us
+          </a>
+        </div>
       </div>
     </section>
   );
