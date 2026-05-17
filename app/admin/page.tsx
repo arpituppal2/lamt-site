@@ -8,6 +8,26 @@ import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "../live/types";
 
 const ADMIN_PW = "BRUINSATLAMT";
 
+const STORAGE_KEYS = {
+  messages: "lamt_messages",
+  schedule: "lamt_schedule",
+  updates: "lamt_updates",
+};
+
+function countUnresolved(messages: ContactMessage[]) {
+  return messages.filter((message) => !message.resolved).length;
+}
+
+function readStored<T>(key: string, fallback: T): T {
+  const raw = window.localStorage.getItem(key) || window.sessionStorage.getItem(key);
+  if (!raw) return fallback;
+  return JSON.parse(raw) as T;
+}
+
+function writeStored<T>(key: string, value: T) {
+  window.localStorage.setItem(key, JSON.stringify(value));
+}
+
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
@@ -22,49 +42,73 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   }
 
   return (
-    <div className="ucla-band site-pad grid min-h-screen place-items-center">
-      <form onSubmit={submit} className="w-full max-w-md border-4 border-[#FFD100] bg-[var(--color-surface)] p-6 text-[var(--color-text)]">
-        <div className="mb-6 flex items-center gap-4">
-          <Image src="/LAMTBear.png" alt="LAMT" width={48} height={48} className="h-12 w-auto" />
-          <div>
-            <p className="label-caps">LAMT 2026</p>
-            <h1 className="text-2xl font-extrabold">Admin Panel</h1>
-          </div>
+    <div className="page-shell">
+      <header className="page-hero">
+        <div>
+          <p className="page-kicker">Admin</p>
+          <span className="gold-rule" />
         </div>
-        <label className="grid gap-2">
-          <span className="label-caps">Password</span>
-          <input
-            className={`lamt-input ${err ? "border-[#B33A2B]" : ""}`}
-            type="password"
-            value={pw}
-            onChange={(event) => setPw(event.target.value)}
-            autoFocus
-          />
-        </label>
-        {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">Incorrect password</p>}
-        <button type="submit" className="btn-filled mt-5 w-full">
-          Sign In
-        </button>
-      </form>
+        <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <h1 className="page-title">LAMT Admin Panel</h1>
+            <p className="page-summary mt-5">Post live announcements, update the schedule, and respond to tournament-day messages.</p>
+          </div>
+          <Image src="/LAMTBear.png" alt="LAMT" width={128} height={128} priority className="hidden h-32 w-32 border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-3 object-contain lg:block" />
+        </div>
+      </header>
+
+      <section className="section-row">
+        <h2 className="section-title">Access</h2>
+        <form onSubmit={submit} className="lamt-panel w-full max-w-md">
+          <div className="lamt-panel-body">
+            <label className="grid gap-2">
+              <span className="label-caps">Password</span>
+              <input
+                className={`lamt-input ${err ? "border-[#B33A2B]" : ""}`}
+                type="password"
+                value={pw}
+                onChange={(event) => setPw(event.target.value)}
+                autoFocus
+              />
+            </label>
+            {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">Incorrect password</p>}
+            <button type="submit" className="btn-filled mt-5 w-full">
+              Sign In
+            </button>
+          </div>
+        </form>
+      </section>
     </div>
   );
 }
 
-function MessagesTab() {
+function AdminMetric({ label, value, detail }: { label: string; value: string | number; detail: string }) {
+  return (
+    <div className="lamt-panel p-4">
+      <p className="label-caps">{label}</p>
+      <p className="mt-2 text-2xl font-extrabold text-[var(--color-text)]">{value}</p>
+      <p className="section-copy mt-1 text-sm">{detail}</p>
+    </div>
+  );
+}
+
+function MessagesTab({ onUnreadChange }: { onUnreadChange: (count: number) => void }) {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [replyMap, setReplyMap] = useState<Record<number, string>>({});
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("lamt_messages");
-      if (raw) setMessages(JSON.parse(raw));
+      const storedMessages = readStored<ContactMessage[]>(STORAGE_KEYS.messages, []);
+      setMessages(storedMessages);
+      onUnreadChange(countUnresolved(storedMessages));
     } catch {}
-  }, []);
+  }, [onUnreadChange]);
 
   function save(updated: ContactMessage[]) {
     setMessages(updated);
+    onUnreadChange(countUnresolved(updated));
     try {
-      sessionStorage.setItem("lamt_messages", JSON.stringify(updated));
+      writeStored(STORAGE_KEYS.messages, updated);
     } catch {}
   }
 
@@ -206,7 +250,7 @@ function AnnouncementsTab({ updates, setUpdates }: {
   function persist(next: Update[]) {
     setUpdates(next);
     try {
-      sessionStorage.setItem("lamt_updates", JSON.stringify(next));
+      writeStored(STORAGE_KEYS.updates, next);
     } catch {}
   }
 
@@ -280,7 +324,7 @@ function ScheduleTab({ schedule, setSchedule }: {
   function persist(next: ScheduleItem[]) {
     setSchedule(next);
     try {
-      sessionStorage.setItem("lamt_schedule", JSON.stringify(next));
+      writeStored(STORAGE_KEYS.schedule, next);
     } catch {}
   }
 
@@ -341,14 +385,24 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!authed) return;
-    try {
-      const storedSchedule = sessionStorage.getItem("lamt_schedule");
-      const storedUpdates = sessionStorage.getItem("lamt_updates");
-      const storedMessages = sessionStorage.getItem("lamt_messages");
-      if (storedSchedule) setSchedule(JSON.parse(storedSchedule));
-      if (storedUpdates) setUpdates(JSON.parse(storedUpdates));
-      if (storedMessages) setMsgCount(JSON.parse(storedMessages).filter((message: ContactMessage) => !message.resolved).length);
-    } catch {}
+    function syncStoredData() {
+      try {
+        setSchedule(readStored<ScheduleItem[]>(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE));
+        setUpdates(readStored<Update[]>(STORAGE_KEYS.updates, DEFAULT_UPDATES));
+        setMsgCount(countUnresolved(readStored<ContactMessage[]>(STORAGE_KEYS.messages, [])));
+      } catch {}
+    }
+
+    syncStoredData();
+
+    function onStorage(event: StorageEvent) {
+      if (event.key === STORAGE_KEYS.schedule || event.key === STORAGE_KEYS.updates || event.key === STORAGE_KEYS.messages) {
+        syncStoredData();
+      }
+    }
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, [authed]);
 
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
@@ -360,26 +414,41 @@ export default function AdminPage() {
   ];
 
   return (
-    <div>
-      <header className="ucla-band site-pad border-b-4 border-[#FFD100] py-8">
-        <div className="grid gap-5 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-          <div className="flex items-center gap-4">
-            <Image src="/LAMTBear.png" alt="LAMT" width={56} height={56} className="h-14 w-auto" />
-            <div>
-              <p className="label-caps text-[#DAEBFE]">LAMT 2026</p>
-              <h1 className="text-3xl font-extrabold text-white">Admin Panel</h1>
+    <div className="page-shell">
+      <header className="page-hero">
+        <div>
+          <p className="page-kicker">Admin</p>
+          <span className="gold-rule" />
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <h1 className="page-title">LAMT Admin Panel</h1>
+            <p className="page-summary mt-5">Post announcements, adjust the schedule, and handle live-page messages for tournament day.</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/live" className="btn-filled">
+                Open Live Page
+              </Link>
+              <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
+                Email Staff
+              </a>
             </div>
           </div>
-          <p className="max-w-3xl text-[#DAEBFE]">
-            Manage browser-session announcements, schedule edits, and messages for the tournament day page.
-          </p>
-          <Link href="/live" className="btn-outline btn-on-band">
-            Back to Live
-          </Link>
+          <Image src="/LAMTBear.png" alt="LAMT" width={150} height={150} priority className="hidden h-36 w-36 border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-4 object-contain lg:block" />
         </div>
       </header>
 
-      <main className="site-pad grid gap-6 py-6">
+      <section className="section-row">
+        <h2 className="section-title">Control Room</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <AdminMetric label="Updates" value={updates.length} detail="Posted announcements" />
+          <AdminMetric label="Schedule" value={schedule.length} detail="Timeline rows" />
+          <AdminMetric label="Messages" value={msgCount} detail="Pending replies" />
+        </div>
+      </section>
+
+      <section className="section-row">
+        <h2 className="section-title">Tools</h2>
+        <div className="grid gap-6">
         <nav className="flex flex-wrap gap-2 border-b-2 border-[var(--color-border)] pb-4" aria-label="Admin sections">
           {tabs.map((item) => (
             <button
@@ -397,8 +466,9 @@ export default function AdminPage() {
 
         {tab === "announcements" && <AnnouncementsTab updates={updates} setUpdates={setUpdates} />}
         {tab === "schedule" && <ScheduleTab schedule={schedule} setSchedule={setSchedule} />}
-        {tab === "messages" && <MessagesTab />}
-      </main>
+        {tab === "messages" && <MessagesTab onUnreadChange={setMsgCount} />}
+        </div>
+      </section>
     </div>
   );
 }
