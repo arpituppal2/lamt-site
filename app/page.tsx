@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 const REGISTER_URL = 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u';
-const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
+const DISCORD_URL = 'https://discord.gg/tqR3bGjVke';
 
 const SUPPORTED_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg'];
 const TIERS = ['gold', 'silver', 'bronze', 'friends'] as const;
