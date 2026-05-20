@@ -22,8 +22,10 @@ export default function FAQPage() {
           <span className="gold-rule" />
         </div>
         <div>
-          <h1 className="page-title">FAQ</h1>
-          <p className="page-summary mt-5">
+          <h1 className="page-title hero-animate-words">
+            <span className="word">FAQ</span>
+          </h1>
+          <p className="page-summary reveal mt-5">
             Key information for teams, chaperones, individual competitors, and guests.
           </p>
         </div>
@@ -31,7 +33,7 @@ export default function FAQPage() {
 
       <section className="section-row">
         <h2 className="section-title">Answers</h2>
-        <div className="grid gap-0 border-t-2 border-[var(--color-border)]">
+        <div className="stagger-parent grid gap-0 border-t-2 border-[var(--color-border)]">
           {faqs.map(({ q, a }) => (
             <div key={q} className="grid gap-3 border-b-2 border-[var(--color-border)] py-6 lg:grid-cols-[minmax(16rem,34%)_1fr] lg:gap-8">
               <h3 className="font-extrabold text-[var(--color-text)]">{q}</h3>
@@ -43,9 +45,9 @@ export default function FAQPage() {
 
       <section className="section-row">
         <h2 className="section-title">Contact</h2>
-        <div>
+        <div className="stagger-parent">
           <p className="section-copy mb-6">Have a question not answered here?</p>
-          <a href="mailto:lamt@math.ucla.edu" className="btn-outline">
+          <a href="mailto:lamt@math.ucla.edu" className="btn-outline btn-ripple">
             Email Us
           </a>
         </div>
