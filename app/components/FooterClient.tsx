@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DiscordLogoIcon, EnvelopeClosedIcon, LinkedInLogoIcon } from '@radix-ui/react-icons';
 
-const DISCORD_URL = 'https://discord.gg/cV6EHtfcD';
+const DISCORD_URL = 'https://discord.gg/tqR3bGjVke';
 
 const InstagramIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
