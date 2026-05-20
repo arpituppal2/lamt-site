@@ -88,8 +88,11 @@ export default function AboutPage() {
           <span className="gold-rule" />
         </div>
         <div>
-          <h1 className="page-title">About Us</h1>
-          <p className="page-summary mt-5">
+          <h1 className="page-title hero-animate-words">
+            <span className="word">About</span>{' '}
+            <span className="word">Us</span>
+          </h1>
+          <p className="page-summary reveal mt-5">
             The Los Angeles Math Tournament Group hosts and organizes mathematical contests for middle and high school students.
           </p>
         </div>
@@ -97,7 +100,7 @@ export default function AboutPage() {
 
       <section className="section-row">
         <h2 className="section-title">Mission</h2>
-        <div className="grid gap-5">
+        <div className="stagger-parent grid gap-5">
           <p className="section-copy">
             We strive to encourage mathematical exploration and understanding by introducing concepts not covered in the typical pre-college curricula to students with high mathematical aptitude and interest.
           </p>
@@ -109,7 +112,7 @@ export default function AboutPage() {
 
       <section className="section-row">
         <h2 className="section-title">LAMT Staff</h2>
-        <div className="grid gap-8">
+        <div className="stagger-parent grid gap-8">
           {staffGroups.map((group) => (
             <div key={group.title} className="border-t-2 border-[var(--color-border)] pt-5 first:border-t-0 first:pt-0">
               <h3 className="mb-3 font-extrabold text-[var(--color-text)]">{group.title}</h3>
@@ -121,7 +124,7 @@ export default function AboutPage() {
 
       <section className="section-row">
         <h2 className="section-title">UC Disclaimer</h2>
-        <p className="section-copy">
+        <p className="section-copy reveal">
           We are a student group acting independently of the University of California; we take full responsibility for our organization and this website.
         </p>
       </section>
