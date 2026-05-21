@@ -46,24 +46,25 @@ export default function ArchivePage() {
 
       <div>
         {pastFiles.map((year) => (
-            <section className="section-row">
+            <section key={year.title} className="section-row">
             <h2 className="section-title">{year.title}</h2>
             <div className="grid gap-8">
             {Object.entries(year.files).map(([category, items]) => (
                 <div key={category} className="border-t-2 border-[var(--color-border)] pt-5 first:border-t-0 first:pt-0">
                     <h3 className="mb-3 font-extrabold text-[var(--color-text)]">{category}</h3>
                     
-                    <div className="section-copy">
+
+                    <ul className="section-copy">
                         {Object.entries(items as Record<string, string>).map(([name, value]) => (
                         <li key={name}>
-                            <a key={name} href={value} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
+                            <a href={value} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
                                 {name}
                             </a>
                         </li>
                         
                         
                         ))}
-                    </div>
+                    </ul>
                 </div>
                 
             ))}
