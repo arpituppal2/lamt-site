@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 const navLinks = [
   { href: '/', label: 'HOME' },
   { href: '/tournament', label: 'LAMT 2026' },
+  { href: '/archive', label: 'ARCHIVE' },
   { href: '/rules', label: 'RULES' },
   { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'ABOUT' },
