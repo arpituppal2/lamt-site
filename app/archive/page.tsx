@@ -5,17 +5,17 @@ export default function ArchivePage() {
             title: '2026',
             files: {
                 Problems: {
+                    "Shopping": "/lamt2026/Shopping Round.pdf",
                     "Algebra & Number Theory": "/lamt2026/AlgNT.pdf",
                     "Combinatorics": "/lamt2026/Combo.pdf",
                     "Geometry": "/lamt2026/Geo.pdf",
-                    "Shopping": "/lamt2026/Shopping.pdf",
                     "Guts": "/lamt2026/Guts.pdf"
                 },
                 Solutions: {
                     "Algebra & Number Theory": "/lamt2026/AlgNT Solutions.pdf",
                     "Combinatorics": "/lamt2026/Combo Solutions.pdf",
                     "Geometry": "/lamt2026/Geo Solutions.pdf",
-                    "Shopping": "/lamt2026/Shopping Solutions.pdf",
+                    "Shopping": "/lamt2026/Shopping Round Solutions.pdf",
                     "Guts": "/lamt2026/Guts Solutions.pdf"
                 }
                 // Results: {

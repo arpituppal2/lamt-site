@@ -35,7 +35,7 @@ export default function TournamentPage() {
         </div>
         <div>
           <h1 className="page-title hero-animate-words">
-            <span className="word">LAMT 2026:</span>{' '}
+            <span className="word">(This page is outdated.) LAMT 2026:</span>{' '}
             <span className="word">May 17, 2026</span>
           </h1>
           <p className="page-summary reveal mt-5">
