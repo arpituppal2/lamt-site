@@ -110,10 +110,10 @@ export default function HomeClient({
 
           {tournamentLive ? (
             <div className="reveal flex flex-col items-center gap-6">
-              <p className="max-w-md text-sm font-medium leading-relaxed tracking-wide text-[#8BB8E8] md:text-base">
-                Tournament Day is here! Follow live updates, the schedule, and campus info on the Tournament Day site.
+              <p className="reveal mx-auto mb-10 max-w-lg text-center text-base leading-relaxed text-[#DAEBFE] md:text-lg">
+                Thank you for participating in LAMT 2026!
               </p>
-              <Link href="/live" className={`${homeButtonClass} group gap-3`}>
+              {/* <Link href="/live" className={`${homeButtonClass} group gap-3`}>
                 <span>Go to Tournament Day Site</span>
                 <svg
                   width="16"
@@ -129,7 +129,7 @@ export default function HomeClient({
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </Link> */}
             </div>
           ) : (
             <div
@@ -170,9 +170,8 @@ export default function HomeClient({
             )}
           </div>
           <p className="reveal mx-auto mb-10 max-w-lg text-center text-base leading-relaxed text-[#DAEBFE] md:text-lg">
-            LAMT 2026 takes place May 17 at UCLA. Registration is through ContestDojo and is{' '}
-            <strong className="font-bold text-white">completely free</strong>.
-          </p>
+            LAMT 2026 took place on May 17 at UCLA.
+            </p>
           <div className="stagger-parent flex flex-wrap items-center justify-center gap-6">
             {!regClosed && (
               <Link href={registerUrl} target="_blank" rel="noreferrer" className={homeButtonClass}>
