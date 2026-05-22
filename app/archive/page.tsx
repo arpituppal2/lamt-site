@@ -12,10 +12,10 @@ export default function ArchivePage() {
                     "Guts": "/lamt2026/Guts.pdf"
                 },
                 Solutions: {
+                    "Shopping": "/lamt2026/Shopping Round Solutions.pdf",
                     "Algebra & Number Theory": "/lamt2026/AlgNT Solutions.pdf",
                     "Combinatorics": "/lamt2026/Combo Solutions.pdf",
                     "Geometry": "/lamt2026/Geo Solutions.pdf",
-                    "Shopping": "/lamt2026/Shopping Round Solutions.pdf",
                     "Guts": "/lamt2026/Guts Solutions.pdf"
                 }
                 // Results: {
