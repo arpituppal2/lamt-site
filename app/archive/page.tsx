@@ -19,7 +19,7 @@ export default function ArchivePage() {
                     "Guts": "/lamt2026/Guts Solutions.pdf"
                 },
                 Results: {
-                    "Results": "/lamt2026/lamt2026results.html"
+                    "Results": "/lamt2026/lamt2026results" // note: .html files cannot have file extension in url here. Alternatively, set cleanUrls in package.json. Info: https://vercel.com/docs/project-configuration/vercel-json#cleanurls
                 },
                 Other: {
                     "Apology Letter": "/lamt2026/Apology Letter.pdf"
@@ -57,7 +57,7 @@ export default function ArchivePage() {
                     <ul className="section-copy">
                         {Object.entries(items as Record<string, string>).map(([name, value]) => (
                         <li key={name}>
-                            <a href={value} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
+                            <a href={`${process.env.PUBLIC_URL}${value}`} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
                                 {name}
                             </a>
                         </li>
