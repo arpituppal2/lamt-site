@@ -57,7 +57,7 @@ export default function ArchivePage() {
                     <ul className="section-copy">
                         {Object.entries(items as Record<string, string>).map(([name, value]) => (
                         <li key={name}>
-                            <a href={`${process.env.PUBLIC_URL}${value}`} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
+                            <a href={value} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800">
                                 {name}
                             </a>
                         </li>
