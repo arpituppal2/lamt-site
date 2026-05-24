@@ -17,13 +17,13 @@ export default function ArchivePage() {
                     "Geometry": "/lamt2026/Geo Solutions.pdf",
                     "Shopping": "/lamt2026/Shopping Solutions.pdf",
                     "Guts": "/lamt2026/Guts Solutions.pdf"
+                },
+                Results: {
+                    "Results": "/lamt2026/lamt2026results.html"
+                },
+                Other: {
+                    "Apology Letter": "/lamt2026/Apology Letter.pdf"
                 }
-                // Results: {
-                //     "Rankings": "/lamt2026/lamt2026results.txt"
-                // },
-                // Other: {
-                //     "Apology Letter": "/lamt2026/LAMT Apology Letter.pdf"
-                // }
             },
             
         }
