@@ -18,6 +18,10 @@ export default function ArchivePage() {
                     "Geometry": "/lamt2026/Geo Solutions.pdf",
                     "Guts": "/lamt2026/Guts Solutions.pdf"
                 },
+                Integration Bee: {
+                    "Problems and Answers": "/lamt2026/IntegrationBee2026.pdf",
+                    "Full Solutions": "/lamt2026/lamt26_intbee_qualSolns.pdf"
+                },    
                 Results: {
                     "Results": "/lamt2026/lamt2026results" // note: .html files cannot have file extension in url here. Alternatively, set cleanUrls in package.json. Info: https://vercel.com/docs/project-configuration/vercel-json#cleanurls
                 },
