@@ -18,7 +18,7 @@ export default function ArchivePage() {
                     "Geometry": "/lamt2026/Geo Solutions.pdf",
                     "Guts": "/lamt2026/Guts Solutions.pdf"
                 },
-                Integration_Bee: {
+                "Integration Bee": {
                     "Problems and Answers": "/lamt2026/IntegrationBee2026.pdf",
                     "Full Solutions": "/lamt2026/lamt26_intbee_qualSolns.pdf"
                 },    
