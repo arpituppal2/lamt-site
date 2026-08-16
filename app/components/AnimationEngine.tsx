@@ -150,7 +150,7 @@ function initParallax() {
     ticking = true;
     requestAnimationFrame(() => {
       const y = window.scrollY;
-      slow.forEach((el) => { el.style.transform = `translateY(${y * 0.08}px)`; });
+      slow.forEach((el) => { el.style.transform = `translateY(${y * 0.03}px)`; });
       med.forEach((el)  => { el.style.transform = `translateY(${y * 0.18}px)`; });
       fast.forEach((el) => { el.style.transform = `translateY(${y * 0.32}px)`; });
       if (wordmark) wordmark.style.transform = `translateY(${y * 0.22}px)`;
