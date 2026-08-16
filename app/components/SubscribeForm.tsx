@@ -64,7 +64,7 @@ export default function SubscribeForm({
         />
       </label>
       {status === "error" && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
-      <button type="submit" disabled={!email || status === "pending"} className={`${buttonClassName} disabled:opacity-40`}>
+      <button type="submit" disabled={!email || status === "pending"} className={`w-full ${buttonClassName} disabled:opacity-40`}>
         {status === "pending" ? "Signing up..." : buttonLabel}
       </button>
     </form>
