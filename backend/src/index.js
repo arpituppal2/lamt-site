@@ -101,6 +101,18 @@ app.post('/unsubscribe', limitUnsubscribe, async (req, res) => {
   }
 });
 
+app.get('/subscribers', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, email, consent_at, unsubscribed_at FROM subscribers ORDER BY consent_at DESC, id DESC',
+    );
+    return res.json({ subscribers: result.rows });
+  } catch (err) {
+    console.error('subscribers error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
 app.get('/announcements', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, title, body, priority, created_at FROM announcements ORDER BY created_at DESC, id DESC');
@@ -296,7 +308,7 @@ app.use((req, res) => {
   res.status(404).json({ error: 'not found' });
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`LAMT backend listening on port ${port}`);
 });

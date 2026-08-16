@@ -423,13 +423,90 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
   );
 }
 
+interface ServerSubscriber {
+  id: number;
+  email: string;
+  consent_at: string;
+  unsubscribed_at: string | null;
+}
+
+function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
+  const active = subscribers.filter((subscriber) => !subscriber.unsubscribed_at);
+  const [copied, setCopied] = useState(false);
+
+  async function copyEmails() {
+    try {
+      await navigator.clipboard.writeText(active.map((subscriber) => subscriber.email).join(", "));
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {}
+  }
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  return (
+    <section className="lamt-panel">
+      <div className="lamt-panel-header">
+        <div>
+          <p className="label-caps">Email List</p>
+          <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Subscribers</h2>
+        </div>
+        <span className="font-bold text-[var(--color-text-muted)]">
+          {active.length} active / {subscribers.length} total
+        </span>
+      </div>
+      <div className="lamt-panel-body">
+        <p className="section-copy mb-5">Everyone who signed up via the homepage section or the popup. Copy the list to send your next announcement.</p>
+        <button type="button" onClick={copyEmails} disabled={active.length === 0} className="btn-outline mb-5 disabled:opacity-40">
+          {copied ? "Copied!" : `Copy ${active.length} Email${active.length === 1 ? "" : "s"}`}
+        </button>
+        {subscribers.length === 0 ? (
+          <p className="text-center text-[var(--color-text-muted)]">No subscribers yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="lamt-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Signed Up</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subscribers.map((subscriber) => (
+                  <tr key={subscriber.id}>
+                    <td className="font-bold text-[var(--color-text)]">{subscriber.email}</td>
+                    <td className="text-[var(--color-text-secondary)]">{formatDate(subscriber.consent_at)}</td>
+                    <td>
+                      {subscriber.unsubscribed_at ? (
+                        <span className="text-sm font-extrabold uppercase text-[var(--color-text-muted)]">Unsubscribed</span>
+                      ) : (
+                        <span className="border-2 border-[var(--ucla-gold)] bg-[var(--ucla-gold)] px-2 py-1 text-xs font-extrabold uppercase text-[var(--ucla-blue-deep)]">
+                          Active
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<"announcements" | "schedule" | "messages">("announcements");
+  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers">("announcements");
   const [updates, setUpdates] = useState<Update[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [subscribers, setSubscribers] = useState<ServerSubscriber[]>([]);
   const [msgCount, setMsgCount] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -449,6 +526,7 @@ export default function AdminPage() {
       setMessages(nextMessages);
       setMsgCount(countUnresolved(nextMessages));
       setLoadError(null);
+      api.getSubscribers().then(({ subscribers: nextSubscribers }) => setSubscribers(nextSubscribers)).catch(() => {});
     } catch (error) {
       setLoadError(error instanceof ApiError ? error.message : "Could not reach the server.");
     }
@@ -484,6 +562,7 @@ export default function AdminPage() {
     { key: "announcements", label: "Announcements" },
     { key: "schedule", label: "Schedule" },
     { key: "messages", label: "Messages", badge: msgCount },
+    { key: "subscribers", label: "Subscribers" },
   ];
 
   return (
@@ -520,6 +599,7 @@ export default function AdminPage() {
           <AdminMetric label="Updates" value={updates.length} detail="Posted announcements" />
           <AdminMetric label="Schedule" value={schedule.length} detail="Timeline rows" />
           <AdminMetric label="Messages" value={msgCount} detail="Pending replies" />
+          <AdminMetric label="Subscribers" value={subscribers.filter((subscriber) => !subscriber.unsubscribed_at).length} detail="Active email list" />
         </div>
       </section>
 
@@ -590,6 +670,7 @@ export default function AdminPage() {
             }}
           />
         )}
+        {tab === "subscribers" && <SubscribersTab subscribers={subscribers} />}
         </div>
       </section>
     </div>

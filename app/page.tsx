@@ -1,5 +1,6 @@
 import SponsorsSection from './components/SponsorsSection';
 import HomeClient from './components/HomeClient';
+import EmailSection from './components/EmailSection';
 import fs from 'fs';
 import path from 'path';
 
@@ -32,6 +33,7 @@ export default function HomePage() {
   return (
     <div>
       <HomeClient registerUrl={REGISTER_URL} discordUrl={DISCORD_URL} />
+      <EmailSection />
       <SponsorsSection sponsorsByTier={sponsorsByTier} />
     </div>
   );

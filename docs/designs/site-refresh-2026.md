@@ -74,6 +74,7 @@ Founder decision: full scope in one continuous sprint. Union of A's scope execut
 |---|---|---|---|
 | POST | `/subscribe` | PUBLIC | Email capture. Body `{ email }`. Validation, lowercased UNIQUE, (IP,email) rate limit, consent ts. Duplicate = 200 "already on the list". Re-subscribe clears `unsubscribed_at`, re-records consent, 200 "you're back on the list". Error contract: 400 `{ error }`, 429 `{ error, retryAfter }`, 200 `{ status: "ok" \| "already" \| "back" }`. |
 | POST | `/unsubscribe` | PUBLIC | Tokenized link from first send, idempotent 200, soft-flag write. Body `{ token }`. Token = HMAC(email, UNSUBSCRIBE_SECRET — a separate env var from SESSION_SECRET, no secret reuse across purposes), 30-day expiry anchored to consent ts, one-use. Rate-limited 10/15min per IP; error contract 400 `{ error }` (invalid/expired token), 429 `{ error, retryAfter }`. If CSV export send path is chosen instead of an API send, tokens are pre-generated at capture time (the endpoint must not assume send-time generation). |
+| GET | `/subscribers` | ADMIN | Email list viewer (added 2026-08-16 — admin tab lists emails, consent date, active/unsubscribed, copy-all for outreach). Sorted consent_at DESC. |
 | GET | `/announcements` | PUBLIC | Read-only list for polling. |
 | POST | `/announcements` | ADMIN | Body `{ title?, body, priority? }` — priority feeds the schema delta, default normal. |
 | DELETE | `/announcements/:id` | ADMIN | Retraction — broadcast typos/errors must not be permanent. Origin-checked. |

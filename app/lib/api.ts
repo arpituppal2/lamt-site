@@ -91,8 +91,16 @@ export function serverMessageToMessage(item: ServerMessage): ContactMessage {
   };
 }
 
+interface ServerSubscriber {
+  id: number;
+  email: string;
+  consent_at: string;
+  unsubscribed_at: string | null;
+}
+
 export const api = {
   subscribe: (email: string) => apiFetch<{ status: "ok" | "already" | "back" }>("/subscribe", { method: "POST", body: JSON.stringify({ email }) }),
+  getSubscribers: () => apiFetch<{ subscribers: ServerSubscriber[] }>("/subscribers"),
   getSession: () => apiFetch<{ authed: boolean }>("/session"),
   login: (password: string) => apiFetch<{ ok: boolean }>("/login", { method: "POST", body: JSON.stringify({ password }) }),
   logout: () => apiFetch<{ ok: boolean }>("/logout", { method: "POST" }),
