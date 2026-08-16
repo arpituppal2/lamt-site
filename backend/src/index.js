@@ -535,10 +535,38 @@ app.post('/logout', (req, res) => {
   return res.json({ ok: true });
 });
 
+app.delete('/messages/:id', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query('DELETE FROM messages WHERE id = $1 RETURNING id', [req.params.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    return res.json({ status: 'deleted' });
+  } catch (err) {
+    console.error('message delete error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(__dirname, '..', '..', 'out');
 
 const SCHEMA_PATH = path.join(__dirname, '..', 'schema.sql');
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function waitForDatabase(maxAttempts = 30, delayMs = 2000) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await pool.query('SELECT 1');
+      console.log(`Database ready after ${attempt} attempt${attempt === 1 ? '' : 's'}`);
+      return true;
+    } catch (err) {
+      console.log(`Database not ready (attempt ${attempt}/${maxAttempts}): ${err.message}`);
+      if (attempt < maxAttempts) await sleep(delayMs);
+    }
+  }
+  console.error('Database never became ready');
+  return false;
+}
 
 async function runMigrations() {
   try {
@@ -568,18 +596,11 @@ app.use((req, res) => {
 
 const port = process.env.PORT || 3000;
 
-runMigrations().then(() => {
-  app.listen(port, () => {
-    console.log(`LAMT backend listening on port ${port}`);
-});
-app.delete('/messages/:id', requireAdmin, async (req, res) => {
-  try {
-    const result = await pool.query('DELETE FROM messages WHERE id = $1 RETURNING id', [req.params.id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
-    return res.json({ status: 'deleted' });
-  } catch (err) {
-    console.error('message delete error', err);
-    return res.status(500).json({ error: 'internal error' });
-  }
-});
-});
+waitForDatabase()
+  .then((ready) => (ready ? runMigrations() : Promise.resolve()))
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`LAMT backend listening on port ${port}`);
+    });
+  })
+  .catch((err) => console.error('Startup error', err));
