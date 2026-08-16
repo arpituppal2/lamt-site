@@ -30,9 +30,9 @@ export default function NavbarClient() {
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
       <div className="mx-auto hidden h-27 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
-          <Image src="/LAMTBear.png" alt="Logo" width={104} height={104} className="object-contain" />
+          <Image src="/LAMTBear.png" alt="Logo" width={90} height={90} className="object-contain" />
         </Link>
-        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(2rem, 5vw, 5.5rem)' }}>
+        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
