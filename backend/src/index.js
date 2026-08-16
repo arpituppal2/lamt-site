@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
@@ -302,6 +303,18 @@ app.post('/logout', (req, res) => {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(__dirname, '..', '..', 'out');
 
+const SCHEMA_PATH = path.join(__dirname, '..', 'schema.sql');
+
+async function runMigrations() {
+  try {
+    const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
+    await pool.query(schema);
+    console.log('Database schema initialized');
+  } catch (err) {
+    console.error('Schema migration failed:', err.message);
+  }
+}
+
 app.use(express.static(OUT_DIR, { extensions: ['html'], index: 'index.html' }));
 
 app.use((req, res) => {
@@ -309,6 +322,9 @@ app.use((req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`LAMT backend listening on port ${port}`);
+
+runMigrations().then(() => {
+  app.listen(port, () => {
+    console.log(`LAMT backend listening on port ${port}`);
+  });
 });
