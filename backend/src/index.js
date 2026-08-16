@@ -478,7 +478,17 @@ const SCHEMA_PATH = path.join(__dirname, '..', 'schema.sql');
 async function runMigrations() {
   try {
     const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
-    await pool.query(schema);
+    const statements = schema
+      .split(/;\s*\n/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0 && !s.startsWith('--'));
+    for (const stmt of statements) {
+      try {
+        await pool.query(stmt + ';');
+      } catch (stmtErr) {
+        console.error('Schema statement failed:', stmtErr.message, '— SQL:', stmt.slice(0, 80));
+      }
+    }
     console.log('Database schema initialized');
   } catch (err) {
     console.error('Schema migration failed:', err.message);
