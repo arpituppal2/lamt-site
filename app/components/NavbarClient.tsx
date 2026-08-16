@@ -30,7 +30,7 @@ export default function NavbarClient() {
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
       <div className="mx-auto hidden h-30 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
-          <Image src="/LAMTBear.png" alt="Logo" width={85} height={85} className="object-contain self-center" />
+          <Image src="/LAMTBear.png" alt="Logo" width={85} height={85} className="object-contain py-1" />
         </Link>
         <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
           {navLinks.map(({ href, label, external }) => {
@@ -53,9 +53,9 @@ export default function NavbarClient() {
         </nav>
       </div>
 
-      <div className="flex h-23 items-center justify-between px-4 md:hidden">
+      <div className="flex h-21 items-center justify-between px-4 md:hidden">
         <Link href="/" className="flex flex-col items-center gap-1 flex-1 text-center font-extrabold tracking-wide text-white">
-          <Image src="/LAMTBear.png" alt="Logo" width={74} height={74} className="object-contain self-center" />
+          <Image src="/LAMTBear.png" alt="Logo" width={78} height={78} className="object-contain" />
           <span className="text-[10px] sm:text-xs">LOS ANGELES MATH TOURNAMENT</span>
         </Link>
         <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu" className="flex flex-col gap-1.5 p-1">
