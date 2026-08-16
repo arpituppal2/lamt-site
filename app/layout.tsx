@@ -5,7 +5,6 @@ import DarkModeToggle from './components/DarkModeToggle';
 import KaTeXLoader from './components/KaTeXLoader';
 import EmailPopup from './components/EmailPopup';
 import AnimationEngine from './components/AnimationEngine';
-import PageTransition from './components/PageTransition';
 import './globals.css';
 
 export const metadata = {
@@ -21,9 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <AnimationEngine />
         <NavbarClient />
         <DarkModeToggle />
-        <PageTransition>
-          <main>{children}</main>
-        </PageTransition>
+        <main>{children}</main>
         <FooterClient />
         <EmailPopup />
       </body>
