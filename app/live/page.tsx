@@ -186,8 +186,8 @@ function MapSection() {
             >
               <h3 className="font-extrabold text-[var(--color-text)]">{venue.label}</h3>
               <p className="mt-2 text-sm text-[var(--color-text-secondary)]">{venue.detail}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold uppercase text-[var(--color-border-strong)] transition-colors group-hover:text-[var(--ucla-gold-dark)]">
-                Open Map
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-[var(--color-border-strong)] transition-colors group-hover:text-[var(--ucla-gold-dark)]">
+                Open map
                 <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
               </span>
             </a>

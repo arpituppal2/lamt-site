@@ -258,7 +258,7 @@ function AnnouncementsTab({ updates, onPost, onDelete }: {
                   {update.title && <h3 className="mt-2 font-extrabold text-[var(--color-text)]">{update.title}</h3>}
                   <p className="mt-2 text-[var(--color-text-secondary)] whitespace-pre-line">{update.body}</p>
                 </div>
-                <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Delete
                 </button>
               </div>
@@ -401,7 +401,7 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
                 <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
                   {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
                 </button>
-                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Remove Row
                 </button>
               </div>
@@ -602,7 +602,7 @@ export default function AdminPage() {
               <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
                 Email Staff
               </a>
-              <button type="button" onClick={logout} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+              <button type="button" onClick={logout} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                 Sign Out
               </button>
             </div>

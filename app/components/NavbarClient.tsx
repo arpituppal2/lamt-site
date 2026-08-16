@@ -6,13 +6,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { href: '/', label: 'HOME' },
-//   { href: '/tournament', label: 'LAMT 2026' },
-  { href: '/archive', label: 'ARCHIVE' },
-  { href: '/rules', label: 'RULES' },
+  { href: '/', label: 'Home' },
+  // { href: '/tournament', label: 'LAMT 2026' },
+  { href: '/archive', label: 'Archive' },
+  { href: '/rules', label: 'Rules' },
   { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'ABOUT' },
-  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
+  { href: '/about', label: 'About' },
+  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'Register', external: true },
 ];
 
 export default function NavbarClient() {
@@ -23,12 +23,12 @@ export default function NavbarClient() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const linkClass = 'font-extrabold text-xl tracking-widest uppercase text-white transition-opacity duration-200 hover:opacity-70';
+  const linkClass = 'font-extrabold text-xl tracking-widest text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
       <div className="mx-auto hidden h-20 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
-        <Link href="/" className="flex items-center gap-3 font-extrabold uppercase tracking-wide text-white transition-all hover:opacity-70">
+        <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Logo" width={60} height={60} className="object-contain" />
         </Link>
         <nav className="flex items-center gap-16">
@@ -57,7 +57,7 @@ export default function NavbarClient() {
       </div>
 
       <div className="flex h-16 items-center justify-between px-4 md:hidden">
-        <Link href="/" className="flex items-center gap-2 font-extrabold uppercase tracking-wide text-white">
+        <Link href="/" className="flex items-center gap-2 font-extrabold tracking-wide text-white">
           <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
           LAMT
         </Link>
@@ -73,7 +73,7 @@ export default function NavbarClient() {
           <div className="flex flex-col gap-6 px-6 py-4">
             {navLinks.map(({ href, label, external }) => {
               const active = pathname === href;
-              const mobileClass = 'text-lg font-extrabold uppercase tracking-widest text-white transition-opacity hover:opacity-70';
+              const mobileClass = 'text-lg font-extrabold tracking-widest text-white transition-opacity hover:opacity-70';
 
               return external ? (
                 <a key={href} href={href} target="_blank" rel="noreferrer" className={mobileClass} onClick={() => setMenuOpen(false)}>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const homeButtonClass =
-  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold uppercase text-white transition-colors hover:bg-white hover:text-[#2774AE]';
+  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[#2774AE]';
 
 function useCountdown(targetISO: string) {
   const target = new Date(targetISO).getTime();
