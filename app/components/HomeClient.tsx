@@ -97,7 +97,7 @@ export default function HomeClient({
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2774AE] to-transparent dark:from-black" />
 
-        <div className="relative z-10 w-full max-w-5xl py-8">
+        <div className="relative z-10 w-full max-w-5xl py-8 text-left">
           <h1
             className="hero-animate-words mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
