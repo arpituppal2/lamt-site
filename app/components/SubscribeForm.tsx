@@ -1,9 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { api, ApiError } from "../lib/api";
 
 const SUBSCRIBED_KEY = "lamt_popup_subscribed";
+
+const PHASES = [
+  { afterMs: 0, label: "Submitting..." },
+  { afterMs: 4000, label: "Almost there..." },
+  { afterMs: 9000, label: "Final touches..." },
+];
+
+function usePendingPhase(active: boolean) {
+  const [label, setLabel] = useState(PHASES[0].label);
+  const startRef = useRef(0);
+
+  useEffect(() => {
+    if (!active) return;
+    startRef.current = Date.now();
+    setLabel(PHASES[0].label);
+
+    const timers = PHASES.slice(1).map((phase) =>
+      window.setTimeout(() => setLabel(phase.label), phase.afterMs),
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [active]);
+
+  return label;
+}
 
 export default function SubscribeForm({
   autoFocus = false,
@@ -19,6 +43,7 @@ export default function SubscribeForm({
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "pending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const pendingLabel = usePendingPhase(status === "pending");
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -65,7 +90,7 @@ export default function SubscribeForm({
       </label>
       {status === "error" && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
       <button type="submit" disabled={!email || status === "pending"} className={`w-full ${buttonClassName} disabled:opacity-40`}>
-        {status === "pending" ? "Signing up..." : buttonLabel}
+        {status === "pending" ? pendingLabel : buttonLabel}
       </button>
     </form>
   );

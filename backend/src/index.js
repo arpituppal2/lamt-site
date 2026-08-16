@@ -22,6 +22,35 @@ import {
   tokenHash,
 } from './auth.js';
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isConnectionError = (err) =>
+  err &&
+  (err.code === 'ECONNREFUSED' ||
+    err.code === 'ETIMEDOUT' ||
+    err.code === 'ENOTFOUND' ||
+    err.code === '57P03' || // cannot_connect_now
+    /the database system is starting up/i.test(err.message) ||
+    /connection refused/i.test(err.message) ||
+    /connection terminated/i.test(err.message) ||
+    /timeout expired when trying to connect/i.test(err.message));
+
+async function withDbRetry(label, fn, { maxAttempts = 8, baseDelay = 1500 } = {}) {
+  let lastErr;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (!isConnectionError(err) || attempt === maxAttempts) throw err;
+      const delay = baseDelay * attempt;
+      console.log(`${label} retrying in ${delay}ms (attempt ${attempt}/${maxAttempts}): ${err.message}`);
+      await sleep(delay);
+    }
+  }
+  throw lastErr;
+}
+
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json());
@@ -60,23 +89,26 @@ app.post('/subscribe', limitSubscribe, async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   if (!validateEmail(email)) return res.status(400).json({ error: 'invalid email' });
   try {
-    const existing = await pool.query('SELECT id, unsubscribed_at FROM subscribers WHERE email = $1', [email]);
-    if (existing.rows.length > 0) {
-      const row = existing.rows[0];
-      if (row.unsubscribed_at) {
-        await pool.query(
-          'UPDATE subscribers SET unsubscribed_at = NULL, consent_at = now() WHERE id = $1',
-          [row.id],
-        );
-        return res.json({ status: 'back' });
+    const result = await withDbRetry('subscribe', async () => {
+      const existing = await pool.query('SELECT id, unsubscribed_at FROM subscribers WHERE email = $1', [email]);
+      if (existing.rows.length > 0) {
+        const row = existing.rows[0];
+        if (row.unsubscribed_at) {
+          await pool.query(
+            'UPDATE subscribers SET unsubscribed_at = NULL, consent_at = now() WHERE id = $1',
+            [row.id],
+          );
+          return { status: 'back' };
+        }
+        return { status: 'already' };
       }
-      return res.json({ status: 'already' });
-    }
-    const inserted = await pool.query(
-      'INSERT INTO subscribers (email, consent_at) VALUES ($1, now()) RETURNING id',
-      [email],
-    );
-    return res.json({ status: 'ok', id: inserted.rows[0].id });
+      const inserted = await pool.query(
+        'INSERT INTO subscribers (email, consent_at) VALUES ($1, now()) RETURNING id',
+        [email],
+      );
+      return { status: 'ok', id: inserted.rows[0].id };
+    });
+    return res.json(result);
   } catch (err) {
     console.error('subscribe error', err);
     return res.status(500).json({ error: 'internal error' });
@@ -550,8 +582,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(__dirname, '..', '..', 'out');
 
 const SCHEMA_PATH = path.join(__dirname, '..', 'schema.sql');
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function waitForDatabase(maxAttempts = 30, delayMs = 2000) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
