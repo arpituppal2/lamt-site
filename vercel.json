@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/health", "destination": "https://lamt-site-production.up.railway.app/health" },
+    { "source": "/login", "destination": "https://lamt-site-production.up.railway.app/login" },
+    { "source": "/logout", "destination": "https://lamt-site-production.up.railway.app/logout" },
+    { "source": "/session", "destination": "https://lamt-site-production.up.railway.app/session" },
+    { "source": "/subscribe", "destination": "https://lamt-site-production.up.railway.app/subscribe" },
+    { "source": "/unsubscribe", "destination": "https://lamt-site-production.up.railway.app/unsubscribe" },
+    { "source": "/subscribers", "destination": "https://lamt-site-production.up.railway.app/subscribers" },
+    { "source": "/announcements", "destination": "https://lamt-site-production.up.railway.app/announcements" },
+    { "source": "/schedule", "destination": "https://lamt-site-production.up.railway.app/schedule" },
+    { "source": "/messages", "destination": "https://lamt-site-production.up.railway.app/messages" }
+  ]
+}
