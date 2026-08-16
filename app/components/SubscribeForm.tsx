@@ -9,7 +9,7 @@ export default function SubscribeForm({
   autoFocus = false,
   buttonLabel = "Keep Me Posted",
   onDark = false,
-  buttonClassName = "btn-filled",
+  buttonClassName = "btn-gold",
 }: {
   autoFocus?: boolean;
   buttonLabel?: string;
