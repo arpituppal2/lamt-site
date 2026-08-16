@@ -129,40 +129,11 @@ function initCounters() {
 }
 
 // ─── 3. MAGNETIC BUTTONS ─────────────────────────────────────────────────────
+// Removed per user feedback — buttons following cursor was distracting
+// function initMagnetic() { ... }
+
 function initMagnetic() {
-  const btns = document.querySelectorAll<HTMLElement>(
-    '.btn-premium, .btn-magnetic, .btn-filled, .lamt-button'
-  );
-
-  const MAX = 10;
-
-  const cleanups: (() => void)[] = [];
-
-  btns.forEach((btn) => {
-    const onMove = (e: MouseEvent) => {
-      const rect = btn.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = Math.max(-MAX, Math.min(MAX, (e.clientX - cx) * 0.35));
-      const dy = Math.max(-MAX, Math.min(MAX, (e.clientY - cy) * 0.35));
-      btn.style.transform = `translate(${dx}px, ${dy}px)`;
-      btn.style.transition = 'transform 80ms linear';
-    };
-
-    const onLeave = () => {
-      btn.style.transform = '';
-      btn.style.transition = `transform 500ms ${GOLDEN}`;
-    };
-
-    btn.addEventListener('mousemove', onMove);
-    btn.addEventListener('mouseleave', onLeave);
-    cleanups.push(() => {
-      btn.removeEventListener('mousemove', onMove);
-      btn.removeEventListener('mouseleave', onLeave);
-    });
-  });
-
-  return () => cleanups.forEach((fn) => fn());
+  return () => {};
 }
 
 // ─── 4. PARALLAX ─────────────────────────────────────────────────────────────
@@ -407,7 +378,6 @@ export default function AnimationEngine() {
     const cleanups = [
       initReveal(),
       initCounters(),
-      initMagnetic(),
       initParallax(),
       initTimelineDraw(),
       initNavMorph(),

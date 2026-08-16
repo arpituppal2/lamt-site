@@ -87,10 +87,13 @@
   --button-selected-text: #00101A;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, fill 200ms ease;
 }
 
 html {
@@ -334,8 +337,19 @@ label .label-caps {
   font-size: var(--text-sm);
   font-weight: 800;
   line-height: 1;
-  text-transform: uppercase;
   white-space: nowrap;
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    opacity var(--transition-ui),
+    transform 120ms ease;
+}
+
+.btn-outline:active,
+.btn-filled:active,
+.lamt-button:active {
+  transform: scale(0.97);
 }
 
 .btn-outline:hover,
@@ -367,6 +381,15 @@ label .label-caps {
   min-height: 3.25rem;
   padding: 1rem 1.5rem;
   font-size: var(--text-base);
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    transform 120ms ease;
+}
+
+.btn-gold:active {
+  transform: scale(0.97);
 }
 
 .btn-gold:hover {
@@ -389,8 +412,8 @@ label .label-caps {
   letter-spacing: 0.06em;
   line-height: 1;
   padding: 0.5rem 0.15rem 0.85rem;
-  text-transform: uppercase;
   white-space: nowrap;
+  transition: color var(--transition-ui), border-color var(--transition-ui);
 }
 
 .tab-underline:hover {
@@ -410,6 +433,15 @@ label .label-caps {
 .btn-on-band {
   border-color: var(--ucla-gold);
   color: var(--ucla-gold);
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    transform 120ms ease;
+}
+
+.btn-on-band:active {
+  transform: scale(0.97);
 }
 
 .btn-on-band:hover {
@@ -502,8 +534,7 @@ label .label-caps {
   color: var(--color-text-muted);
   font-size: var(--text-xs);
   font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .lamt-table tr:last-child td {
@@ -595,7 +626,6 @@ label .label-caps {
 .site-brand {
   font-size: var(--text-lg);
   font-weight: 900;
-  text-transform: uppercase;
 }
 
 .site-brand__mark {
@@ -624,8 +654,17 @@ label .label-caps {
   line-height: 1;
   min-height: 2.75rem;
   padding: 0.72rem 1rem;
-  text-transform: uppercase;
   white-space: nowrap;
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    transform 120ms ease;
+}
+
+.site-nav-link:active,
+.btn-premium:active {
+  transform: scale(0.97);
 }
 
 .site-nav-link {
@@ -655,6 +694,15 @@ label .label-caps {
   border: 2px solid var(--ucla-gold);
   border-radius: 0;
   color: var(--ucla-gold);
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    transform 120ms ease;
+}
+
+.site-menu-button:active {
+  transform: scale(0.95);
 }
 
 .site-menu-button svg,
@@ -720,6 +768,15 @@ label .label-caps {
   border: 2px solid var(--ucla-gold);
   border-radius: 0;
   color: var(--ucla-gold);
+  transition:
+    background-color var(--transition-ui),
+    border-color var(--transition-ui),
+    color var(--transition-ui),
+    transform 120ms ease;
+}
+
+.site-social-link:active {
+  transform: scale(0.95);
 }
 
 .site-footer__note {
