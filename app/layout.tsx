@@ -3,6 +3,7 @@ import NavbarClient from './components/NavbarClient';
 import FooterClient from './components/FooterClient';
 import DarkModeToggle from './components/DarkModeToggle';
 import KaTeXLoader from './components/KaTeXLoader';
+import EmailPopup from './components/EmailPopup';
 import './globals.css';
 
 export const metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <DarkModeToggle />
         <main>{children}</main>
         <FooterClient />
+        <EmailPopup />
       </body>
     </html>
   );

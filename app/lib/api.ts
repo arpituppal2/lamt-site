@@ -92,6 +92,7 @@ export function serverMessageToMessage(item: ServerMessage): ContactMessage {
 }
 
 export const api = {
+  subscribe: (email: string) => apiFetch<{ status: "ok" | "already" | "back" }>("/subscribe", { method: "POST", body: JSON.stringify({ email }) }),
   getSession: () => apiFetch<{ authed: boolean }>("/session"),
   login: (password: string) => apiFetch<{ ok: boolean }>("/login", { method: "POST", body: JSON.stringify({ password }) }),
   logout: () => apiFetch<{ ok: boolean }>("/logout", { method: "POST" }),
