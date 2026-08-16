@@ -24,15 +24,15 @@ export default function NavbarClient() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const linkClass = 'nav-link font-extrabold text-xl tracking-wide uppercase text-white transition-opacity duration-200 hover:opacity-70';
+  const linkClass = 'nav-link font-extrabold text-2xl tracking-wide uppercase text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
-      <div className="mx-auto hidden h-28 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
+      <div className="mx-auto hidden h-36 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
-          <Image src="/LAMTBear.png" alt="Logo" width={96} height={96} className="object-contain" />
+          <Image src="/LAMTBear.png" alt="Logo" width={140} height={140} className="object-contain" />
         </Link>
-        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(2.5rem, 6vw, 6.5rem)' }}>
+        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(2rem, 5vw, 5.5rem)' }}>
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
@@ -53,9 +53,9 @@ export default function NavbarClient() {
         </nav>
       </div>
 
-      <div className="flex h-24 items-center justify-between px-4 md:hidden">
+      <div className="flex h-28 items-center justify-between px-4 md:hidden">
         <Link href="/" className="flex flex-col items-center gap-1 flex-1 text-center font-extrabold tracking-wide text-white">
-          <Image src="/LAMTBear.png" alt="Logo" width={72} height={72} className="object-contain" />
+          <Image src="/LAMTBear.png" alt="Logo" width={104} height={104} className="object-contain" />
           <span className="text-[10px] sm:text-xs">LOS ANGELES MATH TOURNAMENT</span>
         </Link>
         <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu" className="flex flex-col gap-1.5 p-1">
