@@ -28,11 +28,11 @@ export default function NavbarClient() {
 
   return (
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
-      <div className="mx-auto hidden h-28 items-center justify-between px-4 md:flex md:px-6">
+      <div className="mx-auto hidden h-28 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Logo" width={96} height={96} className="object-contain" />
         </Link>
-        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(2.5rem, 4vw, 5rem)' }}>
+        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(3rem, 8vw, 8rem)' }}>
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
