@@ -35,8 +35,10 @@ const HELP_ITEMS = [
   { label: "Wi-Fi", detail: "Use UCLA-WEB; no password is required.", href: null },
   { label: "Restrooms", detail: "Use the MS Building restrooms near the elevators.", href: null },
   { label: "Disputes", detail: "Disputes are handled at Court of Sciences during lunch.", href: null },
+  { label: "Accessibility", detail: "All venues are wheelchair accessible. Request accommodations at the Info Desk or via live chat.", href: null },
+  { label: "Lost & Found", detail: "Bring found items to the Info Desk. Lost something? Ask staff or use live chat.", href: null },
   { label: "Emergency", detail: "Call 911 or UCPD at 310-825-4321.", href: "tel:3108254321" },
-  { label: "Contact Staff", detail: "uclamathtournament@gmail.com", href: "mailto:uclamathtournament@gmail.com" },
+  { label: "Contact Staff", detail: "Tap Live Help Desk below, or email us.", href: "mailto:uclamathtournament@gmail.com" },
 ];
 
 function parseTime(value: string): number {
@@ -365,7 +367,7 @@ function LiveChat() {
   const status = chat?.status;
 
   return (
-    <section className="section-row">
+    <section id="chat" className="section-row">
       <h2 className="section-title">Live Help Desk</h2>
       {notFound && (
         <p className="text-sm font-bold text-[#B33A2B]">Your previous chat could not be found. You can start a new one below.</p>
@@ -502,6 +504,9 @@ export default function LivePage() {
               </a>
               <a href="#help" className="btn-outline">
                 Help
+              </a>
+              <a href="#chat" className="btn-outline">
+                Live Chat
               </a>
             </div>
           </div>

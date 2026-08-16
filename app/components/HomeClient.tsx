@@ -76,8 +76,22 @@ export default function HomeClient({
   registerUrl: string;
   discordUrl: string;
 }) {
-  const tournamentDiff = useCountdown('2026-05-17T08:00:00-07:00');
-  const regDiff = useCountdown('2026-05-10T23:59:59-07:00');
+  // Default date if admin hasn't set one yet; fetches the real date from server on mount
+  const [tournamentDate, setTournamentDate] = useState('2026-05-17T08:00:00-07:00');
+  const [regDate, setRegDate] = useState('2026-05-10T23:59:59-07:00');
+
+  useEffect(() => {
+    fetch('/settings')
+      .then((r) => r.json())
+      .then(({ settings }) => {
+        if (settings.tournament_date) setTournamentDate(settings.tournament_date);
+        if (settings.registration_deadline) setRegDate(settings.registration_deadline);
+      })
+      .catch(() => {});
+  }, []);
+
+  const tournamentDiff = useCountdown(tournamentDate);
+  const regDiff = useCountdown(regDate);
   const regClosed = regDiff <= 0;
   const tournamentLive = tournamentDiff <= 0;
 

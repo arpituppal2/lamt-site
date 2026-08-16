@@ -116,6 +116,18 @@ export const api = {
     }),
   deleteAnnouncement: (id: number) =>
     apiFetch<{ status: string }>(`/announcements/${id}`, { method: "DELETE" }),
+  editAnnouncement: (id: number, patch: { title?: string; body?: string }) =>
+    apiFetch<{ announcement: ServerAnnouncement }>(`/announcements/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+    }),
+
+  getSettings: () => apiFetch<{ settings: Record<string, string> }>("/settings"),
+  updateSettings: (entries: Record<string, string>) =>
+    apiFetch<{ status: string; updated: Record<string, string> }>("/settings", {
+      method: "PATCH",
+      body: JSON.stringify(entries),
+    }),
 
   getSchedule: async () => {
     const data = await apiFetch<{ schedule: ServerScheduleItem[] }>("/schedule");

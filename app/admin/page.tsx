@@ -210,15 +210,20 @@ function MessagesTab({ messages, onResolve, onReply, onDelete }: {
   );
 }
 
-function AnnouncementsTab({ updates, onPost, onDelete }: {
+function AnnouncementsTab({ updates, onPost, onDelete, onEdit }: {
   updates: Update[];
   onPost: (title: string, body: string) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
+  onEdit: (id: number, patch: { title?: string; body?: string }) => Promise<void>;
 }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [editPending, setEditPending] = useState(false);
 
   async function addUpdate() {
     if (!body.trim()) return;
@@ -232,6 +237,34 @@ function AnnouncementsTab({ updates, onPost, onDelete }: {
       setError(err instanceof ApiError ? err.message : "Could not reach the server.");
     } finally {
       setPending(false);
+    }
+  }
+
+  function startEdit(update: Update) {
+    setEditingId(update.id);
+    setEditTitle(update.title || "");
+    setEditBody(update.body);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditTitle("");
+    setEditBody("");
+  }
+
+  async function saveEdit(id: number) {
+    if (!editBody.trim()) return;
+    setEditPending(true);
+    try {
+      await onEdit(id, {
+        title: editTitle.trim() || undefined,
+        body: editBody.trim(),
+      });
+      cancelEdit();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    } finally {
+      setEditPending(false);
     }
   }
 
@@ -260,16 +293,35 @@ function AnnouncementsTab({ updates, onPost, onDelete }: {
         ) : (
           updates.map((update) => (
             <article key={update.id} className="border-b-2 border-[var(--color-divider)] py-5 last:border-b-0">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-bold text-[var(--color-text-muted)]">{update.timestamp}</p>
-                  {update.title && <h3 className="mt-2 font-extrabold text-[var(--color-text)]">{update.title}</h3>}
-                  <p className="mt-2 text-[var(--color-text-secondary)] whitespace-pre-line">{update.body}</p>
+              {editingId === update.id ? (
+                <div className="grid gap-3">
+                  <p className="label-caps">Editing</p>
+                  <input className="lamt-input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Title (optional)" />
+                  <textarea className="lamt-textarea" value={editBody} onChange={(e) => setEditBody(e.target.value)} placeholder="Update text..." />
+                  <div className="flex flex-wrap gap-3">
+                    <button type="button" onClick={() => saveEdit(update.id)} disabled={!editBody.trim() || editPending} className="btn-filled disabled:opacity-40">
+                      {editPending ? "Saving..." : "Save Changes"}
+                    </button>
+                    <button type="button" onClick={cancelEdit} className="btn-outline">Cancel</button>
+                  </div>
                 </div>
-                <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
-                  Delete
-                </button>
-              </div>
+              ) : (
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold text-[var(--color-text-muted)]">{update.timestamp}</p>
+                    {update.title && <h3 className="mt-2 font-extrabold text-[var(--color-text)]">{update.title}</h3>}
+                    <p className="mt-2 text-[var(--color-text-secondary)] whitespace-pre-line">{update.body}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => startEdit(update)} className="px-3 py-2 font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)]">
+                      Edit
+                    </button>
+                    <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </article>
           ))
         )}
@@ -528,6 +580,88 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
   );
 }
 
+function SettingsTab() {
+  const [tournamentDate, setTournamentDate] = useState("");
+  const [tournamentName, setTournamentName] = useState("");
+  const [regDeadline, setRegDeadline] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.getSettings().then(({ settings }) => {
+      if (settings.tournament_date) setTournamentDate(settings.tournament_date);
+      if (settings.tournament_name) setTournamentName(settings.tournament_name);
+      if (settings.registration_deadline) setRegDeadline(settings.registration_deadline);
+    }).catch(() => {});
+  }, []);
+
+  function toLocalInput(iso: string) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    const tz = d.getTimezoneOffset() * 60000;
+    return new Date(d.getTime() - tz).toISOString().slice(0, 16);
+  }
+
+  function toISO(local: string) {
+    if (!local) return "";
+    return new Date(local).toISOString();
+  }
+
+  async function save() {
+    setSaving(true);
+    setError(null);
+    setSaved(false);
+    try {
+      await api.updateSettings({
+        tournament_date: toISO(tournamentDate),
+        tournament_name: tournamentName,
+        registration_deadline: toISO(regDeadline),
+      });
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <p className="label-caps">Configuration</p>
+      <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Settings</h2>
+      <p className="mt-4 text-[var(--color-text-muted)]">
+        Set the next tournament date and registration deadline here. The homepage hero countdown will update automatically within 30 seconds. This is also what the &ldquo;Tournament Day&rdquo; live page references.
+      </p>
+      <div className="mt-5 grid max-w-2xl gap-5">
+        <label className="grid gap-2">
+          <span className="label-caps">Tournament Name (optional)</span>
+          <input className="lamt-input" value={tournamentName} onChange={(e) => setTournamentName(e.target.value)} placeholder="LAMT 2027" />
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">Tournament Date & Time</span>
+          <input className="lamt-input" type="datetime-local" value={tournamentDate ? toLocalInput(tournamentDate) : ""} onChange={(e) => setTournamentDate(e.target.value)} />
+          <span className="text-xs text-[var(--color-text-muted)]">This is when the homepage countdown reaches zero and the &ldquo;Tournament is Live&rdquo; message appears.</span>
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">Registration Deadline</span>
+          <input className="lamt-input" type="datetime-local" value={regDeadline ? toLocalInput(regDeadline) : ""} onChange={(e) => setRegDeadline(e.target.value)} />
+          <span className="text-xs text-[var(--color-text-muted)]">After this time, the Register button disappears and &ldquo;Registration is closed&rdquo; shows.</span>
+        </label>
+        {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
+        <div className="flex items-center gap-4">
+          <button type="button" onClick={save} disabled={saving} className="btn-filled disabled:opacity-40">
+            {saving ? "Saving..." : "Save Settings"}
+          </button>
+          {saved && <span className="text-sm font-bold text-[var(--ucla-gold-dark)]">Saved! Countdown will update shortly.</span>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
   const [queue, setQueue] = useState<LiveChatType[]>([]);
   const [active, setActive] = useState<LiveChatType[]>([]);
@@ -656,7 +790,7 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers" | "livechat">("announcements");
+  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers" | "livechat" | "settings">("announcements");
   const [updates, setUpdates] = useState<Update[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -717,6 +851,7 @@ export default function AdminPage() {
     { key: "messages", label: "Messages", badge: msgCount },
     { key: "livechat", label: "Live Chat", badge: queueCount },
     { key: "subscribers", label: "Subscribers" },
+    { key: "settings", label: "Settings" },
   ];
 
   return (
@@ -733,6 +868,12 @@ export default function AdminPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/live" className="btn-filled">
                 Open Live Page
+              </Link>
+              <Link href="/" className="btn-outline">
+                View Homepage
+              </Link>
+              <Link href="/about" className="btn-outline">
+                About / Privacy
               </Link>
               <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
                 Email Staff
@@ -786,6 +927,10 @@ export default function AdminPage() {
               await api.deleteAnnouncement(id);
               await reload();
             }}
+            onEdit={async (id, patch) => {
+              await api.editAnnouncement(id, patch);
+              await reload();
+            }}
           />
         )}
         {tab === "schedule" && (
@@ -830,6 +975,7 @@ export default function AdminPage() {
         )}
         {tab === "livechat" && <LiveChatTab onQueueCount={setQueueCount} />}
         {tab === "subscribers" && <SubscribersTab subscribers={subscribers} />}
+        {tab === "settings" && <SettingsTab />}
         </div>
       </section>
     </div>

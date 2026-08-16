@@ -140,6 +140,32 @@ app.post('/announcements', requireAdmin, async (req, res) => {
   }
 });
 
+app.patch('/announcements/:id', requireAdmin, async (req, res) => {
+  const id = req.params.id;
+  const { title, body } = req.body || {};
+  if (typeof title !== 'string' && typeof body !== 'string') {
+    return res.status(400).json({ error: 'title or body required' });
+  }
+  if (typeof body === 'string' && body.trim() === '') {
+    return res.status(400).json({ error: 'body cannot be empty' });
+  }
+  try {
+    const existing = await pool.query('SELECT title, body FROM announcements WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    const current = existing.rows[0];
+    const nextTitle = typeof title === 'string' ? (title.trim() === '' ? null : title) : current.title;
+    const nextBody = typeof body === 'string' ? body : current.body;
+    const result = await pool.query(
+      'UPDATE announcements SET title = $1, body = $2 WHERE id = $3 RETURNING id, title, body, priority, created_at',
+      [nextTitle, nextBody, id],
+    );
+    return res.json({ announcement: result.rows[0] });
+  } catch (err) {
+    console.error('announcement update error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
 app.delete('/announcements/:id', requireAdmin, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM announcements WHERE id = $1 RETURNING id', [req.params.id]);
@@ -447,6 +473,45 @@ app.post('/chat/:id/close', requireAdmin, async (req, res) => {
     return res.json({ status: 'closed' });
   } catch (err) {
     console.error('chat close error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+// ---------- Settings (tournament date, etc.) ----------
+
+app.get('/settings', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT key, value FROM settings');
+    const settings = {};
+    for (const row of result.rows) settings[row.key] = row.value;
+    return res.json({ settings });
+  } catch (err) {
+    console.error('settings get error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.patch('/settings', requireAdmin, async (req, res) => {
+  const entries = req.body || {};
+  if (typeof entries !== 'object' || Array.isArray(entries)) {
+    return res.status(400).json({ error: 'object required' });
+  }
+  const allowed = ['tournament_date', 'tournament_name', 'registration_deadline'];
+  try {
+    const updated = {};
+    for (const key of Object.keys(entries)) {
+      if (!allowed.includes(key)) continue;
+      const value = String(entries[key]);
+      await pool.query(
+        `INSERT INTO settings (key, value, updated_at) VALUES ($1, $2, now())
+         ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = now()`,
+        [key, value],
+      );
+      updated[key] = value;
+    }
+    return res.json({ status: 'updated', updated });
+  } catch (err) {
+    console.error('settings update error', err);
     return res.status(500).json({ error: 'internal error' });
   }
 });
