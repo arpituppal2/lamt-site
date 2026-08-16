@@ -1,43 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { ScheduleItem, Update, ContactMessage } from "../live/types";
-import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "../live/types";
-
-const ADMIN_PW = "BRUINSATLAMT";
-
-const STORAGE_KEYS = {
-  messages: "lamt_messages",
-  schedule: "lamt_schedule",
-  updates: "lamt_updates",
-};
+import type { ContactMessage, ScheduleItem, Update } from "../live/types";
+import { api, ApiError } from "../lib/api";
 
 function countUnresolved(messages: ContactMessage[]) {
   return messages.filter((message) => !message.resolved).length;
 }
 
-function readStored<T>(key: string, fallback: T): T {
-  const raw = window.localStorage.getItem(key) || window.sessionStorage.getItem(key);
-  if (!raw) return fallback;
-  return JSON.parse(raw) as T;
-}
-
-function writeStored<T>(key: string, value: T) {
-  window.localStorage.setItem(key, JSON.stringify(value));
-}
-
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [pw, setPw] = useState("");
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  function submit(event: React.FormEvent) {
+  async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (pw === ADMIN_PW) onLogin();
-    else {
-      setErr(true);
-      window.setTimeout(() => setErr(false), 1600);
+    setPending(true);
+    setErr(null);
+    try {
+      await api.login(pw);
+      onLogin();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.status === 401) setErr("Incorrect password");
+        else if (error.status === 429) setErr("Too many attempts. Wait a minute and try again.");
+        else setErr(error.message);
+      } else {
+        setErr("Could not reach the server.");
+      }
+    } finally {
+      setPending(false);
     }
   }
 
@@ -71,9 +65,9 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
                 autoFocus
               />
             </label>
-            {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">Incorrect password</p>}
-            <button type="submit" className="btn-filled mt-5 w-full">
-              Sign In
+            {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{err}</p>}
+            <button type="submit" disabled={pending} className="btn-filled mt-5 w-full disabled:opacity-40">
+              {pending ? "Signing In..." : "Sign In"}
             </button>
           </div>
         </form>
@@ -92,28 +86,25 @@ function AdminMetric({ label, value, detail }: { label: string; value: string | 
   );
 }
 
-function MessagesTab({ onUnreadChange }: { onUnreadChange: (count: number) => void }) {
-  const [messages, setMessages] = useState<ContactMessage[]>([]);
+function MessagesTab({ messages, onResolve, onReply }: {
+  messages: ContactMessage[];
+  onResolve: (id: number, resolved: boolean) => Promise<void>;
+  onReply: (id: number, body: string) => Promise<void>;
+}) {
   const [replyMap, setReplyMap] = useState<Record<number, string>>({});
+  const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
+  async function run(id: number, action: () => Promise<void>) {
+    setPendingIds((prev) => new Set(prev).add(id));
     try {
-      const storedMessages = readStored<ContactMessage[]>(STORAGE_KEYS.messages, []);
-      setMessages(storedMessages);
-      onUnreadChange(countUnresolved(storedMessages));
-    } catch {}
-  }, [onUnreadChange]);
-
-  function save(updated: ContactMessage[]) {
-    setMessages(updated);
-    onUnreadChange(countUnresolved(updated));
-    try {
-      writeStored(STORAGE_KEYS.messages, updated);
-    } catch {}
-  }
-
-  function markResolved(id: number, resolved: boolean) {
-    save(messages.map((message) => (message.id === id ? { ...message, resolved } : message)));
+      await action();
+    } finally {
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   }
 
   function sendReply(id: number) {
@@ -121,39 +112,14 @@ function MessagesTab({ onUnreadChange }: { onUnreadChange: (count: number) => vo
     if (!text.trim()) return;
     const msg = messages.find((message) => message.id === id);
     if (!msg) return;
-
-    const updated: ContactMessage[] = messages.map((message) =>
-      message.id === id
-        ? {
-            ...message,
-            resolved: true,
-            replies: [
-              ...(message.replies || []),
-              {
-                id: Date.now(),
-                body: text.trim(),
-                timestamp: new Date().toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                }),
-              },
-            ],
-          }
-        : message
-    );
-
-    save(updated);
-    setReplyMap((prev) => ({ ...prev, [id]: "" }));
-    window.location.href = `mailto:${msg.email}?subject=Re: Your message to LAMT Staff&body=${encodeURIComponent(text.trim())}`;
+    run(id, async () => {
+      await onReply(id, text.trim());
+      setReplyMap((prev) => ({ ...prev, [id]: "" }));
+      window.location.href = `mailto:${msg.email}?subject=Re: Your message to LAMT Staff&body=${encodeURIComponent(text.trim())}`;
+    });
   }
 
-  function deleteMsg(id: number) {
-    save(messages.filter((message) => message.id !== id));
-  }
-
-  const unresolved = messages.filter((message) => !message.resolved).length;
+  const unresolved = countUnresolved(messages);
 
   if (messages.length === 0) {
     return (
@@ -217,21 +183,23 @@ function MessagesTab({ onUnreadChange }: { onUnreadChange: (count: number) => vo
               placeholder="Type a reply. Sending opens your mail client."
             />
             <div className="flex flex-wrap gap-3">
-              <button type="button" onClick={() => sendReply(message.id)} disabled={!(replyMap[message.id] || "").trim()} className="btn-outline disabled:opacity-40">
+              <button
+                type="button"
+                onClick={() => sendReply(message.id)}
+                disabled={!(replyMap[message.id] || "").trim() || pendingIds.has(message.id)}
+                className="btn-outline disabled:opacity-40"
+              >
                 Reply and Mark Resolved
               </button>
               {message.resolved ? (
-                <button type="button" onClick={() => markResolved(message.id, false)} className="btn-outline">
+                <button type="button" onClick={() => run(message.id, () => onResolve(message.id, false))} disabled={pendingIds.has(message.id)} className="btn-outline disabled:opacity-40">
                   Mark Pending
                 </button>
               ) : (
-                <button type="button" onClick={() => markResolved(message.id, true)} className="btn-outline">
+                <button type="button" onClick={() => run(message.id, () => onResolve(message.id, true))} disabled={pendingIds.has(message.id)} className="btn-outline disabled:opacity-40">
                   Mark Resolved
                 </button>
               )}
-              <button type="button" onClick={() => deleteMsg(message.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
-                Delete
-              </button>
             </div>
           </div>
         </article>
@@ -240,35 +208,29 @@ function MessagesTab({ onUnreadChange }: { onUnreadChange: (count: number) => vo
   );
 }
 
-function AnnouncementsTab({ updates, setUpdates }: {
+function AnnouncementsTab({ updates, onPost, onDelete }: {
   updates: Update[];
-  setUpdates: (updates: Update[]) => void;
+  onPost: (title: string, body: string) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
 }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  function persist(next: Update[]) {
-    setUpdates(next);
-    try {
-      writeStored(STORAGE_KEYS.updates, next);
-    } catch {}
-  }
-
-  function addUpdate() {
+  async function addUpdate() {
     if (!body.trim()) return;
-    const newUpdate: Update = {
-      id: Date.now(),
-      title: title.trim(),
-      body: body.trim(),
-      timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-    };
-    persist([newUpdate, ...updates]);
-    setTitle("");
-    setBody("");
-  }
-
-  function deleteUpdate(id: number) {
-    persist(updates.filter((update) => update.id !== id));
+    setPending(true);
+    setError(null);
+    try {
+      await onPost(title.trim(), body.trim());
+      setTitle("");
+      setBody("");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
@@ -283,8 +245,9 @@ function AnnouncementsTab({ updates, setUpdates }: {
         <div className="lamt-panel-body grid gap-4">
           <input className="lamt-input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Title (optional)" />
           <textarea className="lamt-textarea" value={body} onChange={(event) => setBody(event.target.value)} placeholder="Update text..." />
-          <button type="button" onClick={addUpdate} disabled={!body.trim()} className="btn-outline justify-self-start disabled:opacity-40">
-            Post Update
+          {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
+          <button type="button" onClick={addUpdate} disabled={!body.trim() || pending} className="btn-outline justify-self-start disabled:opacity-40">
+            {pending ? "Posting..." : "Post Update"}
           </button>
         </div>
       </section>
@@ -305,7 +268,7 @@ function AnnouncementsTab({ updates, setUpdates }: {
                   {update.title && <h3 className="mt-2 font-extrabold text-[var(--color-text)]">{update.title}</h3>}
                   <p className="section-copy mt-2 whitespace-pre-line">{update.body}</p>
                 </div>
-                <button type="button" onClick={() => deleteUpdate(update.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => onDelete(update.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Delete
                 </button>
               </div>
@@ -317,19 +280,86 @@ function AnnouncementsTab({ updates, setUpdates }: {
   );
 }
 
-function ScheduleTab({ schedule, setSchedule }: {
+interface ScheduleDraft {
+  time: string;
+  end: string;
+  event: string;
+  location: string;
+  adjustmentReason?: string;
+}
+
+function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
   schedule: ScheduleItem[];
-  setSchedule: (schedule: ScheduleItem[]) => void;
+  onSave: (id: number, draft: ScheduleDraft) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
+  onAdd: (draft: ScheduleDraft) => Promise<void>;
 }) {
-  function persist(next: ScheduleItem[]) {
-    setSchedule(next);
-    try {
-      writeStored(STORAGE_KEYS.schedule, next);
-    } catch {}
+  const [drafts, setDrafts] = useState<Record<number, ScheduleDraft>>({});
+  const [errors, setErrors] = useState<Record<number, string>>({});
+  const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
+
+  const draftFor = (item: ScheduleItem): ScheduleDraft =>
+    drafts[item.id] || {
+      time: item.time,
+      end: item.end,
+      event: item.event,
+      location: item.location,
+      adjustmentReason: item.adjustmentReason || "",
+    };
+
+  function updateDraft(id: number, field: keyof ScheduleDraft, value: string) {
+    setDrafts((prev) => ({ ...prev, [id]: { ...(prev[id] || draftFor(schedule.find((item) => item.id === id)!)), [field]: value } }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   }
 
-  function update(index: number, field: keyof ScheduleItem, value: string) {
-    persist(schedule.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)));
+  async function saveItem(item: ScheduleItem) {
+    const draft = draftFor(item);
+    setPendingIds((prev) => new Set(prev).add(item.id));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[item.id];
+      return next;
+    });
+    try {
+      await onSave(item.id, draft);
+      setDrafts((prev) => {
+        const next = { ...prev };
+        delete next[item.id];
+        return next;
+      });
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [item.id]: err instanceof ApiError ? err.message : "Could not reach the server." }));
+    } finally {
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
+    }
+  }
+
+  async function addRow() {
+    setPendingIds((prev) => new Set(prev).add(-1));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[-1];
+      return next;
+    });
+    try {
+      await onAdd({ time: "", end: "", event: "", location: "", adjustmentReason: "" });
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [-1]: err instanceof ApiError ? err.message : "Could not reach the server." }));
+    } finally {
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(-1);
+        return next;
+      });
+    }
   }
 
   return (
@@ -341,35 +371,52 @@ function ScheduleTab({ schedule, setSchedule }: {
         </div>
       </div>
       <div className="lamt-panel-body">
-        <p className="section-copy mb-5">Edit event times, rooms, and delay notes. Changes sync to the /live page for this browser session.</p>
+        <p className="section-copy mb-5">Edit event times, rooms, and delay notes. Changes sync to the /live page within 30 seconds. Changing a time requires a delay note.</p>
         <div className="grid gap-4">
-          {schedule.map((item, index) => (
-            <div key={`${item.event}-${index}`} className="border-2 border-[var(--color-border)] p-4">
-              <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
-              <div className="grid gap-3 lg:grid-cols-4">
-                <label className="grid gap-2">
-                  <span className="label-caps">Start</span>
-                  <input className="lamt-input" value={item.time} onChange={(event) => update(index, "time", event.target.value)} />
+          {schedule.map((item) => {
+            const draft = draftFor(item);
+            const dirty = draft.time !== item.time || draft.end !== item.end || draft.event !== item.event || draft.location !== item.location || draft.adjustmentReason !== (item.adjustmentReason || "");
+            return (
+              <div key={item.id} className="border-2 border-[var(--color-border)] p-4">
+                <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
+                <div className="grid gap-3 lg:grid-cols-4">
+                  <label className="grid gap-2">
+                    <span className="label-caps">Start</span>
+                    <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="label-caps">End</span>
+                    <input className="lamt-input" value={draft.end} onChange={(event) => updateDraft(item.id, "end", event.target.value)} />
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="label-caps">Location</span>
+                    <input className="lamt-input" value={draft.location} onChange={(event) => updateDraft(item.id, "location", event.target.value)} />
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="label-caps">Original Time</span>
+                    <input className="lamt-input" value={item.originalTime || ""} readOnly disabled placeholder="Set automatically on first delay" />
+                  </label>
+                </div>
+                <label className="mt-3 grid gap-2">
+                  <span className="label-caps">Delay Reason</span>
+                  <input className="lamt-input" value={draft.adjustmentReason || ""} onChange={(event) => updateDraft(item.id, "adjustmentReason", event.target.value)} placeholder="Required when changing a time" />
                 </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">End</span>
-                  <input className="lamt-input" value={item.end} onChange={(event) => update(index, "end", event.target.value)} />
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">Location</span>
-                  <input className="lamt-input" value={item.location} onChange={(event) => update(index, "location", event.target.value)} />
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">Original Time</span>
-                  <input className="lamt-input" value={item.originalTime || ""} onChange={(event) => update(index, "originalTime", event.target.value)} placeholder="If delayed" />
-                </label>
+                {errors[item.id] && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{errors[item.id]}</p>}
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
+                    {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button type="button" onClick={() => onDelete(item.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                    Remove Row
+                  </button>
+                </div>
               </div>
-              <label className="mt-3 grid gap-2">
-                <span className="label-caps">Delay Reason</span>
-                <input className="lamt-input" value={item.adjustmentReason || ""} onChange={(event) => update(index, "adjustmentReason", event.target.value)} placeholder="Shown on /live when present" />
-              </label>
-            </div>
-          ))}
+            );
+          })}
+          {errors[-1] && <p className="text-sm font-bold text-[#B33A2B]">{errors[-1]}</p>}
+          <button type="button" onClick={addRow} disabled={pendingIds.has(-1)} className="btn-outline justify-self-start disabled:opacity-40">
+            {pendingIds.has(-1) ? "Adding..." : "Add Row"}
+          </button>
         </div>
       </div>
     </section>
@@ -378,32 +425,58 @@ function ScheduleTab({ schedule, setSchedule }: {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [tab, setTab] = useState<"announcements" | "schedule" | "messages">("announcements");
-  const [updates, setUpdates] = useState<Update[]>(DEFAULT_UPDATES);
-  const [schedule, setSchedule] = useState<ScheduleItem[]>(DEFAULT_SCHEDULE);
+  const [updates, setUpdates] = useState<Update[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [msgCount, setMsgCount] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api
+      .getSession()
+      .then(() => setAuthed(true))
+      .catch(() => setAuthed(false))
+      .finally(() => setChecking(false));
+  }, []);
+
+  const reload = useCallback(async () => {
+    try {
+      const [nextUpdates, nextSchedule, nextMessages] = await Promise.all([api.getAnnouncements(), api.getSchedule(), api.getMessages()]);
+      setUpdates(nextUpdates);
+      setSchedule(nextSchedule);
+      setMessages(nextMessages);
+      setMsgCount(countUnresolved(nextMessages));
+      setLoadError(null);
+    } catch (error) {
+      setLoadError(error instanceof ApiError ? error.message : "Could not reach the server.");
+    }
+  }, []);
 
   useEffect(() => {
     if (!authed) return;
-    function syncStoredData() {
-      try {
-        setSchedule(readStored<ScheduleItem[]>(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE));
-        setUpdates(readStored<Update[]>(STORAGE_KEYS.updates, DEFAULT_UPDATES));
-        setMsgCount(countUnresolved(readStored<ContactMessage[]>(STORAGE_KEYS.messages, [])));
-      } catch {}
-    }
+    reload();
+    const id = window.setInterval(reload, 30_000);
+    return () => window.clearInterval(id);
+  }, [authed, reload]);
 
-    syncStoredData();
+  function logout() {
+    api
+      .logout()
+      .catch(() => {})
+      .finally(() => setAuthed(false));
+  }
 
-    function onStorage(event: StorageEvent) {
-      if (event.key === STORAGE_KEYS.schedule || event.key === STORAGE_KEYS.updates || event.key === STORAGE_KEYS.messages) {
-        syncStoredData();
-      }
-    }
-
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [authed]);
+  if (checking) {
+    return (
+      <div className="page-shell">
+        <div className="lamt-panel">
+          <div className="lamt-panel-body text-center text-[var(--color-text-muted)]">Checking session...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
 
@@ -431,7 +504,11 @@ export default function AdminPage() {
               <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
                 Email Staff
               </a>
+              <button type="button" onClick={logout} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                Sign Out
+              </button>
             </div>
+            {loadError && <p className="mt-4 text-sm font-bold text-[#B33A2B]">Sync issue: {loadError} (retrying)</p>}
           </div>
           <Image src="/LAMTBear.png" alt="LAMT" width={150} height={150} priority className="hidden h-36 w-36 border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-4 object-contain lg:block" />
         </div>
@@ -464,9 +541,55 @@ export default function AdminPage() {
           ))}
         </nav>
 
-        {tab === "announcements" && <AnnouncementsTab updates={updates} setUpdates={setUpdates} />}
-        {tab === "schedule" && <ScheduleTab schedule={schedule} setSchedule={setSchedule} />}
-        {tab === "messages" && <MessagesTab onUnreadChange={setMsgCount} />}
+        {tab === "announcements" && (
+          <AnnouncementsTab
+            updates={updates}
+            onPost={async (title, body) => {
+              await api.postAnnouncement(title, body);
+              await reload();
+            }}
+            onDelete={async (id) => {
+              await api.deleteAnnouncement(id);
+              await reload();
+            }}
+          />
+        )}
+        {tab === "schedule" && (
+          <ScheduleTab
+            schedule={schedule}
+            onSave={async (id, draft) => {
+              await api.patchScheduleItem(id, {
+                time: draft.time,
+                end: draft.end,
+                event: draft.event,
+                location: draft.location,
+                adjustmentReason: draft.adjustmentReason || undefined,
+              });
+              await reload();
+            }}
+            onDelete={async (id) => {
+              await api.deleteScheduleItem(id);
+              await reload();
+            }}
+            onAdd={async (draft) => {
+              await api.postScheduleItem({ time: draft.time, end: draft.end, event: draft.event, location: draft.location });
+              await reload();
+            }}
+          />
+        )}
+        {tab === "messages" && (
+          <MessagesTab
+            messages={messages}
+            onResolve={async (id, resolved) => {
+              await api.patchMessageResolved(id, resolved);
+              await reload();
+            }}
+            onReply={async (id, body) => {
+              await api.patchMessageReply(id, body);
+              await reload();
+            }}
+          />
+        )}
         </div>
       </section>
     </div>

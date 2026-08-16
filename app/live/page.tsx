@@ -3,16 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ContactMessage, ScheduleItem, Update } from "./types";
+import type { ScheduleItem, Update } from "./types";
 import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "./types";
+import { api, ApiError } from "../lib/api";
 
 const TOURNAMENT_OVER = false;
-
-const STORAGE_KEYS = {
-  messages: "lamt_messages",
-  schedule: "lamt_schedule",
-  updates: "lamt_updates",
-};
 
 const MAP_EMBED_SRC =
   "https://www.openstreetmap.org/export/embed.html?bbox=-118.4465%2C34.0667%2C-118.4385%2C34.0715&layer=mapnik&marker=34.0690%2C-118.4428";
@@ -73,12 +68,6 @@ function getTimelineState(schedule: ScheduleItem[], now: Date | null) {
   const progress = Math.min(100, Math.max(0, ((currentMinutes - start) / (end - start)) * 100));
 
   return { currentIdx, nextIdx, progress };
-}
-
-function readStored<T>(key: string, fallback: T): T {
-  const raw = window.localStorage.getItem(key) || window.sessionStorage.getItem(key);
-  if (!raw) return fallback;
-  return JSON.parse(raw) as T;
 }
 
 function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
@@ -270,39 +259,23 @@ function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "pending" | "sent" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  function submit(event: React.FormEvent) {
+  async function submit(event: React.FormEvent) {
     event.preventDefault();
-
+    setStatus("pending");
+    setError(null);
     try {
-      const existing = readStored<ContactMessage[]>(STORAGE_KEYS.messages, []);
-      window.localStorage.setItem(
-        STORAGE_KEYS.messages,
-        JSON.stringify([
-          {
-            id: Date.now(),
-            name,
-            email,
-            message,
-            timestamp: new Date().toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            }),
-            resolved: false,
-            replies: [],
-          },
-          ...existing,
-        ])
-      );
-    } catch {}
-
-    setStatus("sent");
-    setName("");
-    setEmail("");
-    setMessage("");
+      await api.postMessage(name, email, message);
+      setStatus("sent");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch (err) {
+      setStatus("error");
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    }
   }
 
   return (
@@ -333,8 +306,16 @@ function ContactForm() {
               <span className="label-caps">Message</span>
               <textarea className="lamt-textarea" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Questions, concerns, anything..." required />
             </label>
-            <button type="submit" disabled={!name || !email || !message} className="btn-outline justify-self-start disabled:opacity-40">
-              Send Message
+            {status === "error" && (
+              <p className="text-sm font-bold text-[#B33A2B]">
+                {error} — or email us directly at{" "}
+                <a className="underline" href={`mailto:uclamathtournament@gmail.com?subject=Message to LAMT Staff&body=${encodeURIComponent(message)}`}>
+                  uclamathtournament@gmail.com
+                </a>
+              </p>
+            )}
+            <button type="submit" disabled={!name || !email || !message || status === "pending"} className="btn-outline justify-self-start disabled:opacity-40">
+              {status === "pending" ? "Sending..." : "Send Message"}
             </button>
           </form>
         )}
@@ -348,23 +329,23 @@ export default function LivePage() {
   const [updates, setUpdates] = useState<Update[]>(DEFAULT_UPDATES);
 
   useEffect(() => {
-    function syncStoredData() {
+    let alive = true;
+
+    async function sync() {
       try {
-        setSchedule(readStored<ScheduleItem[]>(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE));
-        setUpdates(readStored<Update[]>(STORAGE_KEYS.updates, DEFAULT_UPDATES));
+        const [nextSchedule, nextUpdates] = await Promise.all([api.getSchedule(), api.getAnnouncements()]);
+        if (!alive) return;
+        setSchedule(nextSchedule);
+        setUpdates(nextUpdates);
       } catch {}
     }
 
-    syncStoredData();
-
-    function onStorage(event: StorageEvent) {
-      if (event.key === STORAGE_KEYS.schedule || event.key === STORAGE_KEYS.updates) {
-        syncStoredData();
-      }
-    }
-
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    sync();
+    const id = window.setInterval(sync, 30_000);
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+    };
   }, []);
 
   return (

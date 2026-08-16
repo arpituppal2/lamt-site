@@ -1,0 +1,9 @@
+node_modules
+backend/node_modules
+out
+.git
+docs
+.gstack
+.playwright-mcp
+.env*
+!.env.example
