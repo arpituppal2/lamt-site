@@ -172,7 +172,7 @@ export default function AboutPage() {
 
           <h3 className="mt-3 font-extrabold text-[var(--color-text)]">Changes to This Policy</h3>
           <p className="section-copy">
-            We may update this policy as our practices evolve. The "Last updated" date above will always reflect the most recent revision. If we make material changes, we will notify subscribers via email.
+            We may update this policy as our practices evolve. The &ldquo;Last updated&rdquo; date above will always reflect the most recent revision. If we make material changes, we will notify subscribers via email.
           </p>
 
           <h3 className="mt-3 font-extrabold text-[var(--color-text)]">Contact</h3>
