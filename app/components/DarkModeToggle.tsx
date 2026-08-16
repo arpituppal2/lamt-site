@@ -33,7 +33,7 @@ export default function DarkModeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle dark mode"
-      className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center bg-[#003B5C] text-white transition-transform hover:scale-105 dark:bg-white dark:text-[#003B5C]"
+      className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center border-2 border-[#FFD100] bg-[#003B5C] text-white transition-transform hover:scale-105 dark:bg-white dark:text-[#003B5C]"
     >
       {dark ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
