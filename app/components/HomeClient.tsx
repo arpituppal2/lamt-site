@@ -83,7 +83,7 @@ export default function HomeClient({
 
   return (
     <>
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#2774AE] px-6 text-center transition-colors duration-300 dark:bg-black md:px-16">
+      <section className="relative flex min-h-screen flex-col items-start justify-center overflow-hidden bg-[#2774AE] px-6 text-left transition-colors duration-300 dark:bg-black md:px-16">
         <div
           aria-hidden
           className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -97,7 +97,7 @@ export default function HomeClient({
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2774AE] to-transparent dark:from-black" />
 
-        <div className="relative z-10 w-full max-w-5xl py-8 text-left">
+        <div className="relative z-10 w-full max-w-5xl py-8">
           <h1
             className="hero-animate-words mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -106,11 +106,11 @@ export default function HomeClient({
             <br />
             <span className="word gold-shimmer-text">Math Tournament</span>
           </h1>
-          <div className="pulse-ring mx-auto mb-10 h-[3px] w-12 rounded-full bg-[#FFD100]" />
+          <div className="pulse-ring mb-10 h-[3px] w-12 rounded-full bg-[#FFD100]" />
 
           {tournamentLive ? (
-            <div className="reveal flex flex-col items-center gap-6">
-              <p className="reveal mx-auto mb-10 max-w-lg text-center text-base leading-relaxed text-[#DAEBFE] md:text-lg">
+            <div className="reveal flex flex-col items-start gap-6">
+              <p className="reveal mb-10 max-w-lg text-left text-base leading-relaxed text-[#DAEBFE] md:text-lg">
                 Thank you for participating in LAMT 2026!
               </p>
               {/* <Link href="/live" className={`${homeButtonClass} group gap-3`}>
