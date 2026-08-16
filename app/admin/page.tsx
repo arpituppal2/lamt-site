@@ -76,7 +76,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
 function AdminMetric({ label, value, detail }: { label: string; value: string | number; detail: string }) {
   return (
-    <div className="border-t-2 border-[var(--color-divider)] py-4 lg:border-l-2 lg:border-t-0 lg:px-6 lg:py-0 lg:first:border-l-0 lg:first:pl-0">
+    <div className="border-t-2 border-[var(--color-divider)] pt-4 lg:border-l-2 lg:border-t-0 lg:px-6 lg:pt-0 lg:first:border-l-0 lg:first:pl-0">
       <p className="label-caps">{label}</p>
       <p className="mt-2 text-3xl font-extrabold text-[var(--color-text)]">{value}</p>
       <p className="mt-1 text-sm text-[var(--color-text-muted)]">{detail}</p>
@@ -287,6 +287,8 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
   const [drafts, setDrafts] = useState<Record<number, ScheduleDraft>>({});
   const [errors, setErrors] = useState<Record<number, string>>({});
   const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
+  const [newRow, setNewRow] = useState<ScheduleDraft | null>(null);
+  const [newError, setNewError] = useState<string | null>(null);
 
   const draftFor = (item: ScheduleItem): ScheduleDraft =>
     drafts[item.id] || {
@@ -304,6 +306,12 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
       delete next[id];
       return next;
     });
+  }
+
+  function updateNewRow(field: keyof ScheduleDraft, value: string) {
+    if (!newRow) return;
+    setNewRow({ ...newRow, [field]: value });
+    setNewError(null);
   }
 
   async function saveItem(item: ScheduleItem) {
@@ -332,17 +340,19 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
     }
   }
 
-  async function addRow() {
+  async function createRow() {
+    if (!newRow) return;
+    if (!newRow.time.trim() || !newRow.end.trim() || !newRow.event.trim() || !newRow.location.trim()) {
+      setNewError("Time, end, event, and location are required.");
+      return;
+    }
     setPendingIds((prev) => new Set(prev).add(-1));
-    setErrors((prev) => {
-      const next = { ...prev };
-      delete next[-1];
-      return next;
-    });
+    setNewError(null);
     try {
-      await onAdd({ time: "", end: "", event: "", location: "", adjustmentReason: "" });
+      await onAdd(newRow);
+      setNewRow(null);
     } catch (err) {
-      setErrors((prev) => ({ ...prev, [-1]: err instanceof ApiError ? err.message : "Could not reach the server." }));
+      setNewError(err instanceof ApiError ? err.message : "Could not reach the server.");
     } finally {
       setPendingIds((prev) => {
         const next = new Set(prev);
@@ -364,7 +374,7 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
           return (
             <div key={item.id} className="border-t-2 border-[var(--color-divider)] py-5">
               <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
-              <div className="grid gap-3 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <label className="grid gap-2">
                   <span className="label-caps">Start</span>
                   <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
@@ -398,9 +408,40 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
             </div>
           );
         })}
-        {errors[-1] && <p className="text-sm font-bold text-[#B33A2B]">{errors[-1]}</p>}
-        <button type="button" onClick={addRow} disabled={pendingIds.has(-1)} className="btn-outline justify-self-start disabled:opacity-40">
-          {pendingIds.has(-1) ? "Adding..." : "Add Row"}
+        {newRow && (
+          <div className="border-t-2 border-[var(--ucla-gold)] py-5">
+            <p className="mb-3 font-extrabold text-[var(--color-text)]">New Row</p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <label className="grid gap-2">
+                <span className="label-caps">Start</span>
+                <input className="lamt-input" value={newRow.time} onChange={(event) => updateNewRow("time", event.target.value)} placeholder="e.g. 8:00 AM" />
+              </label>
+              <label className="grid gap-2">
+                <span className="label-caps">End</span>
+                <input className="lamt-input" value={newRow.end} onChange={(event) => updateNewRow("end", event.target.value)} placeholder="e.g. 8:45 AM" />
+              </label>
+              <label className="grid gap-2">
+                <span className="label-caps">Event</span>
+                <input className="lamt-input" value={newRow.event} onChange={(event) => updateNewRow("event", event.target.value)} placeholder="e.g. Check-In" />
+              </label>
+              <label className="grid gap-2">
+                <span className="label-caps">Location</span>
+                <input className="lamt-input" value={newRow.location} onChange={(event) => updateNewRow("location", event.target.value)} placeholder="e.g. MS 4000A" />
+              </label>
+            </div>
+            {newError && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{newError}</p>}
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button type="button" onClick={createRow} disabled={pendingIds.has(-1)} className="btn-outline disabled:opacity-40">
+                {pendingIds.has(-1) ? "Creating..." : "Create Row"}
+              </button>
+              <button type="button" onClick={() => setNewRow(null)} className="btn-outline disabled:opacity-40">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+        <button type="button" onClick={() => setNewRow({ time: "", end: "", event: "", location: "", adjustmentReason: "" })} disabled={pendingIds.has(-1) || newRow !== null} className="btn-outline justify-self-start disabled:opacity-40">
+          Add Row
         </button>
       </div>
     </section>
@@ -573,7 +614,7 @@ export default function AdminPage() {
 
       <section className="section-row">
         <h2 className="section-title">Control Room</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <AdminMetric label="Updates" value={updates.length} detail="Posted announcements" />
           <AdminMetric label="Schedule" value={schedule.length} detail="Timeline rows" />
           <AdminMetric label="Messages" value={msgCount} detail="Pending replies" />

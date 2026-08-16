@@ -42,7 +42,7 @@ export default function EmailPopup() {
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 w-[21rem] max-w-[calc(100vw-2rem)] bg-[#003B5C] p-6 text-left"
+      className="fixed bottom-20 right-4 z-50 w-[21rem] max-w-[calc(100vw-2rem)] bg-[#003B5C] p-6 text-left"
       role="dialog"
       aria-modal="true"
       aria-label="Join the LAMT email list"

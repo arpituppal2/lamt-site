@@ -201,12 +201,6 @@ function MapSection() {
 function UpdatesFeed({ updates }: { updates: Update[] }) {
   return (
     <section className="border-t-2 border-[var(--color-border)] pt-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-4">
-        <h2 className="text-xl font-extrabold text-[var(--color-text)]">Staff Announcements</h2>
-        <span className="font-bold text-[var(--color-text-muted)]">
-          {updates.length} {updates.length === 1 ? "update" : "updates"}
-        </span>
-      </div>
       {updates.length === 0 ? (
         <p className="py-10 text-[var(--color-text-muted)]">Updates will appear here throughout the day.</p>
       ) : (
@@ -387,7 +381,12 @@ export default function LivePage() {
       </header>
 
       <section id="announcements" className="section-row">
-        <h2 className="section-title">Announcements</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
+          <h2 className="section-title">Announcements</h2>
+          <span className="font-bold text-[var(--color-text-muted)]">
+            {updates.length} {updates.length === 1 ? "update" : "updates"}
+          </span>
+        </div>
         <UpdatesFeed updates={updates} />
       </section>
 
