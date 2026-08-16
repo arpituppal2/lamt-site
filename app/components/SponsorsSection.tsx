@@ -6,11 +6,12 @@ import type { Tier } from '../page';
 const TIER_CONFIG: Record<Tier, {
   label: string;
   imgHeight: number;
+  borderColor: string;
 }> = {
-  gold: { label: 'Gold', imgHeight: 220 },
-  silver: { label: 'Silver', imgHeight: 168 },
-  bronze: { label: 'Bronze', imgHeight: 132 },
-  friends: { label: 'Friends of LAMT', imgHeight: 96 },
+  gold: { label: 'Gold', imgHeight: 220, borderColor: '#C9A227' },
+  silver: { label: 'Silver', imgHeight: 168, borderColor: '#A7A9AC' },
+  bronze: { label: 'Bronze', imgHeight: 132, borderColor: '#CD7F32' },
+  friends: { label: 'Friends of LAMT', imgHeight: 96, borderColor: '#2774AE' },
 };
 
 const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
@@ -44,19 +45,24 @@ export default function SponsorsSection({
             return (
               <section key={tier} className="section-row">
                 <h3 className="section-title">{label}</h3>
-                <div className="flex flex-wrap items-center gap-x-14 gap-y-10">
+                <div className="flex flex-wrap items-center gap-10">
                   {sponsorsByTier[tier].map((src) => (
-                    <Image
+                    <div
                       key={src}
-                      src={src}
-                      alt={`${label} sponsor`}
-                      width={420}
-                      height={imgHeight}
-                      loading="eager"
-                      unoptimized
-                      style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
-                      className="object-contain"
-                    />
+                      className="border-2 bg-white p-5"
+                      style={{ borderColor: TIER_CONFIG[tier].borderColor }}
+                    >
+                      <Image
+                        src={src}
+                        alt={`${label} sponsor`}
+                        width={420}
+                        height={imgHeight}
+                        loading="eager"
+                        unoptimized
+                        style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
+                        className="object-contain"
+                      />
+                    </div>
                   ))}
                 </div>
               </section>
