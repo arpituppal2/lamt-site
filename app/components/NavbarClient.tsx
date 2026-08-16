@@ -28,11 +28,11 @@ export default function NavbarClient() {
 
   return (
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
-      <div className="mx-auto hidden h-20 max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
+      <div className="mx-auto hidden h-28 items-center justify-between px-4 md:flex md:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Logo" width={96} height={96} className="object-contain" />
         </Link>
-        <nav className="site-nav relative flex items-center gap-24">
+        <nav className="site-nav relative flex items-center" style={{ gap: 'clamp(2.5rem, 4vw, 5rem)' }}>
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
@@ -53,7 +53,7 @@ export default function NavbarClient() {
         </nav>
       </div>
 
-      <div className="flex h-20 items-center justify-between px-4 md:hidden">
+      <div className="flex h-24 items-center justify-between px-4 md:hidden">
         <Link href="/" className="flex flex-col items-center gap-1 flex-1 text-center font-extrabold tracking-wide text-white">
           <Image src="/LAMTBear.png" alt="Logo" width={72} height={72} className="object-contain" />
           <span className="text-[10px] sm:text-xs">LOS ANGELES MATH TOURNAMENT</span>
