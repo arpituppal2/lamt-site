@@ -92,8 +92,8 @@ export default function HomeClient({
             backgroundSize: '40px 40px',
           }}
         />
-        <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden">
-          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img h-[85vh] w-auto object-contain opacity-20 dark:opacity-40" style={{ marginRight: '-15%' }} priority />
+        <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-0">
+          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img h-[85vh] w-auto object-contain opacity-20 dark:opacity-40" style={{ marginRight: '-8%' }} priority />
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2774AE] to-transparent dark:from-black" />
 

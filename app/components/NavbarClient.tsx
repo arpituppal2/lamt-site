@@ -32,7 +32,7 @@ export default function NavbarClient() {
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Logo" width={72} height={72} className="object-contain" />
         </Link>
-        <nav className="site-nav relative flex items-center gap-10">
+        <nav className="site-nav relative flex items-center gap-16">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
