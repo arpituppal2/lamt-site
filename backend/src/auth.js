@@ -150,6 +150,13 @@ export function limitLogin(req, res, next) {
   next();
 }
 
+export function limitChat(req, res, next) {
+  const ip = clientIp(req);
+  const start = limiter.hit(`chatstart:${ip}`, 10 * 60 * 1000, 5);
+  if (!start.allowed) return res.status(429).json({ error: 'rate limited', retryAfter: start.retryAfter });
+  next();
+}
+
 export function limitUnsubscribe(req, res, next) {
   const result = limiter.hit(`unsub:${clientIp(req)}`, 15 * 60 * 1000, 10);
   if (!result.allowed) return res.status(429).json({ error: 'rate limited', retryAfter: result.retryAfter });

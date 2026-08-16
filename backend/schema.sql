@@ -37,3 +37,21 @@ CREATE TABLE IF NOT EXISTS used_unsubscribe_tokens (
   token_hash TEXT PRIMARY KEY,
   used_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS live_chats (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT,
+  status TEXT NOT NULL DEFAULT 'waiting',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  claimed_at TIMESTAMPTZ,
+  closed_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS live_chat_messages (
+  id SERIAL PRIMARY KEY,
+  chat_id INTEGER NOT NULL REFERENCES live_chats(id) ON DELETE CASCADE,
+  sender TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

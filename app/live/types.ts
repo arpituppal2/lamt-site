@@ -33,6 +33,25 @@ export interface ContactMessage {
   replies?: Reply[];
 }
 
+export interface ChatMessage {
+  id: number;
+  sender: 'user' | 'staff';
+  body: string;
+  createdAt: string;
+}
+
+export interface LiveChat {
+  id: number;
+  name: string;
+  email: string | null;
+  status: 'waiting' | 'active' | 'closed';
+  createdAt: string;
+  claimedAt: string | null;
+  closedAt: string | null;
+  messages: ChatMessage[];
+  position?: number;
+}
+
 // ─── SCHEDULE DATA ────────────────────────────────────────────────────────────
 // Edit times/events here to update the schedule on the live page.
 export const DEFAULT_SCHEDULE: ScheduleItem[] = [

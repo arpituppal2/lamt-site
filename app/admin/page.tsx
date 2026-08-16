@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { ContactMessage, ScheduleItem, Update } from "../live/types";
+import type { ContactMessage, ScheduleItem, Update, LiveChat as LiveChatType } from "../live/types";
 import { api, ApiError } from "../lib/api";
 
 function countUnresolved(messages: ContactMessage[]) {
@@ -528,15 +528,141 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
   );
 }
 
+function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
+  const [queue, setQueue] = useState<LiveChatType[]>([]);
+  const [active, setActive] = useState<LiveChatType[]>([]);
+  const [replyMap, setReplyMap] = useState<Record<number, string>>({});
+  const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
+  const [error, setError] = useState<string | null>(null);
+
+  async function reload() {
+    try {
+      const data = await api.getChats();
+      setQueue(data.queue);
+      setActive(data.active);
+      onQueueCount(data.waitingCount);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    }
+  }
+
+  useEffect(() => {
+    reload();
+    const id = window.setInterval(reload, 4000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function run(id: number, action: () => Promise<void>) {
+    setPendingIds((prev) => new Set(prev).add(id));
+    try { await action(); } finally {
+      setPendingIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
+  }
+
+  async function claim(id: number) {
+    await api.claimChat(id);
+    await reload();
+  }
+
+  async function sendStaff(id: number) {
+    const text = (replyMap[id] || "").trim();
+    if (!text) return;
+    await api.sendStaffMessage(id, text);
+    setReplyMap((prev) => ({ ...prev, [id]: "" }));
+    await reload();
+  }
+
+  async function close(id: number) {
+    if (!window.confirm("Close this live chat? The user will be disconnected.")) return;
+    await api.closeChat(id);
+    await reload();
+  }
+
+  function preview(chat: LiveChatType) {
+    const last = chat.messages[chat.messages.length - 1];
+    return last ? `${last.sender === "user" ? "" : "Staff: "}${last.body}` : "Waiting to start...";
+  }
+
+  return (
+    <div className="grid gap-5">
+      {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
+
+      <section className="border-t-2 border-[var(--color-border)] pt-5">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-xl font-extrabold text-[var(--color-text)]">Waiting Queue</h2>
+          <span className="font-bold text-[var(--color-text-muted)]">{queue.length} in line</span>
+        </div>
+        {queue.length === 0 ? (
+          <p className="py-10 text-center text-[var(--color-text-muted)]">No one waiting. The queue is clear.</p>
+        ) : (
+          queue.map((chat) => (
+            <article key={chat.id} className="border-b-2 border-[var(--color-divider)] py-5 last:border-b-0">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-extrabold text-[var(--color-text)]">#{chat.position} — {chat.name}</p>
+                  <p className="text-sm text-[var(--color-text-muted)]">{new Date(chat.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} · {preview(chat)}</p>
+                </div>
+                <button type="button" onClick={() => run(chat.id, () => claim(chat.id))} disabled={pendingIds.has(chat.id)} className="btn-filled disabled:opacity-40">
+                  Help This Person
+                </button>
+              </div>
+            </article>
+          ))
+        )}
+      </section>
+
+      <section className="border-t-2 border-[var(--color-border)] pt-5">
+        <h2 className="text-xl font-extrabold text-[var(--color-text)]">Active Chats</h2>
+        {active.length === 0 ? (
+          <p className="py-10 text-center text-[var(--color-text-muted)]">No active conversations.</p>
+        ) : (
+          active.map((chat) => (
+            <article key={chat.id} className="border-b-2 border-[var(--color-divider)] py-5 last:border-b-0">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-extrabold text-[var(--color-text)]">{chat.name}{chat.email ? ` · ${chat.email}` : ""}</p>
+                  <p className="text-sm text-[var(--color-text-muted)]">Started {new Date(chat.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</p>
+                </div>
+                <button type="button" onClick={() => run(chat.id, () => close(chat.id))} disabled={pendingIds.has(chat.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                  Close Chat
+                </button>
+              </div>
+              <div className="mt-4 max-h-[16rem] overflow-y-auto border-2 border-[var(--color-divider)] bg-[var(--color-surface)] p-4">
+                {chat.messages.map((m) => (
+                  <div key={m.id} className={`mb-2 flex ${m.sender === "staff" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[80%] px-3 py-2 text-sm ${m.sender === "staff" ? "bg-[#2774AE] text-white" : "bg-[var(--color-divider)] text-[var(--color-text)]"}`}>
+                      <p className="whitespace-pre-line">{m.body}</p>
+                      <p className={`mt-1 text-[10px] ${m.sender === "staff" ? "text-white/60" : "text-[var(--color-text-muted)]"}`}>
+                        {new Date(m.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={(e) => { e.preventDefault(); run(chat.id, () => sendStaff(chat.id)); }} className="mt-3 flex gap-3">
+                <input className="lamt-input flex-1" value={replyMap[chat.id] || ""} onChange={(e) => setReplyMap((prev) => ({ ...prev, [chat.id]: e.target.value }))} placeholder="Reply..." />
+                <button type="submit" disabled={!(replyMap[chat.id] || "").trim() || pendingIds.has(chat.id)} className="btn-filled disabled:opacity-40">Send</button>
+              </form>
+            </article>
+          ))
+        )}
+      </section>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers">("announcements");
+  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers" | "livechat">("announcements");
   const [updates, setUpdates] = useState<Update[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [subscribers, setSubscribers] = useState<ServerSubscriber[]>([]);
   const [msgCount, setMsgCount] = useState(0);
+  const [queueCount, setQueueCount] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -589,6 +715,7 @@ export default function AdminPage() {
     { key: "announcements", label: "Announcements" },
     { key: "schedule", label: "Schedule" },
     { key: "messages", label: "Messages", badge: msgCount },
+    { key: "livechat", label: "Live Chat", badge: queueCount },
     { key: "subscribers", label: "Subscribers" },
   ];
 
@@ -701,6 +828,7 @@ export default function AdminPage() {
   }}
 />
         )}
+        {tab === "livechat" && <LiveChatTab onQueueCount={setQueueCount} />}
         {tab === "subscribers" && <SubscribersTab subscribers={subscribers} />}
         </div>
       </section>

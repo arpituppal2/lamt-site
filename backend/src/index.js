@@ -15,6 +15,7 @@ import {
   limitSubscribe,
   limitMessage,
   limitLogin,
+  limitChat,
   limitUnsubscribe,
   makeUnsubscribeToken,
   verifyUnsubscribeToken,
@@ -277,6 +278,177 @@ app.patch('/messages/:id', requireAdmin, async (req, res) => {
     return res.status(400).json({ error: 'resolved or reply required' });
   } catch (err) {
     console.error('message update error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+// ---------- Live Chat ----------
+
+function serializeChat(row, messages = []) {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    status: row.status,
+    createdAt: row.created_at,
+    claimedAt: row.claimed_at,
+    closedAt: row.closed_at,
+    messages: messages.map((m) => ({
+      id: m.id,
+      sender: m.sender,
+      body: m.body,
+      createdAt: m.created_at,
+    })),
+  };
+}
+
+async function computePosition(pool, chatId) {
+  const chat = await pool.query('SELECT created_at, status FROM live_chats WHERE id = $1', [chatId]);
+  if (chat.rows.length === 0) return 0;
+  const row = chat.rows[0];
+  if (row.status !== 'waiting') return 0;
+  const result = await pool.query(
+    "SELECT COUNT(*)::int AS pos FROM live_chats WHERE status = 'waiting' AND created_at <= $1",
+    [row.created_at],
+  );
+  return result.rows[0].pos;
+}
+
+app.post('/chat/start', limitChat, async (req, res) => {
+  const { name, email } = req.body || {};
+  if (!name || String(name).trim() === '') return res.status(400).json({ error: 'name required' });
+  try {
+    const inserted = await pool.query(
+      'INSERT INTO live_chats (name, email) VALUES ($1, $2) RETURNING id, name, email, status, created_at, claimed_at, closed_at',
+      [String(name).trim().slice(0, 100), email ? String(email).trim().slice(0, 200) : null],
+    );
+    const chat = inserted.rows[0];
+    const position = await computePosition(pool, chat.id);
+    return res.status(201).json({ chat: serializeChat(chat, []), position });
+  } catch (err) {
+    console.error('chat start error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.get('/chat/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const chatRes = await pool.query(
+      'SELECT id, name, email, status, created_at, claimed_at, closed_at FROM live_chats WHERE id = $1',
+      [id],
+    );
+    if (chatRes.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    const msgRes = await pool.query(
+      'SELECT id, sender, body, created_at FROM live_chat_messages WHERE chat_id = $1 ORDER BY id ASC',
+      [id],
+    );
+    const position = await computePosition(pool, Number(id));
+    return res.json({ chat: serializeChat(chatRes.rows[0], msgRes.rows), position });
+  } catch (err) {
+    console.error('chat get error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.post('/chat/:id', limitChat, async (req, res) => {
+  const id = req.params.id;
+  const { body } = req.body || {};
+  if (typeof body !== 'string' || body.trim() === '') return res.status(400).json({ error: 'body required' });
+  try {
+    const chatRes = await pool.query('SELECT status FROM live_chats WHERE id = $1', [id]);
+    if (chatRes.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    if (chatRes.rows[0].status === 'closed') return res.status(400).json({ error: 'chat closed' });
+    await pool.query(
+      'INSERT INTO live_chat_messages (chat_id, sender, body) VALUES ($1, $2, $3) RETURNING id',
+      [id, 'user', String(body).trim().slice(0, 2000)],
+    );
+    await pool.query("UPDATE live_chats SET status = 'active' WHERE id = $1 AND status = 'waiting'", [id]);
+    return res.json({ status: 'sent' });
+  } catch (err) {
+    console.error('chat send error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.get('/chats', requireAdmin, async (req, res) => {
+  try {
+    const waitingRes = await pool.query(
+      "SELECT id, name, email, status, created_at, claimed_at, closed_at FROM live_chats WHERE status = 'waiting' ORDER BY created_at ASC",
+    );
+    const activeRes = await pool.query(
+      "SELECT id, name, email, status, created_at, claimed_at, closed_at FROM live_chats WHERE status = 'active' ORDER BY claimed_at DESC",
+    );
+    const ids = [...waitingRes.rows, ...activeRes.rows].map((r) => r.id);
+    let messagesByChat = {};
+    if (ids.length > 0) {
+      const msgRes = await pool.query(
+        'SELECT chat_id, id, sender, body, created_at FROM live_chat_messages WHERE chat_id = ANY($1) ORDER BY id ASC',
+        [ids],
+      );
+      messagesByChat = msgRes.rows.reduce((acc, m) => {
+        (acc[m.chat_id] = acc[m.chat_id] || []).push({ id: m.id, sender: m.sender, body: m.body, createdAt: m.created_at });
+        return acc;
+      }, {});
+    }
+    const queue = waitingRes.rows.map((r, i) => ({
+      ...serializeChat(r, messagesByChat[r.id] || []),
+      position: i + 1,
+    }));
+    const active = activeRes.rows.map((r) => serializeChat(r, messagesByChat[r.id] || []));
+    return res.json({ waitingCount: queue.length, queue, active });
+  } catch (err) {
+    console.error('chats list error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.post('/chat/:id/claim', requireAdmin, async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await pool.query(
+      "UPDATE live_chats SET status = 'active', claimed_at = now() WHERE id = $1 AND status = 'waiting' RETURNING id",
+      [id],
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'not found or already claimed' });
+    return res.json({ status: 'claimed' });
+  } catch (err) {
+    console.error('chat claim error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.post('/chat/:id/staff', requireAdmin, async (req, res) => {
+  const id = req.params.id;
+  const { body } = req.body || {};
+  if (typeof body !== 'string' || body.trim() === '') return res.status(400).json({ error: 'body required' });
+  try {
+    const chatRes = await pool.query('SELECT status FROM live_chats WHERE id = $1', [id]);
+    if (chatRes.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    if (chatRes.rows[0].status === 'closed') return res.status(400).json({ error: 'chat closed' });
+    await pool.query(
+      'INSERT INTO live_chat_messages (chat_id, sender, body) VALUES ($1, $2, $3) RETURNING id',
+      [id, 'staff', String(body).trim().slice(0, 2000)],
+    );
+    await pool.query("UPDATE live_chats SET status = 'active', claimed_at = COALESCE(claimed_at, now()) WHERE id = $1 AND status = 'waiting'", [id]);
+    return res.json({ status: 'sent' });
+  } catch (err) {
+    console.error('chat staff send error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.post('/chat/:id/close', requireAdmin, async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await pool.query(
+      "UPDATE live_chats SET status = 'closed', closed_at = now() WHERE id = $1 AND status <> 'closed' RETURNING id",
+      [id],
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    return res.json({ status: 'closed' });
+  } catch (err) {
+    console.error('chat close error', err);
     return res.status(500).json({ error: 'internal error' });
   }
 });

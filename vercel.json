@@ -12,6 +12,9 @@
     { "source": "/schedule", "destination": "https://lamt-site-production.up.railway.app/schedule" },
     { "source": "/schedule/:id", "destination": "https://lamt-site-production.up.railway.app/schedule/:id" },
     { "source": "/messages", "destination": "https://lamt-site-production.up.railway.app/messages" },
-    { "source": "/messages/:id", "destination": "https://lamt-site-production.up.railway.app/messages/:id" }
+    { "source": "/messages/:id", "destination": "https://lamt-site-production.up.railway.app/messages/:id" },
+    { "source": "/chats", "destination": "https://lamt-site-production.up.railway.app/chats" },
+    { "source": "/chat/:id", "destination": "https://lamt-site-production.up.railway.app/chat/:id" },
+    { "source": "/chat/:id/:seg", "destination": "https://lamt-site-production.up.railway.app/chat/:id/:seg" }
   ]
 }

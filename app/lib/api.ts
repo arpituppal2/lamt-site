@@ -1,4 +1,4 @@
-import type { ContactMessage, Reply, ScheduleItem, Update } from "../live/types";
+import type { ContactMessage, Reply, ScheduleItem, Update, LiveChat, ChatMessage } from "../live/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -152,4 +152,22 @@ export const api = {
     apiFetch<{ status: string }>(`/messages/${id}`, { method: "PATCH", body: JSON.stringify({ reply: { body } }) }),
   deleteMessage: (id: number) =>
     apiFetch<{ status: string }>(`/messages/${id}`, { method: "DELETE" }),
+
+  startChat: (name: string, email?: string) =>
+    apiFetch<{ chat: LiveChat; position: number }>("/chat/start", {
+      method: "POST",
+      body: JSON.stringify({ name, email: email || undefined }),
+    }),
+  getChat: (id: number) =>
+    apiFetch<{ chat: LiveChat; position: number }>(`/chat/${id}`),
+  sendChatMessage: (id: number, body: string) =>
+    apiFetch<{ status: string }>(`/chat/${id}`, { method: "POST", body: JSON.stringify({ body }) }),
+  getChats: () =>
+    apiFetch<{ waitingCount: number; queue: LiveChat[]; active: LiveChat[] }>("/chats"),
+  claimChat: (id: number) =>
+    apiFetch<{ status: string }>(`/chat/${id}/claim`, { method: "POST" }),
+  sendStaffMessage: (id: number, body: string) =>
+    apiFetch<{ status: string }>(`/chat/${id}/staff`, { method: "POST", body: JSON.stringify({ body }) }),
+  closeChat: (id: number) =>
+    apiFetch<{ status: string }>(`/chat/${id}/close`, { method: "POST" }),
 };
