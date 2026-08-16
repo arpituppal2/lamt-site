@@ -326,5 +326,15 @@ const port = process.env.PORT || 3000;
 runMigrations().then(() => {
   app.listen(port, () => {
     console.log(`LAMT backend listening on port ${port}`);
-  });
+});
+app.delete('/messages/:id', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query('DELETE FROM messages WHERE id = $1 RETURNING id', [req.params.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    return res.json({ status: 'deleted' });
+  } catch (err) {
+    console.error('message delete error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
 });

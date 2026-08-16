@@ -150,4 +150,6 @@ export const api = {
     apiFetch<{ status: string }>(`/messages/${id}`, { method: "PATCH", body: JSON.stringify({ resolved }) }),
   patchMessageReply: (id: number, body: string) =>
     apiFetch<{ status: string }>(`/messages/${id}`, { method: "PATCH", body: JSON.stringify({ reply: { body } }) }),
+  deleteMessage: (id: number) =>
+    apiFetch<{ status: string }>(`/messages/${id}`, { method: "DELETE" }),
 };

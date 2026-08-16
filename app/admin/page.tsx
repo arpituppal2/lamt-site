@@ -84,10 +84,11 @@ function AdminMetric({ label, value, detail }: { label: string; value: string | 
   );
 }
 
-function MessagesTab({ messages, onResolve, onReply }: {
+function MessagesTab({ messages, onResolve, onReply, onDelete }: {
   messages: ContactMessage[];
   onResolve: (id: number, resolved: boolean) => Promise<void>;
   onReply: (id: number, body: string) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
 }) {
   const [replyMap, setReplyMap] = useState<Record<number, string>>({});
   const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
@@ -194,6 +195,13 @@ function MessagesTab({ messages, onResolve, onReply }: {
                   Mark Resolved
                 </button>
               )}
+              <button type="button" onClick={() => {
+                if (window.confirm('Delete this email? This cannot be undone.')) {
+                  run(message.id, () => onDelete(message.id));
+                }
+              }} disabled={pendingIds.has(message.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                Delete
+              </button>
             </div>
           </div>
         </article>
@@ -677,17 +685,21 @@ export default function AdminPage() {
           />
         )}
         {tab === "messages" && (
-          <MessagesTab
-            messages={messages}
-            onResolve={async (id, resolved) => {
-              await api.patchMessageResolved(id, resolved);
-              await reload();
-            }}
-            onReply={async (id, body) => {
-              await api.patchMessageReply(id, body);
-              await reload();
-            }}
-          />
+<MessagesTab
+  messages={messages}
+  onResolve={async (id, resolved) => {
+    await api.patchMessageResolved(id, resolved);
+    await reload();
+  }}
+  onReply={async (id, body) => {
+    await api.patchMessageReply(id, body);
+    await reload();
+  }}
+  onDelete={async (id) => {
+    await api.deleteMessage(id);
+    await reload();
+  }}
+/>
         )}
         {tab === "subscribers" && <SubscribersTab subscribers={subscribers} />}
         </div>
