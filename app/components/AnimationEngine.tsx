@@ -190,49 +190,37 @@ function initNavMorph() {
   const pill = document.createElement('span');
   pill.className = 'nav-morph-pill';
   pill.style.cssText = `
-    position:absolute;bottom:-2px;height:2px;
+    position:absolute;bottom:-8px;height:3px;
     background:var(--ucla-gold);
-    transition:left 260ms ${GOLDEN}, width 260ms ${GOLDEN};
+    transition:left 320ms ${GOLDEN}, width 320ms ${GOLDEN}, opacity 200ms ease;
     pointer-events:none;border-radius:9999px;
+    z-index:10;
   `;
   nav.style.position = 'relative';
   nav.appendChild(pill);
 
-  const links = nav.querySelectorAll<HTMLElement>('a');
-  const active = nav.querySelector<HTMLElement>('a[style*="underline"]');
+  const links = Array.from(nav.querySelectorAll<HTMLElement>('a'));
+  const getActive = () => nav.querySelector<HTMLElement>('a[data-active="true"]');
 
-  // Init pill on active link
-  if (active) {
-    const r = active.getBoundingClientRect();
+  const moveTo = (link: HTMLElement | null) => {
+    if (!link) {
+      pill.style.opacity = '0';
+      return;
+    }
+    const r = link.getBoundingClientRect();
     const nr = nav.getBoundingClientRect();
     pill.style.left = `${r.left - nr.left}px`;
     pill.style.width = `${r.width}px`;
     pill.style.opacity = '1';
-  } else {
-    pill.style.opacity = '0';
-  }
+  };
+
+  moveTo(getActive());
 
   const cleanups: (() => void)[] = [];
 
   links.forEach((link) => {
-    const onEnter = () => {
-      const r = link.getBoundingClientRect();
-      const nr = nav.getBoundingClientRect();
-      pill.style.left = `${r.left - nr.left}px`;
-      pill.style.width = `${r.width}px`;
-      pill.style.opacity = '1';
-    };
-
-    const onLeave = () => {
-      if (active) {
-        const r = active.getBoundingClientRect();
-        const nr = nav.getBoundingClientRect();
-        pill.style.left = `${r.left - nr.left}px`;
-        pill.style.width = `${r.width}px`;
-      } else {
-        pill.style.opacity = '0';
-      }
-    };
+    const onEnter = () => moveTo(link);
+    const onLeave = () => moveTo(getActive());
 
     link.addEventListener('mouseenter', onEnter);
     link.addEventListener('mouseleave', onLeave);
