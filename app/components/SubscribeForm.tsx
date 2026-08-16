@@ -8,9 +8,13 @@ const SUBSCRIBED_KEY = "lamt_popup_subscribed";
 export default function SubscribeForm({
   autoFocus = false,
   buttonLabel = "Keep Me Posted",
+  onDark = false,
+  buttonClassName = "btn-filled",
 }: {
   autoFocus?: boolean;
   buttonLabel?: string;
+  onDark?: boolean;
+  buttonClassName?: string;
 }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "pending" | "done" | "error">("idle");
@@ -35,8 +39,12 @@ export default function SubscribeForm({
   if (status === "done") {
     return (
       <div>
-        <p className="text-lg font-extrabold text-[var(--color-text)]">You&apos;re on the list.</p>
-        <p className="section-copy mt-1">We&apos;ll email you as soon as details for the next tournament are ready.</p>
+        <p className={`text-lg font-extrabold ${onDark ? "text-white" : "text-[var(--color-text)]"}`}>
+          You&apos;re on the list.
+        </p>
+        <p className={`mt-1 text-sm leading-relaxed ${onDark ? "text-[#DAEBFE]" : "text-[var(--color-text-muted)]"}`}>
+          We&apos;ll email you as soon as details for the next tournament are ready.
+        </p>
       </div>
     );
   }
@@ -44,9 +52,9 @@ export default function SubscribeForm({
   return (
     <form onSubmit={submit} className="grid gap-3">
       <label className="grid gap-2">
-        <span className="label-caps">Email</span>
+        <span className={`label-caps ${onDark ? "text-[#8BB8E8]" : ""}`}>Email</span>
         <input
-          className="lamt-input"
+          className={onDark ? "lamt-input lamt-input--on-dark" : "lamt-input"}
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -56,7 +64,7 @@ export default function SubscribeForm({
         />
       </label>
       {status === "error" && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
-      <button type="submit" disabled={!email || status === "pending"} className="btn-filled disabled:opacity-40">
+      <button type="submit" disabled={!email || status === "pending"} className={`${buttonClassName} disabled:opacity-40`}>
         {status === "pending" ? "Signing up..." : buttonLabel}
       </button>
     </form>

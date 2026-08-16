@@ -47,14 +47,13 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             <h1 className="page-title">LAMT Admin Panel</h1>
             <p className="page-summary mt-5">Post live announcements, update the schedule, and respond to tournament-day messages.</p>
           </div>
-          <Image src="/LAMTBear.png" alt="LAMT" width={128} height={128} priority className="hidden h-32 w-32 border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-3 object-contain lg:block" />
+          <Image src="/LAMTBear.png" alt="LAMT" width={128} height={128} priority className="hidden h-32 w-32 object-contain lg:block" />
         </div>
       </header>
 
       <section className="section-row">
         <h2 className="section-title">Access</h2>
-        <form onSubmit={submit} className="lamt-panel w-full max-w-md">
-          <div className="lamt-panel-body">
+        <form onSubmit={submit} className="w-full max-w-md">
             <label className="grid gap-2">
               <span className="label-caps">Password</span>
               <input
@@ -69,8 +68,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             <button type="submit" disabled={pending} className="btn-filled mt-5 w-full disabled:opacity-40">
               {pending ? "Signing In..." : "Sign In"}
             </button>
-          </div>
-        </form>
+          </form>
       </section>
     </div>
   );
@@ -78,10 +76,10 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
 function AdminMetric({ label, value, detail }: { label: string; value: string | number; detail: string }) {
   return (
-    <div className="lamt-panel p-4">
+    <div className="border-t-2 border-[var(--color-divider)] py-4 lg:border-l-2 lg:border-t-0 lg:px-6 lg:py-0 lg:first:border-l-0 lg:first:pl-0">
       <p className="label-caps">{label}</p>
-      <p className="mt-2 text-2xl font-extrabold text-[var(--color-text)]">{value}</p>
-      <p className="section-copy mt-1 text-sm">{detail}</p>
+      <p className="mt-2 text-3xl font-extrabold text-[var(--color-text)]">{value}</p>
+      <p className="mt-1 text-sm text-[var(--color-text-muted)]">{detail}</p>
     </div>
   );
 }
@@ -123,11 +121,9 @@ function MessagesTab({ messages, onResolve, onReply }: {
 
   if (messages.length === 0) {
     return (
-      <section className="lamt-panel">
-        <div className="lamt-panel-body py-16 text-center">
-          <p className="text-xl font-extrabold text-[var(--color-text)]">No messages yet</p>
-          <p className="section-copy mt-2">Messages from the /live contact form will appear here.</p>
-        </div>
+      <section className="border-t-2 border-[var(--color-border)] py-16 text-center">
+        <p className="text-xl font-extrabold text-[var(--color-text)]">No messages yet</p>
+        <p className="mt-2 text-[var(--color-text-muted)]">Messages from the /live contact form will appear here.</p>
       </section>
     );
   }
@@ -135,47 +131,45 @@ function MessagesTab({ messages, onResolve, onReply }: {
   return (
     <div className="grid gap-5">
       {unresolved > 0 && (
-        <div className="border-2 border-[var(--ucla-gold)] bg-[var(--ucla-gold)] p-4 font-extrabold text-[var(--ucla-blue-deep)]">
+        <div className="bg-[var(--ucla-gold)] px-4 py-3 font-extrabold text-[var(--ucla-blue-deep)]">
           {unresolved} unresolved {unresolved === 1 ? "message" : "messages"}
         </div>
       )}
 
       {messages.map((message) => (
-        <article key={message.id} className={`lamt-panel ${message.resolved ? "opacity-75" : "border-[var(--color-border-strong)]"}`}>
-          <div className="lamt-panel-header">
+        <article key={message.id} className={`border-t-2 border-[var(--color-border)] py-5 ${message.resolved ? "opacity-75" : ""}`}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="font-extrabold text-[var(--color-text)]">{message.name}</p>
               <a href={`mailto:${message.email}`} className="subtle-link text-sm">
                 {message.email}
               </a>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
               <span className="text-sm text-[var(--color-text-muted)]">{message.timestamp}</span>
-              <span className={`border-2 px-2 py-1 text-xs font-extrabold uppercase ${message.resolved ? "border-[var(--color-border)] text-[var(--color-text-muted)]" : "border-[var(--ucla-gold)] bg-[var(--ucla-gold)] text-[var(--ucla-blue-deep)]"}`}>
+              <span className={`text-xs font-extrabold uppercase ${message.resolved ? "text-[var(--color-text-muted)]" : "text-[var(--ucla-gold-dark)]"}`}>
                 {message.resolved ? "Resolved" : "Pending"}
               </span>
             </div>
           </div>
 
-          <div className="lamt-panel-body">
-            <p className="section-copy">{message.message}</p>
-          </div>
+          <p className="mt-4 text-[var(--color-text-secondary)]">{message.message}</p>
 
           {(message.replies || []).length > 0 && (
-            <div className="border-t-2 border-[var(--color-border)] bg-[var(--color-surface-2)]">
+            <div className="mt-5 border-t-2 border-[var(--color-divider)]">
               {(message.replies || []).map((reply) => (
-                <div key={reply.id} className="border-b-2 border-[var(--color-border)] p-4 last:border-b-0">
+                <div key={reply.id} className="border-b-2 border-[var(--color-divider)] py-4 last:border-b-0">
                   <div className="mb-2 flex items-center gap-3">
                     <span className="font-extrabold text-[var(--color-text)]">Staff</span>
                     <span className="text-sm text-[var(--color-text-muted)]">{reply.timestamp}</span>
                   </div>
-                  <p className="section-copy">{reply.body}</p>
+                  <p className="text-[var(--color-text-secondary)]">{reply.body}</p>
                 </div>
               ))}
             </div>
           )}
 
-          <div className="grid gap-3 border-t-2 border-[var(--color-border)] p-4">
+          <div className="mt-5 grid gap-3 border-t-2 border-[var(--color-divider)] pt-5">
             <textarea
               className="lamt-textarea min-h-24"
               value={replyMap[message.id] || ""}
@@ -235,14 +229,10 @@ function AnnouncementsTab({ updates, onPost, onDelete }: {
 
   return (
     <div className="grid gap-5">
-      <section className="lamt-panel">
-        <div className="lamt-panel-header">
-          <div>
-            <p className="label-caps">Post New Update</p>
-            <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Announcement Composer</h2>
-          </div>
-        </div>
-        <div className="lamt-panel-body grid gap-4">
+      <section className="border-t-2 border-[var(--color-border)] pt-5">
+        <p className="label-caps">Post New Update</p>
+        <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Announcement Composer</h2>
+        <div className="mt-5 grid gap-4">
           <input className="lamt-input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Title (optional)" />
           <textarea className="lamt-textarea" value={body} onChange={(event) => setBody(event.target.value)} placeholder="Update text..." />
           {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
@@ -252,23 +242,23 @@ function AnnouncementsTab({ updates, onPost, onDelete }: {
         </div>
       </section>
 
-      <section className="lamt-panel">
-        <div className="lamt-panel-header">
+      <section className="border-t-2 border-[var(--color-border)] pt-5">
+        <div className="flex items-baseline justify-between gap-4">
           <h2 className="text-xl font-extrabold text-[var(--color-text)]">Posted Updates</h2>
           <span className="font-bold text-[var(--color-text-muted)]">{updates.length}</span>
         </div>
         {updates.length === 0 ? (
-          <div className="lamt-panel-body text-center text-[var(--color-text-muted)]">No updates posted yet.</div>
+          <p className="py-10 text-center text-[var(--color-text-muted)]">No updates posted yet.</p>
         ) : (
           updates.map((update) => (
-            <article key={update.id} className="border-b-2 border-[var(--color-border)] p-5 last:border-b-0">
+            <article key={update.id} className="border-b-2 border-[var(--color-divider)] py-5 last:border-b-0">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-sm font-bold text-[var(--color-text-muted)]">{update.timestamp}</p>
                   {update.title && <h3 className="mt-2 font-extrabold text-[var(--color-text)]">{update.title}</h3>}
-                  <p className="section-copy mt-2 whitespace-pre-line">{update.body}</p>
+                  <p className="mt-2 text-[var(--color-text-secondary)] whitespace-pre-line">{update.body}</p>
                 </div>
-                <button type="button" onClick={() => onDelete(update.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Delete
                 </button>
               </div>
@@ -363,61 +353,55 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
   }
 
   return (
-    <section className="lamt-panel">
-      <div className="lamt-panel-header">
-        <div>
-          <p className="label-caps">Schedule</p>
-          <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Live Timeline Editor</h2>
-        </div>
-      </div>
-      <div className="lamt-panel-body">
-        <p className="section-copy mb-5">Edit event times, rooms, and delay notes. Changes sync to the /live page within 30 seconds. Changing a time requires a delay note.</p>
-        <div className="grid gap-4">
-          {schedule.map((item) => {
-            const draft = draftFor(item);
-            const dirty = draft.time !== item.time || draft.end !== item.end || draft.event !== item.event || draft.location !== item.location || draft.adjustmentReason !== (item.adjustmentReason || "");
-            return (
-              <div key={item.id} className="border-2 border-[var(--color-border)] p-4">
-                <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
-                <div className="grid gap-3 lg:grid-cols-4">
-                  <label className="grid gap-2">
-                    <span className="label-caps">Start</span>
-                    <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
-                  </label>
-                  <label className="grid gap-2">
-                    <span className="label-caps">End</span>
-                    <input className="lamt-input" value={draft.end} onChange={(event) => updateDraft(item.id, "end", event.target.value)} />
-                  </label>
-                  <label className="grid gap-2">
-                    <span className="label-caps">Location</span>
-                    <input className="lamt-input" value={draft.location} onChange={(event) => updateDraft(item.id, "location", event.target.value)} />
-                  </label>
-                  <label className="grid gap-2">
-                    <span className="label-caps">Original Time</span>
-                    <input className="lamt-input" value={item.originalTime || ""} readOnly disabled placeholder="Set automatically on first delay" />
-                  </label>
-                </div>
-                <label className="mt-3 grid gap-2">
-                  <span className="label-caps">Delay Reason</span>
-                  <input className="lamt-input" value={draft.adjustmentReason || ""} onChange={(event) => updateDraft(item.id, "adjustmentReason", event.target.value)} placeholder="Required when changing a time" />
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <p className="label-caps">Schedule</p>
+      <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Live Timeline Editor</h2>
+      <p className="mt-4 text-[var(--color-text-muted)]">Edit event times, rooms, and delay notes. Changes sync to the /live page within 30 seconds. Changing a time requires a delay note.</p>
+      <div className="mt-5 grid gap-4">
+        {schedule.map((item) => {
+          const draft = draftFor(item);
+          const dirty = draft.time !== item.time || draft.end !== item.end || draft.event !== item.event || draft.location !== item.location || draft.adjustmentReason !== (item.adjustmentReason || "");
+          return (
+            <div key={item.id} className="border-t-2 border-[var(--color-divider)] py-5">
+              <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
+              <div className="grid gap-3 lg:grid-cols-4">
+                <label className="grid gap-2">
+                  <span className="label-caps">Start</span>
+                  <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
                 </label>
-                {errors[item.id] && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{errors[item.id]}</p>}
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
-                    {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
-                  </button>
-                  <button type="button" onClick={() => onDelete(item.id)} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
-                    Remove Row
-                  </button>
-                </div>
+                <label className="grid gap-2">
+                  <span className="label-caps">End</span>
+                  <input className="lamt-input" value={draft.end} onChange={(event) => updateDraft(item.id, "end", event.target.value)} />
+                </label>
+                <label className="grid gap-2">
+                  <span className="label-caps">Location</span>
+                  <input className="lamt-input" value={draft.location} onChange={(event) => updateDraft(item.id, "location", event.target.value)} />
+                </label>
+                <label className="grid gap-2">
+                  <span className="label-caps">Original Time</span>
+                  <input className="lamt-input" value={item.originalTime || ""} readOnly disabled placeholder="Set automatically on first delay" />
+                </label>
               </div>
-            );
-          })}
-          {errors[-1] && <p className="text-sm font-bold text-[#B33A2B]">{errors[-1]}</p>}
-          <button type="button" onClick={addRow} disabled={pendingIds.has(-1)} className="btn-outline justify-self-start disabled:opacity-40">
-            {pendingIds.has(-1) ? "Adding..." : "Add Row"}
-          </button>
-        </div>
+              <label className="mt-3 grid gap-2">
+                <span className="label-caps">Delay Reason</span>
+                <input className="lamt-input" value={draft.adjustmentReason || ""} onChange={(event) => updateDraft(item.id, "adjustmentReason", event.target.value)} placeholder="Required when changing a time" />
+              </label>
+              {errors[item.id] && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{errors[item.id]}</p>}
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
+                  {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
+                </button>
+                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                  Remove Row
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {errors[-1] && <p className="text-sm font-bold text-[#B33A2B]">{errors[-1]}</p>}
+        <button type="button" onClick={addRow} disabled={pendingIds.has(-1)} className="btn-outline justify-self-start disabled:opacity-40">
+          {pendingIds.has(-1) ? "Adding..." : "Add Row"}
+        </button>
       </div>
     </section>
   );
@@ -447,8 +431,8 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
   }
 
   return (
-    <section className="lamt-panel">
-      <div className="lamt-panel-header">
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
         <div>
           <p className="label-caps">Email List</p>
           <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Subscribers</h2>
@@ -457,44 +441,40 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
           {active.length} active / {subscribers.length} total
         </span>
       </div>
-      <div className="lamt-panel-body">
-        <p className="section-copy mb-5">Everyone who signed up via the homepage section or the popup. Copy the list to send your next announcement.</p>
-        <button type="button" onClick={copyEmails} disabled={active.length === 0} className="btn-outline mb-5 disabled:opacity-40">
-          {copied ? "Copied!" : `Copy ${active.length} Email${active.length === 1 ? "" : "s"}`}
-        </button>
-        {subscribers.length === 0 ? (
-          <p className="text-center text-[var(--color-text-muted)]">No subscribers yet.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="lamt-table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Signed Up</th>
-                  <th>Status</th>
+      <p className="mt-4 text-[var(--color-text-muted)]">Everyone who signed up via the homepage section or the popup. Copy the list to send your next announcement.</p>
+      <button type="button" onClick={copyEmails} disabled={active.length === 0} className="btn-outline mt-5 mb-5 disabled:opacity-40">
+        {copied ? "Copied!" : `Copy ${active.length} Email${active.length === 1 ? "" : "s"}`}
+      </button>
+      {subscribers.length === 0 ? (
+        <p className="py-10 text-center text-[var(--color-text-muted)]">No subscribers yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="lamt-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Signed Up</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subscribers.map((subscriber) => (
+                <tr key={subscriber.id}>
+                  <td className="font-bold text-[var(--color-text)]">{subscriber.email}</td>
+                  <td className="text-[var(--color-text-secondary)]">{formatDate(subscriber.consent_at)}</td>
+                  <td>
+                    {subscriber.unsubscribed_at ? (
+                      <span className="text-sm font-extrabold uppercase text-[var(--color-text-muted)]">Unsubscribed</span>
+                    ) : (
+                      <span className="text-sm font-extrabold uppercase text-[var(--ucla-gold-dark)]">Active</span>
+                    )}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {subscribers.map((subscriber) => (
-                  <tr key={subscriber.id}>
-                    <td className="font-bold text-[var(--color-text)]">{subscriber.email}</td>
-                    <td className="text-[var(--color-text-secondary)]">{formatDate(subscriber.consent_at)}</td>
-                    <td>
-                      {subscriber.unsubscribed_at ? (
-                        <span className="text-sm font-extrabold uppercase text-[var(--color-text-muted)]">Unsubscribed</span>
-                      ) : (
-                        <span className="border-2 border-[var(--ucla-gold)] bg-[var(--ucla-gold)] px-2 py-1 text-xs font-extrabold uppercase text-[var(--ucla-blue-deep)]">
-                          Active
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 }
@@ -549,9 +529,7 @@ export default function AdminPage() {
   if (checking) {
     return (
       <div className="page-shell">
-        <div className="lamt-panel">
-          <div className="lamt-panel-body text-center text-[var(--color-text-muted)]">Checking session...</div>
-        </div>
+        <p className="py-16 text-center text-[var(--color-text-muted)]">Checking session...</p>
       </div>
     );
   }
@@ -583,13 +561,13 @@ export default function AdminPage() {
               <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
                 Email Staff
               </a>
-              <button type="button" onClick={logout} className="border-2 border-[#B33A2B] px-4 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+              <button type="button" onClick={logout} className="px-3 py-2 font-extrabold uppercase text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                 Sign Out
               </button>
             </div>
             {loadError && <p className="mt-4 text-sm font-bold text-[#B33A2B]">Sync issue: {loadError} (retrying)</p>}
           </div>
-          <Image src="/LAMTBear.png" alt="LAMT" width={150} height={150} priority className="hidden h-36 w-36 border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-4 object-contain lg:block" />
+          <Image src="/LAMTBear.png" alt="LAMT" width={150} height={150} priority className="hidden h-36 w-36 object-contain lg:block" />
         </div>
       </header>
 
@@ -606,14 +584,14 @@ export default function AdminPage() {
       <section className="section-row">
         <h2 className="section-title">Tools</h2>
         <div className="grid gap-6">
-        <nav className="flex flex-wrap gap-2 border-b-2 border-[var(--color-border)] pb-4" aria-label="Admin sections">
+        <nav className="flex flex-wrap gap-x-8 gap-y-2 border-b-2 border-[var(--color-border)]" aria-label="Admin sections">
           {tabs.map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => setTab(item.key)}
-              className="lamt-button"
-              data-state={tab === item.key ? "selected" : undefined}
+              className="tab-underline"
+              aria-current={tab === item.key ? "true" : undefined}
             >
               {item.label}
               {(item.badge ?? 0) > 0 ? ` (${item.badge})` : ""}

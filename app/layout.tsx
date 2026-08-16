@@ -4,6 +4,7 @@ import FooterClient from './components/FooterClient';
 import DarkModeToggle from './components/DarkModeToggle';
 import KaTeXLoader from './components/KaTeXLoader';
 import EmailPopup from './components/EmailPopup';
+import AnimationEngine from './components/AnimationEngine';
 import './globals.css';
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen transition-colors duration-300">
         <KaTeXLoader />
+        <AnimationEngine />
         <NavbarClient />
         <DarkModeToggle />
         <main>{children}</main>

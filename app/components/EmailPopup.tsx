@@ -42,33 +42,28 @@ export default function EmailPopup() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed bottom-4 right-4 z-50 w-[21rem] max-w-[calc(100vw-2rem)] bg-[#003B5C] p-6 text-left"
       role="dialog"
       aria-modal="true"
       aria-label="Join the LAMT email list"
-      onClick={dismiss}
     >
-      <div className="lamt-panel relative w-full max-w-md" onClick={(event) => event.stopPropagation()}>
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label="Close"
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center border-2 border-[var(--color-border)] font-extrabold text-[var(--color-text-muted)] hover:border-[var(--ucla-gold)] hover:text-[var(--color-text)]"
-        >
-          ✕
-        </button>
+      <button
+        type="button"
+        onClick={dismiss}
+        aria-label="Close"
+        className="absolute right-3 top-3 grid h-8 w-8 place-items-center text-xl font-extrabold text-white/60 hover:text-[var(--ucla-gold)]"
+      >
+        ✕
+      </button>
 
-        <div className="lamt-panel-body">
-          <p className="label-caps">Join the List</p>
-          <h2 className="mt-3 text-2xl font-extrabold text-[var(--color-text)]">We&apos;re just getting started.</h2>
-          <p className="section-copy mt-3">
-            LAMT 2026 brought 180+ students from 8 counties to UCLA — and it&apos;s only the first one. Join the email list and be
-            first to know about next year&apos;s tournament.
-          </p>
-          <div className="mt-6">
-            <SubscribeForm autoFocus />
-          </div>
-        </div>
+      <p className="serif-kicker">Join the List</p>
+      <h2 className="mt-2 text-xl font-extrabold leading-snug text-white">We&apos;re just getting started.</h2>
+      <p className="mt-3 text-sm leading-relaxed text-[#DAEBFE]">
+        LAMT 2026 brought 180+ students from 8 counties to UCLA — and it&apos;s only the first one. Be first to know about
+        next year&apos;s tournament.
+      </p>
+      <div className="mt-6">
+        <SubscribeForm autoFocus onDark buttonClassName="btn-gold" />
       </div>
     </div>
   );

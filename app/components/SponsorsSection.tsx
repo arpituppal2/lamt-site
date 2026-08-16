@@ -44,20 +44,19 @@ export default function SponsorsSection({
             return (
               <section key={tier} className="section-row">
                 <h3 className="section-title">{label}</h3>
-                <div className="flex flex-wrap items-center gap-10">
+                <div className="flex flex-wrap items-center gap-x-14 gap-y-10">
                   {sponsorsByTier[tier].map((src) => (
-                    <div key={src} className="border-2 border-[var(--color-border)] bg-white p-5">
-                      <Image
-                        src={src}
-                        alt={`${label} sponsor`}
-                        width={420}
-                        height={imgHeight}
-                        loading="eager"
-                        unoptimized
-                        style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
-                        className="object-contain"
-                      />
-                    </div>
+                    <Image
+                      key={src}
+                      src={src}
+                      alt={`${label} sponsor`}
+                      width={420}
+                      height={imgHeight}
+                      loading="eager"
+                      unoptimized
+                      style={{ height: imgHeight, width: 'auto', maxWidth: '100%' }}
+                      className="object-contain"
+                    />
                   ))}
                 </div>
               </section>

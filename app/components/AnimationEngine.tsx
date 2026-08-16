@@ -12,7 +12,6 @@ import { useEffect } from 'react';
    • Nav underline   – sliding gold pill under hovered nav link
    • Bear drift      – subtle idle float on .hero-bear-img
    • Typewriter      – [data-typewrite] text types itself on entry
-   • Cursor trail    – gold dot trail on desktop
    • Gold ripple     – btn-premium / btn-filled clicks spawn a ripple
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -33,23 +32,20 @@ function initReveal() {
 
   const all = document.querySelectorAll<HTMLElement>(selectors);
 
-  const getInitialClip = (el: HTMLElement) => {
-    if (el.classList.contains('reveal--left'))  return 'inset(0 100% 0 0)';
-    if (el.classList.contains('reveal--right')) return 'inset(0 0 0 100%)';
-    if (el.closest('.stagger-parent'))         return 'inset(0 0 100% 0)';
-    return 'inset(0 0 100% 0)';
+  const getInitialTransform = (el: HTMLElement) => {
+    if (el.classList.contains('reveal--left'))  return 'translateX(-28px)';
+    if (el.classList.contains('reveal--right')) return 'translateX(28px)';
+    if (el.classList.contains('reveal--scale')) return 'scale(0.92)';
+    return 'translateY(16px)';
   };
 
-  // Set initial state (invisible, not displacing layout)
+  // Set initial state (invisible, no layout shift). Opacity/transform keep the
+  // element intersecting, so the observer always fires (a zero-area clip-path
+  // would deadlock it).
   all.forEach((el) => {
     if (el.classList.contains('is-visible') || el.dataset.revealed) return;
-    if (el.classList.contains('reveal--scale')) {
-      el.style.opacity = '0';
-      el.style.transform = 'scale(0.88)';
-    } else {
-      el.style.opacity = '0';
-      el.style.clipPath = getInitialClip(el);
-    }
+    el.style.opacity = '0';
+    el.style.transform = getInitialTransform(el);
   });
 
   const observer = new IntersectionObserver(
@@ -69,30 +65,16 @@ function initReveal() {
 
         const baseDelay = parseInt(el.dataset.delay ?? '0', 10) + delay;
 
-        if (el.classList.contains('reveal--scale')) {
-          el.animate(
-            [
-              { opacity: 0, transform: 'scale(0.88)' },
-              { opacity: 1, transform: 'scale(1)' },
-            ],
-            { duration: 600, delay: baseDelay, easing: GOLDEN, fill: 'forwards' }
-          ).onfinish = () => {
-            el.style.opacity = '1';
-            el.style.transform = 'scale(1)';
-          };
-        } else {
-          const clip = getInitialClip(el);
-          el.animate(
-            [
-              { opacity: 0, clipPath: clip },
-              { opacity: 1, clipPath: 'inset(0 0 0 0)' },
-            ],
-            { duration: 680, delay: baseDelay, easing: GOLDEN, fill: 'forwards' }
-          ).onfinish = () => {
-            el.style.opacity = '1';
-            el.style.clipPath = 'none';
-          };
-        }
+        el.animate(
+          [
+            { opacity: 0, transform: getInitialTransform(el) },
+            { opacity: 1, transform: 'none' },
+          ],
+          { duration: 680, delay: baseDelay, easing: GOLDEN, fill: 'forwards' }
+        ).onfinish = () => {
+          el.style.opacity = '';
+          el.style.transform = '';
+        };
 
         // Legacy reveal-block compat
         el.classList.add('is-visible');
@@ -295,59 +277,7 @@ function initNavMorph() {
   };
 }
 
-// ─── 7. CURSOR TRAIL ─────────────────────────────────────────────────────────
-function initCursorTrail() {
-  if (window.matchMedia('(hover: none)').matches) return () => {};
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
-
-  const TRAIL_COUNT = 8;
-  const dots: HTMLElement[] = [];
-
-  for (let i = 0; i < TRAIL_COUNT; i++) {
-    const dot = document.createElement('div');
-    dot.style.cssText = `
-      position:fixed;top:0;left:0;pointer-events:none;z-index:99999;
-      width:${6 - i * 0.4}px;height:${6 - i * 0.4}px;border-radius:50%;
-      background:var(--ucla-gold);opacity:${0.7 - i * 0.07};
-      transform:translate(-50%,-50%);
-      transition:transform 0ms, opacity 400ms;
-      will-change:transform;
-    `;
-    document.body.appendChild(dot);
-    dots.push(dot);
-  }
-
-  const positions: { x: number; y: number }[] = Array(TRAIL_COUNT).fill({ x: -100, y: -100 });
-
-  const onMove = (e: MouseEvent) => {
-    positions[0] = { x: e.clientX, y: e.clientY };
-  };
-
-  let raf: number;
-  const tick = () => {
-    for (let i = TRAIL_COUNT - 1; i > 0; i--) {
-      positions[i] = {
-        x: positions[i].x + (positions[i - 1].x - positions[i].x) * 0.35,
-        y: positions[i].y + (positions[i - 1].y - positions[i].y) * 0.35,
-      };
-    }
-    dots.forEach((dot, i) => {
-      dot.style.transform = `translate(${positions[i].x - (3 - i * 0.2)}px, ${positions[i].y - (3 - i * 0.2)}px)`;
-    });
-    raf = requestAnimationFrame(tick);
-  };
-
-  window.addEventListener('mousemove', onMove);
-  raf = requestAnimationFrame(tick);
-
-  return () => {
-    window.removeEventListener('mousemove', onMove);
-    cancelAnimationFrame(raf);
-    dots.forEach((d) => d.remove());
-  };
-}
-
-// ─── 8. GOLD RIPPLE ON CLICK ─────────────────────────────────────────────────
+// ─── 7. GOLD RIPPLE ON CLICK ─────────────────────────────────────────────────
 function initRipple() {
   const targets = document.querySelectorAll<HTMLElement>(
     '.btn-premium, .btn-filled, .lamt-button, .btn-ripple'
@@ -390,7 +320,7 @@ function initRipple() {
   return () => cleanups.forEach((fn) => fn());
 }
 
-// ─── 9. TYPEWRITER ───────────────────────────────────────────────────────────
+// ─── 8. TYPEWRITER ───────────────────────────────────────────────────────────
 function initTypewriter() {
   const els = document.querySelectorAll<HTMLElement>('[data-typewrite]');
 
@@ -423,7 +353,7 @@ function initTypewriter() {
   return () => observer.disconnect();
 }
 
-// ─── 10. HERO HEADLINE ENTRANCE ──────────────────────────────────────────────
+// ─── 9. HERO HEADLINE ENTRANCE ───────────────────────────────────────────────
 function initHeroEntrance() {
   // Stagger each word in .hero-animate-words on page load
   const containers = document.querySelectorAll<HTMLElement>('.hero-animate-words');
@@ -452,7 +382,7 @@ function initHeroEntrance() {
   });
 }
 
-// ─── 11. PROOF CHAPTER HOVER LIFT ────────────────────────────────────────────
+// ─── 10. PROOF CHAPTER HOVER LIFT ────────────────────────────────────────────
 function initProofHover() {
   const chapters = document.querySelectorAll<HTMLElement>('.proof-chapter');
   chapters.forEach((ch) => {
@@ -481,7 +411,6 @@ export default function AnimationEngine() {
       initParallax(),
       initTimelineDraw(),
       initNavMorph(),
-      initCursorTrail(),
       initRipple(),
       initTypewriter(),
       initProofHover(),

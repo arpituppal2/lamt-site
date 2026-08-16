@@ -95,7 +95,7 @@ export default function TournamentPage() {
           <p className="section-copy reveal mb-6">
             The tournament will be held at the <strong>Court of Sciences</strong> on the UCLA campus in Los Angeles, California.
           </p>
-          <div className="reveal h-[360px] border-2 border-[var(--color-border)]">
+          <div className="reveal h-[360px] border border-[var(--color-border)]">
             <iframe
               title="Court of Sciences UCLA map"
               className="map-iframe"

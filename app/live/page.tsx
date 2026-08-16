@@ -85,8 +85,8 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
   const next = current ? schedule[currentIdx + 1] : schedule[nextIdx];
 
   return (
-    <section className="lamt-panel">
-      <div className="lamt-panel-header">
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="label-caps">Status</p>
           <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">
@@ -94,13 +94,14 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
           </h2>
         </div>
         {!TOURNAMENT_OVER && (
-          <span className="inline-flex border-2 border-[var(--ucla-gold)] bg-[var(--ucla-gold)] px-3 py-1 text-sm font-extrabold uppercase text-[var(--ucla-blue-deep)]">
+          <span className="flex items-center gap-2 text-sm font-extrabold uppercase text-[var(--ucla-gold-dark)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--ucla-gold-dark)]" aria-hidden="true" />
             Live
           </span>
         )}
       </div>
 
-      <div className="lamt-panel-body">
+      <div className="mt-5">
         <p className="text-2xl font-extrabold text-[var(--color-text)]">{current?.event || next?.event || "Thanks for joining LAMT."}</p>
         {(current || next) && (
           <p className="mt-2 text-lg font-bold text-[var(--color-text-secondary)]">
@@ -109,8 +110,11 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
         )}
         {current && (
           <>
-            <div className="mt-5 h-3 border-2 border-[var(--color-border)] bg-[var(--color-surface-2)]">
-              <div className="h-full bg-[var(--ucla-gold)]" style={{ width: `${progress}%` }} />
+            <div className="mt-5 h-1.5 bg-[var(--color-surface-2)]">
+              <div
+                className="h-full bg-[var(--ucla-gold)] transition-[width] duration-500"
+                style={{ width: `${progress}%` }}
+              />
             </div>
             {next && <p className="mt-3 text-sm font-bold text-[var(--color-text-muted)]">Next: {next.event} at {next.time}</p>}
           </>
@@ -123,14 +127,10 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
 
 function ScheduleTable({ schedule }: { schedule: ScheduleItem[] }) {
   return (
-    <section className="lamt-panel">
-      <div className="lamt-panel-header">
-        <div>
-          <p className="label-caps">Schedule</p>
-          <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Day Timeline</h2>
-        </div>
-      </div>
-      <div className="lamt-panel-body overflow-x-auto">
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <p className="label-caps">Schedule</p>
+      <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Day Timeline</h2>
+      <div className="mt-5 overflow-x-auto">
         <table className="lamt-table">
           <thead>
             <tr>
@@ -165,7 +165,7 @@ function MapSection() {
     <section id="map" className="section-row">
       <h2 className="section-title">Campus Map</h2>
       <div className="grid gap-5">
-        <div className="h-[420px] min-h-[20rem] border-2 border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div className="h-[420px] min-h-[20rem] border border-[var(--color-border)]">
           <iframe
             title="UCLA Mathematical Sciences and Court of Sciences map"
             className="map-iframe"
@@ -175,12 +175,21 @@ function MapSection() {
             referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid md:grid-cols-3">
           {VENUES.map((venue) => (
-            <a key={venue.label} className="lamt-panel p-4 hover:border-[var(--ucla-gold)]" href={venue.href} target="_blank" rel="noopener noreferrer">
+            <a
+              key={venue.label}
+              className="group block border-t-2 border-[var(--color-divider)] py-5 pr-6 transition-colors hover:border-[var(--ucla-gold)] md:border-l-2 md:border-t-0 md:px-6 md:first:border-l-0 md:first:pl-0"
+              href={venue.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <h3 className="font-extrabold text-[var(--color-text)]">{venue.label}</h3>
-              <p className="section-copy mt-2 text-sm">{venue.detail}</p>
-              <span className="mt-4 inline-flex text-sm font-extrabold uppercase text-[var(--color-border-strong)]">Open Map</span>
+              <p className="mt-2 text-sm text-[var(--color-text-secondary)]">{venue.detail}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold uppercase text-[var(--color-border-strong)] transition-colors group-hover:text-[var(--ucla-gold-dark)]">
+                Open Map
+                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </span>
             </a>
           ))}
         </div>
@@ -191,34 +200,27 @@ function MapSection() {
 
 function UpdatesFeed({ updates }: { updates: Update[] }) {
   return (
-    <section className="lamt-panel">
-      <div className="lamt-panel-header">
-        <div>
-          <p className="label-caps">Live Updates</p>
-          <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Staff Announcements</h2>
-        </div>
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 className="text-xl font-extrabold text-[var(--color-text)]">Staff Announcements</h2>
         <span className="font-bold text-[var(--color-text-muted)]">
           {updates.length} {updates.length === 1 ? "update" : "updates"}
         </span>
       </div>
       {updates.length === 0 ? (
-        <div className="lamt-panel-body">
-          <p className="section-copy">Updates will appear here throughout the day.</p>
-        </div>
+        <p className="py-10 text-[var(--color-text-muted)]">Updates will appear here throughout the day.</p>
       ) : (
         <div>
           {updates.map((update, index) => (
-            <article key={update.id} className="border-b-2 border-[var(--color-border)] p-5 last:border-b-0">
+            <article key={update.id} className="border-b-2 border-[var(--color-divider)] py-5 last:border-b-0">
               <div className="mb-3 flex flex-wrap items-center gap-3">
                 {index === 0 && (
-                  <span className="border-2 border-[var(--ucla-gold)] bg-[var(--ucla-gold)] px-2 py-1 text-xs font-extrabold uppercase text-[var(--ucla-blue-deep)]">
-                    Latest
-                  </span>
+                  <span className="text-xs font-extrabold uppercase text-[var(--ucla-gold-dark)]">Latest</span>
                 )}
                 <span className="text-sm font-bold text-[var(--color-text-muted)]">{update.timestamp}</span>
               </div>
               {update.title && <h3 className="mb-3 text-xl font-extrabold text-[var(--color-text)]">{update.title}</h3>}
-              <p className="section-copy whitespace-pre-line">{update.body}</p>
+              <p className="whitespace-pre-line text-[var(--color-text-secondary)]">{update.body}</p>
             </article>
           ))}
         </div>
@@ -231,21 +233,25 @@ function HelpSection() {
   return (
     <section className="section-row">
       <h2 className="section-title">Info & Help</h2>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid md:grid-cols-2 xl:grid-cols-3">
         {HELP_ITEMS.map((item) => {
           const content = (
             <>
               <h3 className="font-extrabold text-[var(--color-text)]">{item.label}</h3>
-              <p className="section-copy mt-2 text-sm">{item.detail}</p>
+              <p className="mt-2 text-sm text-[var(--color-text-secondary)]">{item.detail}</p>
             </>
           );
 
           return item.href ? (
-            <a key={item.label} href={item.href} className="lamt-panel p-4 hover:border-[var(--ucla-gold)]">
+            <a
+              key={item.label}
+              href={item.href}
+              className="block border-t-2 border-[var(--color-divider)] py-5 pr-6 transition-colors hover:border-[var(--ucla-gold)]"
+            >
               {content}
             </a>
           ) : (
-            <article key={item.label} className="lamt-panel p-4">
+            <article key={item.label} className="block border-t-2 border-[var(--color-divider)] py-5 pr-6">
               {content}
             </article>
           );
@@ -281,45 +287,43 @@ function ContactForm() {
   return (
     <section className="section-row">
       <h2 className="section-title">Message Staff</h2>
-      <div className="lamt-panel">
-        {status === "sent" ? (
-          <div className="lamt-panel-body">
-            <h3 className="text-xl font-extrabold text-[var(--color-text)]">Message received.</h3>
-            <p className="section-copy mt-2">Staff will reply to your email soon.</p>
-            <button type="button" onClick={() => setStatus("idle")} className="btn-outline mt-5">
-              Send Another
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={submit} className="lamt-panel-body grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-2">
-              <label className="grid gap-2">
-                <span className="label-caps">Name</span>
-                <input className="lamt-input" value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" required />
-              </label>
-              <label className="grid gap-2">
-                <span className="label-caps">Email</span>
-                <input className="lamt-input" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required />
-              </label>
-            </div>
+      {status === "sent" ? (
+        <div>
+          <h3 className="text-xl font-extrabold text-[var(--color-text)]">Message received.</h3>
+          <p className="mt-2 text-[var(--color-text-secondary)]">Staff will reply to your email soon.</p>
+          <button type="button" onClick={() => setStatus("idle")} className="btn-outline mt-5">
+            Send Another
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={submit} className="grid max-w-2xl gap-4">
+          <div className="grid gap-4 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="label-caps">Message</span>
-              <textarea className="lamt-textarea" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Questions, concerns, anything..." required />
+              <span className="label-caps">Name</span>
+              <input className="lamt-input" value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" required />
             </label>
-            {status === "error" && (
-              <p className="text-sm font-bold text-[#B33A2B]">
-                {error} — or email us directly at{" "}
-                <a className="underline" href={`mailto:uclamathtournament@gmail.com?subject=Message to LAMT Staff&body=${encodeURIComponent(message)}`}>
-                  uclamathtournament@gmail.com
-                </a>
-              </p>
-            )}
-            <button type="submit" disabled={!name || !email || !message || status === "pending"} className="btn-outline justify-self-start disabled:opacity-40">
-              {status === "pending" ? "Sending..." : "Send Message"}
-            </button>
-          </form>
-        )}
-      </div>
+            <label className="grid gap-2">
+              <span className="label-caps">Email</span>
+              <input className="lamt-input" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required />
+            </label>
+          </div>
+          <label className="grid gap-2">
+            <span className="label-caps">Message</span>
+            <textarea className="lamt-textarea" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Questions, concerns, anything..." required />
+          </label>
+          {status === "error" && (
+            <p className="text-sm font-bold text-[#B33A2B]">
+              {error} — or email us directly at{" "}
+              <a className="underline" href={`mailto:uclamathtournament@gmail.com?subject=Message to LAMT Staff&body=${encodeURIComponent(message)}`}>
+                uclamathtournament@gmail.com
+              </a>
+            </p>
+          )}
+          <button type="submit" disabled={!name || !email || !message || status === "pending"} className="btn-outline justify-self-start disabled:opacity-40">
+            {status === "pending" ? "Sending..." : "Send Message"}
+          </button>
+        </form>
+      )}
     </section>
   );
 }
@@ -376,7 +380,7 @@ export default function LivePage() {
               </a>
             </div>
           </div>
-          <Link href="/" aria-label="Back to LAMT home" className="hidden border-2 border-[var(--ucla-gold)] bg-[var(--color-surface)] p-4 lg:block">
+          <Link href="/" aria-label="Back to LAMT home" className="hidden opacity-90 transition-opacity hover:opacity-100 lg:block">
             <Image src="/LAMTBear.png" alt="LAMT" width={150} height={150} priority className="h-36 w-36 object-contain" />
           </Link>
         </div>

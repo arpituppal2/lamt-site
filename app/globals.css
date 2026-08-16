@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Crimson+Pro:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,8 +14,9 @@
   --ucla-white: #FFFFFF;
   --ucla-black: #000000;
 
-  --font-display: Arial, Helvetica, sans-serif;
+  --font-display: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
   --font-body: Arial, Helvetica, sans-serif;
+  --font-serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
 
   --color-bg: #F4F8FC;
   --color-surface: #FFFFFF;
@@ -212,10 +215,45 @@ a, button, [role="button"], input, textarea, select {
   text-transform: uppercase;
 }
 
+.serif-kicker {
+  color: var(--color-gold, var(--ucla-gold));
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.serif-kicker--blue {
+  color: var(--ucla-blue-deep);
+}
+
+.dark .serif-kicker--blue {
+  color: var(--ucla-gold);
+}
+
+.recap-num {
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 4.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.recap-label {
+  color: var(--ucla-gold);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .label-caps {
   font-size: var(--text-xs);
   font-weight: 800;
-  letter-spacing: 0;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -322,6 +360,50 @@ label .label-caps {
   color: var(--button-hover-text);
 }
 
+.btn-gold {
+  border-color: var(--ucla-gold);
+  background: var(--ucla-gold);
+  color: var(--ucla-blue-deep);
+}
+
+.btn-gold:hover {
+  border-color: var(--ucla-blue);
+  background: var(--ucla-blue);
+  color: #FFFFFF;
+}
+
+.tab-underline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  padding: 0.5rem 0.15rem 0.85rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tab-underline:hover {
+  color: var(--color-text);
+}
+
+.tab-underline[aria-current="true"] {
+  border-bottom-color: var(--ucla-gold);
+  color: var(--color-text);
+}
+
+.tab-underline:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .btn-on-band {
   border-color: var(--ucla-gold);
   color: var(--ucla-gold);
@@ -337,18 +419,41 @@ label .label-caps {
 .lamt-textarea,
 .lamt-select {
   width: 100%;
-  border: 2px solid var(--color-border);
+  border: 0;
+  border-bottom: 2px solid var(--color-border);
   border-radius: 0;
-  background: var(--color-surface);
+  background: transparent;
   color: var(--color-text);
-  padding: 0.75rem 0.85rem;
+  padding: 0.6rem 0.1rem;
   outline: none;
+  transition:
+    border-color var(--transition-ui),
+    background-color var(--transition-ui);
 }
 
 .lamt-input:focus,
 .lamt-textarea:focus,
 .lamt-select:focus {
-  border-color: var(--color-border-strong);
+  border-color: var(--ucla-gold);
+}
+
+.lamt-input::placeholder,
+.lamt-textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.85;
+}
+
+.lamt-input--on-dark {
+  border-bottom-color: rgba(255, 209, 0, 0.55);
+  color: #FFFFFF;
+}
+
+.lamt-input--on-dark:focus {
+  border-bottom-color: var(--ucla-gold);
+}
+
+.lamt-input--on-dark::placeholder {
+  color: rgba(218, 235, 254, 0.7);
 }
 
 .lamt-textarea {
@@ -357,9 +462,9 @@ label .label-caps {
 }
 
 .lamt-panel {
-  border: 2px solid var(--color-border);
+  border: 0;
   border-radius: 0;
-  background: var(--color-surface);
+  background: transparent;
 }
 
 .lamt-panel-header {
@@ -367,43 +472,39 @@ label .label-caps {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) 0 var(--space-4);
   border-bottom: 2px solid var(--color-border);
-  background: var(--color-surface-2);
+  background: transparent;
 }
 
 .lamt-panel-body {
-  padding: var(--space-5);
+  padding: var(--space-5) 0;
 }
 
 .lamt-table {
-  border: 2px solid var(--color-border);
+  border: 0;
 }
 
 .lamt-table th,
 .lamt-table td {
-  padding: 1rem;
-  border-right: 1px solid var(--color-divider);
+  padding: 1rem 1rem 1rem 0;
   border-bottom: 1px solid var(--color-divider);
   text-align: left;
   vertical-align: top;
 }
 
 .lamt-table th {
-  background: var(--color-surface-2);
-  color: var(--color-text);
-  font-size: var(--text-sm);
+  border-bottom: 2px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
   font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .lamt-table tr:last-child td {
   border-bottom: 0;
-}
-
-.lamt-table th:last-child,
-.lamt-table td:last-child {
-  border-right: 0;
 }
 
 .dash-list {
