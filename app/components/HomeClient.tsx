@@ -93,7 +93,7 @@ export default function HomeClient({
           }}
         />
         <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-[2%]">
-          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img w-[clamp(300px,40vw,700px)] h-auto object-contain opacity-20 dark:opacity-40" priority />
+          <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img w-[clamp(400px,55vw,900px)] h-auto object-contain opacity-20 dark:opacity-40" priority />
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2774AE] to-transparent dark:from-black" />
 
