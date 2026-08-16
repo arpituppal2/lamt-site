@@ -154,29 +154,6 @@ export default function HomeClient({
         </div>
       </section>
 
-      <section className="border-t-2 border-[#FFD100]/80 bg-[#2774AE] px-6 py-16 transition-colors dark:bg-black md:px-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="serif-kicker mb-8 text-center">LAMT 2026, by the numbers</p>
-          <div className="stagger-parent grid grid-cols-1 divide-y divide-[#FFD100]/25 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            <div className="flex flex-col items-center gap-2 px-6 py-8 sm:py-0">
-              <span className="recap-num" data-count="180" data-count-suffix="+">0</span>
-              <span className="recap-label">Students</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 px-6 py-8 sm:py-0">
-              <span className="recap-num" data-count="8">0</span>
-              <span className="recap-label">Counties</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 px-6 py-8 sm:py-0">
-              <span className="recap-num" data-count="1">0</span>
-              <span className="recap-label">Inaugural Edition</span>
-            </div>
-          </div>
-          <p className="mx-auto mt-10 max-w-xl text-center text-base leading-relaxed text-[#DAEBFE] md:text-lg">
-            Thank you for making the first-ever Los Angeles Math Tournament unforgettable.
-          </p>
-        </div>
-      </section>
-
       <section id="register" className="border-t-2 border-[#FFD100]/80 bg-[#2774AE] px-6 py-28 transition-colors dark:bg-black md:px-16">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">

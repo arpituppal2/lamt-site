@@ -6,24 +6,25 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
+  { href: '/', label: 'HOME' },
   // { href: '/tournament', label: 'LAMT 2026' },
-  { href: '/archive', label: 'Archive' },
-  { href: '/rules', label: 'Rules' },
+  { href: '/archive', label: 'ARCHIVE' },
+  { href: '/rules', label: 'RULES' },
   { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'About' },
-  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'Register', external: true },
+  { href: '/about', label: 'ABOUT' },
+  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
 ];
 
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuHeight, setMenuHeight] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  const linkClass = 'font-extrabold text-xl tracking-widest text-white transition-opacity duration-200 hover:opacity-70';
+  const linkClass = 'font-extrabold text-xl tracking-wide uppercase text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
     <header className="w-full bg-[#2774AE] transition-colors duration-300 dark:bg-black">
@@ -31,7 +32,7 @@ export default function NavbarClient() {
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Logo" width={60} height={60} className="object-contain" />
         </Link>
-        <nav className="flex items-center gap-16">
+        <nav className="flex items-center gap-10">
           {navLinks.map(({ href, label, external }) => {
             const active = pathname === href;
             return external ? (
@@ -57,9 +58,9 @@ export default function NavbarClient() {
       </div>
 
       <div className="flex h-16 items-center justify-between px-4 md:hidden">
-        <Link href="/" className="flex items-center gap-2 font-extrabold tracking-wide text-white">
-          <Image src="/LAMTBear.png" alt="Logo" width={28} height={28} className="object-contain" />
-          LAMT
+        <Link href="/" className="flex flex-col items-center gap-1 flex-1 text-center font-extrabold tracking-wide text-white">
+          <Image src="/LAMTBear.png" alt="Logo" width={36} height={36} className="object-contain" />
+          <span>LOS ANGELES MATH TOURNAMENT</span>
         </Link>
         <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu" className="flex flex-col gap-1.5 p-1">
           <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
@@ -69,11 +70,19 @@ export default function NavbarClient() {
       </div>
 
       {menuOpen && (
-        <nav className="overflow-hidden border-t border-white/20 bg-[#2774AE] dark:bg-black md:hidden">
-          <div className="flex flex-col gap-6 px-6 py-4">
+        <nav
+          className="overflow-hidden border-t border-white/20 bg-[#2774AE] dark:bg-black md:hidden"
+          style={{ maxHeight: menuOpen ? `${menuHeight}px` : '0px' }}
+        >
+          <div
+            className="flex flex-col gap-6 px-6 py-4"
+            ref={(el) => {
+              if (el) setMenuHeight(el.scrollHeight);
+            }}
+          >
             {navLinks.map(({ href, label, external }) => {
               const active = pathname === href;
-              const mobileClass = 'text-lg font-extrabold tracking-widest text-white transition-opacity hover:opacity-70';
+              const mobileClass = 'text-lg font-extrabold tracking-wide uppercase text-white transition-opacity hover:opacity-70';
 
               return external ? (
                 <a key={href} href={href} target="_blank" rel="noreferrer" className={mobileClass} onClick={() => setMenuOpen(false)}>

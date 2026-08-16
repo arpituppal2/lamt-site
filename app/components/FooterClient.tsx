@@ -31,36 +31,32 @@ export default function FooterClient() {
 
   return (
     <footer className="bg-[#2774AE] text-white dark:bg-black">
-      <div className="mx-auto max-w-[1600px] px-4 py-10 md:px-8">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[auto_1fr_auto]">
-          <div className="flex justify-center lg:justify-start">
-            <Link href="/" className="shrink-0 transition-transform hover:scale-105">
-              <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={160} height={160} className="object-contain" />
+      <div className="mx-auto max-w-[1600px] px-4 py-8 md:px-8">
+        <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
+          <div className="shrink-0 transition-transform hover:scale-105">
+            <Link href="/">
+              <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={120} height={120} className="object-contain" />
             </Link>
           </div>
-          <div className="flex justify-center pl-8">
-            <div className="flex items-center gap-4">
-              {socialLinks.map((item) => (
-                <a
-                  key={item.title}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={item.title}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-white text-[#2774AE] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
-                >
-                  {item.icon}
-                </a>
-              ))}
-            </div>
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            {socialLinks.map((item) => (
+              <a
+                key={item.title}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={item.title}
+                className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[#2774AE] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
+              >
+                {item.icon}
+              </a>
+            ))}
           </div>
-          <div className="flex justify-center lg:justify-end">
-            <div className="max-w-xs text-center lg:text-right">
-              <p className="text-[11px] leading-relaxed text-[#DAEBFE] opacity-80 md:text-xs">
-                We are a student group acting independently of the University of California.
-                We take full responsibility for our organization and this web site.
-              </p>
-            </div>
+          <div className="max-w-xs text-center w-full">
+            <p className="text-[11px] leading-relaxed text-[#DAEBFE] opacity-80 md:text-xs">
+              We are a student group acting independently of the University of California.
+              We take full responsibility for our organization and this web site.
+            </p>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Crimson+Pro:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,8 +15,8 @@
   --ucla-black: #000000;
 
   --font-display: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
-  --font-body: Arial, Helvetica, sans-serif;
-  --font-serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  --font-body: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
 
   --color-bg: #F4F8FC;
   --color-surface: #FFFFFF;
@@ -112,6 +112,8 @@ body {
   font-family: var(--font-body);
   font-size: var(--text-base);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 img, picture, video, canvas, svg {
@@ -220,10 +222,9 @@ a, button, [role="button"], input, textarea, select {
 
 .serif-kicker {
   color: var(--color-gold, var(--ucla-gold));
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: 1.1rem;
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
