@@ -77,7 +77,11 @@ export function originGuard(req, res, next) {
   if (origin && host) {
     const originHost = origin.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/:\d+$/, '');
     const hostName = host.replace(/:\d+$/, '');
-    if (originHost === hostName) return next();
+    const forwardedHosts = (req.headers['x-forwarded-host'] || '')
+      .split(',')
+      .map((h) => h.trim().replace(/:\d+$/, ''))
+      .filter(Boolean);
+    if (originHost === hostName || forwardedHosts.includes(originHost)) return next();
   }
   if (origin && !allowedOrigins().includes(origin)) {
     return res.status(403).json({ error: 'origin not allowed' });
