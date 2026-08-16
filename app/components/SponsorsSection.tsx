@@ -80,7 +80,7 @@ export default function SponsorsSection({
         <h3 className="section-title">Sponsor LAMT</h3>
         <div>
           <p className="section-copy mb-6">Interested in sponsoring LAMT?</p>
-          <a href="mailto:team@lamt.net" className="btn-outline">
+          <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
             Contact Us
           </a>
         </div>

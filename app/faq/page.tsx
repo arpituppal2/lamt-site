@@ -47,7 +47,7 @@ export default function FAQPage() {
         <h2 className="section-title">Contact</h2>
         <div className="stagger-parent">
           <p className="section-copy mb-6">Have a question not answered here?</p>
-          <a href="mailto:lamt@math.ucla.edu" className="btn-outline btn-ripple">
+          <a href="mailto:uclamathtournament@gmail.com" className="btn-outline btn-ripple">
             Email Us
           </a>
         </div>

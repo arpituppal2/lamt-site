@@ -22,7 +22,7 @@ const FacebookIcon = () => (
 
 export default function FooterClient() {
   const socialLinks = [
-    { title: 'Email', href: 'mailto:team@lamt.net', icon: <EnvelopeClosedIcon width={18} height={18} /> },
+    { title: 'Email', href: 'mailto:uclamathtournament@gmail.com', icon: <EnvelopeClosedIcon width={18} height={18} /> },
     { title: 'Instagram', href: 'https://www.instagram.com/lamathtournament/', icon: <InstagramIcon /> },
     { title: 'Facebook', href: 'https://www.facebook.com/groups/1429462591976204/', icon: <FacebookIcon /> },
     { title: 'LinkedIn', href: 'https://www.linkedin.com/company/la-math-tournament/', icon: <LinkedInLogoIcon width={18} height={18} /> },
