@@ -147,6 +147,17 @@ app.get('/subscribers', requireAdmin, async (req, res) => {
   }
 });
 
+app.delete('/subscribers/:id', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query('DELETE FROM subscribers WHERE id = $1 RETURNING id', [req.params.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    return res.json({ status: 'deleted' });
+  } catch (err) {
+    console.error('subscriber delete error', err);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
 app.get('/announcements', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, title, body, priority, created_at FROM announcements ORDER BY created_at DESC, id DESC');

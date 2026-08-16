@@ -515,9 +515,13 @@ interface ServerSubscriber {
   unsubscribed_at: string | null;
 }
 
-function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
+function SubscribersTab({ subscribers, onDelete }: {
+  subscribers: ServerSubscriber[];
+  onDelete: (id: number) => Promise<void>;
+}) {
   const active = subscribers.filter((subscriber) => !subscriber.unsubscribed_at);
   const [copied, setCopied] = useState(false);
+  const [pendingId, setPendingId] = useState<number | null>(null);
 
   async function copyEmails() {
     try {
@@ -525,6 +529,16 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {}
+  }
+
+  async function handleDelete(id: number, email: string) {
+    if (!window.confirm(`Remove ${email} from the subscriber list? This cannot be undone.`)) return;
+    setPendingId(id);
+    try {
+      await onDelete(id);
+    } finally {
+      setPendingId(null);
+    }
   }
 
   function formatDate(iso: string) {
@@ -556,6 +570,7 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
                 <th>Email</th>
                 <th>Signed Up</th>
                 <th>Status</th>
+                <th aria-label="Actions" />
               </tr>
             </thead>
             <tbody>
@@ -569,6 +584,16 @@ function SubscribersTab({ subscribers }: { subscribers: ServerSubscriber[] }) {
                     ) : (
                       <span className="text-sm font-extrabold uppercase text-[var(--ucla-gold-dark)]">Active</span>
                     )}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(subscriber.id, subscriber.email)}
+                      disabled={pendingId === subscriber.id}
+                      className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white disabled:opacity-40"
+                    >
+                      {pendingId === subscriber.id ? "Removing..." : "Delete"}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -974,7 +999,15 @@ export default function AdminPage() {
 />
         )}
         {tab === "livechat" && <LiveChatTab onQueueCount={setQueueCount} />}
-        {tab === "subscribers" && <SubscribersTab subscribers={subscribers} />}
+        {tab === "subscribers" && (
+          <SubscribersTab
+            subscribers={subscribers}
+            onDelete={async (id) => {
+              await api.deleteSubscriber(id);
+              setSubscribers((prev) => prev.filter((s) => s.id !== id));
+            }}
+          />
+        )}
         {tab === "settings" && <SettingsTab />}
         </div>
       </section>

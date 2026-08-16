@@ -101,6 +101,8 @@ interface ServerSubscriber {
 export const api = {
   subscribe: (email: string) => apiFetch<{ status: "ok" | "already" | "back" }>("/subscribe", { method: "POST", body: JSON.stringify({ email }) }),
   getSubscribers: () => apiFetch<{ subscribers: ServerSubscriber[] }>("/subscribers"),
+  deleteSubscriber: (id: number) =>
+    apiFetch<{ status: string }>(`/subscribers/${id}`, { method: "DELETE" }),
   getSession: () => apiFetch<{ authed: boolean }>("/session"),
   login: (password: string) => apiFetch<{ ok: boolean }>("/login", { method: "POST", body: JSON.stringify({ password }) }),
   logout: () => apiFetch<{ ok: boolean }>("/logout", { method: "POST" }),
