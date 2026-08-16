@@ -303,13 +303,12 @@ function serializeChat(row, messages = []) {
 }
 
 async function computePosition(pool, chatId) {
-  const chat = await pool.query('SELECT created_at, status FROM live_chats WHERE id = $1', [chatId]);
+  const chat = await pool.query('SELECT status FROM live_chats WHERE id = $1', [chatId]);
   if (chat.rows.length === 0) return 0;
-  const row = chat.rows[0];
-  if (row.status !== 'waiting') return 0;
+  if (chat.rows[0].status !== 'waiting') return 0;
   const result = await pool.query(
-    "SELECT COUNT(*)::int AS pos FROM live_chats WHERE status = 'waiting' AND created_at <= $1",
-    [row.created_at],
+    "SELECT COUNT(*)::int AS pos FROM live_chats WHERE status = 'waiting' AND id <= $1",
+    [chatId],
   );
   return result.rows[0].pos;
 }
@@ -363,7 +362,6 @@ app.post('/chat/:id', limitChat, async (req, res) => {
       'INSERT INTO live_chat_messages (chat_id, sender, body) VALUES ($1, $2, $3) RETURNING id',
       [id, 'user', String(body).trim().slice(0, 2000)],
     );
-    await pool.query("UPDATE live_chats SET status = 'active' WHERE id = $1 AND status = 'waiting'", [id]);
     return res.json({ status: 'sent' });
   } catch (err) {
     console.error('chat send error', err);
