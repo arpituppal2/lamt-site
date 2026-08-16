@@ -364,6 +364,9 @@ label .label-caps {
   border-color: var(--ucla-gold);
   background: var(--ucla-gold);
   color: var(--ucla-blue-deep);
+  min-height: 3.25rem;
+  padding: 1rem 1.5rem;
+  font-size: var(--text-base);
 }
 
 .btn-gold:hover {
