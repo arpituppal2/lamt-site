@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 /* ─── ANIMATION ENGINE ────────────────────────────────────────────────────────
    Installs all site-wide animations once in RootLayout.
@@ -359,9 +360,17 @@ function initProofHover() {
 
 // ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 export default function AnimationEngine() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) return;
+
+    // Clear prior reveal marks so soft navigations re-animate
+    document.querySelectorAll<HTMLElement>('[data-revealed]').forEach((el) => {
+      delete el.dataset.revealed;
+      el.classList.remove('is-visible');
+    });
 
     const cleanups = [
       initReveal(),
@@ -374,14 +383,13 @@ export default function AnimationEngine() {
       initProofHover(),
     ];
 
-    // Fire hero entrance after a brief paint settle
     const t = setTimeout(initHeroEntrance, 60);
 
     return () => {
       clearTimeout(t);
       cleanups.forEach((fn) => fn?.());
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

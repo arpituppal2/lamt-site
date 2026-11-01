@@ -2,7 +2,7 @@ import SubscribeForm from "./SubscribeForm";
 
 export default function EmailSection() {
   return (
-    <section className="page-shell border-t-4 border-[var(--ucla-gold)] bg-[var(--color-surface-2)]">
+    <section id="email-signup" className="page-shell border-t-4 border-[var(--ucla-gold)] bg-[var(--color-surface-2)]">
       <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
         <div>
           <p className="serif-kicker serif-kicker--blue">Stay in the Loop</p>

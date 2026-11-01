@@ -30,7 +30,7 @@ export default function FooterClient() {
   ];
 
   return (
-    <footer className="bg-[#2774AE] text-white dark:bg-black">
+    <footer className="bg-[var(--ucla-blue)] text-white dark:bg-black">
       <div className="mx-auto max-w-[1600px] px-4 py-8 md:px-8">
         <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
           <div className="shrink-0 transition-transform hover:scale-105">
@@ -38,28 +38,30 @@ export default function FooterClient() {
               <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={120} height={120} className="object-contain" />
             </Link>
           </div>
-          <div className="flex items-center gap-6 flex-wrap justify-center">
-            {socialLinks.map((item) => (
-              <a
-                key={item.title}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={item.title}
-                className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[#2774AE] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
-              >
-                {item.icon}
-              </a>
-            ))}
-            <a
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.title}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={item.title}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[var(--ucla-blue)] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
+                >
+                  {item.icon}
+                </a>
+              ))}
+            </div>
+            <Link
               href="/sponsorships"
-              className="flex h-10 w-10 items-center justify-center border-2 border-white bg-white text-[#2774AE] font-extrabold text-[11px] uppercase tracking-wider shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
+              className="text-xs font-extrabold uppercase tracking-[0.14em] text-white underline decoration-white/40 underline-offset-4 transition-colors hover:text-[var(--ucla-gold)] hover:decoration-[var(--ucla-gold)]"
             >
               Sponsorships
-            </a>
+            </Link>
           </div>
           <div className="max-w-xs text-center w-full">
-            <p className="text-[11px] leading-relaxed text-[#DAEBFE] opacity-80 md:text-xs">
+            <p className="text-[11px] leading-relaxed text-[var(--ucla-blue-light)] opacity-80 md:text-xs">
               We are a student group acting independently of the University of California.
               We take full responsibility for our organization and this web site.
             </p>

@@ -83,13 +83,13 @@ export default function RulesPage() {
         </div>
         <div>
           <h1 className="page-title">Rules</h1>
-          <p className="page-summary mt-5">
+          <p className="page-summary reveal mt-5">
             Rules for testing format, honor code expectations, and acceptable mathematical answers.
           </p>
         </div>
       </header>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Test Format</h2>
         <div className="grid gap-6">
           {testFormats.map(({ name, desc }) => (
@@ -101,7 +101,7 @@ export default function RulesPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Honor Code</h2>
         <div>
           <p className="section-copy mb-6">
@@ -118,7 +118,7 @@ export default function RulesPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Acceptable Answers</h2>
         <div>
           <p className="section-copy mb-8">

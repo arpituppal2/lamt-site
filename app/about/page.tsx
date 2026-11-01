@@ -98,7 +98,7 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Mission</h2>
         <div className="stagger-parent grid gap-5">
           <p className="section-copy">
@@ -110,7 +110,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">LAMT Staff</h2>
         <div className="stagger-parent grid gap-8">
           {staffGroups.map((group) => (
@@ -122,14 +122,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">UC Disclaimer</h2>
         <p className="section-copy reveal">
           We are a student group acting independently of the University of California; we take full responsibility for our organization and this website.
         </p>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Privacy Policy</h2>
         <div className="stagger-parent grid gap-5">
           <p className="section-copy">

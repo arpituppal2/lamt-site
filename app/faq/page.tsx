@@ -31,7 +31,7 @@ export default function FAQPage() {
         </div>
       </header>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Answers</h2>
         <div className="stagger-parent grid gap-0 border-t-2 border-[var(--color-border)]">
           {faqs.map(({ q, a }) => (
@@ -43,7 +43,7 @@ export default function FAQPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Contact</h2>
         <div className="stagger-parent">
           <p className="section-copy mb-6">Have a question not answered here?</p>

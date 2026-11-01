@@ -44,7 +44,7 @@ export default function TournamentPage() {
         </div>
       </header>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Eligibility</h2>
         <ul className="dash-list stagger-parent">
           {eligibility.map((item) => (
@@ -53,7 +53,7 @@ export default function TournamentPage() {
         </ul>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Format</h2>
         <div className="stagger-parent grid gap-6">
           {format.map(({ name, desc }) => (
@@ -65,7 +65,7 @@ export default function TournamentPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Tentative Schedule</h2>
         <div className="reveal--scale overflow-x-auto">
           <table className="lamt-table">
@@ -89,7 +89,7 @@ export default function TournamentPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Location</h2>
         <div>
           <p className="section-copy reveal mb-6">
@@ -108,7 +108,7 @@ export default function TournamentPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Actions</h2>
         <div className="stagger-parent flex flex-wrap gap-3">
           <a href="https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u" target="_blank" rel="noopener noreferrer" className="btn-outline btn-ripple">

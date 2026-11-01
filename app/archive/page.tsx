@@ -46,7 +46,7 @@ export default function ArchivePage() {
         </div>
         <div>
           <h1 className="page-title">Archive</h1>
-          <p className="page-summary mt-5">
+          <p className="page-summary reveal mt-5">
             See our past tournament exams, solutions, and results.
           </p>
         </div>
