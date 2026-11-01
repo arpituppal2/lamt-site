@@ -57,10 +57,10 @@ export default function EmailPopup() {
       </button>
 
       <p className="serif-kicker">Join the List</p>
-      <h2 className="mt-2 text-xl font-extrabold leading-snug text-white">We&apos;re just getting started.</h2>
+      <h2 className="mt-2 text-xl font-extrabold leading-snug text-white">Be first to know.</h2>
       <p className="mt-3 text-sm leading-relaxed text-[#DAEBFE]">
-        LAMT 2026 brought 180+ students from 8 counties to UCLA — and it&apos;s only the first one. Be first to know about
-        next year&apos;s tournament.
+        LAMT Blue (middle school and below) and LAMT Gold (high school and below) are coming in
+        2027. Sign up for emails and we&#39;ll let you know when registration opens.
       </p>
       <div className="mt-6">
         <SubscribeForm autoFocus onDark buttonClassName="btn-gold" />

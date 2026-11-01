@@ -520,15 +520,24 @@ function SubscribersTab({ subscribers, onDelete }: {
   onDelete: (id: number) => Promise<void>;
 }) {
   const active = subscribers.filter((subscriber) => !subscriber.unsubscribed_at);
+  const unsubscribed = subscribers.filter((subscriber) => subscriber.unsubscribed_at);
   const [copied, setCopied] = useState(false);
   const [pendingId, setPendingId] = useState<number | null>(null);
+  const [filter, setFilter] = useState<"all" | "active" | "unsubscribed">("active");
+
+  const filtered = filter === "active" ? active : filter === "unsubscribed" ? unsubscribed : subscribers;
 
   async function copyEmails() {
     try {
-      await navigator.clipboard.writeText(active.map((subscriber) => subscriber.email).join(", "));
+      await navigator.clipboard.writeText(filtered.map((subscriber) => subscriber.email).join(", "));
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {}
+  }
+
+  function mailtoEmails() {
+    const emails = filtered.map((subscriber) => subscriber.email).join(",");
+    if (emails) window.location.href = `mailto:${emails}?subject=LAMT Tournament Update&body=`;
   }
 
   async function handleDelete(id: number, email: string) {
@@ -553,17 +562,45 @@ function SubscribersTab({ subscribers, onDelete }: {
           <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Subscribers</h2>
         </div>
         <span className="font-bold text-[var(--color-text-muted)]">
-          {active.length} active / {subscribers.length} total
+          {active.length} active / {unsubscribed.length} unsubscribed / {subscribers.length} total
         </span>
       </div>
-      <p className="mt-4 text-[var(--color-text-muted)]">Everyone who signed up via the homepage section or the popup. Copy the list to send your next announcement.</p>
-      <button type="button" onClick={copyEmails} disabled={active.length === 0} className="btn-outline mt-5 mb-5 disabled:opacity-40">
-        {copied ? "Copied!" : `Copy ${active.length} Email${active.length === 1 ? "" : "s"}`}
-      </button>
+      <p className="mt-4 text-[var(--color-text-muted)]">Everyone who signed up via the homepage section or the popup. Use the buttons below to copy or email the list for your next announcement.</p>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button type="button" onClick={mailtoEmails} disabled={active.length === 0} className="btn-filled disabled:opacity-40">
+          Email All {active.length} Active
+        </button>
+        <button type="button" onClick={copyEmails} disabled={filtered.length === 0} className="btn-outline disabled:opacity-40">
+          {copied ? "Copied!" : `Copy ${filtered.length}`}
+        </button>
+        <div className="flex flex-wrap gap-1 border border-[var(--color-divider)] rounded-none bg-[var(--color-surface)]">
+          <button
+            type="button"
+            onClick={() => setFilter("all")}
+            className={`tab-underline px-3 py-2 text-sm font-extrabold ${filter === "all" ? "text-[var(--color-text)] border-b-2 border-[var(--ucla-gold)]" : "text-[var(--color-text-muted)] border-b-2 border-transparent"}`}
+          >
+            All
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("active")}
+            className={`tab-underline px-3 py-2 text-sm font-extrabold ${filter === "active" ? "text-[var(--color-text)] border-b-2 border-[var(--ucla-gold)]" : "text-[var(--color-text-muted)] border-b-2 border-transparent"}`}
+          >
+            Active ({active.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("unsubscribed")}
+            className={`tab-underline px-3 py-2 text-sm font-extrabold ${filter === "unsubscribed" ? "text-[var(--color-text)] border-b-2 border-[var(--ucla-gold)]" : "text-[var(--color-text-muted)] border-b-2 border-transparent"}`}
+          >
+            Unsubscribed ({unsubscribed.length})
+          </button>
+        </div>
+      </div>
       {subscribers.length === 0 ? (
-        <p className="py-10 text-center text-[var(--color-text-muted)]">No subscribers yet.</p>
+        <p className="mt-6 py-10 text-center text-[var(--color-text-muted)]">No subscribers yet.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="mt-6 overflow-x-auto">
           <table className="lamt-table">
             <thead>
               <tr>
@@ -574,7 +611,7 @@ function SubscribersTab({ subscribers, onDelete }: {
               </tr>
             </thead>
             <tbody>
-              {subscribers.map((subscriber) => (
+              {filtered.map((subscriber) => (
                 <tr key={subscriber.id}>
                   <td className="font-bold text-[var(--color-text)]">{subscriber.email}</td>
                   <td className="text-[var(--color-text-secondary)]">{formatDate(subscriber.consent_at)}</td>
@@ -609,6 +646,8 @@ function SettingsTab() {
   const [tournamentDate, setTournamentDate] = useState("");
   const [tournamentName, setTournamentName] = useState("");
   const [regDeadline, setRegDeadline] = useState("");
+  const [registerEnabled, setRegisterEnabled] = useState(false);
+  const [registerUrl, setRegisterUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -618,6 +657,8 @@ function SettingsTab() {
       if (settings.tournament_date) setTournamentDate(settings.tournament_date);
       if (settings.tournament_name) setTournamentName(settings.tournament_name);
       if (settings.registration_deadline) setRegDeadline(settings.registration_deadline);
+      setRegisterEnabled(settings.register_enabled === 'true');
+      if (settings.register_url) setRegisterUrl(settings.register_url);
     }).catch(() => {});
   }, []);
 
@@ -643,6 +684,8 @@ function SettingsTab() {
         tournament_date: toISO(tournamentDate),
         tournament_name: tournamentName,
         registration_deadline: toISO(regDeadline),
+        register_enabled: registerEnabled ? "true" : "false",
+        register_url: registerUrl,
       });
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2500);
@@ -674,6 +717,21 @@ function SettingsTab() {
           <span className="label-caps">Registration Deadline</span>
           <input className="lamt-input" type="datetime-local" value={regDeadline ? toLocalInput(regDeadline) : ""} onChange={(e) => setRegDeadline(e.target.value)} />
           <span className="text-xs text-[var(--color-text-muted)]">After this time, the Register button disappears and &ldquo;Registration is closed&rdquo; shows.</span>
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">Show REGISTER in Nav</span>
+          <input
+            type="checkbox"
+            checked={registerEnabled}
+            onChange={(event) => setRegisterEnabled(event.target.checked)}
+            className="w-5 h-5 accent-[#FFD100]"
+          />
+          <span className="text-xs text-[var(--color-text-muted)]">Toggles the REGISTER link in the top navigation.</span>
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">REGISTER URL</span>
+          <input className="lamt-input" value={registerUrl} onChange={(event) => setRegisterUrl(event.target.value)} placeholder="https://contestdojo.com/public/..." />
+          <span className="text-xs text-[var(--color-text-muted)]">The URL the REGISTER nav link points to.</span>
         </label>
         {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
         <div className="flex items-center gap-4">

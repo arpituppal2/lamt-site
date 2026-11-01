@@ -6,14 +6,15 @@ export default function EmailSection() {
       <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
         <div>
           <p className="serif-kicker serif-kicker--blue">Stay in the Loop</p>
-          <h2 className="page-title mt-4">We&apos;re just getting started.</h2>
+          <h2 className="page-title mt-4">Be first to know.</h2>
           <p className="page-summary mt-5">
-            LAMT 2026 brought 180+ students from 8 counties to UCLA — and it&apos;s only the first one. Join the list and be
-            first to know when the next tournament is announced.
+            LAMT Blue (middle school and below) and LAMT Gold (high school and below) are coming in
+            2027. Sign up for emails and we&#39;ll let you know when registration opens for each
+            tournament.
           </p>
         </div>
         <div>
-          <SubscribeForm buttonLabel="Keep Me Posted" />
+          <SubscribeForm buttonLabel="Sign up for emails" />
         </div>
       </div>
     </section>

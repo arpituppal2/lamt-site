@@ -5,24 +5,49 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const navLinks = [
-  { href: '/', label: 'HOME' },
-  // { href: '/tournament', label: 'LAMT 2026' },
-  { href: '/archive', label: 'ARCHIVE' },
-  { href: '/rules', label: 'RULES' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'ABOUT' },
-  { href: 'https://contestdojo.com/public/BoJ8sPuig3IJ4BQeC97u', label: 'REGISTER', external: true },
-];
-
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
+  const [navLinks, setNavLinks] = useState([
+    { href: '/', label: 'HOME', external: false },
+    { href: '/archive', label: 'ARCHIVE', external: false },
+    { href: '/rules', label: 'RULES', external: false },
+    { href: '/faq', label: 'FAQ', external: false },
+    { href: '/about', label: 'ABOUT', external: false },
+  ]);
   const pathname = usePathname();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/settings')
+      .then((r) => r.json())
+      .then(({ settings }) => {
+        if (!mounted) return;
+        const links = [
+          { href: '/', label: 'HOME', external: false },
+          { href: '/archive', label: 'ARCHIVE', external: false },
+          { href: '/rules', label: 'RULES', external: false },
+          { href: '/faq', label: 'FAQ', external: false },
+          { href: '/about', label: 'ABOUT', external: false },
+        ];
+        if (settings.register_enabled === 'true' && settings.register_url) {
+          links.push({
+            href: settings.register_url,
+            label: 'REGISTER',
+            external: true,
+          });
+        }
+        setNavLinks(links);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const linkClass = 'nav-link font-extrabold text-2xl tracking-wide uppercase text-white transition-opacity duration-200 hover:opacity-70';
 

@@ -52,6 +52,14 @@ export default function FooterClient() {
               </a>
             ))}
           </div>
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <a
+              href="/sponsorships"
+              className="text-[11px] font-extrabold uppercase tracking-wider text-white hover:text-[#FFD100] transition-colors md:text-xs"
+            >
+              Sponsorships
+            </a>
+          </div>
           <div className="max-w-xs text-center w-full">
             <p className="text-[11px] leading-relaxed text-[#DAEBFE] opacity-80 md:text-xs">
               We are a student group acting independently of the University of California.
