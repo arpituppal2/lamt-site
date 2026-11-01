@@ -17,28 +17,22 @@ export default function TournamentPage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Archive</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title hero-animate-words">
-            <span className="word">LAMT</span>{' '}
-            <span className="word">2026</span>
-          </h1>
-          <p className="page-summary reveal mt-5">
-            On <strong>May 17, 2026</strong>, LAMT welcomed <strong>180+ students</strong> from{' '}
-            <strong>8 counties</strong> to the UCLA campus for a free, national-stage team math
-            tournament. Problems, solutions, and results live in the archive.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/archive" className="btn-filled">
-              Open Archive
-            </Link>
-            <Link href="/#email-signup" className="btn-outline">
-              Get notified for next year
-            </Link>
-          </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">LAMT</span>{' '}
+          <span className="word">2026</span>
+        </h1>
+        <p className="page-summary mt-5">
+          On <strong>May 17, 2026</strong>, LAMT welcomed <strong>180+ students</strong> from{' '}
+          <strong>8 counties</strong> to the UCLA campus for a free, national-stage team math
+          tournament. Problems, solutions, and results live in the archive.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/archive" className="btn-filled">
+            Open Archive
+          </Link>
+          <Link href="/#email-signup" className="btn-outline">
+            Get notified for next year
+          </Link>
         </div>
       </header>
 

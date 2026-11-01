@@ -2,31 +2,17 @@
 
 import { useEffect, useState } from 'react';
 
-function resolveDark(stored: string | null) {
-  if (stored === 'dark' || stored === 'light') return stored === 'dark';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
-
 export default function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Dark is opt-in only. OS preference must not replace Bruin blue identity by default.
     const stored = localStorage.getItem('lamt-theme');
-    const prefersDark = resolveDark(stored);
+    const prefersDark = stored === 'dark';
     document.documentElement.classList.toggle('dark', prefersDark);
     setDark(prefersDark);
     setMounted(true);
-
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => {
-      if (localStorage.getItem('lamt-theme')) return;
-      const next = mq.matches;
-      document.documentElement.classList.toggle('dark', next);
-      setDark(next);
-    };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   const toggle = () => {
@@ -43,7 +29,7 @@ export default function DarkModeToggle() {
       type="button"
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center border-2 border-[var(--ucla-gold)] bg-[var(--ucla-blue-deep)] text-white transition-transform hover:scale-105 dark:bg-white dark:text-[var(--ucla-blue-deep)]"
+      className="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center border-2 border-[var(--ucla-gold)] bg-[var(--ucla-blue-deep)] text-white transition-transform hover:scale-105"
     >
       {dark ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>

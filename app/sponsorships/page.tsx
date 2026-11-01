@@ -2,20 +2,10 @@ export default function SponsorshipsPage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Sponsorship</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title hero-animate-words">
-            <span className="word">Sponsor</span>{' '}
-            <span className="word">LAMT</span>
-          </h1>
-          <p className="page-summary reveal mt-5">
-            Help us bring LAMT Blue (middle school and below) and LAMT Gold (high school and below)
-            to life. Our sponsorship packet has everything you need to partner with us.
-          </p>
-        </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">Sponsor</span>{' '}
+          <span className="word">LAMT</span>
+        </h1>
       </header>
 
       <section className="section-row reveal">
@@ -34,7 +24,7 @@ export default function SponsorshipsPage() {
             >
               Download Sponsorship Packet (PDF)
             </a>
-            <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
+            <a href="mailto:info@lamt.net" className="btn-outline">
               Contact Us
             </a>
           </div>
@@ -61,8 +51,8 @@ export default function SponsorshipsPage() {
         <h2 className="section-title">Get in Touch</h2>
         <p className="section-copy">
           Questions about sponsorship or interested in a custom partnership? Email us at{' '}
-          <a className="subtle-link" href="mailto:uclamathtournament@gmail.com">
-            uclamathtournament@gmail.com
+          <a className="subtle-link" href="mailto:info@lamt.net">
+            info@lamt.net
           </a>
           .
         </p>

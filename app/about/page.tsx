@@ -83,19 +83,10 @@ export default function AboutPage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Organization</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title hero-animate-words">
-            <span className="word">About</span>{' '}
-            <span className="word">Us</span>
-          </h1>
-          <p className="page-summary reveal mt-5">
-            The Los Angeles Math Tournament Group hosts and organizes mathematical contests for middle and high school students.
-          </p>
-        </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">About</span>{' '}
+          <span className="word">Us</span>
+        </h1>
       </header>
 
       <section className="section-row reveal">
@@ -162,7 +153,7 @@ export default function AboutPage() {
             <li><strong>Access</strong> — You may request a copy of the personal data we hold about you.</li>
           </ul>
           <p className="section-copy">
-            To exercise any of these rights, contact us at <a className="subtle-link" href="mailto:uclamathtournament@gmail.com">uclamathtournament@gmail.com</a>.
+            To exercise any of these rights, contact us at <a className="subtle-link" href="mailto:info@lamt.net">info@lamt.net</a>.
           </p>
 
           <h3 className="mt-3 font-extrabold text-[var(--color-text)]">Children&rsquo;s Privacy</h3>
@@ -177,7 +168,7 @@ export default function AboutPage() {
 
           <h3 className="mt-3 font-extrabold text-[var(--color-text)]">Contact</h3>
           <p className="section-copy">
-            Questions about this privacy policy? Email us at <a className="subtle-link" href="mailto:uclamathtournament@gmail.com">uclamathtournament@gmail.com</a>.
+            Questions about this privacy policy? Email us at <a className="subtle-link" href="mailto:info@lamt.net">info@lamt.net</a>.
           </p>
         </div>
       </section>

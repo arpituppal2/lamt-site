@@ -8,12 +8,12 @@ import { usePathname } from 'next/navigation';
 type NavLink = { href: string; label: string; external: boolean };
 
 const BASE_LINKS: NavLink[] = [
-  { href: '/', label: 'Home', external: false },
-  { href: '/archive', label: 'Archive', external: false },
-  { href: '/rules', label: 'Rules', external: false },
+  { href: '/', label: 'HOME', external: false },
+  { href: '/archive', label: 'ARCHIVE', external: false },
+  { href: '/rules', label: 'RULES', external: false },
   { href: '/faq', label: 'FAQ', external: false },
-  { href: '/sponsorships', label: 'Sponsorships', external: false },
-  { href: '/about', label: 'About', external: false },
+  { href: '/sponsorships', label: 'SPONSORSHIPS', external: false },
+  { href: '/about', label: 'ABOUT', external: false },
 ];
 
 export default function NavbarClient() {
@@ -36,7 +36,7 @@ export default function NavbarClient() {
         if (settings.register_enabled === 'true' && settings.register_url) {
           links.push({
             href: settings.register_url,
-            label: 'Register',
+            label: 'REGISTER',
             external: true,
           });
         }
@@ -49,15 +49,16 @@ export default function NavbarClient() {
   }, []);
 
   const linkClass =
-    'nav-link font-extrabold text-lg tracking-wide text-white transition-opacity duration-200 hover:opacity-70 md:text-xl';
+    'nav-link font-extrabold text-2xl uppercase tracking-[0.14em] text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
-    <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300 dark:bg-black">
-      <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-4 md:flex md:px-6">
+    <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">
+      {/* Desktop shell at 901px+ — match DESIGN.md 900px collapse (not Tailwind md/768) */}
+      <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-4 min-[901px]:flex min-[901px]:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={85} height={85} className="object-contain py-1" />
         </Link>
-        <nav className="site-nav relative flex items-center" aria-label="Primary" style={{ gap: 'clamp(1.25rem, 3.5vw, 3.5rem)' }}>
+        <nav className="site-nav relative flex items-center" aria-label="Primary" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
           {navLinks.map(({ href, label, external }) => {
             const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
             return external ? (
@@ -85,7 +86,7 @@ export default function NavbarClient() {
         </nav>
       </div>
 
-      <div className="flex h-21 items-center justify-between px-4 md:hidden">
+      <div className="flex h-21 items-center justify-between px-4 max-[900px]:flex min-[901px]:hidden">
         <Link href="/" className="flex flex-1 flex-col items-center gap-1 text-center font-extrabold tracking-wide text-white">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={78} height={78} className="object-contain" />
           <span className="text-[10px] sm:text-xs">Los Angeles Math Tournament</span>
@@ -105,7 +106,7 @@ export default function NavbarClient() {
 
       {menuOpen && (
         <nav
-          className="overflow-hidden border-t border-white/20 bg-[var(--ucla-blue)] dark:bg-black md:hidden"
+          className="overflow-hidden border-t border-white/20 bg-[var(--ucla-blue)] min-[901px]:hidden"
           aria-label="Mobile"
           style={{
             maxHeight: menuOpen ? `${menuHeight}px` : '0px',
@@ -120,7 +121,7 @@ export default function NavbarClient() {
           >
             {navLinks.map(({ href, label, external }) => {
               const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
-              const mobileClass = 'text-lg font-extrabold tracking-wide text-white transition-opacity hover:opacity-70';
+              const mobileClass = 'text-lg font-extrabold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-70';
 
               return external ? (
                 <a

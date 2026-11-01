@@ -1,6 +1,7 @@
 import SponsorsSection from './components/SponsorsSection';
 import HomeClient from './components/HomeClient';
 import EmailSection from './components/EmailSection';
+import Image from 'next/image';
 import Link from 'next/link';
 import fs from 'fs';
 import path from 'path';
@@ -32,21 +33,33 @@ function ProofBand() {
     { value: '180+', label: 'Students in 2026' },
     { value: '8', label: 'Counties represented' },
     { value: 'Free', label: 'No registration fee' },
-    { value: 'UCLA', label: 'Campus host' },
+  ];
+
+  const shots = [
+    { src: '/photos/venue-mosaic.jpg', alt: 'Students gathering under the UCLA math mosaic facade' },
+    { src: '/photos/checkin.jpg', alt: 'LAMT check-in desk on tournament morning' },
+    { src: '/photos/desk.jpg', alt: 'Organizers running registration at UCLA' },
   ];
 
   return (
     <section className="border-t-4 border-[var(--ucla-gold)] bg-[var(--ucla-blue-deep)] text-white">
       <div className="page-shell !py-12 md:!py-16">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="stagger-parent grid gap-8 sm:grid-cols-3">
           {facts.map((fact) => (
-            <div key={fact.label} className="reveal border-t-2 border-white/20 pt-4 lg:border-l-2 lg:border-t-0 lg:px-6 lg:pt-0 lg:first:border-l-0 lg:first:pl-0">
+            <div key={fact.label} className="border-t-2 border-white/20 pt-4 sm:border-l-2 sm:border-t-0 sm:px-6 sm:pt-0 sm:first:border-l-0 sm:first:pl-0">
               <p className="text-3xl font-extrabold tabular-nums text-white md:text-4xl">{fact.value}</p>
               <p className="mt-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--ucla-gold)]">{fact.label}</p>
             </div>
           ))}
         </div>
-        <p className="mt-8 max-w-3xl text-sm leading-relaxed text-[var(--ucla-blue-light)]">
+        <div className="stagger-parent mt-10 grid gap-3 md:grid-cols-3">
+          {shots.map((shot) => (
+            <div key={shot.src} className="relative aspect-[3/2] overflow-hidden bg-black/30">
+              <Image src={shot.src} alt={shot.alt} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
+            </div>
+          ))}
+        </div>
+        <p className="mt-8 max-w-3xl text-sm leading-relaxed text-white/90">
           Figures from LAMT 2026 (May 17). Browse problems and results in the{' '}
           <Link href="/archive" className="font-extrabold text-white underline underline-offset-4 decoration-[var(--ucla-gold)]">
             archive

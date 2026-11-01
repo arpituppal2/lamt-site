@@ -77,16 +77,9 @@ export default function RulesPage() {
       <KaTeXLoader />
 
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Competition Rules</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title">Rules</h1>
-          <p className="page-summary reveal mt-5">
-            Rules for testing format, honor code expectations, and acceptable mathematical answers.
-          </p>
-        </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">Rules</span>
+        </h1>
       </header>
 
       <section className="section-row reveal">

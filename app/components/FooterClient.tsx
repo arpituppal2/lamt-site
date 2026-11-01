@@ -22,7 +22,7 @@ const FacebookIcon = () => (
 
 export default function FooterClient() {
   const socialLinks = [
-    { title: 'Email', href: 'mailto:uclamathtournament@gmail.com', icon: <EnvelopeClosedIcon width={18} height={18} /> },
+    { title: 'Email', href: 'mailto:info@lamt.net', icon: <EnvelopeClosedIcon width={18} height={18} /> },
     { title: 'Instagram', href: 'https://www.instagram.com/lamathtournament/', icon: <InstagramIcon /> },
     { title: 'Facebook', href: 'https://www.facebook.com/groups/1429462591976204/', icon: <FacebookIcon /> },
     { title: 'LinkedIn', href: 'https://www.linkedin.com/company/la-math-tournament/', icon: <LinkedInLogoIcon width={18} height={18} /> },
@@ -30,16 +30,18 @@ export default function FooterClient() {
   ];
 
   return (
-    <footer className="bg-[var(--ucla-blue)] text-white dark:bg-black">
+    <footer className="bg-[var(--ucla-blue)] text-white">
       <div className="mx-auto max-w-[1600px] px-4 py-8 md:px-8">
-        <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
-          <div className="shrink-0 transition-transform hover:scale-105">
-            <Link href="/">
+        {/* Equal columns so the social cluster is true-center, not space-between skewed */}
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3">
+          <div className="flex justify-center md:justify-start">
+            <Link href="/" className="transition-transform hover:scale-105">
               <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={120} height={120} className="object-contain" />
             </Link>
           </div>
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex items-center gap-3 flex-wrap justify-center">
+
+          <div className="flex flex-col items-center gap-4 justify-self-center">
+            <div className="flex flex-wrap items-center justify-center gap-3">
               {socialLinks.map((item) => (
                 <a
                   key={item.title}
@@ -47,7 +49,7 @@ export default function FooterClient() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={item.title}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[var(--ucla-blue)] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[var(--ucla-blue)] shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl"
                 >
                   {item.icon}
                 </a>
@@ -60,8 +62,9 @@ export default function FooterClient() {
               Sponsorships
             </Link>
           </div>
-          <div className="max-w-xs text-center w-full">
-            <p className="text-[11px] leading-relaxed text-[var(--ucla-blue-light)] opacity-80 md:text-xs">
+
+          <div className="w-full max-w-xs justify-self-center text-center md:justify-self-end md:text-right">
+            <p className="text-[11px] leading-relaxed text-white/85 md:text-xs md:text-right">
               We are a student group acting independently of the University of California.
               We take full responsibility for our organization and this web site.
             </p>

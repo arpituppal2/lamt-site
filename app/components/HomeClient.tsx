@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { api } from '../lib/api';
 
-const homeButtonClass =
-  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[var(--ucla-blue)]';
-
 function useCountdown(iso: string | null) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -32,7 +29,8 @@ export default function HomeClient({
 }) {
   const [tournamentDate, setTournamentDate] = useState<string | null>(null);
   const [tournamentName, setTournamentName] = useState('');
-  const countdown = useCountdown(tournamentDate);
+  const [siteMode, setSiteMode] = useState<'offseason' | 'tournament'>('offseason');
+  const countdown = useCountdown(siteMode === 'tournament' ? tournamentDate : null);
 
   useEffect(() => {
     api
@@ -40,12 +38,24 @@ export default function HomeClient({
       .then(({ settings }) => {
         if (settings.tournament_date) setTournamentDate(settings.tournament_date);
         if (settings.tournament_name) setTournamentName(settings.tournament_name);
+        if (settings.site_mode === 'tournament' || settings.site_mode === 'offseason') {
+          setSiteMode(settings.site_mode);
+        }
       })
       .catch(() => {});
   }, []);
 
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 dark:bg-black md:min-h-screen md:px-16">
+    <section className="relative flex min-h-[85vh] flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:min-h-screen md:px-16">
+      <Image
+        src="/photos/hero-hall.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none object-cover object-[center_35%] opacity-30"
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/90" />
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -55,23 +65,32 @@ export default function HomeClient({
         }}
       />
       <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-[2%]">
-        <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img h-auto w-[clamp(280px,45vw,720px)] object-contain opacity-20 dark:opacity-40" priority />
+        <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img h-auto w-[clamp(280px,45vw,720px)] object-contain opacity-15" priority />
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent dark:from-black" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
 
-      <div className="relative z-10 w-full max-w-5xl py-8">
+      <div className="home-hero-seq relative z-10 w-full max-w-5xl py-8">
         <h1
-          className="hero-animate-words mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
+          className="mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
           style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
-          <span className="word">Los Angeles</span>
-          <br />
-          <span className="word">Math Tournament</span>
+          <span className="home-hero-line block" style={{ ['--d' as string]: '0ms' }}>
+            Los Angeles
+          </span>
+          <span className="home-hero-line block" style={{ ['--d' as string]: '140ms' }}>
+            Math Tournament
+          </span>
         </h1>
-        <div className="mb-8 h-[3px] w-12 bg-[var(--ucla-gold)]" />
+        <div className="home-hero-line mb-6 h-[3px] w-12 bg-[var(--ucla-gold)]" style={{ ['--d' as string]: '280ms' }} />
+        <p
+          className="home-hero-line mb-8 max-w-2xl text-lg font-medium leading-relaxed text-white/95 md:text-xl"
+          style={{ ['--d' as string]: '420ms' }}
+        >
+          A free UCLA-hosted math tournament for students in grade 12 or below.
+        </p>
 
-        {countdown && tournamentDate ? (
-          <div className="reveal mb-10">
+        {countdown && tournamentDate && (
+          <div className="home-hero-line mb-8" style={{ ['--d' as string]: '560ms' }}>
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">
               {tournamentName || 'Next tournament'}
             </p>
@@ -93,30 +112,28 @@ export default function HomeClient({
               </div>
             )}
           </div>
-        ) : (
-          <div className="mb-10 grid gap-8 lg:grid-cols-2 lg:items-start">
-            <div className="reveal">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Blue</p>
-              <h2 className="mb-3 text-xl font-extrabold text-white">Middle school and below</h2>
-              <p className="leading-relaxed text-[var(--ucla-blue-light)]">Coming near the end of February.</p>
-            </div>
-            <div className="reveal">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Gold</p>
-              <h2 className="mb-3 text-xl font-extrabold text-white">High school and below</h2>
-              <p className="leading-relaxed text-[var(--ucla-blue-light)]">Coming near the end of May.</p>
-            </div>
-          </div>
         )}
 
-        <div className="flex flex-wrap gap-3 border-t border-white/20 pt-8">
+        <div
+          className="home-hero-line flex flex-col gap-3 border-t border-white/20 pt-8 sm:flex-row sm:items-center sm:gap-5"
+          style={{ ['--d' as string]: countdown && tournamentDate ? '700ms' : '560ms' }}
+        >
           <a href="#email-signup" className="btn-gold">
             Sign up for emails
           </a>
-          <a href={discordUrl} target="_blank" rel="noreferrer" className={homeButtonClass}>
-            Join Discord — for students
+          <a
+            href={discordUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-bold text-white/90 underline decoration-white/35 underline-offset-4 transition-colors hover:text-white hover:decoration-[var(--ucla-gold)]"
+          >
+            Student Discord
           </a>
         </div>
-        <p className="mt-4 max-w-lg text-xs leading-relaxed text-[var(--color-border)]">
+        <p
+          className="home-hero-line mt-4 max-w-xl text-sm font-medium leading-relaxed text-white/90 md:text-base"
+          style={{ ['--d' as string]: countdown && tournamentDate ? '840ms' : '700ms' }}
+        >
           Email is for parents, teachers, and organizers. Discord is the student community.
         </p>
       </div>

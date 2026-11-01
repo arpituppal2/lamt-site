@@ -76,7 +76,7 @@ A free, national-stage, UCLA-hosted team math tournament open to any student in 
 - Keep the existing nav structure and the student-group disclaimer: LAMT acts independently of the University of California and takes responsibility for its organization and site.
 - Voice: direct, academic, and welcoming. No hype and no unverifiable claims.
 - Real sponsor assets exist in `public/sponsors/{gold,silver,bronze,friends}` and use the Gold / Silver / Bronze / Friends of LAMT tier labels.
-- Public contact: `uclamathtournament@gmail.com`; social links are in the footer.
+- Public contact: `info@lamt.net`; social links are in the footer.
 
 ## Evidence on Hand
 

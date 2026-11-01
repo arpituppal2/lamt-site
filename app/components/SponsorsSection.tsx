@@ -26,16 +26,7 @@ export default function SponsorsSection({
   return (
     <section id="sponsors" className="page-shell border-t-4 border-[var(--ucla-gold)] bg-[var(--color-surface)]">
       <div className="page-hero">
-        <div>
-          <p className="page-kicker">Sponsors</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h2 className="page-title">Our Sponsors</h2>
-          <p className="page-summary reveal mt-5">
-            LAMT 2026 is made possible by the generous support of our sponsors.
-          </p>
-        </div>
+        <h2 className="page-title">Our Sponsors</h2>
       </div>
 
       {activeTiers.length > 0 ? (
@@ -84,7 +75,7 @@ export default function SponsorsSection({
             <a href="/sponsorships" className="btn-filled">
               Sponsorship Packet
             </a>
-            <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
+            <a href="mailto:info@lamt.net" className="btn-outline">
               Contact Us
             </a>
           </div>

@@ -539,7 +539,14 @@ app.patch('/settings', requireAdmin, async (req, res) => {
   if (typeof entries !== 'object' || Array.isArray(entries)) {
     return res.status(400).json({ error: 'object required' });
   }
-  const allowed = ['tournament_date', 'tournament_name', 'registration_deadline', 'register_enabled', 'register_url'];
+  const allowed = [
+    'tournament_date',
+    'tournament_name',
+    'registration_deadline',
+    'register_enabled',
+    'register_url',
+    'site_mode', // offseason | tournament (countdown + live day)
+  ];
   try {
     const updated = {};
     for (const key of Object.keys(entries)) {

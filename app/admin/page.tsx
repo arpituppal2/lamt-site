@@ -38,10 +38,6 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Admin</p>
-          <span className="gold-rule" />
-        </div>
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <h1 className="page-title">LAMT Admin Panel</h1>
@@ -124,7 +120,9 @@ function MessagesTab({ messages, onResolve, onReply, onDelete }: {
     return (
       <section className="border-t-2 border-[var(--color-border)] py-16 text-center">
         <p className="text-xl font-extrabold text-[var(--color-text)]">No messages yet</p>
-        <p className="mt-2 text-[var(--color-text-muted)]">Messages from the /live contact form will appear here.</p>
+        <p className="mt-2 text-[var(--color-text-muted)]">
+          Email-style notes from the /live contact form. Separate from Live help desk (real-time chat).
+        </p>
       </section>
     );
   }
@@ -648,6 +646,7 @@ function SettingsTab() {
   const [regDeadline, setRegDeadline] = useState("");
   const [registerEnabled, setRegisterEnabled] = useState(false);
   const [registerUrl, setRegisterUrl] = useState("");
+  const [siteMode, setSiteMode] = useState<"offseason" | "tournament">("offseason");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -659,6 +658,9 @@ function SettingsTab() {
       if (settings.registration_deadline) setRegDeadline(settings.registration_deadline);
       setRegisterEnabled(settings.register_enabled === 'true');
       if (settings.register_url) setRegisterUrl(settings.register_url);
+      if (settings.site_mode === "tournament" || settings.site_mode === "offseason") {
+        setSiteMode(settings.site_mode);
+      }
     }).catch(() => {});
   }, []);
 
@@ -686,6 +688,7 @@ function SettingsTab() {
         registration_deadline: toISO(regDeadline),
         register_enabled: registerEnabled ? "true" : "false",
         register_url: registerUrl,
+        site_mode: siteMode,
       });
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2500);
@@ -701,9 +704,42 @@ function SettingsTab() {
       <p className="label-caps">Configuration</p>
       <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Settings</h2>
       <p className="mt-4 text-[var(--color-text-muted)]">
-        Set the next tournament date and registration deadline here. The homepage hero countdown will update automatically within 30 seconds. This is also what the &ldquo;Tournament Day&rdquo; live page references.
+        Flip site mode for day-of ops, then set the date used by the homepage countdown. Changes apply within about 30 seconds on / and /live.
       </p>
       <div className="mt-5 grid max-w-2xl gap-5">
+        <fieldset className="grid gap-3">
+          <legend className="label-caps">Site mode</legend>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="site_mode"
+              className="mt-1 accent-[#FFD100]"
+              checked={siteMode === "offseason"}
+              onChange={() => setSiteMode("offseason")}
+            />
+            <span>
+              <span className="font-extrabold text-[var(--color-text)]">Offseason</span>
+              <span className="mt-1 block text-sm text-[var(--color-text-muted)]">
+                /live shows between-events copy. Homepage hides the countdown even if a date is saved.
+              </span>
+            </span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="site_mode"
+              className="mt-1 accent-[#FFD100]"
+              checked={siteMode === "tournament"}
+              onChange={() => setSiteMode("tournament")}
+            />
+            <span>
+              <span className="font-extrabold text-[var(--color-text)]">Tournament / countdown</span>
+              <span className="mt-1 block text-sm text-[var(--color-text-muted)]">
+                Homepage shows the countdown (when a date is set). /live becomes tournament-day ops (Live badge, now/next).
+              </span>
+            </span>
+          </label>
+        </fieldset>
         <label className="grid gap-2">
           <span className="label-caps">Tournament Name (optional)</span>
           <input className="lamt-input" value={tournamentName} onChange={(e) => setTournamentName(e.target.value)} placeholder="LAMT 2027" />
@@ -931,8 +967,8 @@ export default function AdminPage() {
   const tabs: { key: typeof tab; label: string; badge?: number }[] = [
     { key: "announcements", label: "Announcements" },
     { key: "schedule", label: "Schedule" },
-    { key: "messages", label: "Messages", badge: msgCount },
-    { key: "livechat", label: "Live Chat", badge: queueCount },
+    { key: "messages", label: "Contact inbox", badge: msgCount },
+    { key: "livechat", label: "Live help desk", badge: queueCount },
     { key: "subscribers", label: "Subscribers" },
     { key: "settings", label: "Settings" },
   ];
@@ -940,10 +976,6 @@ export default function AdminPage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Admin</p>
-          <span className="gold-rule" />
-        </div>
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <h1 className="page-title">LAMT Admin Panel</h1>
@@ -952,15 +984,6 @@ export default function AdminPage() {
               <Link href="/live" className="btn-filled">
                 Open Live Page
               </Link>
-              <Link href="/" className="btn-outline">
-                View Homepage
-              </Link>
-              <Link href="/about" className="btn-outline">
-                About / Privacy
-              </Link>
-              <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
-                Email Staff
-              </a>
               <button type="button" onClick={logout} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                 Sign Out
               </button>
@@ -976,7 +999,7 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <AdminMetric label="Updates" value={updates.length} detail="Posted announcements" />
           <AdminMetric label="Schedule" value={schedule.length} detail="Timeline rows" />
-          <AdminMetric label="Messages" value={msgCount} detail="Pending replies" />
+          <AdminMetric label="Contact inbox" value={msgCount} detail="Unresolved form notes" />
           <AdminMetric label="Subscribers" value={subscribers.filter((subscriber) => !subscriber.unsubscribed_at).length} detail="Active email list" />
         </div>
       </section>

@@ -7,8 +7,6 @@ import type { ScheduleItem, Update, LiveChat as LiveChatType } from "./types";
 import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "./types";
 import { api, ApiError } from "../lib/api";
 
-const TOURNAMENT_OVER = false;
-
 const MAP_EMBED_SRC =
   "https://www.openstreetmap.org/export/embed.html?bbox=-118.4465%2C34.0667%2C-118.4385%2C34.0715&layer=mapnik&marker=34.0690%2C-118.4428";
 
@@ -38,7 +36,7 @@ const HELP_ITEMS = [
   { label: "Accessibility", detail: "All venues are wheelchair accessible. Request accommodations at the Info Desk or via live chat.", href: null },
   { label: "Lost & Found", detail: "Bring found items to the Info Desk. Lost something? Ask staff or use live chat.", href: null },
   { label: "Emergency", detail: "Call 911 or UCPD at 310-825-4321.", href: "tel:3108254321" },
-  { label: "Contact Staff", detail: "Tap Live Help Desk below, or email us.", href: "mailto:uclamathtournament@gmail.com" },
+  { label: "Contact Staff", detail: "Tap Live Help Desk below, or email us.", href: "mailto:info@lamt.net" },
 ];
 
 function parseTime(value: string): number {
@@ -72,7 +70,7 @@ function getTimelineState(schedule: ScheduleItem[], now: Date | null) {
   return { currentIdx, nextIdx, progress };
 }
 
-function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
+function LiveStatus({ schedule, offseason }: { schedule: ScheduleItem[]; offseason: boolean }) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -83,8 +81,8 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
   }, []);
 
   const { currentIdx, nextIdx, progress } = getTimelineState(schedule, now);
-  const current = schedule[currentIdx];
-  const next = current ? schedule[currentIdx + 1] : schedule[nextIdx];
+  const current = offseason ? undefined : schedule[currentIdx];
+  const next = offseason ? undefined : current ? schedule[currentIdx + 1] : schedule[nextIdx];
 
   return (
     <section className="border-t-2 border-[var(--color-border)] pt-5">
@@ -92,10 +90,20 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
         <div>
           <p className="label-caps">Status</p>
           <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">
-            {current ? "Happening Now" : next ? "Next Up" : "Schedule Complete"}
+            {offseason
+              ? "Between events"
+              : current
+                ? "Happening Now"
+                : next
+                  ? "Next Up"
+                  : "Schedule Complete"}
           </h2>
         </div>
-        {!TOURNAMENT_OVER && (
+        {offseason ? (
+          <span className="text-sm font-extrabold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Offseason
+          </span>
+        ) : (
           <span className="flex items-center gap-2 text-sm font-extrabold uppercase text-[var(--ucla-gold-dark)]">
             <span className="h-2 w-2 rounded-full bg-[var(--ucla-gold-dark)]" aria-hidden="true" />
             Live
@@ -104,7 +112,11 @@ function LiveStatus({ schedule }: { schedule: ScheduleItem[] }) {
       </div>
 
       <div className="mt-5">
-        <p className="text-2xl font-extrabold text-[var(--color-text)]">{current?.event || next?.event || "Thanks for joining LAMT."}</p>
+        <p className="text-2xl font-extrabold text-[var(--color-text)]">
+          {offseason
+            ? "Reference schedule from LAMT 2026 below."
+            : current?.event || next?.event || "Thanks for joining LAMT."}
+        </p>
         {(current || next) && (
           <p className="mt-2 text-lg font-bold text-[var(--color-text-secondary)]">
             {(current || next)?.time}-{(current || next)?.end} / {(current || next)?.location}
@@ -200,11 +212,15 @@ function MapSection() {
   );
 }
 
-function UpdatesFeed({ updates }: { updates: Update[] }) {
+function UpdatesFeed({ updates, offseason }: { updates: Update[]; offseason: boolean }) {
   return (
     <section className="border-t-2 border-[var(--color-border)] pt-5">
       {updates.length === 0 ? (
-        <p className="py-10 text-[var(--color-text-muted)]">Updates will appear here throughout the day.</p>
+        <p className="py-6 text-[var(--color-text-secondary)]">
+          {offseason
+            ? "No live announcements right now — LAMT is between events. Browse the archive for 2026 problems and results."
+            : "Updates will appear here throughout the day."}
+        </p>
       ) : (
         <div>
           {updates.map((update, index) => (
@@ -458,16 +474,22 @@ function LiveChat() {
 export default function LivePage() {
   const [schedule, setSchedule] = useState<ScheduleItem[]>(DEFAULT_SCHEDULE);
   const [updates, setUpdates] = useState<Update[]>(DEFAULT_UPDATES);
+  const [offseason, setOffseason] = useState(true);
 
   useEffect(() => {
     let alive = true;
 
     async function sync() {
       try {
-        const [nextSchedule, nextUpdates] = await Promise.all([api.getSchedule(), api.getAnnouncements()]);
+        const [nextSchedule, nextUpdates, settingsRes] = await Promise.all([
+          api.getSchedule(),
+          api.getAnnouncements(),
+          api.getSettings(),
+        ]);
         if (!alive) return;
         setSchedule(nextSchedule);
         setUpdates(nextUpdates);
+        setOffseason(settingsRes.settings.site_mode !== "tournament");
       } catch {}
     }
 
@@ -482,31 +504,29 @@ export default function LivePage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Live Operations</p>
-          <span className="gold-rule" />
-        </div>
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <h1 className="page-title">Tournament Day</h1>
+            <h1 className="page-title">{offseason ? "Operations" : "Tournament Day"}</h1>
             <p className="page-summary mt-5">
-              Live schedule, staff announcements, campus directions, and help desk for tournament day.
+              {offseason
+                ? "Schedule reference, campus directions, and help for the next tournament day."
+                : "Schedule, announcements, campus directions, and help desk for tournament day."}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#announcements" className="btn-filled">
-                Announcements
-              </a>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a href="#schedule" className="btn-filled">
                 Schedule
+              </a>
+              <a href="#help" className="btn-filled">
+                Help
+              </a>
+              <a href="#announcements" className="btn-outline">
+                Announcements
               </a>
               <a href="#map" className="btn-outline">
                 Campus Map
               </a>
-              <a href="#help" className="btn-outline">
-                Help
-              </a>
               <a href="#chat" className="btn-outline">
-                Live Chat
+                Help Desk
               </a>
             </div>
           </div>
@@ -516,6 +536,18 @@ export default function LivePage() {
         </div>
       </header>
 
+      <section id="schedule" className="section-row">
+        <h2 className="section-title">{offseason ? "2026 Schedule" : "Today"}</h2>
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <LiveStatus schedule={schedule} offseason={offseason} />
+          <ScheduleTable schedule={schedule} />
+        </div>
+      </section>
+
+      <div id="help">
+        <HelpSection />
+      </div>
+
       <section id="announcements" className="section-row">
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 className="section-title">Announcements</h2>
@@ -523,22 +555,10 @@ export default function LivePage() {
             {updates.length} {updates.length === 1 ? "update" : "updates"}
           </span>
         </div>
-        <UpdatesFeed updates={updates} />
-      </section>
-
-      <section id="schedule" className="section-row">
-        <h2 className="section-title">Today</h2>
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-          <LiveStatus schedule={schedule} />
-          <ScheduleTable schedule={schedule} />
-        </div>
+        <UpdatesFeed updates={updates} offseason={offseason} />
       </section>
 
       <MapSection />
-
-      <div id="help">
-        <HelpSection />
-      </div>
 
       <LiveChat />
     </div>

@@ -47,18 +47,9 @@ export default function FAQPage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Questions</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title hero-animate-words">
-            <span className="word">FAQ</span>
-          </h1>
-          <p className="page-summary reveal mt-5">
-            Key information for teams, chaperones, individual competitors, and guests.
-          </p>
-        </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">FAQ</span>
+        </h1>
       </header>
 
       <section className="section-row reveal">
@@ -77,7 +68,7 @@ export default function FAQPage() {
         <h2 className="section-title">Contact</h2>
         <div className="stagger-parent">
           <p className="section-copy mb-6">Have a question not answered here?</p>
-          <a href="mailto:uclamathtournament@gmail.com" className="btn-outline btn-ripple">
+          <a href="mailto:info@lamt.net" className="btn-outline btn-ripple">
             Email Us
           </a>
         </div>

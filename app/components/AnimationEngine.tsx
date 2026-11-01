@@ -40,54 +40,69 @@ function initReveal() {
     return 'translateY(16px)';
   };
 
-  // Set initial state (invisible, no layout shift). Opacity/transform keep the
-  // element intersecting, so the observer always fires (a zero-area clip-path
-  // would deadlock it).
-  all.forEach((el) => {
-    if (el.classList.contains('is-visible') || el.dataset.revealed) return;
-    el.style.opacity = '0';
-    el.style.transform = getInitialTransform(el);
-  });
+  // Content stays visible by default. Motion is additive only — never blank text
+  // with opacity:0 (IO misses / soft nav / above-fold would otherwise ship empty).
+  // Sequence index staggers siblings that enter together so motion reads top→down.
+  const reveal = (el: HTMLElement, observer?: IntersectionObserver, sequenceIndex = 0) => {
+    if (el.dataset.revealed) return;
+    el.dataset.revealed = '1';
+    el.classList.add('is-visible');
+    el.style.opacity = '';
+    el.style.transform = '';
+
+    const parent = el.parentElement;
+    const staggerIndex = parent?.classList.contains('stagger-parent')
+      ? Array.from(parent.children).indexOf(el)
+      : sequenceIndex;
+    const delay = staggerIndex * 120;
+    const baseDelay = parseInt(el.dataset.delay ?? '0', 10) + delay;
+
+    el.animate(
+      [
+        { opacity: 0.45, transform: getInitialTransform(el) },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 560, delay: baseDelay, easing: GOLDEN, fill: 'none' }
+    );
+
+    observer?.unobserve(el);
+  };
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target as HTMLElement;
-        if (el.dataset.revealed) return;
-        el.dataset.revealed = '1';
-
-        // Stagger siblings inside .stagger-parent
-        const parent = el.parentElement;
-        const staggerIndex = parent?.classList.contains('stagger-parent')
-          ? Array.from(parent.children).indexOf(el)
-          : 0;
-        const delay = staggerIndex * 70;
-
-        const baseDelay = parseInt(el.dataset.delay ?? '0', 10) + delay;
-
-        el.animate(
-          [
-            { opacity: 0, transform: getInitialTransform(el) },
-            { opacity: 1, transform: 'none' },
-          ],
-          { duration: 680, delay: baseDelay, easing: GOLDEN, fill: 'forwards' }
-        ).onfinish = () => {
-          el.style.opacity = '';
-          el.style.transform = '';
-        };
-
-        // Legacy reveal-block compat
-        el.classList.add('is-visible');
-        observer.unobserve(el);
-      });
+      const incoming = entries
+        .filter((entry) => entry.isIntersecting)
+        .map((entry) => entry.target as HTMLElement)
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+      incoming.forEach((el, i) => reveal(el, observer, i));
     },
-    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.01, rootMargin: '0px 0px -4% 0px' }
   );
 
-  all.forEach((el) => observer.observe(el));
+  let bootSeq = 0;
+  all.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const inView = rect.bottom > 0 && rect.top < window.innerHeight * 0.96;
+    if (inView) {
+      reveal(el, undefined, bootSeq++);
+      return;
+    }
+    observer.observe(el);
+  });
 
-  return () => observer.disconnect();
+  // Failsafe: if anything is still unmarked after paint, show it (already-revealed no-ops).
+  const failsafe = window.setTimeout(() => {
+    all.forEach((el) => reveal(el));
+  }, 900);
+
+  return () => {
+    window.clearTimeout(failsafe);
+    observer.disconnect();
+    all.forEach((el) => {
+      el.style.opacity = '';
+      el.style.transform = '';
+    });
+  };
 }
 
 // ─── 2. COUNTER ANIMATION ────────────────────────────────────────────────────
@@ -314,32 +329,53 @@ function initTypewriter() {
 }
 
 // ─── 9. HERO HEADLINE ENTRANCE ───────────────────────────────────────────────
+function ensureWordSpans(container: HTMLElement) {
+  if (container.querySelector('.word')) return;
+  const text = (container.textContent ?? '').trim();
+  if (!text) return;
+  container.textContent = '';
+  text.split(/\s+/).forEach((token, i, arr) => {
+    const span = document.createElement('span');
+    span.className = 'word';
+    span.textContent = token;
+    container.appendChild(span);
+    if (i < arr.length - 1) container.appendChild(document.createTextNode(' '));
+  });
+}
+
 function initHeroEntrance() {
-  // Stagger each word in .hero-animate-words on page load
+  // Additive only — words stay readable; never start at opacity 0.
   const containers = document.querySelectorAll<HTMLElement>('.hero-animate-words');
+  const animated: HTMLElement[] = [];
 
   containers.forEach((container) => {
+    ensureWordSpans(container);
     const words = container.querySelectorAll<HTMLElement>('.word');
     words.forEach((word, i) => {
-      word.style.opacity = '0';
-      word.style.clipPath = 'inset(0 0 100% 0)';
+      animated.push(word);
+      word.style.opacity = '1';
       word.animate(
         [
-          { opacity: 0, clipPath: 'inset(0 0 100% 0)' },
-          { opacity: 1, clipPath: 'inset(0 0 0% 0)' },
+          { opacity: 0.88, transform: 'translateY(6px)' },
+          { opacity: 1, transform: 'none' },
         ],
         {
-          duration: 800,
-          delay: 300 + i * 120,
+          duration: 480,
+          delay: 40 + i * 60,
           easing: GOLDEN,
-          fill: 'forwards',
+          fill: 'none',
         }
-      ).onfinish = () => {
-        word.style.opacity = '1';
-        word.style.clipPath = 'none';
-      };
+      );
     });
   });
+
+  return () => {
+    animated.forEach((word) => {
+      word.style.opacity = '';
+      word.style.transform = '';
+      word.style.clipPath = '';
+    });
+  };
 }
 
 // ─── 10. PROOF CHAPTER HOVER LIFT ────────────────────────────────────────────
@@ -374,7 +410,7 @@ export default function AnimationEngine() {
 
     // Motion diet: keep reveals, nav underline, hero entrance, light ripple.
     // Skip typewriter / proof hover / counters unless marked in DOM.
-    const cleanups = [
+    const cleanups: Array<(() => void) | void> = [
       initReveal(),
       initCounters(),
       initParallax(),
@@ -382,10 +418,14 @@ export default function AnimationEngine() {
       initRipple(),
     ];
 
-    const t = setTimeout(initHeroEntrance, 60);
+    let heroCleanup: (() => void) | void;
+    const t = setTimeout(() => {
+      heroCleanup = initHeroEntrance();
+    }, 60);
 
     return () => {
       clearTimeout(t);
+      heroCleanup?.();
       cleanups.forEach((fn) => fn?.());
     };
   }, [pathname]);

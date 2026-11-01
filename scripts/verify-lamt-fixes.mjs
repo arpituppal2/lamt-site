@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 
 const root = process.cwd();
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
@@ -11,22 +12,124 @@ function assert(cond, msg) {
   if (!cond) failures.push(msg);
 }
 
+function execRg(pattern, targets) {
+  try {
+    const out = execSync(`rg -l ${JSON.stringify(pattern)} ${targets.join(' ')}`, {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    return out.trim().split('\n').filter(Boolean);
+  } catch (err) {
+    if (err && err.status === 1) return [];
+    throw err;
+  }
+}
+
 const layout = read('app/layout.tsx');
 assert(/title:\s*\{[\s\S]*template:/.test(layout) || /template:\s*['`]%s/.test(layout), 'layout missing title template');
 assert(!/title:\s*['"]LAMT 2026['"]/.test(layout), 'layout still hardcodes title LAMT 2026');
 assert(!/EmailPopup/.test(layout), 'EmailPopup still mounted in root layout');
+assert(/lamt-theme'\)==='dark'/.test(layout) || /getItem\('lamt-theme'\)==='dark'/.test(layout), 'layout still follows OS dark by default');
+assert(!/prefers-color-scheme: dark\)\.matches/.test(layout), 'layout still auto-darks from OS preference');
 
 const nav = read('app/components/NavbarClient.tsx');
-assert(/\/sponsorships/.test(nav) && /SPONSORSHIPS|Sponsorships/i.test(nav), 'Sponsorships missing from navbar');
+assert(/\/sponsorships/.test(nav) && /SPONSORSHIPS/.test(nav), 'Sponsorships missing from navbar as ALL CAPS');
 assert(/aria-current/.test(nav), 'navbar missing aria-current');
+assert(/tracking-\[0\.14em\]/.test(nav) && /uppercase/.test(nav) && /text-2xl/.test(nav), 'navbar missing ALL-CAPS text-2xl gravitas');
+assert(/label:\s*'HOME'/.test(nav) && /label:\s*'ARCHIVE'/.test(nav), 'navbar labels not ALL CAPS');
+assert(!/dark:bg-black/.test(nav), 'navbar still flips to pure black in dark mode');
+assert(/min-\[901px\]:flex/.test(nav), 'navbar desktop shell not gated at 901px');
+assert(/max-\[900px\]:flex/.test(nav) || /min-\[901px\]:hidden/.test(nav), 'navbar mobile shell not gated at 900px');
+assert(!/\bmd:flex\b/.test(nav) && !/\bmd:hidden\b/.test(nav), 'navbar still uses Tailwind md (768) instead of 900px');
+assert(!/View Homepage/.test(read('app/admin/page.tsx')), 'admin still has View Homepage yeet');
+assert(/Contact inbox/.test(read('app/admin/page.tsx')) && /Live help desk/.test(read('app/admin/page.tsx')), 'admin tabs not clarifying contact vs live help');
 
 const home = read('app/components/HomeClient.tsx');
 assert(!/SubscribeForm/.test(home), 'hero still embeds SubscribeForm');
 assert(/getSettings|tournament_date|countdown/i.test(home), 'home missing admin-driven countdown wiring');
+assert(/photos\/hero-hall/.test(home), 'hero missing tournament photo');
+assert(/Email is for parents[\s\S]{0,80}Discord is the student community/.test(home), 'hero missing Discord/email helper');
+assert(/A free UCLA-hosted math tournament/.test(home), 'hero missing one true supporting sentence');
+assert(!/hero-animate-words/.test(home), 'home brand H1 still uses blanking word entrance');
+assert(/home-hero-seq/.test(home) && /home-hero-line/.test(home), 'home missing ordered hero entrance sequence');
+assert(!/Coming near the end of February/.test(home), 'hero still pitches Blue/Gold dates on the fold');
+assert(!/dark:bg-black/.test(home), 'home hero still flips to pure black in dark mode');
+assert(!/ucla-blue-light/.test(home), 'home still uses low-contrast ucla-blue-light');
+
+const page = read('app/page.tsx');
+assert(/photos\/venue-mosaic/.test(page) && /photos\/checkin/.test(page), 'proof band missing album photos');
+
+for (const photo of ['public/photos/hero-hall.jpg', 'public/photos/venue-mosaic.jpg', 'public/photos/checkin.jpg', 'public/photos/desk.jpg']) {
+  assert(fs.existsSync(path.join(root, photo)), `missing photo asset: ${photo}`);
+}
+
+const emailTargets = ['app', 'PRODUCT.md', 'HANDOFF.md'];
+if (fs.existsSync(path.join(root, 'out'))) emailTargets.push('out');
+const emailHits = execRg('uclamathtournament@gmail\\.com', emailTargets);
+assert(emailHits.length === 0, `old gmail still present: ${emailHits.join(', ')}`);
+const gmailHits = execRg('@gmail\\.com', ['app', 'out'].filter((t) => fs.existsSync(path.join(root, t))));
+assert(gmailHits.length === 0, `gmail leftover in app/out: ${gmailHits.join(', ')}`);
+assert(execRg('info@lamt\\.net', ['app', 'PRODUCT.md']).length > 0, 'info@lamt.net missing from app/PRODUCT');
+if (fs.existsSync(path.join(root, 'out/about.html'))) {
+  const aboutOut = read('out/about.html');
+  assert(aboutOut.includes('info@lamt.net'), 'out/about.html missing info@lamt.net');
+  assert(!aboutOut.includes('uclamathtournament@gmail.com'), 'out/about.html still has old gmail');
+}
 
 const dark = read('app/components/DarkModeToggle.tsx');
-assert(/prefers-color-scheme|matchMedia/.test(dark), 'dark mode still clock-based');
+assert(/stored === 'dark'/.test(dark), 'dark mode toggle not opt-in via localStorage');
+assert(!/prefers-color-scheme/.test(dark), 'dark mode still follows OS preference by default');
 assert(!/getHours\(/.test(dark), 'dark mode still uses clock hour');
+
+const footer = read('app/components/FooterClient.tsx');
+assert(/grid-cols-1[\s\S]*md:grid-cols-3/.test(footer), 'footer missing equal 3-col grid for true centering');
+assert(!/md:justify-between/.test(footer), 'footer still uses space-between skew');
+assert(/justify-self-center|items-center/.test(footer), 'footer social cluster not centered');
+assert(!/dark:bg-black/.test(footer), 'footer still flips to pure black in dark mode');
+
+const archive = read('app/archive/page.tsx');
+assert(/hero-animate-words/.test(archive), 'archive title missing hero-animate-words');
+assert(!/page-kicker|gold-rule|proof of the program/i.test(archive), 'archive still has kicker/gold-rule/fluff dek');
+assert(/stagger-parent/.test(archive), 'archive categories missing stagger-parent');
+assert(/'Shopping Round'/.test(archive), 'archive still labels Shopping without Round');
+
+const publicPages = [
+  'app/archive/page.tsx',
+  'app/faq/page.tsx',
+  'app/rules/page.tsx',
+  'app/about/page.tsx',
+  'app/sponsorships/page.tsx',
+  'app/tournament/page.tsx',
+  'app/live/page.tsx',
+  'app/components/SponsorsSection.tsx',
+];
+for (const file of publicPages) {
+  const src = read(file);
+  assert(!/page-kicker/.test(src), `${file} still has page-kicker`);
+  assert(!/gold-rule/.test(src), `${file} still has gold-rule`);
+}
+
+const rules = read('app/rules/page.tsx');
+assert(/hero-animate-words/.test(rules), 'rules title missing hero-animate-words');
+
+const engine = read('app/components/AnimationEngine.tsx');
+assert(/ensureWordSpans/.test(engine), 'AnimationEngine missing word-span fallback');
+assert(/Content stays visible by default|never blank|Visible by default/i.test(engine), 'AnimationEngine missing visible-by-default reveal policy');
+assert(!/el\.style\.opacity = '0'/.test(engine), 'AnimationEngine still blanks content with opacity 0');
+assert(/failsafe|900/.test(engine), 'AnimationEngine missing reveal failsafe');
+
+const live = read('app/live/page.tsx');
+assert(!/TOURNAMENT_OVER/.test(live), 'live page still hardcodes TOURNAMENT_OVER');
+assert(/site_mode/.test(live), 'live page not reading site_mode from settings');
+assert(/Offseason/.test(live), 'live page missing Offseason label');
+assert(/Between events|Tournament day is over|Reference schedule/.test(live), 'live status missing honest offseason copy');
+
+const backend = read('backend/src/index.js');
+assert(/'site_mode'/.test(backend), 'settings API missing site_mode allowlist');
+const admin = read('app/admin/page.tsx');
+assert(/site_mode|siteMode/.test(admin) && /Offseason/.test(admin) && /Tournament \/ countdown/.test(admin), 'admin Settings missing site mode toggle');
+assert(/site_mode|siteMode/.test(home), 'home countdown not gated by site_mode');
 
 const tournament = read('app/tournament/page.tsx');
 assert(!/This page is outdated/i.test(tournament), 'tournament page still says outdated');

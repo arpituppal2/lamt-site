@@ -7,14 +7,14 @@ const pastFiles = [
     title: '2026',
     files: {
       Problems: {
-        Shopping: '/lamt2026/Shopping Round.pdf',
+        'Shopping Round': '/lamt2026/Shopping Round.pdf',
         'Algebra & Number Theory': '/lamt2026/AlgNT.pdf',
         Combinatorics: '/lamt2026/Combo.pdf',
         Geometry: '/lamt2026/Geo.pdf',
         Guts: '/lamt2026/Guts.pdf',
       },
       Solutions: {
-        Shopping: '/lamt2026/Shopping Round Solutions.pdf',
+        'Shopping Round': '/lamt2026/Shopping Round Solutions.pdf',
         'Algebra & Number Theory': '/lamt2026/AlgNT Solutions.pdf',
         Combinatorics: '/lamt2026/Combo Solutions.pdf',
         Geometry: '/lamt2026/Geo Solutions.pdf',
@@ -40,16 +40,9 @@ export default function ArchivePage() {
   return (
     <div className="page-shell">
       <header className="page-hero">
-        <div>
-          <p className="page-kicker">Past Exams</p>
-          <span className="gold-rule" />
-        </div>
-        <div>
-          <h1 className="page-title">Archive</h1>
-          <p className="page-summary reveal mt-5">
-            Problems, solutions, and results from LAMT 2026 — the proof of the program.
-          </p>
-        </div>
+        <h1 className="page-title hero-animate-words">
+          <span className="word">Archive</span>
+        </h1>
       </header>
 
       <div>
@@ -62,7 +55,7 @@ export default function ArchivePage() {
                 onClick={() => setOpen(isOpen ? null : year.title)}
                 aria-expanded={isOpen}
                 aria-controls={`archive-${year.title}`}
-                className="flex w-full items-center justify-between gap-4 py-6 text-left"
+                className="reveal flex w-full items-center justify-between gap-4 py-6 text-left"
               >
                 <span className="text-2xl font-extrabold text-[var(--color-text)]">{year.title}</span>
                 <span
@@ -78,7 +71,10 @@ export default function ArchivePage() {
               </button>
 
               {isOpen && (
-                <div id={`archive-${year.title}`} className="grid grid-cols-1 gap-x-10 gap-y-12 pb-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                <div
+                  id={`archive-${year.title}`}
+                  className="stagger-parent grid grid-cols-1 gap-x-10 gap-y-12 pb-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+                >
                   {Object.entries(year.files).map(([category, items]) => (
                     <section key={category} className="border-t-2 border-[var(--ucla-gold)] pt-5">
                       <h2 className="font-extrabold text-[var(--color-text)]">{category}</h2>
