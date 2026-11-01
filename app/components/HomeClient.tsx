@@ -72,16 +72,16 @@ export default function HomeClient({
 
       <div className="relative z-10 w-full max-w-5xl py-8">
         <h1
-          className="hero-animate-words mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
+          className="hero-animate-words hero-run mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
           style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
           <span className="word">Los Angeles</span>
           <br />
           <span className="word">Math Tournament</span>
         </h1>
-        <div className="program-rule mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
+        <div className="program-rule rule-run mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
 
-        <p className="mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95">
+        <p className="hero-enter enter-run mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95" data-delay="1">
           A free UCLA-hosted math tournament for students in grade 12 or below.
         </p>
 
@@ -112,7 +112,7 @@ export default function HomeClient({
           </div>
         )}
 
-        <div className="flex flex-wrap gap-3 border-t border-white/20 pt-8">
+        <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
           <a href="#email-signup" className="btn-gold">
             Sign up for emails
           </a>

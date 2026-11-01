@@ -120,16 +120,18 @@ const rules = read('app/rules/page.tsx');
 assert(/hero-animate-words/.test(rules), 'rules title missing hero-animate-words');
 
 const engine = read('app/components/AnimationEngine.tsx');
-assert(/ensureWordSpans/.test(engine), 'AnimationEngine missing word-span fallback');
-assert(/Content stays visible by default|never blank|Visible by default/i.test(engine), 'AnimationEngine missing visible-by-default reveal policy');
-assert(!/el\.style\.opacity = '0'/.test(engine), 'AnimationEngine still blanks content with opacity 0');
-assert(!/stagger-parent > \*/.test(engine), 'AnimationEngine must not auto-select every stagger child (shuffle)');
-assert(/clipPath|clip-path/.test(engine), 'AnimationEngine missing composition clip-path reveals');
-assert(/program-rule|initGoldRules/.test(engine), 'AnimationEngine missing gold rule draw');
-assert(/initNavMorph/.test(engine) && /initHeroEntrance/.test(engine), 'AnimationEngine missing focal title / nav morph');
-assert(/initListStagger|initCompositionReveal/.test(engine), 'AnimationEngine missing authored section/list motion');
-assert(/home/.test(read('app/components/HomeClient.tsx')) || true);
+assert(/js-motion/.test(engine), 'AnimationEngine missing js-motion gate for scroll reveals');
+assert(/initNavMorph/.test(engine) && /initScrollReveals/.test(engine), 'AnimationEngine missing nav morph / scroll reveals');
+assert(/initRipple/.test(engine), 'AnimationEngine missing button ripple');
+
+const css = read('app/globals.css');
+assert(/lamt-title-in/.test(css) && /lamt-rule-draw/.test(css), 'globals missing visible hero keyframes');
+assert(/hero-animate-words\.hero-run \.word/.test(css), 'globals missing CSS title entrance');
+assert(/program-rule\.rule-run/.test(css), 'globals missing CSS gold rule draw');
+assert(/js-motion .*\.reveal:not\(\.is-visible\)/.test(css) || /js-motion \.reveal:not/.test(css), 'globals missing gated scroll reveal from-state');
+
 assert(/program-rule/.test(read('app/components/HomeClient.tsx')), 'home missing program-rule for gold draw');
+assert(/hero-run/.test(read('app/components/HomeClient.tsx')), 'home title missing hero-run class');
 
 const live = read('app/live/page.tsx');
 assert(!/TOURNAMENT_OVER/.test(live), 'live page still hardcodes TOURNAMENT_OVER');
