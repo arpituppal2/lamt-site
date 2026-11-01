@@ -158,6 +158,11 @@ p, li, figcaption {
   color: var(--ucla-blue-deep);
 }
 
+.dark ::selection {
+  background: rgba(255, 209, 0, 0.4);
+  color: #00101a;
+}
+
 :focus-visible {
   outline: 3px solid var(--ucla-gold);
   outline-offset: 3px;

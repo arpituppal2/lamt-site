@@ -8,9 +8,9 @@ export default function EmailSection() {
           <p className="serif-kicker serif-kicker--blue">Stay in the Loop</p>
           <h2 className="page-title mt-4">Be first to know.</h2>
           <p className="page-summary mt-5 reveal">
-            LAMT Blue (middle school and below) and LAMT Gold (high school and below) are coming in
-            2027. Sign up for emails and we&#39;ll let you know when registration opens for each
-            tournament.
+            LAMT Blue (middle school and below) and LAMT Gold (high school and below) are planned for
+            2027, pending UCLA approval. Sign up for emails and we&#39;ll tell you when registration
+            opens.
           </p>
         </div>
         <div className="reveal">

@@ -1,16 +1,46 @@
 'use client';
 
 const faqs = [
-  { q: 'Who is eligible to compete at LAMT?', a: 'Any student currently enrolled in grade 12 or below as of May 2026 is eligible. There are no geographical restrictions.' },
-  { q: 'Is there a registration fee?', a: 'No. There is no registration fee for LAMT 2026. Each participant is responsible for their own travel, housing, and related expenses.' },
-  { q: 'How large can a team be?', a: 'Teams may consist of at most 6 students. All students on a team must come from the same school or organization.' },
-  { q: 'Can I compete as an individual?', a: 'Yes. Students who are not able to form an eligible team may apply to compete as an individual. Each individual competitor must have their own accompanying chaperone.' },
-  { q: 'Can a school send more than one team?', a: 'Yes. One school or organization may apply to send multiple eligible teams. Each team must have their own accompanying chaperone throughout the event.' },
-  { q: 'What topics are covered on the individual rounds?', a: 'Topics vary by individual round. Any topics from the individual rounds may also appear on team exams. Specific subject areas will be announced closer to the event.' },
-  { q: 'What is the format of the Guts Round?', a: 'The Guts Round consists of 8 sets of 3 problems plus 1 set of estimation problems, delivered to teams in sequential order.' },
-  { q: 'Are calculators allowed?', a: 'No. Calculators and all other computational aids are strictly prohibited during all testing portions of the contest.' },
-  { q: 'Where will LAMT 2026 take place?', a: 'LAMT 2026 will be held on the UCLA campus in Los Angeles, California on May 17, 2026. Specific venue details will be announced closer to the event.' },
-  { q: 'How do I register?', a: 'Registration is through ContestDojo. Click "Register Now" on the home page or in the navigation bar.' },
+  {
+    q: 'Who is eligible to compete at LAMT?',
+    a: 'Any student currently enrolled in grade 12 or below. There are no geographical restrictions. Exact eligibility for the next tournament will be confirmed when registration opens.',
+  },
+  {
+    q: 'Is there a registration fee?',
+    a: 'No. LAMT is free to enter. Each participant is responsible for their own travel, housing, and related expenses.',
+  },
+  {
+    q: 'How large can a team be?',
+    a: 'Teams may consist of at most 6 students. All students on a team must come from the same school or organization.',
+  },
+  {
+    q: 'Can I compete as an individual?',
+    a: 'Yes. Students who are not able to form an eligible team may apply to compete as an individual. Each individual competitor must have their own accompanying chaperone.',
+  },
+  {
+    q: 'Can a school send more than one team?',
+    a: 'Yes. One school or organization may apply to send multiple eligible teams. Each team must have their own accompanying chaperone throughout the event.',
+  },
+  {
+    q: 'What topics are covered on the individual rounds?',
+    a: 'Topics vary by individual round. Any topics from the individual rounds may also appear on team exams. Specific subject areas will be announced closer to the event.',
+  },
+  {
+    q: 'What is the format of the Guts Round?',
+    a: 'The Guts Round consists of 8 sets of 3 problems plus 1 set of estimation problems, delivered to teams in sequential order.',
+  },
+  {
+    q: 'Are calculators allowed?',
+    a: 'No. Calculators and all other computational aids are strictly prohibited during all testing portions of the contest.',
+  },
+  {
+    q: 'When is the next tournament?',
+    a: 'LAMT Blue (middle school and below) and LAMT Gold (high school and below) are planned for 2027, pending UCLA approval. Sign up for emails on the home page to be notified when dates and registration open.',
+  },
+  {
+    q: 'How do I register?',
+    a: 'When registration opens, a Register link will appear in the site navigation. Registration runs through ContestDojo. Until then, join the email list so you hear first.',
+  },
 ];
 
 export default function FAQPage() {

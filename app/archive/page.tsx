@@ -47,7 +47,7 @@ export default function ArchivePage() {
         <div>
           <h1 className="page-title">Archive</h1>
           <p className="page-summary reveal mt-5">
-            See our past tournament exams, solutions, and results.
+            Problems, solutions, and results from LAMT 2026 — the proof of the program.
           </p>
         </div>
       </header>

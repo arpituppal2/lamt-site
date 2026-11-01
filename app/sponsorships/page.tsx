@@ -8,7 +8,7 @@ export default function SponsorshipsPage() {
         </div>
         <div>
           <h1 className="page-title hero-animate-words">
-            <span className="word">Sponsor</span>
+            <span className="word">Sponsor</span>{' '}
             <span className="word">LAMT</span>
           </h1>
           <p className="page-summary reveal mt-5">
@@ -20,22 +20,24 @@ export default function SponsorshipsPage() {
 
       <section className="section-row reveal">
         <h2 className="section-title">Sponsorship Packet</h2>
-        <p className="section-copy mt-4">
-          Download the full LAMT 2026–27 sponsorship overview, including audience reach, sponsor
-          benefits, and partnership tiers.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-4">
-          <a
-            href="/sponsors/LAMT_Sponsorship_26_27.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-filled"
-          >
-            Download Sponsorship Packet (PDF)
-          </a>
-          <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
-            Contact Us
-          </a>
+        <div>
+          <p className="section-copy">
+            Download the full LAMT 2026–27 sponsorship overview, including audience reach, sponsor
+            benefits, and partnership tiers.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <a
+              href="/sponsors/LAMT_Sponsorship_26_27.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-filled"
+            >
+              Download Sponsorship Packet (PDF)
+            </a>
+            <a href="mailto:uclamathtournament@gmail.com" className="btn-outline">
+              Contact Us
+            </a>
+          </div>
         </div>
       </section>
 

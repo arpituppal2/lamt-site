@@ -488,9 +488,9 @@ export default function LivePage() {
         </div>
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <h1 className="page-title">LAMT 2026 Tournament Day</h1>
+            <h1 className="page-title">Tournament Day</h1>
             <p className="page-summary mt-5">
-              Schedule status, staff announcements, UCLA venue directions, and tournament-day help for Sunday, May 17, 2026.
+              Live schedule, staff announcements, campus directions, and help desk for tournament day.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#announcements" className="btn-filled">

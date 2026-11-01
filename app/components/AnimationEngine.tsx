@@ -372,15 +372,14 @@ export default function AnimationEngine() {
       el.classList.remove('is-visible');
     });
 
+    // Motion diet: keep reveals, nav underline, hero entrance, light ripple.
+    // Skip typewriter / proof hover / counters unless marked in DOM.
     const cleanups = [
       initReveal(),
       initCounters(),
       initParallax(),
-      initTimelineDraw(),
       initNavMorph(),
       initRipple(),
-      initTypewriter(),
-      initProofHover(),
     ];
 
     const t = setTimeout(initHeroEntrance, 60);

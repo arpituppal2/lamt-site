@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "plus jakarta sans",
+        "createdAt": "2026-11-01T12:09:06.655Z",
+        "reason": "DESIGN.md One Family Rule: Plus Jakarta Sans is the committed brand face"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-11-01T12:11:26.050Z",
+        "reason": "tab-underline uses border-radius:0; detector false positive on 0-radius rule"
+      }
+    ]
+  }
+}
