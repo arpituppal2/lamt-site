@@ -27,6 +27,9 @@ export default function SponsorsSection({
     <section id="sponsors" className="page-shell border-t-4 border-[var(--ucla-gold)] bg-[var(--color-surface)]">
       <div className="page-hero">
         <h2 className="page-title">Our Sponsors</h2>
+        <p className="page-summary mt-5">
+          LAMT 2026 is made possible by the generous support of our sponsors.
+        </p>
       </div>
 
       {activeTiers.length > 0 ? (

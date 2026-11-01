@@ -48,17 +48,18 @@ assert(/Contact inbox/.test(read('app/admin/page.tsx')) && /Live help desk/.test
 const home = read('app/components/HomeClient.tsx');
 assert(!/SubscribeForm/.test(home), 'hero still embeds SubscribeForm');
 assert(/getSettings|tournament_date|countdown/i.test(home), 'home missing admin-driven countdown wiring');
-assert(/photos\/hero-hall/.test(home), 'hero missing tournament photo');
+assert(/site_mode/.test(home), 'home missing site_mode gating for countdown');
+assert(/hero-animate-words/.test(home), 'home brand H1 missing original word entrance');
+assert(/LAMTBear\.png/.test(home) && !/photos\/hero-hall/.test(home), 'home hero should be bear-on-blue, not photo wash');
+assert(/Student Discord/.test(home) && /homeButtonClass|border-2 border-white/.test(home), 'home Discord missing outlined button box');
 assert(/Email is for parents[\s\S]{0,80}Discord is the student community/.test(home), 'hero missing Discord/email helper');
 assert(/A free UCLA-hosted math tournament/.test(home), 'hero missing one true supporting sentence');
-assert(!/hero-animate-words/.test(home), 'home brand H1 still uses blanking word entrance');
-assert(/home-hero-seq/.test(home) && /home-hero-line/.test(home), 'home missing ordered hero entrance sequence');
 assert(!/Coming near the end of February/.test(home), 'hero still pitches Blue/Gold dates on the fold');
 assert(!/dark:bg-black/.test(home), 'home hero still flips to pure black in dark mode');
-assert(!/ucla-blue-light/.test(home), 'home still uses low-contrast ucla-blue-light');
+assert(execRg('pending UCLA approval', ['app']).length === 0, 'pending UCLA approval still in app');
 
 const page = read('app/page.tsx');
-assert(/photos\/venue-mosaic/.test(page) && /photos\/checkin/.test(page), 'proof band missing album photos');
+assert(/photos\/venue-mosaic/.test(page) && /photos\/hero-hall/.test(page) && /photos\/desk/.test(page), 'proof band missing album photos');
 
 for (const photo of ['public/photos/hero-hall.jpg', 'public/photos/venue-mosaic.jpg', 'public/photos/checkin.jpg', 'public/photos/desk.jpg']) {
   assert(fs.existsSync(path.join(root, photo)), `missing photo asset: ${photo}`);
@@ -91,6 +92,7 @@ assert(!/dark:bg-black/.test(footer), 'footer still flips to pure black in dark 
 const archive = read('app/archive/page.tsx');
 assert(/hero-animate-words/.test(archive), 'archive title missing hero-animate-words');
 assert(!/page-kicker|gold-rule|proof of the program/i.test(archive), 'archive still has kicker/gold-rule/fluff dek');
+assert(/See our past tournament exams/.test(archive), 'archive missing original summary');
 assert(/stagger-parent/.test(archive), 'archive categories missing stagger-parent');
 assert(/'Shopping Round'/.test(archive), 'archive still labels Shopping without Round');
 

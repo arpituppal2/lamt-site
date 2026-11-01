@@ -87,6 +87,9 @@ export default function AboutPage() {
           <span className="word">About</span>{' '}
           <span className="word">Us</span>
         </h1>
+        <p className="page-summary mt-5">
+          The Los Angeles Math Tournament Group hosts and organizes mathematical contests for middle and high school students.
+        </p>
       </header>
 
       <section className="section-row reveal">

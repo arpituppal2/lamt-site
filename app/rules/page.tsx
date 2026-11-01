@@ -80,6 +80,9 @@ export default function RulesPage() {
         <h1 className="page-title hero-animate-words">
           <span className="word">Rules</span>
         </h1>
+        <p className="page-summary mt-5">
+          Rules for testing format, honor code expectations, and acceptable mathematical answers.
+        </p>
       </header>
 
       <section className="section-row reveal">

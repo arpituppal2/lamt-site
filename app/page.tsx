@@ -37,7 +37,7 @@ function ProofBand() {
 
   const shots = [
     { src: '/photos/venue-mosaic.jpg', alt: 'Students gathering under the UCLA math mosaic facade' },
-    { src: '/photos/checkin.jpg', alt: 'LAMT check-in desk on tournament morning' },
+    { src: '/photos/hero-hall.jpg', alt: 'Students filling the UCLA lecture hall at LAMT' },
     { src: '/photos/desk.jpg', alt: 'Organizers running registration at UCLA' },
   ];
 

@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { api } from '../lib/api';
 
+const homeButtonClass =
+  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[var(--ucla-blue)]';
+
 function useCountdown(iso: string | null) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -46,16 +49,7 @@ export default function HomeClient({
   }, []);
 
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:min-h-screen md:px-16">
-      <Image
-        src="/photos/hero-hall.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="pointer-events-none object-cover object-[center_35%] opacity-30"
-      />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/90" />
+    <section className="relative flex min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:px-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -65,32 +59,34 @@ export default function HomeClient({
         }}
       />
       <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-[2%]">
-        <Image src="/LAMTBear.png" alt="" width={700} height={700} className="hero-bear-img h-auto w-[clamp(280px,45vw,720px)] object-contain opacity-15" priority />
+        <Image
+          src="/LAMTBear.png"
+          alt=""
+          width={700}
+          height={700}
+          className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] object-contain opacity-20"
+          priority
+        />
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
 
-      <div className="home-hero-seq relative z-10 w-full max-w-5xl py-8">
+      <div className="relative z-10 w-full max-w-5xl py-8">
         <h1
-          className="mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
+          className="hero-animate-words mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
           style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
-          <span className="home-hero-line block" style={{ ['--d' as string]: '0ms' }}>
-            Los Angeles
-          </span>
-          <span className="home-hero-line block" style={{ ['--d' as string]: '140ms' }}>
-            Math Tournament
-          </span>
+          <span className="word">Los Angeles</span>
+          <br />
+          <span className="word">Math Tournament</span>
         </h1>
-        <div className="home-hero-line mb-6 h-[3px] w-12 bg-[var(--ucla-gold)]" style={{ ['--d' as string]: '280ms' }} />
-        <p
-          className="home-hero-line mb-8 max-w-2xl text-lg font-medium leading-relaxed text-white/95 md:text-xl"
-          style={{ ['--d' as string]: '420ms' }}
-        >
+        <div className="mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
+
+        <p className="mb-8 max-w-2xl text-lg font-medium leading-relaxed text-white/95 md:text-xl">
           A free UCLA-hosted math tournament for students in grade 12 or below.
         </p>
 
         {countdown && tournamentDate && (
-          <div className="home-hero-line mb-8" style={{ ['--d' as string]: '560ms' }}>
+          <div className="mb-8">
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">
               {tournamentName || 'Next tournament'}
             </p>
@@ -106,7 +102,9 @@ export default function HomeClient({
                 ].map(([label, value]) => (
                   <div key={String(label)}>
                     <p className="text-3xl font-extrabold md:text-4xl">{value}</p>
-                    <p className="mt-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[var(--ucla-gold)]">{label}</p>
+                    <p className="mt-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[var(--ucla-gold)]">
+                      {label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -114,26 +112,15 @@ export default function HomeClient({
           </div>
         )}
 
-        <div
-          className="home-hero-line flex flex-col gap-3 border-t border-white/20 pt-8 sm:flex-row sm:items-center sm:gap-5"
-          style={{ ['--d' as string]: countdown && tournamentDate ? '700ms' : '560ms' }}
-        >
+        <div className="flex flex-wrap gap-3 border-t border-white/20 pt-8">
           <a href="#email-signup" className="btn-gold">
             Sign up for emails
           </a>
-          <a
-            href={discordUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-bold text-white/90 underline decoration-white/35 underline-offset-4 transition-colors hover:text-white hover:decoration-[var(--ucla-gold)]"
-          >
+          <a href={discordUrl} target="_blank" rel="noreferrer" className={homeButtonClass}>
             Student Discord
           </a>
         </div>
-        <p
-          className="home-hero-line mt-4 max-w-xl text-sm font-medium leading-relaxed text-white/90 md:text-base"
-          style={{ ['--d' as string]: countdown && tournamentDate ? '840ms' : '700ms' }}
-        >
+        <p className="mt-4 max-w-lg text-xs leading-relaxed text-white/80">
           Email is for parents, teachers, and organizers. Discord is the student community.
         </p>
       </div>

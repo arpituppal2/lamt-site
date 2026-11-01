@@ -89,7 +89,7 @@ export default function NavbarClient() {
       <div className="flex h-21 items-center justify-between px-4 max-[900px]:flex min-[901px]:hidden">
         <Link href="/" className="flex flex-1 flex-col items-center gap-1 text-center font-extrabold tracking-wide text-white">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={78} height={78} className="object-contain" />
-          <span className="text-[10px] sm:text-xs">Los Angeles Math Tournament</span>
+          <span className="text-[10px] uppercase tracking-[0.12em] sm:text-xs">LOS ANGELES MATH TOURNAMENT</span>
         </Link>
         <button
           type="button"

@@ -43,6 +43,9 @@ export default function ArchivePage() {
         <h1 className="page-title hero-animate-words">
           <span className="word">Archive</span>
         </h1>
+        <p className="page-summary mt-5">
+          See our past tournament exams, solutions, and results.
+        </p>
       </header>
 
       <div>

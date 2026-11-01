@@ -65,7 +65,7 @@ export default function TournamentPage() {
         <div>
           <p className="section-copy mb-6">
             LAMT Blue (middle school and below) and LAMT Gold (high school and below) are planned for
-            2027, pending UCLA approval. Exact dates will be announced by email.
+            2027. Exact dates will be announced by email.
           </p>
           <Link href="/#email-signup" className="btn-filled">
             Sign up for emails

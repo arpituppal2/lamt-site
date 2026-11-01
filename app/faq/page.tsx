@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: 'When is the next tournament?',
-    a: 'LAMT Blue (middle school and below) and LAMT Gold (high school and below) are planned for 2027, pending UCLA approval. Sign up for emails on the home page to be notified when dates and registration open.',
+    a: 'LAMT Blue (middle school and below) and LAMT Gold (high school and below) are planned for 2027. Sign up for emails on the home page to be notified when dates and registration open.',
   },
   {
     q: 'How do I register?',
@@ -50,6 +50,9 @@ export default function FAQPage() {
         <h1 className="page-title hero-animate-words">
           <span className="word">FAQ</span>
         </h1>
+        <p className="page-summary mt-5">
+          Key information for teams, chaperones, individual competitors, and guests.
+        </p>
       </header>
 
       <section className="section-row reveal">

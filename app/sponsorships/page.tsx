@@ -6,6 +6,10 @@ export default function SponsorshipsPage() {
           <span className="word">Sponsor</span>{' '}
           <span className="word">LAMT</span>
         </h1>
+        <p className="page-summary mt-5">
+          Help us bring LAMT Blue (middle school and below) and LAMT Gold (high school and below)
+          to life. Our sponsorship packet has everything you need to partner with us.
+        </p>
       </header>
 
       <section className="section-row reveal">
