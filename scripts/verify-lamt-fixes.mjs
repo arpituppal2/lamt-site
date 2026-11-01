@@ -113,6 +113,9 @@ for (const file of publicPages) {
   assert(!/gold-rule/.test(src), `${file} still has gold-rule`);
 }
 
+const sponsorships = read('app/sponsorships/page.tsx');
+assert(/SponsorsSection/.test(sponsorships) && /getSponsorsByTier/.test(sponsorships), 'sponsorships page missing sponsor logos');
+
 const rules = read('app/rules/page.tsx');
 assert(/hero-animate-words/.test(rules), 'rules title missing hero-animate-words');
 

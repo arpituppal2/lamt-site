@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { Tier } from '../page';
+import type { Tier } from '../lib/sponsors';
 
 const TIER_CONFIG: Record<Tier, {
   label: string;
@@ -18,8 +18,10 @@ const TIER_ORDER: Tier[] = ['gold', 'silver', 'bronze', 'friends'];
 
 export default function SponsorsSection({
   sponsorsByTier,
+  showPacketCta = true,
 }: {
   sponsorsByTier: Record<Tier, string[]>;
+  showPacketCta?: boolean;
 }) {
   const activeTiers = TIER_ORDER.filter((tier) => sponsorsByTier[tier].length > 0);
 
@@ -70,20 +72,22 @@ export default function SponsorsSection({
         </div>
       )}
 
-      <div className="section-row">
-        <h3 className="section-title">Sponsor LAMT</h3>
-        <div>
-          <p className="section-copy mb-6">Interested in sponsoring LAMT? Download the packet or email us.</p>
-          <div className="flex flex-wrap gap-3">
-            <a href="/sponsorships" className="btn-filled">
-              Sponsorship Packet
-            </a>
-            <a href="mailto:info@lamt.net" className="btn-outline">
-              Contact Us
-            </a>
+      {showPacketCta && (
+        <div className="section-row">
+          <h3 className="section-title">Sponsor LAMT</h3>
+          <div>
+            <p className="section-copy mb-6">Interested in sponsoring LAMT? Download the packet or email us.</p>
+            <div className="flex flex-wrap gap-3">
+              <a href="/sponsorships" className="btn-filled">
+                Sponsorship Packet
+              </a>
+              <a href="mailto:info@lamt.net" className="btn-outline">
+                Contact Us
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
