@@ -1286,8 +1286,14 @@ label .label-caps {
 
 /* ── Focal hero entrance (CSS so it actually shows on first paint) ───────── */
 /* Premium ease: decelerate only — no overshoot / spring */
+/* Durations at ~0.85× prior speed ⇒ ×1.18 time */
 :root {
   --ease-premium: cubic-bezier(0.33, 0, 0.2, 1);
+  --dur-title: 1060ms;
+  --dur-rule: 1060ms;
+  --dur-enter: 1000ms;
+  --dur-section: 820ms;
+  --dur-list: 760ms;
 }
 
 @keyframes lamt-title-in {
@@ -1325,17 +1331,17 @@ label .label-caps {
   display: inline-block;
 }
 
-/* Hero runs from first paint — measured, not springy */
+/* Hero: one beat at a time — title → rule → sub → CTAs */
 .hero-animate-words.hero-run .word {
-  animation: lamt-title-in 900ms var(--ease-premium) both;
+  animation: lamt-title-in var(--dur-title) var(--ease-premium) both;
 }
 
 .hero-animate-words.hero-run .word:nth-of-type(1) {
-  animation-delay: 80ms;
+  animation-delay: 0ms;
 }
 
 .hero-animate-words.hero-run .word:nth-of-type(2) {
-  animation-delay: 200ms;
+  animation-delay: 420ms;
 }
 
 .program-rule {
@@ -1343,51 +1349,54 @@ label .label-caps {
 }
 
 .program-rule.rule-run {
-  animation: lamt-rule-draw 900ms 360ms var(--ease-premium) both;
+  animation: lamt-rule-draw var(--dur-rule) 1100ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run {
-  animation: lamt-enter-in 850ms var(--ease-premium) both;
+  animation: lamt-enter-in var(--dur-enter) var(--ease-premium) both;
 }
 
 .hero-enter.enter-run[data-delay='1'] {
-  animation-delay: 520ms;
+  animation-delay: 1750ms;
 }
 
 .hero-enter.enter-run[data-delay='2'] {
-  animation-delay: 680ms;
+  animation-delay: 2400ms;
 }
 
-/* Scroll sections: short travel, slow settle */
+/* Sections rise once; lists sequence their children (not the shell) */
 html.js-motion .reveal:not(.is-visible),
 html.js-motion .reveal-block:not(.is-visible),
-html.js-motion .section-row.reveal:not(.is-visible),
-html.js-motion .stagger-parent:not(.is-visible) {
+html.js-motion .section-row.reveal:not(.is-visible) {
   opacity: 0;
   transform: translateY(0.5rem);
 }
 
 html.js-motion .reveal.is-visible,
 html.js-motion .reveal-block.is-visible,
-html.js-motion .section-row.reveal.is-visible,
-html.js-motion .stagger-parent.is-visible {
+html.js-motion .section-row.reveal.is-visible {
   opacity: 1;
   transform: none;
   transition:
-    opacity 700ms var(--ease-premium),
-    transform 700ms var(--ease-premium);
+    opacity var(--dur-section) var(--ease-premium),
+    transform var(--dur-section) var(--ease-premium);
+}
+
+html.js-motion .stagger-parent:not(.is-visible) > * {
+  opacity: 0;
+  transform: translateY(0.45rem);
 }
 
 html.js-motion .stagger-parent.is-visible > * {
-  animation: lamt-enter-in 650ms var(--ease-premium) both;
+  animation: lamt-enter-in var(--dur-list) var(--ease-premium) both;
 }
 
 html.js-motion .stagger-parent.is-visible > *:nth-child(1) { animation-delay: 0ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(2) { animation-delay: 90ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(3) { animation-delay: 160ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(4) { animation-delay: 200ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(5) { animation-delay: 220ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay: 240ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(2) { animation-delay: 200ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(3) { animation-delay: 400ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(4) { animation-delay: 580ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(5) { animation-delay: 740ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay: 880ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal-block,

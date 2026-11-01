@@ -64,7 +64,7 @@ function initNavMorph() {
   pill.style.cssText = `
     position:absolute;bottom:-8px;height:3px;
     background:var(--ucla-gold);
-    transition:left 380ms ${PREMIUM}, width 380ms ${PREMIUM}, opacity 220ms ${EXIT};
+    transition:left 450ms ${PREMIUM}, width 450ms ${PREMIUM}, opacity 260ms ${EXIT};
     pointer-events:none;border-radius:0;z-index:10;
   `;
   nav.style.position = 'relative';
