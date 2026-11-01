@@ -19,8 +19,6 @@ export default function SponsorshipsPage() {
         </header>
       </div>
 
-      <SponsorsSection sponsorsByTier={sponsorsByTier} showPacketCta={false} />
-
       <div className="page-shell">
         <section className="section-row reveal">
           <h2 className="section-title">Sponsorship Packet</h2>
@@ -72,6 +70,8 @@ export default function SponsorshipsPage() {
           </p>
         </section>
       </div>
+
+      <SponsorsSection sponsorsByTier={sponsorsByTier} showPacketCta={false} />
     </div>
   );
 }
