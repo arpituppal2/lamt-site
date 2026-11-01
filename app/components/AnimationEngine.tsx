@@ -4,105 +4,20 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 /* ─── ANIMATION ENGINE ────────────────────────────────────────────────────────
-   Installs all site-wide animations once in RootLayout.
-   • Scroll reveals  – staggered clip-path + opacity (no CLS)
-   • Counter anim    – [data-count] integers count up on entry
-   • Magnetic btns   – .btn-magnetic follows cursor (max 10px)
-   • Parallax        – .parallax-[slow|med|fast] depth on scroll
-   • Timeline draw   – .timeline-rail border draws on entry
-   • Nav underline   – sliding gold pill under hovered nav link
-   • Bear drift      – subtle idle float on .hero-bear-img
-   • Typewriter      – [data-typewrite] text types itself on entry
-   • Gold ripple     – btn-premium / btn-filled clicks spawn a ripple
+   Motion thesis (UCLA program surface):
+   • Focal: page title word entrance only
+   • Continuity: nav gold underline morph
+   • Feedback: light gold click ripple
+   No scroll-reveal / parallax shuffle — content stays still and readable.
    ─────────────────────────────────────────────────────────────────────────── */
 
 const GOLDEN = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const EXIT   = 'cubic-bezier(0.4, 0, 1, 1)';
 
-// ─── 1. SCROLL REVEALS ───────────────────────────────────────────────────────
+// Scroll reveals removed — every section translating on entry read as shuffle.
 function initReveal() {
-  const selectors = [
-    '.reveal',
-    '.reveal--left',
-    '.reveal--right',
-    '.reveal--scale',
-    '.reveal--up',
-    '.stagger-parent > *',
-    '.reveal-block',
-  ].join(', ');
-
-  const all = document.querySelectorAll<HTMLElement>(selectors);
-
-  const getInitialTransform = (el: HTMLElement) => {
-    if (el.classList.contains('reveal--left'))  return 'translateX(-28px)';
-    if (el.classList.contains('reveal--right')) return 'translateX(28px)';
-    if (el.classList.contains('reveal--scale')) return 'scale(0.92)';
-    return 'translateY(16px)';
-  };
-
-  // Content stays visible by default. Motion is additive only — never blank text
-  // with opacity:0 (IO misses / soft nav / above-fold would otherwise ship empty).
-  // Sequence index staggers siblings that enter together so motion reads top→down.
-  const reveal = (el: HTMLElement, observer?: IntersectionObserver, sequenceIndex = 0) => {
-    if (el.dataset.revealed) return;
-    el.dataset.revealed = '1';
-    el.classList.add('is-visible');
-    el.style.opacity = '';
-    el.style.transform = '';
-
-    const parent = el.parentElement;
-    const staggerIndex = parent?.classList.contains('stagger-parent')
-      ? Array.from(parent.children).indexOf(el)
-      : sequenceIndex;
-    const delay = staggerIndex * 120;
-    const baseDelay = parseInt(el.dataset.delay ?? '0', 10) + delay;
-
-    el.animate(
-      [
-        { opacity: 0.45, transform: getInitialTransform(el) },
-        { opacity: 1, transform: 'none' },
-      ],
-      { duration: 560, delay: baseDelay, easing: GOLDEN, fill: 'none' }
-    );
-
-    observer?.unobserve(el);
-  };
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const incoming = entries
-        .filter((entry) => entry.isIntersecting)
-        .map((entry) => entry.target as HTMLElement)
-        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-      incoming.forEach((el, i) => reveal(el, observer, i));
-    },
-    { threshold: 0.01, rootMargin: '0px 0px -4% 0px' }
-  );
-
-  let bootSeq = 0;
-  all.forEach((el) => {
-    const rect = el.getBoundingClientRect();
-    const inView = rect.bottom > 0 && rect.top < window.innerHeight * 0.96;
-    if (inView) {
-      reveal(el, undefined, bootSeq++);
-      return;
-    }
-    observer.observe(el);
-  });
-
-  // Failsafe: if anything is still unmarked after paint, show it (already-revealed no-ops).
-  const failsafe = window.setTimeout(() => {
-    all.forEach((el) => reveal(el));
-  }, 900);
-
-  return () => {
-    window.clearTimeout(failsafe);
-    observer.disconnect();
-    all.forEach((el) => {
-      el.style.opacity = '';
-      el.style.transform = '';
-    });
-  };
+  // Content stays visible by default; never blank with opacity 0.
+  return () => {};
 }
 
 // ─── 2. COUNTER ANIMATION ────────────────────────────────────────────────────
@@ -152,30 +67,9 @@ function initMagnetic() {
   return () => {};
 }
 
-// ─── 4. PARALLAX ─────────────────────────────────────────────────────────────
+// Parallax removed — scroll transforms fought the hero and made pages shuffle.
 function initParallax() {
-  const slow = document.querySelectorAll<HTMLElement>('.parallax-slow');
-  const med  = document.querySelectorAll<HTMLElement>('.parallax-med');
-  const fast = document.querySelectorAll<HTMLElement>('.parallax-fast');
-  const wordmark = document.querySelector<HTMLElement>('.cinema-wordmark');
-
-  let ticking = false;
-
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const y = window.scrollY;
-      slow.forEach((el) => { el.style.transform = `translateY(${y * 0.03}px)`; });
-      med.forEach((el)  => { el.style.transform = `translateY(${y * 0.18}px)`; });
-      fast.forEach((el) => { el.style.transform = `translateY(${y * 0.32}px)`; });
-      if (wordmark) wordmark.style.transform = `translateY(${y * 0.22}px)`;
-      ticking = false;
-    });
-  };
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  return () => window.removeEventListener('scroll', onScroll);
+  return () => {};
 }
 
 // ─── 5. TIMELINE BORDER DRAW ─────────────────────────────────────────────────
@@ -344,7 +238,7 @@ function ensureWordSpans(container: HTMLElement) {
 }
 
 function initHeroEntrance() {
-  // Additive only — words stay readable; never start at opacity 0.
+  // Focal moment only: title words settle in place. Opacity-led, tiny rise.
   const containers = document.querySelectorAll<HTMLElement>('.hero-animate-words');
   const animated: HTMLElement[] = [];
 
@@ -356,12 +250,12 @@ function initHeroEntrance() {
       word.style.opacity = '1';
       word.animate(
         [
-          { opacity: 0.88, transform: 'translateY(6px)' },
+          { opacity: 0.92, transform: 'translateY(4px)' },
           { opacity: 1, transform: 'none' },
         ],
         {
-          duration: 480,
-          delay: 40 + i * 60,
+          duration: 420,
+          delay: 30 + i * 50,
           easing: GOLDEN,
           fill: 'none',
         }
@@ -373,7 +267,6 @@ function initHeroEntrance() {
     animated.forEach((word) => {
       word.style.opacity = '';
       word.style.transform = '';
-      word.style.clipPath = '';
     });
   };
 }
@@ -402,17 +295,9 @@ export default function AnimationEngine() {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) return;
 
-    // Clear prior reveal marks so soft navigations re-animate
-    document.querySelectorAll<HTMLElement>('[data-revealed]').forEach((el) => {
-      delete el.dataset.revealed;
-      el.classList.remove('is-visible');
-    });
-
-    // Motion diet: keep reveals, nav underline, hero entrance, light ripple.
-    // Skip typewriter / proof hover / counters unless marked in DOM.
+    // Focal title + nav underline + light ripple. No scroll shuffle / parallax.
     const cleanups: Array<(() => void) | void> = [
       initReveal(),
-      initCounters(),
       initParallax(),
       initNavMorph(),
       initRipple(),

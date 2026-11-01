@@ -123,7 +123,9 @@ const engine = read('app/components/AnimationEngine.tsx');
 assert(/ensureWordSpans/.test(engine), 'AnimationEngine missing word-span fallback');
 assert(/Content stays visible by default|never blank|Visible by default/i.test(engine), 'AnimationEngine missing visible-by-default reveal policy');
 assert(!/el\.style\.opacity = '0'/.test(engine), 'AnimationEngine still blanks content with opacity 0');
-assert(/failsafe|900/.test(engine), 'AnimationEngine missing reveal failsafe');
+assert(!/stagger-parent > \*/.test(engine), 'AnimationEngine still shuffles stagger-parent children on scroll');
+assert(!/y \* 0\.0?3/.test(engine) && !/parallax-slow/.test(engine.split('function initParallax')[1]?.slice(0, 400) || ''), 'AnimationEngine still applies scroll parallax transforms');
+assert(/initNavMorph/.test(engine) && /initHeroEntrance/.test(engine), 'AnimationEngine missing focal title / nav morph');
 
 const live = read('app/live/page.tsx');
 assert(!/TOURNAMENT_OVER/.test(live), 'live page still hardcodes TOURNAMENT_OVER');
