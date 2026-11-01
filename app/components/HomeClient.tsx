@@ -81,7 +81,7 @@ export default function HomeClient({
         </h1>
         <div className="mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
 
-        <p className="mb-8 max-w-2xl text-lg font-medium leading-relaxed text-white/95 md:text-xl">
+        <p className="mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95">
           A free UCLA-hosted math tournament for students in grade 12 or below.
         </p>
 
@@ -120,9 +120,6 @@ export default function HomeClient({
             Student Discord
           </a>
         </div>
-        <p className="mt-4 max-w-lg text-xs leading-relaxed text-white/80">
-          Email is for parents, teachers, and organizers. Discord is the student community.
-        </p>
       </div>
     </section>
   );

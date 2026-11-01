@@ -49,7 +49,7 @@ export default function NavbarClient() {
   }, []);
 
   const linkClass =
-    'nav-link font-extrabold text-2xl uppercase tracking-[0.14em] text-white transition-opacity duration-200 hover:opacity-70';
+    'nav-link font-extrabold text-2xl uppercase tracking-wide text-white transition-opacity duration-200 hover:opacity-70';
 
   return (
     <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">
@@ -121,7 +121,7 @@ export default function NavbarClient() {
           >
             {navLinks.map(({ href, label, external }) => {
               const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
-              const mobileClass = 'text-lg font-extrabold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-70';
+              const mobileClass = 'text-lg font-extrabold uppercase tracking-wide text-white transition-opacity hover:opacity-70';
 
               return external ? (
                 <a
