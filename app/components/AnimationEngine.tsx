@@ -15,8 +15,8 @@ import { usePathname } from 'next/navigation';
    html.js-motion enables “hidden until revealed”. Without JS, everything shows.
    ─────────────────────────────────────────────────────────────────────────── */
 
-const GOLDEN = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const EXIT = 'cubic-bezier(0.4, 0, 1, 1)';
+const PREMIUM = 'cubic-bezier(0.33, 0, 0.2, 1)';
+const EXIT = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
 function initScrollReveals() {
   const targets = Array.from(
@@ -64,7 +64,7 @@ function initNavMorph() {
   pill.style.cssText = `
     position:absolute;bottom:-8px;height:3px;
     background:var(--ucla-gold);
-    transition:left 320ms ${GOLDEN}, width 320ms ${GOLDEN}, opacity 200ms ease;
+    transition:left 380ms ${PREMIUM}, width 380ms ${PREMIUM}, opacity 220ms ${EXIT};
     pointer-events:none;border-radius:0;z-index:10;
   `;
   nav.style.position = 'relative';

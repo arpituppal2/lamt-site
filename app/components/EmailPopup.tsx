@@ -48,7 +48,7 @@ export default function EmailPopup() {
         { opacity: 0, transform: 'translateY(20px)' },
         { opacity: 1, transform: 'none' },
       ],
-      { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+      { duration: 360, easing: 'cubic-bezier(0.33, 0, 0.2, 1)', fill: 'forwards' }
     );
     return () => animation.cancel();
   }, [open]);

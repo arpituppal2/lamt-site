@@ -110,7 +110,7 @@ export default function NavbarClient() {
           aria-label="Mobile"
           style={{
             maxHeight: menuOpen ? `${menuHeight}px` : '0px',
-            transition: 'max-height 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+            transition: 'max-height 320ms cubic-bezier(0.33, 0, 0.2, 1)',
           }}
         >
           <div

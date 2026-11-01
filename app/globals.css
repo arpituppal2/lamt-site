@@ -1285,10 +1285,15 @@ label .label-caps {
 }
 
 /* ── Focal hero entrance (CSS so it actually shows on first paint) ───────── */
+/* Premium ease: decelerate only — no overshoot / spring */
+:root {
+  --ease-premium: cubic-bezier(0.33, 0, 0.2, 1);
+}
+
 @keyframes lamt-title-in {
   from {
     opacity: 0;
-    transform: translateY(1.35rem);
+    transform: translateY(0.55rem);
   }
   to {
     opacity: 1;
@@ -1308,7 +1313,7 @@ label .label-caps {
 @keyframes lamt-enter-in {
   from {
     opacity: 0;
-    transform: translateY(1rem);
+    transform: translateY(0.4rem);
   }
   to {
     opacity: 1;
@@ -1320,17 +1325,17 @@ label .label-caps {
   display: inline-block;
 }
 
-/* Hero runs from first paint — no JS gate (so you can actually see it). */
+/* Hero runs from first paint — measured, not springy */
 .hero-animate-words.hero-run .word {
-  animation: lamt-title-in 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: lamt-title-in 900ms var(--ease-premium) both;
 }
 
 .hero-animate-words.hero-run .word:nth-of-type(1) {
-  animation-delay: 60ms;
+  animation-delay: 80ms;
 }
 
 .hero-animate-words.hero-run .word:nth-of-type(2) {
-  animation-delay: 180ms;
+  animation-delay: 200ms;
 }
 
 .program-rule {
@@ -1338,28 +1343,28 @@ label .label-caps {
 }
 
 .program-rule.rule-run {
-  animation: lamt-rule-draw 700ms 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: lamt-rule-draw 900ms 360ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run {
-  animation: lamt-enter-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: lamt-enter-in 850ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run[data-delay='1'] {
-  animation-delay: 480ms;
+  animation-delay: 520ms;
 }
 
 .hero-enter.enter-run[data-delay='2'] {
-  animation-delay: 640ms;
+  animation-delay: 680ms;
 }
 
-/* Scroll sections: hidden only when JS motion is on and not yet revealed */
+/* Scroll sections: short travel, slow settle */
 html.js-motion .reveal:not(.is-visible),
 html.js-motion .reveal-block:not(.is-visible),
 html.js-motion .section-row.reveal:not(.is-visible),
 html.js-motion .stagger-parent:not(.is-visible) {
   opacity: 0;
-  transform: translateY(1.15rem);
+  transform: translateY(0.5rem);
 }
 
 html.js-motion .reveal.is-visible,
@@ -1369,20 +1374,20 @@ html.js-motion .stagger-parent.is-visible {
   opacity: 1;
   transform: none;
   transition:
-    opacity 560ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 700ms var(--ease-premium),
+    transform 700ms var(--ease-premium);
 }
 
 html.js-motion .stagger-parent.is-visible > * {
-  animation: lamt-enter-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: lamt-enter-in 650ms var(--ease-premium) both;
 }
 
 html.js-motion .stagger-parent.is-visible > *:nth-child(1) { animation-delay: 0ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(2) { animation-delay: 70ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(3) { animation-delay: 140ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(4) { animation-delay: 180ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(5) { animation-delay: 200ms; }
-html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay: 220ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(2) { animation-delay: 90ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(3) { animation-delay: 160ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(4) { animation-delay: 200ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(5) { animation-delay: 220ms; }
+html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay: 240ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal-block,
