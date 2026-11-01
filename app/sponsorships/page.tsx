@@ -18,7 +18,7 @@ export default function SponsorshipsPage() {
         </div>
       </header>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Sponsorship Packet</h2>
         <p className="section-copy mt-4">
           Download the full LAMT 2026–27 sponsorship overview, including audience reach, sponsor
@@ -39,7 +39,7 @@ export default function SponsorshipsPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Why Sponsor LAMT?</h2>
         <div className="stagger-parent grid gap-5">
           <p className="section-copy">
@@ -55,7 +55,7 @@ export default function SponsorshipsPage() {
         </div>
       </section>
 
-      <section className="section-row">
+      <section className="section-row reveal">
         <h2 className="section-title">Get in Touch</h2>
         <p className="section-copy">
           Questions about sponsorship or interested in a custom partnership? Email us at{' '}

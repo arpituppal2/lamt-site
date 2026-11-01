@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SubscribeForm from "./SubscribeForm";
 
 const SEEN_KEY = "lamt_popup_seen_at";
@@ -38,10 +38,26 @@ export default function EmailPopup() {
     } catch {}
   }
 
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open || !popupRef.current) return;
+    const el = popupRef.current;
+    const animation = el.animate(
+      [
+        { opacity: 0, transform: 'translateY(20px)' },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+    );
+    return () => animation.cancel();
+  }, [open]);
+
   if (!open) return null;
 
   return (
     <div
+      ref={popupRef}
       className="fixed bottom-20 right-4 z-50 w-[21rem] max-w-[calc(100vw-2rem)] bg-[#003B5C] p-6 text-left"
       role="dialog"
       aria-modal="true"
