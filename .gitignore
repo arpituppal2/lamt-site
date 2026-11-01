@@ -141,3 +141,27 @@ vite.config.ts.timestamp-*
 
 # macOS
 .DS_Store
+
+# Agent / design process junk — keep the site repo clean
+.impeccable/
+.codex/
+.cursor/
+.gemini/
+.grok/
+.unlazy/
+.tmp/
+.github/skills/
+.github/agents/
+.github/hooks/
+DESIGN.md
+PRODUCT.md
+GATES.md
+HANDOFF.md
+PLAN.md
+AGENTS.md
+CLAUDE.md
+docs/designs/
+*-desktop.png
+*-mobile.png
+*-full.png
+home-light-desktop.png

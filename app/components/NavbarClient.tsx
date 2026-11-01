@@ -53,7 +53,7 @@ export default function NavbarClient() {
 
   return (
     <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">
-      {/* Desktop shell at 901px+ — match DESIGN.md 900px collapse (not Tailwind md/768) */}
+      {/* Desktop shell at 901px+ — not Tailwind md/768 */}
       <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-4 min-[901px]:flex min-[901px]:px-6">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={85} height={85} className="object-contain py-1" />

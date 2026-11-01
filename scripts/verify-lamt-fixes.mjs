@@ -64,13 +64,13 @@ for (const photo of ['public/photos/hero-hall.jpg', 'public/photos/venue-mosaic.
   assert(fs.existsSync(path.join(root, photo)), `missing photo asset: ${photo}`);
 }
 
-const emailTargets = ['app', 'PRODUCT.md', 'HANDOFF.md'];
+const emailTargets = ['app'];
 if (fs.existsSync(path.join(root, 'out'))) emailTargets.push('out');
 const emailHits = execRg('uclamathtournament@gmail\\.com', emailTargets);
 assert(emailHits.length === 0, `old gmail still present: ${emailHits.join(', ')}`);
 const gmailHits = execRg('@gmail\\.com', ['app', 'out'].filter((t) => fs.existsSync(path.join(root, t))));
 assert(gmailHits.length === 0, `gmail leftover in app/out: ${gmailHits.join(', ')}`);
-assert(execRg('info@lamt\\.net', ['app', 'PRODUCT.md']).length > 0, 'info@lamt.net missing from app/PRODUCT');
+assert(execRg('info@lamt\\.net', ['app']).length > 0, 'info@lamt.net missing from app');
 if (fs.existsSync(path.join(root, 'out/about.html'))) {
   const aboutOut = read('out/about.html');
   assert(aboutOut.includes('info@lamt.net'), 'out/about.html missing info@lamt.net');
