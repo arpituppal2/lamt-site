@@ -38,7 +38,7 @@ export default function FooterClient() {
               <Image src="/LAMTBear.png" alt="LAMT Bear Logo" width={120} height={120} className="object-contain" />
             </Link>
           </div>
-          <div className="flex items-center gap-3 flex-wrap justify-center">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             {socialLinks.map((item) => (
               <a
                 key={item.title}
@@ -51,11 +51,9 @@ export default function FooterClient() {
                 {item.icon}
               </a>
             ))}
-          </div>
-          <div className="flex items-center gap-4 flex-wrap justify-center">
             <a
               href="/sponsorships"
-              className="text-[11px] font-extrabold uppercase tracking-wider text-white hover:text-[#FFD100] transition-colors md:text-xs"
+              className="flex h-10 w-10 items-center justify-center border-2 border-white bg-white text-[#2774AE] font-extrabold text-[11px] uppercase tracking-wider shadow-md transition-all duration-200 hover:scale-110 hover:shadow-xl dark:bg-black dark:text-white"
             >
               Sponsorships
             </a>
