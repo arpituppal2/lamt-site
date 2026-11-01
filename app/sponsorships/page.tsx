@@ -26,7 +26,7 @@ export default function SponsorshipsPage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-4">
           <a
-            href="/sponsors/LAMT_Sponssorship_26_27.pdf"
+            href="/sponsors/LAMT_Sponsorship_26_27.pdf"
             target="_blank"
             rel="noreferrer"
             className="btn-filled"
