@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { api } from '../lib/api';
 
 const homeButtonClass =
-  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[var(--ucla-blue)]';
+  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[var(--ucla-blue)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucla-gold)]';
 
 function useCountdown(iso: string | null) {
   const [now, setNow] = useState(() => Date.now());
@@ -79,7 +79,7 @@ export default function HomeClient({
           <br />
           <span className="word">Math Tournament</span>
         </h1>
-        <div className="mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
+        <div className="program-rule mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
 
         <p className="mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95">
           A free UCLA-hosted math tournament for students in grade 12 or below.

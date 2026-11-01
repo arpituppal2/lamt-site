@@ -4,95 +4,145 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 /* ─── ANIMATION ENGINE ────────────────────────────────────────────────────────
-   Motion thesis (UCLA program surface):
-   • Focal: page title word entrance only
-   • Continuity: nav gold underline morph
-   • Feedback: light gold click ripple
-   No scroll-reveal / parallax shuffle — content stays still and readable.
+   Motion thesis — UCLA printed-program surface
+
+   Focal:     title words settle, then the victory-gold rule draws L→R
+   Continuity: nav gold underline morphs between links
+   Composition: section entries unmask via clip-path (not translateY shuffle)
+   Lists:     true list grids (stagger-parent) opacity-stagger, capped
+   Feedback:  gold click ripple on primary buttons
+
+   Content stays visible by default. Never blank with opacity:0.
    ─────────────────────────────────────────────────────────────────────────── */
 
 const GOLDEN = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const EXIT   = 'cubic-bezier(0.4, 0, 1, 1)';
+const EXIT = 'cubic-bezier(0.4, 0, 1, 1)';
 
-// Scroll reveals removed — every section translating on entry read as shuffle.
-function initReveal() {
-  // Content stays visible by default; never blank with opacity 0.
-  return () => {};
-}
+// ─── COMPOSITION REVEAL (clip-path, no layout shuffle) ───────────────────────
+function initCompositionReveal() {
+  const selectors = ['.reveal', '.reveal-block', '.section-row.reveal'].join(', ');
+  const all = Array.from(document.querySelectorAll<HTMLElement>(selectors));
 
-// ─── 2. COUNTER ANIMATION ────────────────────────────────────────────────────
-function initCounters() {
-  const els = document.querySelectorAll<HTMLElement>('[data-count]');
+  const play = (el: HTMLElement, observer?: IntersectionObserver, sequenceIndex = 0) => {
+    if (el.dataset.revealed) return;
+    el.dataset.revealed = '1';
+    el.classList.add('is-visible');
 
-  const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    // Cap sibling delay so a long FAQ never waits through a parade.
+    const delay = Math.min(sequenceIndex, 3) * 55;
 
-  const animate = (el: HTMLElement) => {
-    const target = parseFloat(el.dataset.count ?? '0');
-    const suffix = el.dataset.countSuffix ?? '';
-    const prefix = el.dataset.countPrefix ?? '';
-    const duration = 1400;
-    const start = performance.now();
+    el.animate(
+      [
+        { opacity: 0.82, clipPath: 'inset(10% 0 0 0)' },
+        { opacity: 1, clipPath: 'inset(0 0 0 0)' },
+      ],
+      { duration: 480, delay, easing: GOLDEN, fill: 'none' }
+    );
 
-    const tick = (now: number) => {
-      const p = Math.min((now - start) / duration, 1);
-      const val = target * ease(p);
-      el.textContent = prefix + (Number.isInteger(target) ? Math.round(val).toString() : val.toFixed(1)) + suffix;
-      if (p < 1) requestAnimationFrame(tick);
-    };
-
-    requestAnimationFrame(tick);
+    observer?.unobserve(el);
   };
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          animate(e.target as HTMLElement);
-          observer.unobserve(e.target);
-        }
-      });
+      const incoming = entries
+        .filter((e) => e.isIntersecting)
+        .map((e) => e.target as HTMLElement)
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+      incoming.forEach((el, i) => play(el, observer, i));
     },
-    { threshold: 0.5 }
+    { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
   );
 
-  els.forEach((el) => observer.observe(el));
-  return () => observer.disconnect();
+  all.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const inView = rect.bottom > 40 && rect.top < window.innerHeight * 0.92;
+    if (inView) {
+      // Above-fold: mark only — no entrance parade competing with the focal title.
+      el.dataset.revealed = '1';
+      el.classList.add('is-visible');
+      return;
+    }
+    observer.observe(el);
+  });
+
+  return () => {
+    observer.disconnect();
+  };
 }
 
-// ─── 3. MAGNETIC BUTTONS ─────────────────────────────────────────────────────
-// Removed per user feedback — buttons following cursor was distracting
-// function initMagnetic() { ... }
-
-function initMagnetic() {
-  return () => {};
-}
-
-// Parallax removed — scroll transforms fought the hero and made pages shuffle.
-function initParallax() {
-  return () => {};
-}
-
-// ─── 5. TIMELINE BORDER DRAW ─────────────────────────────────────────────────
-function initTimelineDraw() {
-  const rails = document.querySelectorAll<HTMLElement>('.timeline-rail');
+// ─── LIST STAGGER (only real lists) ──────────────────────────────────────────
+function initListStagger() {
+  const parents = document.querySelectorAll<HTMLElement>('.stagger-parent');
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const rail = e.target as HTMLElement;
-        rail.classList.add('timeline-drawn');
-        observer.unobserve(rail);
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const parent = entry.target as HTMLElement;
+        if (parent.dataset.listRevealed) return;
+        parent.dataset.listRevealed = '1';
+
+        const kids = Array.from(parent.children) as HTMLElement[];
+        kids.forEach((kid, i) => {
+          // Cap total delay ~180ms so lists feel together, not shuffled.
+          const delay = Math.min(i, 4) * 45;
+          kid.animate(
+            [
+              { opacity: 0.72 },
+              { opacity: 1 },
+            ],
+            { duration: 360, delay, easing: GOLDEN, fill: 'none' }
+          );
+        });
+        observer.unobserve(parent);
       });
     },
-    { threshold: 0.1 }
+    { threshold: 0.12, rootMargin: '0px 0px -4% 0px' }
   );
 
-  rails.forEach((r) => observer.observe(r));
+  parents.forEach((p) => {
+    const rect = p.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < window.innerHeight * 0.9) {
+      p.dataset.listRevealed = '1';
+      return;
+    }
+    observer.observe(p);
+  });
+
   return () => observer.disconnect();
 }
 
-// ─── 6. NAV UNDERLINE MORPH ──────────────────────────────────────────────────
+// ─── GOLD RULE DRAW (brand material) ─────────────────────────────────────────
+function initGoldRules() {
+  const rules = document.querySelectorAll<HTMLElement>('.program-rule');
+  const animated: HTMLElement[] = [];
+
+  rules.forEach((rule, i) => {
+    animated.push(rule);
+    rule.style.transformOrigin = 'left center';
+    rule.animate(
+      [
+        { transform: 'scaleX(0)' },
+        { transform: 'scaleX(1)' },
+      ],
+      {
+        duration: 560,
+        delay: 280 + i * 80,
+        easing: GOLDEN,
+        fill: 'both',
+      }
+    );
+  });
+
+  return () => {
+    animated.forEach((rule) => {
+      rule.style.transform = '';
+      rule.style.transformOrigin = '';
+    });
+  };
+}
+
+// ─── NAV UNDERLINE MORPH ─────────────────────────────────────────────────────
 function initNavMorph() {
   const nav = document.querySelector<HTMLElement>('.site-nav');
   if (!nav) return () => {};
@@ -103,7 +153,7 @@ function initNavMorph() {
     position:absolute;bottom:-8px;height:3px;
     background:var(--ucla-gold);
     transition:left 320ms ${GOLDEN}, width 320ms ${GOLDEN}, opacity 200ms ease;
-    pointer-events:none;border-radius:9999px;
+    pointer-events:none;border-radius:0;
     z-index:10;
   `;
   nav.style.position = 'relative';
@@ -127,11 +177,9 @@ function initNavMorph() {
   moveTo(getActive());
 
   const cleanups: (() => void)[] = [];
-
   links.forEach((link) => {
     const onEnter = () => moveTo(link);
     const onLeave = () => moveTo(getActive());
-
     link.addEventListener('mouseenter', onEnter);
     link.addEventListener('mouseleave', onLeave);
     cleanups.push(() => {
@@ -146,12 +194,11 @@ function initNavMorph() {
   };
 }
 
-// ─── 7. GOLD RIPPLE ON CLICK ─────────────────────────────────────────────────
+// ─── GOLD RIPPLE FEEDBACK ────────────────────────────────────────────────────
 function initRipple() {
   const targets = document.querySelectorAll<HTMLElement>(
-    '.btn-premium, .btn-filled, .lamt-button, .btn-ripple'
+    '.btn-premium, .btn-filled, .btn-gold, .lamt-button, .btn-ripple'
   );
-
   const cleanups: (() => void)[] = [];
 
   targets.forEach((btn) => {
@@ -171,12 +218,12 @@ function initRipple() {
         left:${x - size / 2}px;top:${y - size / 2}px;
         width:${size}px;height:${size}px;
         border-radius:50%;pointer-events:none;
-        background:rgba(255,209,0,0.28);
+        background:rgba(255,209,0,0.32);
         transform:scale(0);
-        animation:lamt-ripple 550ms ${EXIT} forwards;
+        animation:lamt-ripple 520ms ${EXIT} forwards;
       `;
       btn.appendChild(circle);
-      setTimeout(() => circle.remove(), 600);
+      setTimeout(() => circle.remove(), 560);
     };
 
     btn.addEventListener('click', onClick);
@@ -189,40 +236,7 @@ function initRipple() {
   return () => cleanups.forEach((fn) => fn());
 }
 
-// ─── 8. TYPEWRITER ───────────────────────────────────────────────────────────
-function initTypewriter() {
-  const els = document.querySelectorAll<HTMLElement>('[data-typewrite]');
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target as HTMLElement;
-        const text = el.dataset.typewrite ?? el.textContent ?? '';
-        el.textContent = '';
-        el.style.borderRight = '2px solid var(--ucla-gold)';
-
-        let i = 0;
-        const interval = setInterval(() => {
-          el.textContent = text.slice(0, i + 1);
-          i++;
-          if (i >= text.length) {
-            clearInterval(interval);
-            setTimeout(() => { el.style.borderRight = ''; }, 800);
-          }
-        }, 42);
-
-        observer.unobserve(el);
-      });
-    },
-    { threshold: 0.5 }
-  );
-
-  els.forEach((el) => observer.observe(el));
-  return () => observer.disconnect();
-}
-
-// ─── 9. HERO HEADLINE ENTRANCE ───────────────────────────────────────────────
+// ─── FOCAL: TITLE WORDS ──────────────────────────────────────────────────────
 function ensureWordSpans(container: HTMLElement) {
   if (container.querySelector('.word')) return;
   const text = (container.textContent ?? '').trim();
@@ -238,7 +252,6 @@ function ensureWordSpans(container: HTMLElement) {
 }
 
 function initHeroEntrance() {
-  // Focal moment only: title words settle in place. Opacity-led, tiny rise.
   const containers = document.querySelectorAll<HTMLElement>('.hero-animate-words');
   const animated: HTMLElement[] = [];
 
@@ -247,15 +260,16 @@ function initHeroEntrance() {
     const words = container.querySelectorAll<HTMLElement>('.word');
     words.forEach((word, i) => {
       animated.push(word);
+      word.style.display = 'inline-block';
       word.style.opacity = '1';
       word.animate(
         [
-          { opacity: 0.92, transform: 'translateY(4px)' },
-          { opacity: 1, transform: 'none' },
+          { opacity: 0.78, filter: 'blur(3px)', transform: 'translateY(8px)' },
+          { opacity: 1, filter: 'blur(0)', transform: 'none' },
         ],
         {
-          duration: 420,
-          delay: 30 + i * 50,
+          duration: 560,
+          delay: 40 + i * 70,
           easing: GOLDEN,
           fill: 'none',
         }
@@ -267,50 +281,47 @@ function initHeroEntrance() {
     animated.forEach((word) => {
       word.style.opacity = '';
       word.style.transform = '';
+      word.style.filter = '';
+      word.style.display = '';
     });
   };
 }
 
-// ─── 10. PROOF CHAPTER HOVER LIFT ────────────────────────────────────────────
-function initProofHover() {
-  const chapters = document.querySelectorAll<HTMLElement>('.proof-chapter');
-  chapters.forEach((ch) => {
-    ch.style.transition = `transform 280ms ${GOLDEN}, box-shadow 280ms ${GOLDEN}`;
-    ch.addEventListener('mouseenter', () => {
-      ch.style.transform = 'translateX(6px)';
-      ch.style.boxShadow = '-3px 0 0 var(--ucla-gold)';
-    });
-    ch.addEventListener('mouseleave', () => {
-      ch.style.transform = '';
-      ch.style.boxShadow = '';
-    });
-  });
-}
-
-// ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
+// ─── MAIN ────────────────────────────────────────────────────────────────────
 export default function AnimationEngine() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      // Still keep nav active-state pill for orientation; skip authored motion.
+      return initNavMorph();
+    }
 
-    // Focal title + nav underline + light ripple. No scroll shuffle / parallax.
+    document.querySelectorAll<HTMLElement>('[data-revealed], [data-list-revealed]').forEach((el) => {
+      delete el.dataset.revealed;
+      delete el.dataset.listRevealed;
+      el.classList.remove('is-visible');
+    });
+
     const cleanups: Array<(() => void) | void> = [
-      initReveal(),
-      initParallax(),
       initNavMorph(),
       initRipple(),
+      initCompositionReveal(),
+      initListStagger(),
     ];
 
     let heroCleanup: (() => void) | void;
-    const t = setTimeout(() => {
+    let ruleCleanup: (() => void) | void;
+    const t = window.setTimeout(() => {
       heroCleanup = initHeroEntrance();
-    }, 60);
+      ruleCleanup = initGoldRules();
+    }, 40);
 
     return () => {
-      clearTimeout(t);
+      window.clearTimeout(t);
       heroCleanup?.();
+      ruleCleanup?.();
       cleanups.forEach((fn) => fn?.());
     };
   }, [pathname]);
