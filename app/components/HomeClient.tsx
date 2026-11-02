@@ -69,7 +69,7 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-start justify-end overflow-hidden pr-[2%] pt-2">
+      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-[2%]">
         <Image
           src="/LAMTBear.png"
           alt=""
@@ -112,10 +112,6 @@ export default function HomeClient() {
         </p>
         <p className="hero-tournaments hero-run mb-8 text-[clamp(0.95rem,2.4vw,1.25rem)] leading-normal text-white/90" style={{ animationDelay: '945ms' }}>
           <span className="text-[var(--ucla-gold)]">LAMT Gold</span> — High school and below · Coming near the end of May.
-        </p>
-
-        <p className="hero-enter enter-run mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95" data-delay="1">
-          A free UCLA-hosted math tournament for students in grade 12 or below.
         </p>
 
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
