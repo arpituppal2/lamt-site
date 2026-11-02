@@ -14,12 +14,15 @@ const BASE_LINKS: NavLink[] = [
   { href: '/archive', label: 'ARCHIVE', external: false },
   { href: '/rules', label: 'RULES', external: false },
   { href: '/faq', label: 'FAQ', external: false },
+  { href: '/sponsorships', label: 'SPONSORS', external: false },
 ];
 
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const [siteMode, setSiteMode] = useState<'offseason' | 'tournament'>('offseason');
+  const [registerEnabled, setRegisterEnabled] = useState(false);
+  const [registerUrl, setRegisterUrl] = useState("");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -31,6 +34,8 @@ export default function NavbarClient() {
       if (settings.site_mode === 'tournament' || settings.site_mode === 'offseason') {
         setSiteMode(settings.site_mode);
       }
+      setRegisterEnabled(settings.register_enabled === 'true');
+      if (settings.register_url) setRegisterUrl(settings.register_url);
     }).catch(() => {});
   }, []);
 
@@ -38,9 +43,13 @@ export default function NavbarClient() {
     'nav-link font-extrabold text-2xl uppercase tracking-wide text-white transition-opacity duration-200 hover:opacity-70';
 
   const isTournament = siteMode === 'tournament';
-  const navLinks = isTournament
+  const baseNavLinks = isTournament
     ? [...BASE_LINKS, { href: '/live', label: 'TOURNAMENT DAY', external: false }]
     : BASE_LINKS;
+
+  const navLinks = registerEnabled && registerUrl
+    ? [...baseNavLinks, { href: registerUrl, label: 'REGISTER', external: true }]
+    : baseNavLinks;
 
   return (
     <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">

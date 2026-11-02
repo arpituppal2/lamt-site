@@ -645,8 +645,10 @@ function SubscribersTab({ subscribers, onExport }: {
 }
 
 function SettingsTab() {
-  const [tournamentDate, setTournamentDate] = useState("");
-  const [tournamentName, setTournamentName] = useState("");
+  const [event1Name, setEvent1Name] = useState("");
+  const [event1Date, setEvent1Date] = useState("");
+  const [event2Name, setEvent2Name] = useState("");
+  const [event2Date, setEvent2Date] = useState("");
   const [regDeadline, setRegDeadline] = useState("");
   const [registerEnabled, setRegisterEnabled] = useState(false);
   const [registerUrl, setRegisterUrl] = useState("");
@@ -657,8 +659,13 @@ function SettingsTab() {
 
   useEffect(() => {
     api.getSettings().then(({ settings }) => {
-      if (settings.tournament_date) setTournamentDate(settings.tournament_date);
-      if (settings.tournament_name) setTournamentName(settings.tournament_name);
+      if (settings.event1_name) setEvent1Name(settings.event1_name);
+      if (settings.event1_date) setEvent1Date(settings.event1_date);
+      if (settings.event2_name) setEvent2Name(settings.event2_name);
+      if (settings.event2_date) setEvent2Date(settings.event2_date);
+      // Fallback to legacy single tournament fields
+      if (!settings.event1_name && settings.tournament_name) setEvent1Name(settings.tournament_name);
+      if (!settings.event1_date && settings.tournament_date) setEvent1Date(settings.tournament_date);
       if (settings.registration_deadline) setRegDeadline(settings.registration_deadline);
       setRegisterEnabled(settings.register_enabled === 'true');
       if (settings.register_url) setRegisterUrl(settings.register_url);
@@ -687,8 +694,10 @@ function SettingsTab() {
     setSaved(false);
     try {
       await api.updateSettings({
-        tournament_date: toISO(tournamentDate),
-        tournament_name: tournamentName,
+        event1_name: event1Name,
+        event1_date: toISO(event1Date),
+        event2_name: event2Name,
+        event2_date: toISO(event2Date),
         registration_deadline: toISO(regDeadline),
         register_enabled: registerEnabled ? "true" : "false",
         register_url: registerUrl,
@@ -708,7 +717,7 @@ function SettingsTab() {
       <p className="label-caps">Configuration</p>
       <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Settings</h2>
       <p className="mt-4 text-[var(--color-text-muted)]">
-        Flip site mode for day-of ops, then set the date used by the homepage countdown. Changes apply within about 30 seconds on / and /live.
+        Flip site mode for day-of ops, then set up to two event dates for the homepage countdown. Expired events auto-remove. Changes apply within about 30 seconds on / and /live.
       </p>
       <div className="mt-5 grid max-w-2xl gap-5">
         <fieldset className="grid gap-3">
@@ -745,13 +754,22 @@ function SettingsTab() {
           </label>
         </fieldset>
         <label className="grid gap-2">
-          <span className="label-caps">Tournament Name (optional)</span>
-          <input className="lamt-input" value={tournamentName} onChange={(e) => setTournamentName(e.target.value)} placeholder="LAMT 2027" />
+          <span className="label-caps">Event 1 Name</span>
+          <input className="lamt-input" value={event1Name} onChange={(e) => setEvent1Name(e.target.value)} placeholder="e.g. LAMT 2027" />
         </label>
         <label className="grid gap-2">
-          <span className="label-caps">Tournament Date & Time</span>
-          <input className="lamt-input" type="datetime-local" value={tournamentDate ? toLocalInput(tournamentDate) : ""} onChange={(e) => setTournamentDate(e.target.value)} />
-          <span className="text-xs text-[var(--color-text-muted)]">This is when the homepage countdown reaches zero and the &ldquo;Tournament is Live&rdquo; message appears.</span>
+          <span className="label-caps">Event 1 Date & Time</span>
+          <input className="lamt-input" type="datetime-local" value={event1Date ? toLocalInput(event1Date) : ""} onChange={(e) => setEvent1Date(e.target.value)} />
+          <span className="text-xs text-[var(--color-text-muted)]">Countdown appears on the homepage until this date passes, then auto-removes.</span>
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">Event 2 Name (optional)</span>
+          <input className="lamt-input" value={event2Name} onChange={(e) => setEvent2Name(e.target.value)} placeholder="e.g. LAMT 2028" />
+        </label>
+        <label className="grid gap-2">
+          <span className="label-caps">Event 2 Date & Time (optional)</span>
+          <input className="lamt-input" type="datetime-local" value={event2Date ? toLocalInput(event2Date) : ""} onChange={(e) => setEvent2Date(e.target.value)} />
+          <span className="text-xs text-[var(--color-text-muted)]">Second countdown slot; auto-removes once the date passes.</span>
         </label>
         <label className="grid gap-2">
           <span className="label-caps">Registration Deadline</span>
