@@ -1293,9 +1293,9 @@ label .label-caps {
 /* Durations at ~0.85× prior speed ⇒ ×1.18 time */
 :root {
   --ease-premium: cubic-bezier(0.33, 0, 0.2, 1);
-  --dur-title: 1060ms;
-  --dur-rule: 1060ms;
-  --dur-enter: 1000ms;
+  --dur-title: 530ms;
+  --dur-rule: 530ms;
+  --dur-enter: 500ms;
   --dur-section: 820ms;
   --dur-list: 760ms;
 }
@@ -1345,7 +1345,7 @@ label .label-caps {
 }
 
 .hero-animate-words.hero-run .word:nth-of-type(2) {
-  animation-delay: 420ms;
+  animation-delay: 210ms;
 }
 
 .program-rule {
@@ -1353,7 +1353,7 @@ label .label-caps {
 }
 
 .program-rule.rule-run {
-  animation: lamt-rule-draw var(--dur-rule) 1100ms var(--ease-premium) both;
+  animation: lamt-rule-draw var(--dur-rule) 550ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run {
@@ -1361,11 +1361,11 @@ label .label-caps {
 }
 
 .hero-enter.enter-run[data-delay='1'] {
-  animation-delay: 1750ms;
+  animation-delay: 875ms;
 }
 
 .hero-enter.enter-run[data-delay='2'] {
-  animation-delay: 2400ms;
+  animation-delay: 1200ms;
 }
 
 /* Sections rise once; lists sequence their children (not the shell) */

@@ -69,7 +69,7 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-start justify-end overflow-hidden pr-[2%] pt-4">
+      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-start justify-end overflow-hidden pr-[2%] pt-2">
         <Image
           src="/LAMTBear.png"
           alt=""
@@ -111,9 +111,15 @@ export default function HomeClient() {
         </p>
 
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
-          <a href="/live" className="btn-gold">
-            {isTournament ? 'Go to Tournament Day' : 'View Tournament Info'}
-          </a>
+          {isTournament ? (
+            <a href="/live" className="btn-gold">
+              Go to Tournament Day
+            </a>
+          ) : (
+            <a href="#email-signup" className="btn-gold">
+              Sign up for emails
+            </a>
+          )}
         </div>
       </div>
     </section>
