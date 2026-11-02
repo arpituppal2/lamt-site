@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
 import express from 'express';
+import { WebSocketServer } from 'ws';
 import pool from './db.js';
 import {
   signSession,
@@ -9,18 +11,29 @@ import {
   clearCookie,
   readSessionCookie,
   requireAdmin,
+  requireStaff,
+  enforceSessionRevocation,
   safeCompare,
   allowedOrigins,
   originGuard,
+  csrfProtection,
+  issueCsrfToken,
+  csrfCookie,
+  clientIp,
   limitSubscribe,
   limitMessage,
   limitLogin,
   limitChat,
   limitUnsubscribe,
+  limitSession,
   makeUnsubscribeToken,
   verifyUnsubscribeToken,
+  makeChatToken,
+  verifyChatToken,
   tokenHash,
+  revokeSession,
 } from './auth.js';
+import { checkProfanity, hasProfanity } from './profanity.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -51,6 +64,36 @@ async function withDbRetry(label, fn, { maxAttempts = 8, baseDelay = 1500 } = {}
   throw lastErr;
 }
 
+// ---------- In-memory response cache (TTL-based) ----------
+
+const cache = new Map();
+
+function cacheGet(key) {
+  const entry = cache.get(key);
+  if (!entry || entry.expiresAt < Date.now()) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.value;
+}
+
+function cacheSet(key, value, ttlMs) {
+  cache.set(key, { value, expiresAt: Date.now() + ttlMs });
+}
+
+function cacheInvalidate(prefix) {
+  for (const k of cache.keys()) {
+    if (k.startsWith(prefix)) cache.delete(k);
+  }
+}
+
+const CACHE_TTL = {
+  schedule: 5 * 60 * 1000,   // 5 minutes
+  announcements: 5 * 60 * 1000,
+  settings: 5 * 60 * 1000,
+  health: 30 * 1000,         // 30 seconds
+};
+
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json());
@@ -75,6 +118,17 @@ app.use((req, res, next) => {
 
 app.use(originGuard);
 
+// Security headers: CSP, frame-ancestors, X-Content-Type-Options, HSTS
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';",
+  );
+  next();
+});
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateEmail(email) {
@@ -82,12 +136,18 @@ function validateEmail(email) {
 }
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true });
+  const cached = cacheGet('health');
+  if (cached) return res.json(cached);
+  const body = { ok: true };
+  cacheSet('health', body, CACHE_TTL.health);
+  res.setHeader('Cache-Control', 'public, max-age=30');
+  return res.json(body);
 });
 
-app.post('/subscribe', limitSubscribe, async (req, res) => {
+app.post('/subscribe', limitSubscribe, csrfProtection, async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   if (!validateEmail(email)) return res.status(400).json({ error: 'invalid email' });
+  if (hasProfanity(email)) return res.status(400).json({ error: 'invalid email' });
   try {
     const result = await withDbRetry('subscribe', async () => {
       const existing = await pool.query('SELECT id, unsubscribed_at FROM subscribers WHERE email = $1', [email]);
@@ -110,12 +170,12 @@ app.post('/subscribe', limitSubscribe, async (req, res) => {
     });
     return res.json(result);
   } catch (err) {
-    console.error('subscribe error', err);
+    console.error('subscribe error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/unsubscribe', limitUnsubscribe, async (req, res) => {
+app.post('/unsubscribe', limitUnsubscribe, csrfProtection, async (req, res) => {
   const token = req.body?.token;
   const parsed = verifyUnsubscribeToken(token);
   if (!parsed) return res.status(400).json({ error: 'invalid token' });
@@ -130,60 +190,60 @@ app.post('/unsubscribe', limitUnsubscribe, async (req, res) => {
     await pool.query('INSERT INTO used_unsubscribe_tokens (token_hash) VALUES ($1)', [hash]);
     return res.json({ status: row.rows.length > 0 ? 'unsubscribed' : 'not_subscribed' });
   } catch (err) {
-    console.error('unsubscribe error', err);
+    console.error('unsubscribe error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.get('/subscribers', requireAdmin, async (req, res) => {
+app.get('/subscribers', requireAdmin, limitSession, enforceSessionRevocation, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT id, email, consent_at, unsubscribed_at FROM subscribers ORDER BY consent_at DESC, id DESC',
     );
     return res.json({ subscribers: result.rows });
   } catch (err) {
-    console.error('subscribers error', err);
-    return res.status(500).json({ error: 'internal error' });
-  }
-});
-
-app.delete('/subscribers/:id', requireAdmin, async (req, res) => {
-  try {
-    const result = await pool.query('DELETE FROM subscribers WHERE id = $1 RETURNING id', [req.params.id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
-    return res.json({ status: 'deleted' });
-  } catch (err) {
-    console.error('subscriber delete error', err);
+    console.error('subscribers error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
 app.get('/announcements', async (req, res) => {
+  const cached = cacheGet('announcements');
+  if (cached) {
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(cached);
+  }
   try {
     const result = await pool.query('SELECT id, title, body, priority, created_at FROM announcements ORDER BY created_at DESC, id DESC');
-    return res.json({ announcements: result.rows });
+    const body = { announcements: result.rows };
+    cacheSet('announcements', body, CACHE_TTL.announcements);
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(body);
   } catch (err) {
-    console.error('announcements error', err);
+    console.error('announcements error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/announcements', requireAdmin, async (req, res) => {
+app.post('/announcements', requireAdmin, csrfProtection, async (req, res) => {
   const { title, body, priority = 'normal' } = req.body || {};
   if (typeof body !== 'string' || body.trim() === '') return res.status(400).json({ error: 'body required' });
+  if (hasProfanity(body) || (typeof title === 'string' && hasProfanity(title)))
+    return res.status(400).json({ error: 'profanity not allowed' });
   try {
     const result = await pool.query(
       'INSERT INTO announcements (title, body, priority) VALUES ($1, $2, $3) RETURNING id, title, body, priority, created_at',
       [typeof title === 'string' ? title : null, body, priority],
     );
+    cacheInvalidate('announcements');
     return res.status(201).json({ announcement: result.rows[0] });
   } catch (err) {
-    console.error('announcement create error', err);
+    console.error('announcement create error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.patch('/announcements/:id', requireAdmin, async (req, res) => {
+app.patch('/announcements/:id', requireAdmin, csrfProtection, async (req, res) => {
   const id = req.params.id;
   const { title, body } = req.body || {};
   if (typeof title !== 'string' && typeof body !== 'string') {
@@ -202,37 +262,47 @@ app.patch('/announcements/:id', requireAdmin, async (req, res) => {
       'UPDATE announcements SET title = $1, body = $2 WHERE id = $3 RETURNING id, title, body, priority, created_at',
       [nextTitle, nextBody, id],
     );
+    cacheInvalidate('announcements');
     return res.json({ announcement: result.rows[0] });
   } catch (err) {
-    console.error('announcement update error', err);
+    console.error('announcement update error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.delete('/announcements/:id', requireAdmin, async (req, res) => {
+app.delete('/announcements/:id', requireAdmin, csrfProtection, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM announcements WHERE id = $1 RETURNING id', [req.params.id]);
     if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    cacheInvalidate('announcements');
     return res.json({ status: 'deleted' });
   } catch (err) {
-    console.error('announcement delete error', err);
+    console.error('announcement delete error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
 app.get('/schedule', async (req, res) => {
+  const cached = cacheGet('schedule');
+  if (cached) {
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(cached);
+  }
   try {
     const result = await pool.query(
       'SELECT id, time, "end", event, location, original_time, adjustment_reason FROM schedule_items ORDER BY id',
     );
-    return res.json({ schedule: result.rows });
+    const body = { schedule: result.rows };
+    cacheSet('schedule', body, CACHE_TTL.schedule);
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(body);
   } catch (err) {
-    console.error('schedule error', err);
+    console.error('schedule error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/schedule', requireAdmin, async (req, res) => {
+app.post('/schedule', requireAdmin, csrfProtection, async (req, res) => {
   const { time, end, event, location } = req.body || {};
   if (!time || !end || !event || !location) return res.status(400).json({ error: 'time, end, event, location required' });
   try {
@@ -240,14 +310,15 @@ app.post('/schedule', requireAdmin, async (req, res) => {
       'INSERT INTO schedule_items (time, "end", event, location) VALUES ($1, $2, $3, $4) RETURNING id, time, "end", event, location',
       [time, end, event, location],
     );
+    cacheInvalidate('schedule');
     return res.status(201).json({ item: result.rows[0] });
   } catch (err) {
-    console.error('schedule create error', err);
+    console.error('schedule create error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.patch('/schedule/:id', requireAdmin, async (req, res) => {
+app.patch('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
   const id = req.params.id;
   const { time, end, event, location, adjustmentReason } = req.body || {};
   try {
@@ -274,37 +345,40 @@ app.patch('/schedule/:id', requireAdmin, async (req, res) => {
        RETURNING id, time, "end", event, location, original_time, adjustment_reason`,
       [next.time, next.end, next.event, next.location, next.original_time, next.adjustment_reason, id],
     );
+    cacheInvalidate('schedule');
     return res.json({ item: result.rows[0] });
   } catch (err) {
-    console.error('schedule update error', err);
+    console.error('schedule update error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.delete('/schedule/:id', requireAdmin, async (req, res) => {
+app.delete('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM schedule_items WHERE id = $1 RETURNING id', [req.params.id]);
     if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    cacheInvalidate('schedule');
     return res.json({ status: 'deleted' });
   } catch (err) {
-    console.error('schedule delete error', err);
+    console.error('schedule delete error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.get('/messages', requireAdmin, async (req, res) => {
+app.get('/messages', requireAdmin, limitSession, enforceSessionRevocation, async (req, res) => {
   try {
     const result = await pool.query('SELECT id, name, email, message, resolved, replies, created_at FROM messages ORDER BY created_at DESC');
     return res.json({ messages: result.rows });
   } catch (err) {
-    console.error('messages error', err);
+    console.error('messages error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/messages', limitMessage, async (req, res) => {
+app.post('/messages', limitMessage, csrfProtection, async (req, res) => {
   const { name, email, message } = req.body || {};
   if (!name || !validateEmail(email) || !message) return res.status(400).json({ error: 'name, valid email, message required' });
+  if (hasProfanity(name) || hasProfanity(message)) return res.status(400).json({ error: 'profanity not allowed' });
   try {
     const result = await pool.query(
       'INSERT INTO messages (name, email, message) VALUES ($1, $2, $3) RETURNING id',
@@ -312,12 +386,12 @@ app.post('/messages', limitMessage, async (req, res) => {
     );
     return res.status(201).json({ id: result.rows[0].id });
   } catch (err) {
-    console.error('message create error', err);
+    console.error('message create error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.patch('/messages/:id', requireAdmin, async (req, res) => {
+app.patch('/messages/:id', requireAdmin, csrfProtection, async (req, res) => {
   const id = req.params.id;
   const body = req.body || {};
   try {
@@ -338,7 +412,7 @@ app.patch('/messages/:id', requireAdmin, async (req, res) => {
       const replies = current.replies || [];
       const updated = [
         ...replies,
-        { id: Date.now(), body: String(body.reply.body), timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) },
+        { id: crypto.randomUUID(), body: String(body.reply.body), timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) },
       ];
       await pool.query('UPDATE messages SET replies = $1 WHERE id = $2', [JSON.stringify(updated), id]);
       return res.json({ status: 'updated' });
@@ -346,7 +420,7 @@ app.patch('/messages/:id', requireAdmin, async (req, res) => {
 
     return res.status(400).json({ error: 'resolved or reply required' });
   } catch (err) {
-    console.error('message update error', err);
+    console.error('message update error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
@@ -382,9 +456,17 @@ async function computePosition(pool, chatId) {
   return result.rows[0].pos;
 }
 
-app.post('/chat/start', limitChat, async (req, res) => {
+app.post('/chat/start', limitChat, csrfProtection, async (req, res) => {
   const { name, email } = req.body || {};
   if (!name || String(name).trim() === '') return res.status(400).json({ error: 'name required' });
+  if (email && !validateEmail(email)) return res.status(400).json({ error: 'invalid email' });
+  if (hasProfanity(name) || (email && hasProfanity(email))) return res.status(400).json({ error: 'profanity not allowed' });
+
+  // Bind chat token to logged-in user if present (admin/volunteer starting a chat)
+  let userId = null;
+  const session = readSessionCookie(req);
+  if (session) userId = session.userId;
+
   try {
     const inserted = await pool.query(
       'INSERT INTO live_chats (name, email) VALUES ($1, $2) RETURNING id, name, email, status, created_at, claimed_at, closed_at',
@@ -392,15 +474,27 @@ app.post('/chat/start', limitChat, async (req, res) => {
     );
     const chat = inserted.rows[0];
     const position = await computePosition(pool, chat.id);
+    const chatToken = makeChatToken(chat.id, userId);
+    res.setHeader('Set-Cookie', `lamt_chat_token=${chatToken}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=${24 * 60 * 60}`);
     return res.status(201).json({ chat: serializeChat(chat, []), position });
   } catch (err) {
-    console.error('chat start error', err);
+    console.error('chat start error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.get('/chat/:id', async (req, res) => {
+app.get('/chat/:id', limitChat, async (req, res) => {
   const id = req.params.id;
+  // Read chat token from HttpOnly cookie (not query string)
+  let chatToken = '';
+  const cookieHeader = req.headers.cookie || '';
+  for (const part of cookieHeader.split(';')) {
+    const [name, ...rest] = part.trim().split('=');
+    if (name === 'lamt_chat_token') chatToken = rest.join('=');
+  }
+  const session = readSessionCookie(req);
+  const userId = session ? session.userId : null;
+  if (!verifyChatToken(chatToken, id, userId)) return res.status(401).json({ error: 'invalid or missing chat token' });
   try {
     const chatRes = await pool.query(
       'SELECT id, name, email, status, created_at, claimed_at, closed_at FROM live_chats WHERE id = $1',
@@ -414,15 +508,27 @@ app.get('/chat/:id', async (req, res) => {
     const position = await computePosition(pool, Number(id));
     return res.json({ chat: serializeChat(chatRes.rows[0], msgRes.rows), position });
   } catch (err) {
-    console.error('chat get error', err);
+    console.error('chat get error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/chat/:id', limitChat, async (req, res) => {
+app.post('/chat/:id', limitChat, csrfProtection, async (req, res) => {
   const id = req.params.id;
   const { body } = req.body || {};
   if (typeof body !== 'string' || body.trim() === '') return res.status(400).json({ error: 'body required' });
+
+  // Verify chat token from HttpOnly cookie
+  let chatToken = '';
+  const cookieHeader = req.headers.cookie || '';
+  for (const part of cookieHeader.split(';')) {
+    const [name, ...rest] = part.trim().split('=');
+    if (name === 'lamt_chat_token') chatToken = rest.join('=');
+  }
+  const session = readSessionCookie(req);
+  const userId = session ? session.userId : null;
+  if (!verifyChatToken(chatToken, id, userId)) return res.status(401).json({ error: 'invalid or missing chat token' });
+
   try {
     const chatRes = await pool.query('SELECT status FROM live_chats WHERE id = $1', [id]);
     if (chatRes.rows.length === 0) return res.status(404).json({ error: 'not found' });
@@ -431,14 +537,15 @@ app.post('/chat/:id', limitChat, async (req, res) => {
       'INSERT INTO live_chat_messages (chat_id, sender, body) VALUES ($1, $2, $3) RETURNING id',
       [id, 'user', String(body).trim().slice(0, 2000)],
     );
+    broadcastChat(Number(id), { type: 'message', chatId: Number(id), sender: 'user', body, createdAt: new Date().toISOString() });
     return res.json({ status: 'sent' });
   } catch (err) {
-    console.error('chat send error', err);
+    console.error('chat send error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.get('/chats', requireAdmin, async (req, res) => {
+app.get('/chats', requireStaff, limitSession, enforceSessionRevocation, async (req, res) => {
   try {
     const waitingRes = await pool.query(
       "SELECT id, name, email, status, created_at, claimed_at, closed_at FROM live_chats WHERE status = 'waiting' ORDER BY created_at ASC",
@@ -465,12 +572,12 @@ app.get('/chats', requireAdmin, async (req, res) => {
     const active = activeRes.rows.map((r) => serializeChat(r, messagesByChat[r.id] || []));
     return res.json({ waitingCount: queue.length, queue, active });
   } catch (err) {
-    console.error('chats list error', err);
+    console.error('chats list error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/chat/:id/claim', requireAdmin, async (req, res) => {
+app.post('/chat/:id/claim', requireStaff, csrfProtection, async (req, res) => {
   const id = req.params.id;
   try {
     const result = await pool.query(
@@ -478,14 +585,15 @@ app.post('/chat/:id/claim', requireAdmin, async (req, res) => {
       [id],
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'not found or already claimed' });
+    broadcastChat(Number(id), { type: 'chat_status_changed', chatId: Number(id), status: 'active' });
     return res.json({ status: 'claimed' });
   } catch (err) {
-    console.error('chat claim error', err);
+    console.error('chat claim error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/chat/:id/staff', requireAdmin, async (req, res) => {
+app.post('/chat/:id/staff', requireStaff, csrfProtection, async (req, res) => {
   const id = req.params.id;
   const { body } = req.body || {};
   if (typeof body !== 'string' || body.trim() === '') return res.status(400).json({ error: 'body required' });
@@ -498,14 +606,15 @@ app.post('/chat/:id/staff', requireAdmin, async (req, res) => {
       [id, 'staff', String(body).trim().slice(0, 2000)],
     );
     await pool.query("UPDATE live_chats SET status = 'active', claimed_at = COALESCE(claimed_at, now()) WHERE id = $1 AND status = 'waiting'", [id]);
+    broadcastChat(Number(id), { type: 'message', chatId: Number(id), sender: 'staff', body, createdAt: new Date().toISOString() });
     return res.json({ status: 'sent' });
   } catch (err) {
-    console.error('chat staff send error', err);
+    console.error('chat staff send error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.post('/chat/:id/close', requireAdmin, async (req, res) => {
+app.post('/chat/:id/close', requireStaff, csrfProtection, async (req, res) => {
   const id = req.params.id;
   try {
     const result = await pool.query(
@@ -513,9 +622,10 @@ app.post('/chat/:id/close', requireAdmin, async (req, res) => {
       [id],
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    broadcastChat(Number(id), { type: 'chat_status_changed', chatId: Number(id), status: 'closed' });
     return res.json({ status: 'closed' });
   } catch (err) {
-    console.error('chat close error', err);
+    console.error('chat close error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
@@ -523,18 +633,26 @@ app.post('/chat/:id/close', requireAdmin, async (req, res) => {
 // ---------- Settings (tournament date, etc.) ----------
 
 app.get('/settings', async (req, res) => {
+  const cached = cacheGet('settings');
+  if (cached) {
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(cached);
+  }
   try {
     const result = await pool.query('SELECT key, value FROM settings');
     const settings = {};
     for (const row of result.rows) settings[row.key] = row.value;
-    return res.json({ settings });
+    const body = { settings };
+    cacheSet('settings', body, CACHE_TTL.settings);
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    return res.json(body);
   } catch (err) {
-    console.error('settings get error', err);
+    console.error('settings get error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.patch('/settings', requireAdmin, async (req, res) => {
+app.patch('/settings', requireAdmin, csrfProtection, async (req, res) => {
   const entries = req.body || {};
   if (typeof entries !== 'object' || Array.isArray(entries)) {
     return res.status(400).json({ error: 'object required' });
@@ -559,39 +677,158 @@ app.patch('/settings', requireAdmin, async (req, res) => {
       );
       updated[key] = value;
     }
+    cacheInvalidate('settings');
     return res.json({ status: 'updated', updated });
   } catch (err) {
-    console.error('settings update error', err);
+    console.error('settings update error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
 
-app.get('/session', (req, res) => {
-  if (readSessionCookie(req)) return res.json({ authed: true });
-  return res.status(401).json({ authed: false });
-});
+// ---------- Team Management ----------
 
-app.post('/login', limitLogin, (req, res) => {
-  const password = req.body?.password;
-  if (!password || !safeCompare(password, process.env.ADMIN_PASSWORD || '')) {
-    return res.status(401).json({ error: 'invalid password' });
+app.get('/admin/users', requireAdmin, limitSession, enforceSessionRevocation, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, name, role, permanent, created_at FROM users ORDER BY role DESC, name ASC',
+    );
+    return res.json({ users: result.rows });
+  } catch (err) {
+    console.error('users list error', err.message);
+    return res.status(500).json({ error: 'internal error' });
   }
-  res.setHeader('Set-Cookie', sessionCookie(signSession()));
-  return res.json({ ok: true });
 });
 
-app.post('/logout', (req, res) => {
+app.post('/admin/users', requireAdmin, csrfProtection, async (req, res) => {
+  const { name } = req.body || {};
+  if (!name || String(name).trim() === '') return res.status(400).json({ error: 'name required' });
+  if (hasProfanity(String(name))) return res.status(400).json({ error: 'profanity not allowed' });
+  try {
+    const result = await pool.query(
+      'INSERT INTO users (name, role) VALUES ($1, $2) RETURNING id, name, role, permanent, created_at',
+      [String(name).trim().slice(0, 100), 'volunteer'],
+    );
+    return res.status(201).json({ user: result.rows[0] });
+  } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ error: 'name already exists' });
+    console.error('user create error', err.message);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.patch('/admin/users/:id', requireAdmin, csrfProtection, async (req, res) => {
+  const id = req.params.id;
+  const { role, permanent } = req.body || {};
+  const session = readSessionCookie(req);
+  if (session && Number(session.userId) === Number(id)) {
+    if (role && role !== 'admin') {
+      return res.status(403).json({ error: 'cannot change your own role away from admin' });
+    }
+  }
+  // Validate role against allowed values
+  if (role !== undefined && !['admin', 'volunteer', 'off'].includes(role)) {
+    return res.status(400).json({ error: 'invalid role' });
+  }
+  try {
+    const existing = await pool.query('SELECT permanent, session_version FROM users WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    if (existing.rows[0].permanent && permanent === false) {
+      return res.status(403).json({ error: 'cannot remove permanent status' });
+    }
+    // Block demoting permanent users (Arpit Uppal, Vicky Zhang)
+    if (existing.rows[0].permanent && role && role !== 'admin') {
+      return res.status(403).json({ error: 'cannot demote permanent user' });
+    }
+    const newVersion = (existing.rows[0].session_version || 0) + (role || permanent !== undefined ? 1 : 0);
+    const result = await pool.query(
+      'UPDATE users SET role = COALESCE($1, role), permanent = COALESCE($2, permanent), session_version = $3 WHERE id = $4 RETURNING id, name, role, permanent, created_at',
+      [role, permanent, newVersion, id],
+    );
+    return res.json({ user: result.rows[0] });
+  } catch (err) {
+    console.error('user update error', err.message);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.delete('/admin/users/:id', requireAdmin, csrfProtection, async (req, res) => {
+  const id = req.params.id;
+  const session = readSessionCookie(req);
+  if (session && Number(session.userId) === Number(id)) {
+    return res.status(403).json({ error: 'cannot delete yourself' });
+  }
+  try {
+    const existing = await pool.query('SELECT permanent FROM users WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return res.status(404).json({ error: 'not found' });
+    if (existing.rows[0].permanent) return res.status(403).json({ error: 'cannot delete permanent user' });
+    await pool.query('DELETE FROM users WHERE id = $1', [id]);
+    return res.json({ status: 'deleted' });
+  } catch (err) {
+    console.error('user delete error', err.message);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.get('/session', limitSession, (req, res) => {
+  const session = readSessionCookie(req);
+  if (!session) return res.status(401).json({ authed: false });
+  const csrfToken = issueCsrfToken();
+  res.setHeader('Set-Cookie', csrfCookie(csrfToken));
+  return res.json({ authed: true, user: { id: session.userId, name: session.userName, role: session.userRole } });
+});
+
+app.post('/login', limitLogin, csrfProtection, async (req, res) => {
+  const { password, name } = req.body || {};
+  if (!password || !safeCompare(password, process.env.ADMIN_PASSWORD || '')) {
+    return res.status(401).json({ error: 'invalid credentials' });
+  }
+  if (!name || String(name).trim() === '') {
+    return res.status(401).json({ error: 'invalid credentials' });
+  }
+  try {
+    const result = await pool.query('SELECT id, name, role, session_version FROM users WHERE name = $1', [String(name).trim()]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'invalid credentials' });
+    }
+    const user = result.rows[0];
+    if (user.role === 'off') {
+      return res.status(401).json({ error: 'invalid credentials' });
+    }
+    const sessionValue = signSession({ userId: user.id, userName: user.name, userRole: user.role, sessionVersion: user.session_version });
+    const csrfToken = issueCsrfToken();
+    res.setHeader('Set-Cookie', [sessionCookie(sessionValue), csrfCookie(csrfToken)]);
+    return res.json({ ok: true, user: { id: user.id, name: user.name, role: user.role } });
+  } catch (err) {
+    console.error('login error', err.message);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.post('/logout', csrfProtection, async (req, res) => {
+  try {
+    const session = readSessionCookie(req);
+    if (session) {
+      const cookieHeader = req.headers.cookie || '';
+      for (const part of cookieHeader.split(';')) {
+        const [name, ...rest] = part.trim().split('=');
+        if (name === COOKIE_NAME) {
+          await revokeSession(rest.join('='));
+          break;
+        }
+      }
+    }
+  } catch {}
   res.setHeader('Set-Cookie', clearCookie());
   return res.json({ ok: true });
 });
 
-app.delete('/messages/:id', requireAdmin, async (req, res) => {
+app.delete('/messages/:id', requireAdmin, csrfProtection, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM messages WHERE id = $1 RETURNING id', [req.params.id]);
     if (result.rows.length === 0) return res.status(404).json({ error: 'not found' });
     return res.json({ status: 'deleted' });
   } catch (err) {
-    console.error('message delete error', err);
+    console.error('message delete error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });
@@ -644,11 +881,92 @@ app.use((req, res) => {
 
 const port = process.env.PORT || 3000;
 
+function validateSecrets() {
+  const required = ['DATABASE_URL', 'SESSION_SECRET', 'ADMIN_PASSWORD', 'UNSUBSCRIBE_SECRET', 'CHAT_TOKEN_SECRET'];
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+  }
+}
+
+validateSecrets();
+
 waitForDatabase()
   .then((ready) => (ready ? runMigrations() : Promise.resolve()))
   .then(() => {
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`LAMT backend listening on port ${port}`);
     });
+
+    // ---------- WebSocket server for live chat ----------
+
+    const wsConnections = new Map(); // ip -> active connection count
+    const WS_MAX_CONNECTIONS = 10;
+
+    const wss = new WebSocketServer({ server, path: '/ws/chat' });
+    const chatClients = new Map(); // chatId -> Set of WebSocket clients
+
+    wss.on('connection', (ws, req) => {
+      try {
+        // Per-IP WebSocket connection rate limit
+        const ip = clientIp(req);
+        const count = (wsConnections.get(ip) || 0) + 1;
+        if (count > WS_MAX_CONNECTIONS) {
+          ws.close(4029, 'rate limited');
+          return;
+        }
+        wsConnections.set(ip, count);
+        ws.on('close', () => {
+          wsConnections.set(ip, Math.max(0, (wsConnections.get(ip) || 1) - 1));
+          if (wsConnections.get(ip) === 0) wsConnections.delete(ip);
+        });
+
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const chatId = url.searchParams.get('chatId');
+        if (!chatId) {
+          ws.close(4001, 'missing chat id');
+          return;
+        }
+
+        // Read chat token from HttpOnly cookie (browser sends it automatically with WS)
+        let chatToken = '';
+        const cookieHeader = req.headers.cookie || '';
+        for (const part of cookieHeader.split(';')) {
+          const [name, ...rest] = part.trim().split('=');
+          if (name === 'lamt_chat_token') chatToken = rest.join('=');
+        }
+        const session = readSessionCookie(req);
+        const userId = session ? session.userId : null;
+        if (!chatToken || !verifyChatToken(chatToken, Number(chatId), userId)) {
+          ws.close(4001, 'invalid or missing chat token');
+          return;
+        }
+
+        const id = Number(chatId);
+        if (!chatClients.has(id)) chatClients.set(id, new Set());
+        chatClients.get(id).add(ws);
+        ws.on('close', () => {
+          const clients = chatClients.get(id);
+          if (clients) {
+            clients.delete(ws);
+            if (clients.size === 0) chatClients.delete(id);
+          }
+        });
+        ws.on('error', () => {});
+      } catch {
+        ws.close(4001, 'invalid request');
+      }
+    });
+
+    function broadcastChat(chatId, data) {
+      const clients = chatClients.get(chatId);
+      if (!clients) return;
+      const message = JSON.stringify(data);
+      for (const client of clients) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(message);
+        }
+      }
+    }
   })
   .catch((err) => console.error('Startup error', err));

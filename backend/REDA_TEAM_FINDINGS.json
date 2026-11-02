@@ -1,0 +1,218 @@
+[
+  {
+    "severity": "P0",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 115,
+    "summary": "clientIp() reads x-forwarded-for directly, allowing IP spoofing to bypass all IP-based rate limiting including login brute-force protection.",
+    "short_summary": "x-forwarded-for spoofing bypasses rate limiting",
+    "failure_scenario": "Attacker sends POST /login with a different x-forwarded-for value on every request, rotating IPs to evade the 10-attempt/15min limitLogin bucket. Combined with the shared ADMIN_PASSWORD, this enables unlimited password brute-forcing with no effective rate limiting. Same bypass applies to /subscribe, /messages, /chat/start, and /unsubscribe.",
+    "category": "rate-limit-bypass"
+  },
+  {
+    "severity": "P0",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 193,
+    "summary": "makeChatToken signs only {chatId, issuedAt} with no binding to the user who created the chat, so anyone possessing a token can eavesdrop on that chat.",
+    "short_summary": "Chat token not bound to user identity",
+    "failure_scenario": "Attacker obtains a chatToken (via browser history, Referer header leakage, server logs, or shoulder-surfing) and uses it to connect to wss://backend/ws/chat?token=X&chatId=Y or call GET /chat/Y?token=X, reading all participant names, emails, and messages for that live chat session.",
+    "category": "auth-bypass"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 722,
+    "summary": "Shared ADMIN_PASSWORD is a single shared secret with no per-user password store, no complexity requirements, no account lockout, and no MFA.",
+    "short_summary": "Single shared admin password, no per-user auth",
+    "failure_scenario": "If ADMIN_PASSWORD is leaked, guessed, or brute-forced (made practical by P0 rate-limit bypass), the attacker gains full administrative access to all subscribers, messages, chats, announcements, schedule, settings, and user management. There is no secondary credential or per-user password hash to limit blast radius.",
+    "category": "auth-bypass"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 720,
+    "summary": "POST /login returns differentiated error messages ('invalid password' vs 'user not found' vs 'access disabled'), enabling username enumeration.",
+    "short_summary": "Login error messages enable user enumeration",
+    "failure_scenario": "Attacker sends login attempts with common names and observes which return 'invalid password' (user exists, wrong password) vs 'user not found' (user does not exist), building a list of valid usernames for targeted password-guessing or social-engineering attacks.",
+    "category": "info-disclosure"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 6,
+    "summary": "Session cookie payload {ts, userId, userName, userRole} is base64url-encoded but not encrypted, so anyone with the cookie can read the user's identity data.",
+    "short_summary": "Session cookie contains readable PII",
+    "failure_scenario": "Attacker who obtains a session cookie (via XSS, logs, or interception) decodes the base64url payload to extract userId, userName, and userRole, exposing user identity information without needing to forge the HMAC signature.",
+    "category": "pii-exposure"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 13,
+    "summary": "No server-side session tracking exists; sessions are stateless HMAC cookies, so a stolen cookie remains valid for the full 12-hour TTL and logout only clears the client-side cookie.",
+    "short_summary": "No server-side session invalidation",
+    "failure_scenario": "Attacker steals a valid lmt_session cookie (via XSS, network sniffing on non-HTTPS, or logs). The cookie remains usable until its 12-hour expiry regardless of logout or password changes, since the server never validates session revocation.",
+    "category": "session-hijacking"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 94,
+    "summary": "No CSRF token is used; protection relies solely on SameSite=None cookies plus origin checking, which is insufficient for a cross-origin architecture (Vercel frontend + Railway backend).",
+    "short_summary": "No CSRF token protection",
+    "failure_scenario": "Attacker lures an authenticated admin to a malicious page that submits a form/fetch to /admin/users, /announcements, /settings, or /schedule. The SameSite=None cookie is sent cross-origin. While originGuard blocks non-allowed origins for non-GET methods from browsers, the absence of a CSRF token means any bypass of origin checking (e.g., P2 x-forwarded-host spoofing from non-browser contexts) results in unauthenticated state-changing actions.",
+    "category": "csrf"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 670,
+    "summary": "PATCH /admin/users/:id accepts a role value from the request body without validating it against allowed roles ('admin', 'volunteer').",
+    "short_summary": "User role field not validated against allowed values",
+    "failure_scenario": "Authenticated admin sends PATCH /admin/users/:id with { role: 'superadmin' } or { role: '' }. The value is stored directly in the database via COALESCE($1, role). While this doesn't grant immediate escalation (requireAdmin checks userRole === 'admin'), it corrupts role data and could break future authorization logic that assumes roles are from a closed set.",
+    "category": "input-validation"
+  },
+  {
+    "severity": "P1",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 439,
+    "summary": "POST /chat/start does not validate email with validateEmail() and does not check name or email for profanity, unlike /subscribe and /messages.",
+    "short_summary": "Chat start missing email validation and profanity checks",
+    "failure_scenario": "Attacker starts live chats with profane or offensive names (e.g., slurs, hate speech) or with malformed/empty email strings. Since /chat/start lacks both validateEmail and hasProfanity checks present on /subscribe and /messages, this is an inconsistent input-validation gap that allows abuse of the live chat system.",
+    "category": "input-validation"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 75,
+    "summary": "originGuard checks the x-forwarded-host header which can be spoofed by non-browser clients, allowing non-GET requests from disallowed origins to bypass origin-based access control.",
+    "short_summary": "x-forwarded-host spoofing bypasses originGuard",
+    "failure_scenario": "Attacker using curl or a script sends POST /announcements with Origin: https://evil.com and x-forwarded-host: evil.com. originGuard sees originHost === forwardedHosts entry and calls next(), allowing the request. From a browser this is blocked by CORS preflight (x-forwarded-host is not a safelisted header), but direct HTTP clients are unaffected.",
+    "category": "cors-bypass"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 94,
+    "summary": "The in-memory Map-based RateLimiter loses all rate-limit buckets when the Node.js process restarts (e.g., Railway redeployment), clearing accumulated attack history.",
+    "short_summary": "Rate limiter state lost on server restart",
+    "failure_scenario": "An attacker who can trigger or observe a Railway restart (or simply waits for an automatic deployment) clears all rate-limit state, resetting login/subscribe/message/chat counters to zero and enabling renewed brute-force or spam campaigns.",
+    "category": "rate-limit-bypass"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 348,
+    "summary": "GET /admin/users, GET /messages, GET /chats, and GET /subscribers have no rate limiting, allowing an authenticated admin to scrape all PII without throttling.",
+    "short_summary": "No rate limiting on admin read endpoints",
+    "failure_scenario": "A compromised admin account (or a malicious admin) rapidly requests /subscribers, /messages, and /chats in a loop to exfiltrate all subscriber emails, contact-form messages, and live-chat participant data with no rate-limit throttling.",
+    "category": "info-disclosure"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/db.js",
+    "line": 5,
+    "summary": "DATABASE_SSL=false disables TLS entirely for the database connection, exposing credentials and data in plaintext over the network.",
+    "short_summary": "Database TLS can be disabled",
+    "failure_scenario": "If DATABASE_SSL is set to 'false' in the Railway environment, pg connects without TLS. Database credentials (from DATABASE_URL) and all query results (subscriber emails, messages, chat data) travel in plaintext, vulnerable to network interception.",
+    "category": "database-security"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 92,
+    "summary": "app.set('trust proxy', 2) causes clientIp() to trust the first two X-Forwarded-For hops, enabling IP spoofing that underpins the P0 rate-limiting bypass.",
+    "short_summary": "trust proxy enables IP spoofing",
+    "failure_scenario": "With trust proxy set, clientIp() reads x-forwarded-for directly. An attacker supplies a spoofed first IP in X-Forwarded-For, and Express treats it as the client IP. This defeats IP-based rate limiting on all endpoints that use clientIp() (login, subscribe, messages, chat, unsubscribe).",
+    "category": "rate-limit-bypass"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 53,
+    "summary": "console.error(err) logs full error objects including stack traces to server logs, potentially leaking SQL queries, schema details, and internal error information.",
+    "short_summary": "Detailed errors logged to console",
+    "failure_scenario": "An attacker triggers database errors (e.g., via malformed requests) and, if they have access to Railway logs, obtains stack traces and query fragments that reveal schema structure, table names, and column information useful for further attacks.",
+    "category": "info-disclosure"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 3,
+    "summary": "SESSION_TTL_MS is 12 hours (43,200,000 ms), giving a stolen session cookie a long validity window.",
+    "short_summary": "12-hour session TTL is excessively long",
+    "failure_scenario": "A stolen session cookie remains valid for up to 12 hours. The longer the TTL, the wider the window for an attacker to use a hijacked session before it expires.",
+    "category": "session-hijacking"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 31,
+    "summary": "Session cookie uses SameSite=None, which is required for the cross-origin Vercel-to-Railway architecture but increases CSRF exposure since the cookie is sent on all cross-origin requests.",
+    "short_summary": "SameSite=None session cookie increases CSRF risk",
+    "failure_scenario": "Because the cookie is SameSite=None; Secure, it is included on cross-origin POST requests. Without a CSRF token (see P1 finding), any origin-check bypass allows cross-origin state-changing attacks using the victim's session.",
+    "category": "csrf"
+  },
+  {
+    "severity": "P2",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 127,
+    "summary": "limitSubscribe and limitMessage share the same day:${email} rate-limit bucket (24h window, limit 3), so subscribing three times blocks contact messages for the day and vice versa.",
+    "short_summary": "Shared rate-limit bucket between subscribe and messages",
+    "failure_scenario": "An attacker subscribes three times with a victim's email address, exhausting the day:${email} bucket. The victim can no longer submit contact-form messages via /messages for 24 hours because the shared daily bucket is already depleted. This is a cross-endpoint denial of service.",
+    "category": "rate-limit-bypass"
+  },
+  {
+    "severity": "P3",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/profanity.js",
+    "line": 1,
+    "summary": "Profanity detection uses simple String.includes() substring matching, which is easily bypassed with leetspeak, spaces, Unicode homoglyphs, or word splitting.",
+    "short_summary": "Profanity filter is simple substring matching",
+    "failure_scenario": "An attacker submits 'f*ck', 'f u c k', 'phuck', or 'fück' to bypass the profanity check on /subscribe, /messages, /announcements, or /admin/users, posting profane content that the filter fails to catch.",
+    "category": "input-validation"
+  },
+  {
+    "severity": "P3",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 395,
+    "summary": "PATCH /messages/:id generates reply IDs using Date.now(), which can collide when two replies are added within the same millisecond.",
+    "short_summary": "Reply IDs can collide (Date.now())",
+    "failure_scenario": "Two staff replies added in the same millisecond receive the same id in the replies JSONB array. This causes data corruption in the replies list (duplicate IDs), though it is not directly exploitable for privilege escalation.",
+    "category": "data-integrity"
+  },
+  {
+    "severity": "P3",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 745,
+    "summary": "POST /logout requires no authentication and no CSRF protection, allowing an attacker to force-logout a user via cross-origin request (SameSite=None cookie is sent).",
+    "short_summary": "Logout endpoint is CSRF-vulnerable",
+    "failure_scenario": "An attacker causes a victim's browser to send a POST to /logout (e.g., via an img tag, form auto-submit, or fetch). The SameSite=None session cookie is sent, clearing the victim's session and logging them out. This is a minor denial of service.",
+    "category": "csrf"
+  },
+  {
+    "severity": "P3",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 714,
+    "summary": "GET /session has no rate limiting and returns whether a session is valid plus user details, though it only returns data when a valid cookie is present.",
+    "short_summary": "Session endpoint not rate limited",
+    "failure_scenario": "An attacker repeatedly calls GET /session with stolen or guessed cookies to test session validity. While this requires a valid cookie to return user data, the lack of rate limiting facilitates session-validity probing.",
+    "category": "info-disclosure"
+  },
+  {
+    "severity": "P3",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/auth.js",
+    "line": 3,
+    "summary": "The session cookie is not bound to the client IP address or User-Agent, so a stolen session cookie is valid from any network location.",
+    "short_summary": "Session not bound to IP or User-Agent",
+    "failure_scenario": "An attacker who steals a session cookie can use it from a completely different IP address and browser with no additional validation, since the server only checks the HMAC signature and TTL.",
+    "category": "session-hijacking"
+  },
+  {
+    "severity": "P0",
+    "file": "/Users/arpituppal/Downloads/lamt-site/backend/src/index.js",
+    "line": 831,
+    "summary": "The WebSocket /ws/chat handler authenticates via chat token but does not enforce any per-connection rate limiting, allowing connection flooding per chat room.",
+    "short_summary": "No WebSocket connection rate limiting",
+    "failure_scenario": "An attacker with a valid chat token opens thousands of WebSocket connections to /ws/chat?token=X&chatId=Y, exhausting server memory and file descriptors via the chatClients Map, causing denial of service for that chat room.",
+    "category": "denial-of-service"
+  }
+]

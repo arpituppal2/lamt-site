@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className="min-h-screen transition-colors duration-300">
+      <body className="transition-colors duration-300">
         <KaTeXLoader />
         <AnimationEngine />
         <NavbarClient />

@@ -1,1 +1,4 @@
 - [Second impeccable home page critique](.impeccable/critique/2026-11-02T09-50-00Z__app-page-tsx.md) — Nielsen 29/32 (up from 21/32), all P0s fixed, remaining P1s: offseason hook + bear as character
+- [Full-site impeccable audit](memory/full-site-audit-results.md) — 15/20 Good across all 5 dimensions, 7 advisory detector findings, no P0s
+- [Live page audit findings](memory/live-page-audit-findings.md) — /live chat polling + aria-live P1s, font-size P2
+- [Detector findings advisory](memory/detector-findings-advisory.md) — 6 font-size + 2 color literals off design system

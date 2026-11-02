@@ -1,6 +1,8 @@
-import type { ContactMessage, Reply, ScheduleItem, Update, LiveChat, ChatMessage } from "../live/types";
+import type { ContactMessage, Reply, ScheduleItem, Update, LiveChat, ChatMessage, User } from "../live/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+
+export const WS_BASE = API_BASE.replace(/^https?:\/\//, (m) => (m === 'https://' ? 'wss://' : 'ws://'));
 
 export class ApiError extends Error {
   status: number;
@@ -10,11 +12,24 @@ export class ApiError extends Error {
   }
 }
 
+// Read the double-submit CSRF token from the csrf_token cookie (set by the backend).
+function getCsrfToken(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const isStateChanging = options.method && !["GET", "HEAD", "OPTIONS"].includes(options.method.toUpperCase());
+  const extraHeaders: Record<string, string> = {};
+  if (isStateChanging) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) extraHeaders["X-CSRF-Token"] = csrfToken;
+  }
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    headers: { "Content-Type": "application/json", ...extraHeaders, ...(options.headers || {}) },
   });
   if (!res.ok) {
     let message = "Request failed";
@@ -101,10 +116,12 @@ interface ServerSubscriber {
 export const api = {
   subscribe: (email: string) => apiFetch<{ status: "ok" | "already" | "back" }>("/subscribe", { method: "POST", body: JSON.stringify({ email }) }),
   getSubscribers: () => apiFetch<{ subscribers: ServerSubscriber[] }>("/subscribers"),
-  deleteSubscriber: (id: number) =>
-    apiFetch<{ status: string }>(`/subscribers/${id}`, { method: "DELETE" }),
-  getSession: () => apiFetch<{ authed: boolean }>("/session"),
-  login: (password: string) => apiFetch<{ ok: boolean }>("/login", { method: "POST", body: JSON.stringify({ password }) }),
+  getSession: () => apiFetch<{ authed: boolean; user?: { id: number; name: string; role: string } }>("/session"),
+  login: (password: string, name: string) =>
+    apiFetch<{ ok: boolean; user: { id: number; name: string; role: string } }>("/login", {
+      method: "POST",
+      body: JSON.stringify({ password, name }),
+    }),
   logout: () => apiFetch<{ ok: boolean }>("/logout", { method: "POST" }),
 
   getAnnouncements: async () => {
@@ -130,6 +147,20 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(entries),
     }),
+
+  getUsers: () => apiFetch<{ users: User[] }>("/admin/users"),
+  postUser: (name: string) =>
+    apiFetch<{ user: User }>("/admin/users", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+    }),
+  patchUser: (id: number, patch: { role?: string; permanent?: boolean }) =>
+    apiFetch<{ user: User }>(`/admin/users/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+    }),
+  deleteUser: (id: number) =>
+    apiFetch<{ status: string }>(`/admin/users/${id}`, { method: "DELETE" }),
 
   getSchedule: async () => {
     const data = await apiFetch<{ schedule: ServerScheduleItem[] }>("/schedule");

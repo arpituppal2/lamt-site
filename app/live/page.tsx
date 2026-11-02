@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ScheduleItem, Update, LiveChat as LiveChatType } from "./types";
 import { DEFAULT_SCHEDULE, DEFAULT_UPDATES } from "./types";
-import { api, ApiError } from "../lib/api";
+import { api, ApiError, WS_BASE } from "../lib/api";
 
 const MAP_EMBED_SRC =
   "https://www.openstreetmap.org/export/embed.html?bbox=-118.4465%2C34.0667%2C-118.4385%2C34.0715&layer=mapnik&marker=34.0690%2C-118.4428";
@@ -144,31 +144,52 @@ function ScheduleTable({ schedule }: { schedule: ScheduleItem[] }) {
     <section className="border-t-2 border-[var(--color-border)] pt-5">
       <p className="label-caps">Schedule</p>
       <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Tournament Day Timeline</h2>
-      <div className="mt-5 overflow-x-auto">
-        <table className="lamt-table">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Event</th>
-              <th>Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            {schedule.map((item) => (
-              <tr key={`${item.time}-${item.event}`}>
-                <td className="tabular-nums text-[var(--color-text-secondary)]">
-                  {item.originalTime && <span className="mb-1 block text-sm text-[var(--color-text-muted)] line-through">{item.originalTime}</span>}
+      <div className="mt-5">
+        {/* Mobile: stacked cards */}
+        <div className="space-y-3 sm:hidden">
+          {schedule.map((item) => (
+            <div key={`${item.time}-${item.event}`} className="border border-[var(--color-divider)] p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="tabular-nums font-extrabold text-[var(--color-text)]">
                   {item.time}-{item.end}
-                </td>
-                <td>
-                  <span className="font-extrabold text-[var(--color-text)]">{item.event}</span>
-                  {item.adjustmentReason && <span className="mt-1 block text-sm font-bold text-[#9F2A18]">{item.adjustmentReason}</span>}
-                </td>
-                <td className="text-[var(--color-text-secondary)]">{item.location}</td>
+                </span>
+                {item.originalTime && (
+                  <span className="text-sm text-[var(--color-text-muted)] line-through">{item.originalTime}</span>
+                )}
+              </div>
+              <span className="font-extrabold text-[var(--color-text-secondary)] block">{item.event}</span>
+              {item.adjustmentReason && <span className="mt-1 block text-sm font-bold text-[#9F2A18]">{item.adjustmentReason}</span>}
+              <p className="mt-2 text-sm text-[var(--color-text-muted)]">{item.location}</p>
+            </div>
+          ))}
+        </div>
+        {/* Desktop: horizontally scrolling table */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="lamt-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>Location</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {schedule.map((item) => (
+                <tr key={`${item.time}-${item.event}`}>
+                  <td className="tabular-nums text-[var(--color-text-secondary)]">
+                    {item.originalTime && <span className="mb-1 block text-sm text-[var(--color-text-muted)] line-through">{item.originalTime}</span>}
+                    {item.time}-{item.end}
+                  </td>
+                  <td>
+                    <span className="font-extrabold text-[var(--color-text)]">{item.event}</span>
+                    {item.adjustmentReason && <span className="mt-1 block text-sm font-bold text-[#9F2A18]">{item.adjustmentReason}</span>}
+                  </td>
+                  <td className="text-[var(--color-text-secondary)]">{item.location}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
@@ -179,7 +200,7 @@ function MapSection() {
     <section id="map" className="section-row">
       <h2 className="section-title">Campus Map</h2>
       <div className="grid gap-5">
-        <div className="h-[420px] min-h-[20rem] border border-[var(--color-border)]">
+        <div className="h-[280px] min-h-[12rem] sm:h-[420px] sm:min-h-[20rem] border border-[var(--color-border)]">
           <iframe
             title="UCLA Mathematical Sciences and Court of Sciences map"
             className="map-iframe"
@@ -200,9 +221,9 @@ function MapSection() {
             >
               <h3 className="font-extrabold text-[var(--color-text)]">{venue.label}</h3>
               <p className="mt-2 text-sm text-[var(--color-text-secondary)]">{venue.detail}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-[var(--color-border-strong)] transition-colors group-hover:text-[var(--ucla-gold-dark)]">
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-[var(--ucla-gold-dark)]">
                 Open map
-                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+                <span aria-hidden="true">→</span>
               </span>
             </a>
           ))}
@@ -261,6 +282,10 @@ function HelpSection() {
               className="block border-t-2 border-[var(--color-divider)] py-5 pr-6 transition-colors hover:border-[var(--ucla-gold)]"
             >
               {content}
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-[var(--color-border-strong)]">
+                Open
+                <span aria-hidden="true">→</span>
+              </span>
             </a>
           ) : (
             <article key={item.label} className="block border-t-2 border-[var(--color-divider)] py-5 pr-6">
@@ -287,14 +312,74 @@ function LiveChat() {
   const [sending, setSending] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [connectKey, setConnectKey] = useState(0);
+  const [wsStatus, setWsStatus] = useState<'connected' | 'reconnecting' | 'disconnected'>('connected');
 
-  // Restore chat from localStorage
+  // WebSocket for real-time chat messages and status changes
   useEffect(() => {
-    const saved = Number(window.localStorage.getItem(CHAT_ID_KEY) || 0);
-    if (saved > 0) setChatId(saved);
-  }, []);
+    if (!chatId) return;
 
-  // Poll the chat
+    const wsUrl = `${WS_BASE}/ws/chat?chatId=${chatId}`;
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      console.log('Chat WebSocket connected');
+      setWsStatus('connected');
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'message') {
+          setChat((prev) => {
+            if (!prev) return prev;
+            const alreadyHas = prev.messages.some((m) => m.id === data.id);
+            if (alreadyHas) return prev;
+            return {
+              ...prev,
+              messages: [...prev.messages, {
+                id: data.id,
+                sender: data.sender,
+                body: data.body,
+                createdAt: data.createdAt,
+              }],
+            };
+          });
+          endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        } else if (data.type === 'chat_status_changed') {
+          setChat((prev) => (prev ? { ...prev, status: data.status } : prev));
+          if (data.status === 'closed') {
+            setChatId(null);
+            setChat(null);
+            setPosition(0);
+          }
+        }
+      } catch {}
+    };
+
+    ws.onclose = () => {
+      wsRef.current = null;
+      setWsStatus('reconnecting');
+      reconnectTimeoutRef.current = setTimeout(() => {
+        setConnectKey((k) => k + 1);
+      }, 3000);
+    };
+
+    ws.onerror = () => {
+      ws.close();
+      setWsStatus('disconnected');
+    };
+
+    return () => {
+      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+      ws.close();
+    };
+  }, [chatId, connectKey]);
+
+  // Fallback position polling (reduced from 2.5s-4s to 30s — WebSocket handles messages)
   useEffect(() => {
     if (!chatId) return;
     const cid = chatId;
@@ -304,15 +389,15 @@ function LiveChat() {
       try {
         const { chat: next, position: pos } = await api.getChat(cid);
         if (!alive) return;
-        setChat(next);
         setPosition(pos);
         setNotFound(false);
         if (next.status === "closed") {
-          window.localStorage.removeItem(CHAT_ID_KEY);
+          setChatId(null);
+          setChat(null);
+          setPosition(0);
         }
       } catch (err) {
-        if (err instanceof ApiError && err.status === 404) {
-          window.localStorage.removeItem(CHAT_ID_KEY);
+        if (err instanceof ApiError && (err.status === 404 || err.status === 401)) {
           setNotFound(true);
           setChatId(null);
           setChat(null);
@@ -321,13 +406,12 @@ function LiveChat() {
     }
 
     poll();
-    // Poll fast when active/waiting, slow otherwise. Cleaned up on close.
-    const id = window.setInterval(poll, chat?.status === "active" ? 2500 : 4000);
+    const id = window.setInterval(poll, 30_000);
     return () => {
       alive = false;
       window.clearInterval(id);
     };
-  }, [chatId, chat?.status]);
+  }, [chatId]);
 
   // Auto-scroll
   useEffect(() => {
@@ -411,6 +495,12 @@ function LiveChat() {
       )}
       {chat && (
         <div className="grid max-w-2xl gap-4">
+          {wsStatus === 'reconnecting' && (
+            <p className="text-sm text-[var(--color-text-muted)]">Reconnecting…</p>
+          )}
+          {wsStatus === 'disconnected' && (
+            <p className="text-sm font-bold text-[#B33A2B]">Connection lost. Reconnecting…</p>
+          )}
           {status === "waiting" && (
             <div className="border-t-2 border-[var(--ucla-gold)] pt-4">
               <p className="font-extrabold text-[var(--color-text)]">
@@ -434,7 +524,7 @@ function LiveChat() {
             </div>
           )}
           {chat.messages.length > 0 && (
-            <div className="max-h-[24rem] overflow-y-auto border-2 border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+            <div className="sm:max-h-[24rem] overflow-y-auto border-2 border-[var(--color-border)] bg-[var(--color-surface)] p-4">
               {chat.messages.map((m) => (
                 <div key={m.id} className={`mb-3 flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[80%] px-3 py-2 text-sm ${m.sender === "user" ? "bg-[#2774AE] text-white" : "bg-[var(--color-divider)] text-[var(--color-text)]"}`}>
@@ -450,11 +540,12 @@ function LiveChat() {
           )}
           {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
           {status !== "closed" && (
-            <form onSubmit={send} className="flex gap-3">
+            <form onSubmit={send} className="flex flex-col sm:flex-row gap-3">
               <input
-                className="lamt-input flex-1"
+                className="lamt-input w-full sm:flex-1 min-w-0"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onFocus={() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })}
                 placeholder={status === "waiting" ? "Type your question..." : "Reply..."}
               />
               <button type="submit" disabled={!input.trim() || sending} className="btn-filled disabled:opacity-40">
@@ -494,7 +585,7 @@ export default function LivePage() {
     }
 
     sync();
-    const id = window.setInterval(sync, 30_000);
+    const id = window.setInterval(sync, 60_000);
     return () => {
       alive = false;
       window.clearInterval(id);

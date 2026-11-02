@@ -198,12 +198,12 @@ a, button, [role="button"], input, textarea, select {
 }
 
 .site-pad {
-  padding-left: 3%;
-  padding-right: 3%;
+  padding-left: max(3%, 1rem);
+  padding-right: max(3%, 1rem);
 }
 
 .page-shell {
-  padding: var(--space-16) 3% var(--space-20);
+  padding: var(--space-16) max(3%, 1rem) var(--space-20);
 }
 
 .page-hero {
@@ -511,6 +511,10 @@ label .label-caps {
 
 .lamt-table {
   border: 0;
+  overflow-x: auto;
+  max-width: 100%;
+  table-layout: fixed;
+  display: block;
 }
 
 .lamt-table th,

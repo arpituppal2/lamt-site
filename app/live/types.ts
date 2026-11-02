@@ -52,6 +52,14 @@ export interface LiveChat {
   position?: number;
 }
 
+export interface User {
+  id: number;
+  name: string;
+  role: 'off' | 'volunteer' | 'admin';
+  permanent: boolean;
+  createdAt: string;
+}
+
 // ─── SCHEDULE DATA ────────────────────────────────────────────────────────────
 // Edit times/events here to update the schedule on the live page.
 export const DEFAULT_SCHEDULE: ScheduleItem[] = [

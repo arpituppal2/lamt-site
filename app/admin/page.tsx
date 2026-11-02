@@ -3,15 +3,17 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { ContactMessage, ScheduleItem, Update, LiveChat as LiveChatType } from "../live/types";
+import type { ContactMessage, ScheduleItem, Update, LiveChat as LiveChatType, User } from "../live/types";
 import { api, ApiError } from "../lib/api";
+import { hasProfanity } from "../lib/profanity";
 
 function countUnresolved(messages: ContactMessage[]) {
   return messages.filter((message) => !message.resolved).length;
 }
 
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
+function LoginScreen({ onLogin }: { onLogin: (user: { id: number; name: string; role: string }) => void }) {
   const [pw, setPw] = useState("");
+  const [name, setName] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -20,11 +22,12 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     setPending(true);
     setErr(null);
     try {
-      await api.login(pw);
-      onLogin();
+      const data = await api.login(pw, name);
+      onLogin(data.user);
     } catch (error) {
       if (error instanceof ApiError) {
-        if (error.status === 401) setErr("Incorrect password");
+        if (error.status === 401) setErr("Incorrect password or unknown name.");
+        else if (error.status === 403) setErr(error.message);
         else if (error.status === 429) setErr("Too many attempts. Wait a minute and try again.");
         else setErr(error.message);
       } else {
@@ -51,17 +54,29 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         <h2 className="section-title">Access</h2>
         <form onSubmit={submit} className="w-full max-w-md">
             <label className="grid gap-2">
-              <span className="label-caps">Password</span>
+              <span className="label-caps">Admin Password</span>
               <input
                 className={`lamt-input ${err ? "border-[#B33A2B]" : ""}`}
                 type="password"
                 value={pw}
                 onChange={(event) => setPw(event.target.value)}
                 autoFocus
+                autoComplete="current-password"
+              />
+            </label>
+            <label className="grid gap-2 mt-4">
+              <span className="label-caps">Your Name (ID)</span>
+              <input
+                className={`lamt-input ${err ? "border-[#B33A2B]" : ""}`}
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="e.g. Arpit Uppal"
+                autoComplete="name"
               />
             </label>
             {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{err}</p>}
-            <button type="submit" disabled={pending} className="btn-filled mt-5 w-full disabled:opacity-40">
+            <button type="submit" disabled={pending || (!pw && !name)} className="btn-filled mt-5 w-full disabled:opacity-40">
               {pending ? "Signing In..." : "Sign In"}
             </button>
           </form>
@@ -110,7 +125,7 @@ function MessagesTab({ messages, onResolve, onReply, onDelete }: {
     run(id, async () => {
       await onReply(id, text.trim());
       setReplyMap((prev) => ({ ...prev, [id]: "" }));
-      window.location.href = `mailto:${msg.email}?subject=Re: Your message to LAMT Staff&body=${encodeURIComponent(text.trim())}`;
+      window.location.href = `mailto:${encodeURIComponent(msg.email)}?subject=Re: Your message to LAMT Staff&body=${encodeURIComponent(text.trim())}`;
     });
   }
 
@@ -197,7 +212,7 @@ function MessagesTab({ messages, onResolve, onReply, onDelete }: {
                 if (window.confirm('Delete this email? This cannot be undone.')) {
                   run(message.id, () => onDelete(message.id));
                 }
-              }} disabled={pendingIds.has(message.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+              }} disabled={pendingIds.has(message.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                 Delete
               </button>
             </div>
@@ -225,6 +240,10 @@ function AnnouncementsTab({ updates, onPost, onDelete, onEdit }: {
 
   async function addUpdate() {
     if (!body.trim()) return;
+    if (hasProfanity(title) || hasProfanity(body)) {
+      setError("Profanity is not allowed.");
+      return;
+    }
     setPending(true);
     setError(null);
     try {
@@ -311,10 +330,10 @@ function AnnouncementsTab({ updates, onPost, onDelete, onEdit }: {
                     <p className="mt-2 text-[var(--color-text-secondary)] whitespace-pre-line">{update.body}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={() => startEdit(update)} className="px-3 py-2 font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)]">
+                    <button type="button" onClick={() => startEdit(update)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)]">
                       Edit
                     </button>
-                    <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                    <button type="button" onClick={() => onDelete(update.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                       Delete
                     </button>
                   </div>
@@ -459,7 +478,7 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
                 <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
                   {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
                 </button>
-                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Remove Row
                 </button>
               </div>
@@ -513,14 +532,13 @@ interface ServerSubscriber {
   unsubscribed_at: string | null;
 }
 
-function SubscribersTab({ subscribers, onDelete }: {
+function SubscribersTab({ subscribers, onExport }: {
   subscribers: ServerSubscriber[];
-  onDelete: (id: number) => Promise<void>;
+  onExport: (emails: string[]) => void;
 }) {
   const active = subscribers.filter((subscriber) => !subscriber.unsubscribed_at);
   const unsubscribed = subscribers.filter((subscriber) => subscriber.unsubscribed_at);
   const [copied, setCopied] = useState(false);
-  const [pendingId, setPendingId] = useState<number | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "unsubscribed">("active");
 
   const filtered = filter === "active" ? active : filter === "unsubscribed" ? unsubscribed : subscribers;
@@ -534,18 +552,12 @@ function SubscribersTab({ subscribers, onDelete }: {
   }
 
   function mailtoEmails() {
-    const emails = filtered.map((subscriber) => subscriber.email).join(",");
+    const emails = filtered.map((subscriber) => encodeURIComponent(subscriber.email)).join(",");
     if (emails) window.location.href = `mailto:${emails}?subject=LAMT Tournament Update&body=`;
   }
 
-  async function handleDelete(id: number, email: string) {
-    if (!window.confirm(`Remove ${email} from the subscriber list? This cannot be undone.`)) return;
-    setPendingId(id);
-    try {
-      await onDelete(id);
-    } finally {
-      setPendingId(null);
-    }
+  function exportEmails() {
+    onExport(filtered.map((subscriber) => subscriber.email));
   }
 
   function formatDate(iso: string) {
@@ -563,13 +575,16 @@ function SubscribersTab({ subscribers, onDelete }: {
           {active.length} active / {unsubscribed.length} unsubscribed / {subscribers.length} total
         </span>
       </div>
-      <p className="mt-4 text-[var(--color-text-muted)]">Everyone who signed up via the homepage section or the popup. Use the buttons below to copy or email the list for your next announcement.</p>
+      <p className="mt-4 text-[var(--color-text-muted)]">Everyone who signed up via the homepage section or the popup. Use the buttons below to copy, email, or export the list.</p>
       <div className="mt-4 flex flex-wrap gap-3">
         <button type="button" onClick={mailtoEmails} disabled={active.length === 0} className="btn-filled disabled:opacity-40">
           Email All {active.length} Active
         </button>
         <button type="button" onClick={copyEmails} disabled={filtered.length === 0} className="btn-outline disabled:opacity-40">
           {copied ? "Copied!" : `Copy ${filtered.length}`}
+        </button>
+        <button type="button" onClick={exportEmails} disabled={filtered.length === 0} className="btn-outline disabled:opacity-40">
+          Export TXT
         </button>
         <div className="flex flex-wrap gap-1 border border-[var(--color-divider)] rounded-none bg-[var(--color-surface)]">
           <button
@@ -605,7 +620,6 @@ function SubscribersTab({ subscribers, onDelete }: {
                 <th>Email</th>
                 <th>Signed Up</th>
                 <th>Status</th>
-                <th aria-label="Actions" />
               </tr>
             </thead>
             <tbody>
@@ -619,16 +633,6 @@ function SubscribersTab({ subscribers, onDelete }: {
                     ) : (
                       <span className="text-sm font-extrabold uppercase text-[var(--ucla-gold-dark)]">Active</span>
                     )}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(subscriber.id, subscriber.email)}
-                      disabled={pendingId === subscriber.id}
-                      className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white disabled:opacity-40"
-                    >
-                      {pendingId === subscriber.id ? "Removing..." : "Delete"}
-                    </button>
                   </td>
                 </tr>
               ))}
@@ -770,7 +774,7 @@ function SettingsTab() {
           <span className="text-xs text-[var(--color-text-muted)]">The URL the REGISTER nav link points to.</span>
         </label>
         {error && <p className="text-sm font-bold text-[#B33A2B]">{error}</p>}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           <button type="button" onClick={save} disabled={saving} className="btn-filled disabled:opacity-40">
             {saving ? "Saving..." : "Save Settings"}
           </button>
@@ -802,7 +806,7 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
 
   useEffect(() => {
     reload();
-    const id = window.setInterval(reload, 4000);
+    const id = window.setInterval(reload, 10_000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -878,7 +882,7 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
                   <p className="font-extrabold text-[var(--color-text)]">{chat.name}{chat.email ? ` · ${chat.email}` : ""}</p>
                   <p className="text-sm text-[var(--color-text-muted)]">Started {new Date(chat.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</p>
                 </div>
-                <button type="button" onClick={() => run(chat.id, () => close(chat.id))} disabled={pendingIds.has(chat.id)} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+                <button type="button" onClick={() => run(chat.id, () => close(chat.id))} disabled={pendingIds.has(chat.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                   Close Chat
                 </button>
               </div>
@@ -894,8 +898,8 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
                   </div>
                 ))}
               </div>
-              <form onSubmit={(e) => { e.preventDefault(); run(chat.id, () => sendStaff(chat.id)); }} className="mt-3 flex gap-3">
-                <input className="lamt-input flex-1" value={replyMap[chat.id] || ""} onChange={(e) => setReplyMap((prev) => ({ ...prev, [chat.id]: e.target.value }))} placeholder="Reply..." />
+              <form onSubmit={(e) => { e.preventDefault(); run(chat.id, () => sendStaff(chat.id)); }} className="mt-3 flex flex-col sm:flex-row gap-3">
+                <input className="lamt-input w-full sm:flex-1 min-w-0" value={replyMap[chat.id] || ""} onChange={(e) => setReplyMap((prev) => ({ ...prev, [chat.id]: e.target.value }))} placeholder="Reply..." />
                 <button type="submit" disabled={!(replyMap[chat.id] || "").trim() || pendingIds.has(chat.id)} className="btn-filled disabled:opacity-40">Send</button>
               </form>
             </article>
@@ -906,14 +910,200 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
   );
 }
 
+function UsersTab({ users, currentUser, onCreate, onUpdate, onDelete }: {
+  users: User[];
+  currentUser: { id: number; name: string; role: string } | null;
+  onCreate: (name: string) => Promise<void>;
+  onUpdate: (id: number, patch: { role?: string; permanent?: boolean }) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
+}) {
+  const [name, setName] = useState("");
+  const [pendingId, setPendingId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editRole, setEditRole] = useState<"off" | "volunteer" | "admin">("volunteer");
+
+  async function createUser() {
+    if (!name.trim()) return;
+    if (hasProfanity(name)) {
+      setError("Profanity is not allowed.");
+      return;
+    }
+    setPendingId(-1);
+    setError(null);
+    try {
+      await onCreate(name.trim());
+      setName("");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  async function saveRole(id: number) {
+    if (currentUser && currentUser.id === id) {
+      setError("You cannot change your own role.");
+      return;
+    }
+    setPendingId(id);
+    try {
+      await onUpdate(id, { role: editRole });
+      setEditingId(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  async function handleDelete(id: number, userName: string) {
+    if (currentUser && currentUser.id === id) {
+      setError("You cannot delete yourself.");
+      return;
+    }
+    if (!window.confirm(`Remove ${userName} from the team? This cannot be undone.`)) return;
+    setPendingId(id);
+    try {
+      await onDelete(id);
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  const admins = users.filter((u) => u.role === "admin");
+  const volunteers = users.filter((u) => u.role === "volunteer");
+  const off = users.filter((u) => u.role === "off");
+
+  function roleLabel(role: string) {
+    return { off: "Off", volunteer: "Volunteer", admin: "Admin" }[role] || role;
+  }
+
+  function roleColor(role: string) {
+    return role === "admin" ? "text-[var(--ucla-gold-dark)]" : role === "volunteer" ? "text-[var(--color-text)]" : "text-[var(--color-text-muted)]";
+  }
+
+  return (
+    <section className="border-t-2 border-[var(--color-border)] pt-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
+        <div>
+          <p className="label-caps">Team Management</p>
+          <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Volunteers &amp; Admins</h2>
+        </div>
+        <span className="font-bold text-[var(--color-text-muted)]">
+          {admins.length} admin / {volunteers.length} volunteer / {off.length} off / {users.length} total
+        </span>
+      </div>
+      <p className="mt-4 text-[var(--color-text-muted)]">
+        Add volunteers by name, set their role (Off / Volunteer / Admin), or remove them. Arpit Uppal and Vicky Zhang are permanent — they cannot be deleted or demoted.
+      </p>
+      {error && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{error}</p>}
+      <div className="mt-5 grid gap-4">
+        <div className="flex items-center gap-3">
+          <input
+            className="lamt-input flex-1"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Add a volunteer by name…"
+          />
+          <button type="button" onClick={createUser} disabled={!name.trim() || pendingId === -1} className="btn-filled disabled:opacity-40">
+            {pendingId === -1 ? "Adding…" : "+ Add"}
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="lamt-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th aria-label="Actions" />
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => {
+                const isPermanent = user.permanent;
+                const isEditing = editingId === user.id;
+                return (
+                  <tr key={user.id}>
+                    <td className="font-bold text-[var(--color-text)]">
+                      {user.name}
+                      {isPermanent && <span className="ml-2 text-xs font-extrabold text-[var(--ucla-gold-dark)] uppercase tracking-tighter">permanent</span>}
+                    </td>
+                    <td>
+                      {isEditing ? (
+                        <select
+                          value={editRole}
+                          onChange={(event) => setEditRole(event.target.value as "off" | "volunteer" | "admin")}
+                          className="lamt-input text-sm"
+                          disabled={pendingId === user.id || isPermanent}
+                        >
+                          <option value="off">Off</option>
+                          <option value="volunteer">Volunteer</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      ) : (
+                        <span className={`text-sm font-extrabold capitalize ${roleColor(user.role)}`}>
+                          {roleLabel(user.role)}
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={`text-xs font-extrabold uppercase ${isPermanent ? "text-[var(--ucla-gold-dark)]" : "text-[var(--color-text-muted)]"}`}>
+                        {isPermanent ? "Permanent" : "Standard"}
+                      </span>
+                    </td>
+                    <td>
+                      {isEditing ? (
+                        <div className="flex flex-wrap gap-2">
+                          <button type="button" onClick={() => saveRole(user.id)} disabled={pendingId === user.id || isPermanent} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
+                            {pendingId === user.id ? "Saving…" : "Save"}
+                          </button>
+                          <button type="button" onClick={() => setEditingId(null)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text-muted)] hover:bg-[var(--color-divider)] disabled:opacity-40">
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {!isPermanent && !(currentUser && currentUser.id === user.id) && (
+                            <button type="button" onClick={() => { setEditingId(user.id); setEditRole(user.role); }} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
+                              Edit Role
+                            </button>
+                          )}
+                          <button type="button" onClick={() => handleDelete(user.id, user.name)} disabled={pendingId === user.id || isPermanent || Boolean(currentUser && currentUser.id === user.id)} className={`px-3 py-3 min-h-[2.75rem] font-extrabold ${isPermanent || Boolean(currentUser && currentUser.id === user.id) ? "text-[var(--color-text-muted)] opacity-50 cursor-not-allowed" : "text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white disabled:opacity-40"}`}>
+                            {pendingId === user.id ? "Removing…" : "Delete"}
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="py-10 text-center text-[var(--color-text-muted)]">
+                    No team members yet. Add Arpit Uppal and Vicky Zhang to get started.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers" | "livechat" | "settings">("announcements");
+  const [tab, setTab] = useState<"announcements" | "schedule" | "messages" | "subscribers" | "livechat" | "settings" | "team">("announcements");
   const [updates, setUpdates] = useState<Update[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [subscribers, setSubscribers] = useState<ServerSubscriber[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<{ id: number; name: string; role: string } | null>(null);
   const [msgCount, setMsgCount] = useState(0);
   const [queueCount, setQueueCount] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -921,7 +1111,14 @@ export default function AdminPage() {
   useEffect(() => {
     api
       .getSession()
-      .then(() => setAuthed(true))
+      .then((data) => {
+        if (data.authed && data.user) {
+          setAuthed(true);
+          setCurrentUser(data.user);
+        } else {
+          setAuthed(false);
+        }
+      })
       .catch(() => setAuthed(false))
       .finally(() => setChecking(false));
   }, []);
@@ -940,12 +1137,23 @@ export default function AdminPage() {
     }
   }, []);
 
+  const reloadUsers = useCallback(async () => {
+    try {
+      const { users: nextUsers } = await api.getUsers();
+      setUsers(nextUsers);
+    } catch {}
+  }, []);
+
   useEffect(() => {
     if (!authed) return;
     reload();
-    const id = window.setInterval(reload, 30_000);
+    reloadUsers();
+    const id = window.setInterval(() => {
+      reload();
+      reloadUsers();
+    }, 60_000);
     return () => window.clearInterval(id);
-  }, [authed, reload]);
+  }, [authed, reload, reloadUsers]);
 
   function logout() {
     api
@@ -962,7 +1170,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
+  if (!authed) return <LoginScreen onLogin={(user) => { setCurrentUser(user); setAuthed(true); }} />;
 
   const tabs: { key: typeof tab; label: string; badge?: number }[] = [
     { key: "announcements", label: "Announcements" },
@@ -971,6 +1179,7 @@ export default function AdminPage() {
     { key: "livechat", label: "Live help desk", badge: queueCount },
     { key: "subscribers", label: "Subscribers" },
     { key: "settings", label: "Settings" },
+    { key: "team", label: "Team" },
   ];
 
   return (
@@ -980,11 +1189,16 @@ export default function AdminPage() {
           <div>
             <h1 className="page-title">LAMT Admin Panel</h1>
             <p className="page-summary mt-5">Post announcements, adjust the schedule, and handle live-page messages for tournament day.</p>
+            {currentUser && (
+              <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+                Signed in as <span className="font-extrabold text-[var(--color-text)]">{currentUser.name}</span> ({currentUser.role})
+              </p>
+            )}
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/live" className="btn-filled">
                 Open Live Page
               </Link>
-              <button type="button" onClick={logout} className="px-3 py-2 font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
+              <button type="button" onClick={logout} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
                 Sign Out
               </button>
             </div>
@@ -1007,13 +1221,13 @@ export default function AdminPage() {
       <section className="section-row">
         <h2 className="section-title">Tools</h2>
         <div className="grid gap-6">
-        <nav className="flex flex-wrap gap-x-8 gap-y-2 border-b-2 border-[var(--color-border)]" aria-label="Admin sections">
+        <nav className="flex flex-wrap gap-x-4 gap-y-2 sm:gap-x-8 border-b-2 border-[var(--color-border)]" aria-label="Admin sections">
           {tabs.map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => setTab(item.key)}
-              className="tab-underline"
+              className="tab-underline whitespace-normal sm:whitespace-nowrap"
               aria-current={tab === item.key ? "true" : undefined}
             >
               {item.label}
@@ -1083,13 +1297,36 @@ export default function AdminPage() {
         {tab === "subscribers" && (
           <SubscribersTab
             subscribers={subscribers}
-            onDelete={async (id) => {
-              await api.deleteSubscriber(id);
-              setSubscribers((prev) => prev.filter((s) => s.id !== id));
+            onExport={(emails) => {
+              const blob = new Blob([emails.join("\n")], { type: "text/plain" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "lamt-subscribers.txt";
+              a.click();
+              URL.revokeObjectURL(url);
             }}
           />
         )}
         {tab === "settings" && <SettingsTab />}
+        {tab === "team" && (
+          <UsersTab
+            users={users}
+            currentUser={currentUser}
+            onCreate={async (name) => {
+              await api.postUser(name);
+              await reloadUsers();
+            }}
+            onUpdate={async (id, patch) => {
+              await api.patchUser(id, patch);
+              await reloadUsers();
+            }}
+            onDelete={async (id) => {
+              await api.deleteUser(id);
+              await reloadUsers();
+            }}
+          />
+        )}
         </div>
       </section>
     </div>

@@ -2,9 +2,12 @@ import pg from 'pg';
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_SSL !== 'false' ? { rejectUnauthorized: false } : false,
-  max: 10,
-  idleTimeoutMillis: 30000,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: process.env.DATABASE_SSL_CA || undefined,
+  },
+  max: 20,
+  idleTimeoutMillis: 60000,
   connectionTimeoutMillis: 5000,
 });
 
