@@ -65,13 +65,13 @@ function LoginScreen({ onLogin }: { onLogin: (user: { id: number; name: string; 
               />
             </label>
             <label className="grid gap-2 mt-4">
-              <span className="label-caps">Your Name (ID)</span>
+              <span className="label-caps">ID</span>
               <input
                 className={`lamt-input ${err ? "border-[#B33A2B]" : ""}`}
                 type="text"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="e.g. Arpit Uppal"
+                placeholder="contact admin for your ID"
                 autoComplete="name"
               />
             </label>
