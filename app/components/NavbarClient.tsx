@@ -49,7 +49,7 @@ export default function NavbarClient() {
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={85} height={85} className="object-contain py-1" />
         </Link>
-        <nav className="site-nav relative flex items-center" aria-label="Primary" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
+        <nav className="site-nav relative flex items-center gap-x-8 min-[901px]:gap-x-[clamp(1.75rem,4.5vw,4.5rem)]" aria-label="Primary">
           {navLinks.map(({ href, label, external }) => {
             const isHome = href === '/' && pathname === '/';
             if (isHome) return null;

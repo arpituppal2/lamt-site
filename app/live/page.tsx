@@ -628,6 +628,23 @@ export default function LivePage() {
     };
   }, []);
 
+  if (offseason) {
+    return (
+      <div className="page-shell">
+        <section className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-center">
+          <div className="relative z-10 w-full max-w-2xl py-8">
+            <h1 className="mb-6 text-[clamp(2rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
+              LAMT is currently offseason
+            </h1>
+            <p className="text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95">
+              Check back for tournament dates and registration.
+            </p>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="page-shell">
       <header className="page-hero">
