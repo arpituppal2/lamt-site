@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { api } from '../lib/api';
 
-const homeButtonClass =
-  'btn-ripple inline-flex min-h-11 items-center justify-center border-2 border-white px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-[var(--ucla-blue)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucla-gold)]';
-
 function useCountdown(iso: string | null) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -25,11 +22,7 @@ function useCountdown(iso: string | null) {
   return { days, hours, minutes, seconds, done: diff === 0 };
 }
 
-export default function HomeClient({
-  discordUrl,
-}: {
-  discordUrl: string;
-}) {
+export default function HomeClient() {
   const [tournamentDate, setTournamentDate] = useState<string | null>(null);
   const [tournamentName, setTournamentName] = useState('');
   const [siteMode, setSiteMode] = useState<'offseason' | 'tournament'>('offseason');
@@ -64,7 +57,7 @@ export default function HomeClient({
           alt=""
           width={700}
           height={700}
-          className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] object-contain opacity-20"
+          className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] object-contain opacity-40"
           priority
         />
       </div>
@@ -79,7 +72,7 @@ export default function HomeClient({
           <br />
           <span className="word">Math Tournament</span>
         </h1>
-        <div className="program-rule rule-run mb-10 h-[3px] w-12 bg-[var(--ucla-gold)]" />
+        <div className="program-rule rule-run mb-10 h-[4px] w-12 bg-[var(--ucla-gold)]" />
 
         <p className="hero-enter enter-run mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95" data-delay="1">
           A free UCLA-hosted math tournament for students in grade 12 or below.
@@ -115,9 +108,6 @@ export default function HomeClient({
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
           <a href="#email-signup" className="btn-gold">
             Sign up for emails
-          </a>
-          <a href={discordUrl} target="_blank" rel="noreferrer" className={homeButtonClass}>
-            Student Discord
           </a>
         </div>
       </div>

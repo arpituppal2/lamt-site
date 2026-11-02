@@ -1,0 +1,1 @@
+- [Second impeccable home page critique](.impeccable/critique/2026-11-02T09-50-00Z__app-page-tsx.md) — Nielsen 29/32 (up from 21/32), all P0s fixed, remaining P1s: offseason hook + bear as character

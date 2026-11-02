@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getSponsorsByTier } from './lib/sponsors';
 
-const DISCORD_URL = 'https://discord.gg/tqR3bGjVke';
 
 function ProofBand() {
   const facts = [
@@ -55,7 +54,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <HomeClient discordUrl={DISCORD_URL} />
+      <HomeClient />
       <ProofBand />
       <EmailSection />
       <SponsorsSection sponsorsByTier={sponsorsByTier} />

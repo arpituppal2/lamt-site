@@ -9,44 +9,20 @@ type NavLink = { href: string; label: string; external: boolean };
 
 const BASE_LINKS: NavLink[] = [
   { href: '/', label: 'HOME', external: false },
+  { href: '/about', label: 'ABOUT', external: false },
   { href: '/archive', label: 'ARCHIVE', external: false },
   { href: '/rules', label: 'RULES', external: false },
   { href: '/faq', label: 'FAQ', external: false },
-  { href: '/sponsorships', label: 'SPONSORSHIPS', external: false },
-  { href: '/about', label: 'ABOUT', external: false },
 ];
 
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
-  const [navLinks, setNavLinks] = useState<NavLink[]>(BASE_LINKS);
   const pathname = usePathname();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    let mounted = true;
-    fetch('/settings')
-      .then((r) => r.json())
-      .then(({ settings }) => {
-        if (!mounted) return;
-        const links = [...BASE_LINKS];
-        if (settings.register_enabled === 'true' && settings.register_url) {
-          links.push({
-            href: settings.register_url,
-            label: 'REGISTER',
-            external: true,
-          });
-        }
-        setNavLinks(links);
-      })
-      .catch(() => {});
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   const linkClass =
     'nav-link font-extrabold text-2xl uppercase tracking-wide text-white transition-opacity duration-200 hover:opacity-70';
@@ -54,12 +30,14 @@ export default function NavbarClient() {
   return (
     <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">
       {/* Desktop shell at 901px+ — not Tailwind md/768 */}
-      <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-4 min-[901px]:flex min-[901px]:px-6">
+      <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-6 min-[901px]:flex min-[901px]:px-8">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={85} height={85} className="object-contain py-1" />
         </Link>
         <nav className="site-nav relative flex items-center" aria-label="Primary" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
-          {navLinks.map(({ href, label, external }) => {
+          {BASE_LINKS.map(({ href, label, external }) => {
+            const isHome = href === '/' && pathname === '/';
+            if (isHome) return null;
             const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
             return external ? (
               <a
@@ -119,7 +97,9 @@ export default function NavbarClient() {
               if (el) setMenuHeight(el.scrollHeight);
             }}
           >
-            {navLinks.map(({ href, label, external }) => {
+            {BASE_LINKS.map(({ href, label, external }) => {
+              const isHome = href === '/' && pathname === '/';
+              if (isHome) return null;
               const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
               const mobileClass = 'text-lg font-extrabold uppercase tracking-wide text-white transition-opacity hover:opacity-70';
 

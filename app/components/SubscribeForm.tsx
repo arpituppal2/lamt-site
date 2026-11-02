@@ -5,27 +5,6 @@ import { api, ApiError } from "../lib/api";
 
 const SUBSCRIBED_KEY = "lamt_popup_subscribed";
 
-const PHASES = [
-  { afterMs: 0, label: "Submitting..." },
-  { afterMs: 4000, label: "Almost there..." },
-  { afterMs: 9000, label: "Final touches..." },
-];
-
-function usePendingPhase(active: boolean) {
-  const [label, setLabel] = useState(PHASES[0].label);
-
-  useEffect(() => {
-    if (!active) return;
-    setLabel(PHASES[0].label);
-    const timers = PHASES.slice(1).map((phase) =>
-      window.setTimeout(() => setLabel(phase.label), phase.afterMs),
-    );
-    return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [active]);
-
-  return label;
-}
-
 export default function SubscribeForm({
   autoFocus = false,
   buttonLabel = "Keep Me Posted",
@@ -41,7 +20,7 @@ export default function SubscribeForm({
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "pending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const pendingLabel = usePendingPhase(status === "pending");
+  const pendingLabel = "Submitting…";
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
