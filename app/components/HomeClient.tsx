@@ -77,7 +77,7 @@ export default function HomeClient() {
           height={700}
           className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] object-contain opacity-40"
           priority
-          style={{ transform: 'translateY(1vh)' }}
+          style={{ transform: 'translateY(4vh)' }}
         />
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
