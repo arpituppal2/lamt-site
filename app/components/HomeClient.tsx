@@ -60,7 +60,7 @@ export default function HomeClient() {
   const isTournament = siteMode === 'tournament';
 
   return (
-    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden px-6 text-left transition-colors duration-300 md:px-16">
+    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 text-left transition-colors duration-300 md:px-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -69,9 +69,17 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="absolute inset-0 -z-10" style={{ backgroundImage: 'url("/images/hero-bg.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
-      <div className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/55 dark:bg-[#000000]/70 -z-10" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[20vh] bg-gradient-to-b from-[var(--ucla-blue)]/60 dark:from-[#000000]/85 to-transparent -z-10" />
+      <div className="parallax-slow pointer-events-none absolute select-none flex items-center justify-end pr-[2%] top-[5.25rem] right-0 bottom-0 left-0 md:top-[7.875rem]">
+        <Image
+          src="/LAMTBear.png"
+          alt=""
+          width={700}
+          height={700}
+          className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] max-w-[92vw] max-h-full object-contain opacity-40"
+          priority
+        />
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent dark:from-[#000000]" />
 
       <div className="relative z-10 w-full max-w-5xl py-8">
         {events.length > 0 && (
