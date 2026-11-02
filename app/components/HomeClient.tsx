@@ -60,7 +60,7 @@ export default function HomeClient() {
   const isTournament = siteMode === 'tournament';
 
   return (
-    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 text-left transition-colors duration-300 md:px-16">
+    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden px-6 text-left transition-colors duration-300 md:px-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -69,17 +69,8 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="parallax-slow pointer-events-none absolute select-none flex items-center justify-end overflow-hidden pr-[2%] top-[5.25rem] right-0 bottom-0 left-0 md:top-[7.875rem]">
-        <Image
-          src="/LAMTBear.png"
-          alt=""
-          width={700}
-          height={700}
-          className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] max-w-[92vw] max-h-[90vh] object-contain opacity-40"
-          priority
-          style={{ transform: 'translateY(4vh)' }}
-        />
-      </div>
+      <div className="absolute inset-0 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center bg-no-repeat -z-10" />
+      <div className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/40 dark:bg-[#000000]/60 -z-10" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
 
       <div className="relative z-10 w-full max-w-5xl py-8">
