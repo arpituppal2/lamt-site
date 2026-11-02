@@ -108,11 +108,11 @@ export default function HomeClient() {
         <div className="program-rule rule-run mb-10 h-[4px] w-12 bg-[var(--ucla-gold)]" />
 
         {/* LAMT 2027 tournaments — text only, one beat at a time */}
-        <p className="hero-tournaments hero-run mb-3 text-xl font-extrabold leading-normal text-white" style={{ animationDelay: '630ms' }}>
-          <span className="text-[var(--ucla-gold)]">LAMT Blue</span> — Middle school and below · Coming near the end of February.
+        <p className="hero-tournaments hero-run mb-3 text-xl font-extrabold leading-normal text-white" style={{ animationDelay: '945ms' }}>
+          <span className="text-[var(--ucla-gold)]">LAMT Blue</span> — Middle school and below · Coming near the end of May.
         </p>
-        <p className="hero-tournaments hero-run mb-8 text-[clamp(0.95rem,2.4vw,1.25rem)] leading-normal text-white/90" style={{ animationDelay: '945ms' }}>
-          <span className="text-[var(--ucla-gold)]">LAMT Gold</span> — High school and below · Coming near the end of May.
+        <p className="hero-tournaments hero-run mb-8 text-[clamp(0.95rem,2.4vw,1.25rem)] leading-normal text-white/90" style={{ animationDelay: '1260ms' }}>
+          <span className="text-[var(--ucla-gold)]">LAMT Gold</span> — High school and below · Coming near the end of February.
         </p>
 
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
