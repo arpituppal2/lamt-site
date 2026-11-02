@@ -1348,9 +1348,9 @@ label .label-caps {
   animation-delay: 315ms;
 }
 
-/* Tournaments settle on the same beat as the title's second line */
+/* Tournaments follow the title, one beat at a time (delays set inline per line) */
 .hero-tournaments.hero-run {
-  animation: lamt-title-in var(--dur-title) 315ms var(--ease-premium) both;
+  animation: lamt-title-in var(--dur-title) var(--ease-premium) both;
 }
 
 .program-rule {
@@ -1358,7 +1358,7 @@ label .label-caps {
 }
 
 .program-rule.rule-run {
-  animation: lamt-rule-draw var(--dur-rule) 825ms var(--ease-premium) both;
+  animation: lamt-rule-draw var(--dur-rule) 1260ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run {
@@ -1366,11 +1366,11 @@ label .label-caps {
 }
 
 .hero-enter.enter-run[data-delay='1'] {
-  animation-delay: 1313ms;
+  animation-delay: 1575ms;
 }
 
 .hero-enter.enter-run[data-delay='2'] {
-  animation-delay: 1800ms;
+  animation-delay: 1890ms;
 }
 
 /* Sections rise once; lists sequence their children (not the shell) */

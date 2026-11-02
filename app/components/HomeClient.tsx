@@ -106,19 +106,13 @@ export default function HomeClient() {
         </h1>
         <div className="program-rule rule-run mb-10 h-[4px] w-12 bg-[var(--ucla-gold)]" />
 
-        {/* LAMT 2027 tournaments */}
-        <div className="hero-tournaments hero-run mb-10 grid gap-6 lg:grid-cols-2 lg:items-start">
-          <div className="p-6 rounded-lg bg-white/10 border border-white/10">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Blue</p>
-            <h3 className="mb-3 text-xl font-extrabold text-white">Middle school and below</h3>
-            <p className="text-white/90 leading-relaxed">Coming near the end of February.</p>
-          </div>
-          <div className="p-6 rounded-lg bg-white/10 border border-white/10">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Gold</p>
-            <h3 className="mb-3 text-xl font-extrabold text-white">High school and below</h3>
-            <p className="text-white/90 leading-relaxed">Coming near the end of May.</p>
-          </div>
-        </div>
+        {/* LAMT 2027 tournaments — text only, one beat at a time */}
+        <p className="hero-tournaments hero-run mb-3 text-xl font-extrabold leading-normal text-white" style={{ animationDelay: '630ms' }}>
+          <span className="text-[var(--ucla-gold)]">LAMT Blue</span> — Middle school and below · Coming near the end of February.
+        </p>
+        <p className="hero-tournaments hero-run mb-8 text-[clamp(0.95rem,2.4vw,1.25rem)] leading-normal text-white/90" style={{ animationDelay: '945ms' }}>
+          <span className="text-[var(--ucla-gold)]">LAMT Gold</span> — High school and below · Coming near the end of May.
+        </p>
 
         <p className="hero-enter enter-run mb-8 whitespace-nowrap text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95" data-delay="1">
           A free UCLA-hosted math tournament for students in grade 12 or below.
