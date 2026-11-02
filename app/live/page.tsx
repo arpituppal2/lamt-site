@@ -523,7 +523,7 @@ function LiveChat() {
       {chat && (
         <div className="grid max-w-2xl gap-4">
           {wsStatus === 'reconnecting' && (
-            <p role="status" className="border-l-4 border-[var(--ucla-gold)] bg-[var(--color-surface-2)] px-3 py-2 text-sm font-bold text-[var(--color-text-secondary)]">
+            <p role="status" className="border-l-2 border-[var(--ucla-gold)] bg-[var(--color-surface-2)] px-3 py-2 text-sm font-bold text-[var(--color-text-secondary)]">
               Reconnecting… Replies may be delayed.
             </p>
           )}
@@ -531,7 +531,7 @@ function LiveChat() {
             <button
               type="button"
               onClick={retryConnection}
-              className="flex w-full items-center justify-between gap-3 border-l-4 border-[#B33A2B] bg-[var(--color-surface-2)] px-3 py-3 text-left text-sm font-extrabold text-[#B33A2B]"
+              className="flex w-full items-center justify-between gap-3 border-l-2 border-[#B33A2B] bg-[var(--color-surface-2)] px-3 py-3 text-left text-sm font-extrabold text-[#B33A2B]"
             >
               <span>Connection lost — tap to retry</span>
               <span aria-hidden="true">↻</span>
