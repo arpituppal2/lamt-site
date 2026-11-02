@@ -8,6 +8,7 @@ export interface ScheduleItem {
   location: string;
   originalTime?: string;
   adjustmentReason?: string;
+  position?: number;
 }
 
 export interface Update {

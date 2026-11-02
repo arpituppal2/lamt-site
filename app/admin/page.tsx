@@ -353,13 +353,15 @@ interface ScheduleDraft {
   event: string;
   location: string;
   adjustmentReason?: string;
+  position?: number;
 }
 
-function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
+function ScheduleTab({ schedule, onSave, onDelete, onAdd, onReorder }: {
   schedule: ScheduleItem[];
   onSave: (id: number, draft: ScheduleDraft) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onAdd: (draft: ScheduleDraft) => Promise<void>;
+  onReorder: (order: { id: number; position: number }[]) => Promise<void>;
 }) {
   const [drafts, setDrafts] = useState<Record<number, ScheduleDraft>>({});
   const [errors, setErrors] = useState<Record<number, string>>({});
@@ -439,6 +441,26 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
     }
   }
 
+  async function moveUp(id: number) {
+    const idx = schedule.findIndex((item) => item.id === id);
+    if (idx <= 0) return;
+    const [a, b] = [schedule[idx - 1], schedule[idx]];
+    await onReorder([
+      { id: b.id, position: a.position ?? 0 },
+      { id: a.id, position: b.position ?? 0 },
+    ]);
+  }
+
+  async function moveDown(id: number) {
+    const idx = schedule.findIndex((item) => item.id === id);
+    if (idx < 0 || idx >= schedule.length - 1) return;
+    const [a, b] = [schedule[idx], schedule[idx + 1]];
+    await onReorder([
+      { id: a.id, position: b.position ?? 0 },
+      { id: b.id, position: a.position ?? 0 },
+    ]);
+  }
+
   return (
     <section className="border-t-2 border-[var(--color-border)] pt-5">
       <p className="label-caps">Schedule</p>
@@ -451,7 +473,11 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
           return (
             <div key={item.id} className="border-t-2 border-[var(--color-divider)] py-5">
               <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <label className="grid gap-2">
+                  <span className="label-caps">Position</span>
+                  <span className="font-mono text-sm text-[var(--color-text-muted)]">{(item.position ?? 0) + 1}</span>
+                </label>
                 <label className="grid gap-2">
                   <span className="label-caps">Start</span>
                   <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
@@ -475,6 +501,12 @@ function ScheduleTab({ schedule, onSave, onDelete, onAdd }: {
               </label>
               {errors[item.id] && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{errors[item.id]}</p>}
               <div className="mt-4 flex flex-wrap gap-3">
+                <button type="button" onClick={() => moveUp(item.id)} disabled={item.position === 0 || pendingIds.has(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
+                  ▲ Move Up
+                </button>
+                <button type="button" onClick={() => moveDown(item.id)} disabled={item.position === schedule.length - 1 || pendingIds.has(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
+                  ▼ Move Down
+                </button>
                 <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
                   {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
                 </button>
@@ -1322,6 +1354,10 @@ export default function AdminPage() {
             }}
             onAdd={async (draft) => {
               await api.postScheduleItem({ time: draft.time, end: draft.end, event: draft.event, location: draft.location });
+              await reload();
+            }}
+            onReorder={async (order) => {
+              await api.reorderSchedule(order);
               await reload();
             }}
           />

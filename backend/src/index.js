@@ -306,7 +306,7 @@ app.get('/schedule', async (req, res) => {
   }
   try {
     const result = await pool.query(
-      'SELECT id, time, "end", event, location, original_time, adjustment_reason FROM schedule_items ORDER BY id',
+      'SELECT id, time, "end", event, location, original_time, adjustment_reason, position FROM schedule_items ORDER BY position, id',
     );
     const body = { schedule: result.rows };
     cacheSet('schedule', body, CACHE_TTL.schedule);
@@ -323,7 +323,7 @@ app.post('/schedule', requireAdmin, csrfProtection, async (req, res) => {
   if (!time || !end || !event || !location) return res.status(400).json({ error: 'time, end, event, location required' });
   try {
     const result = await pool.query(
-      'INSERT INTO schedule_items (time, "end", event, location) VALUES ($1, $2, $3, $4) RETURNING id, time, "end", event, location',
+      'INSERT INTO schedule_items (time, "end", event, location, position) VALUES ($1, $2, $3, $4, (SELECT COALESCE(MAX(position), 0) + 1 FROM schedule_items)) RETURNING id, time, "end", event, location, original_time, adjustment_reason, position',
       [time, end, event, location],
     );
     cacheInvalidate('schedule');
@@ -336,7 +336,7 @@ app.post('/schedule', requireAdmin, csrfProtection, async (req, res) => {
 
 app.patch('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
   const id = req.params.id;
-  const { time, end, event, location, adjustmentReason } = req.body || {};
+  const { time, end, event, location, adjustmentReason, position } = req.body || {};
   try {
     const existing = await pool.query('SELECT * FROM schedule_items WHERE id = $1', [id]);
     if (existing.rows.length === 0) return res.status(404).json({ error: 'not found' });
@@ -353,13 +353,14 @@ app.patch('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
       location: location !== undefined ? location : current.location,
       original_time: adjustmentReason ? current.original_time || current.time : current.original_time,
       adjustment_reason: adjustmentReason !== undefined ? adjustmentReason : current.adjustment_reason,
+      position: position !== undefined ? position : current.position,
     };
     const result = await pool.query(
       `UPDATE schedule_items
-       SET time = $1, "end" = $2, event = $3, location = $4, original_time = $5, adjustment_reason = $6
-       WHERE id = $7
-       RETURNING id, time, "end", event, location, original_time, adjustment_reason`,
-      [next.time, next.end, next.event, next.location, next.original_time, next.adjustment_reason, id],
+       SET time = $1, "end" = $2, event = $3, location = $4, original_time = $5, adjustment_reason = $6, position = $7
+       WHERE id = $8
+       RETURNING id, time, "end", event, location, original_time, adjustment_reason, position`,
+      [next.time, next.end, next.event, next.location, next.original_time, next.adjustment_reason, next.position, id],
     );
     cacheInvalidate('schedule');
     return res.json({ item: result.rows[0] });
@@ -377,6 +378,26 @@ app.delete('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
     return res.json({ status: 'deleted' });
   } catch (err) {
     console.error('schedule delete error', err.message);
+    return res.status(500).json({ error: 'internal error' });
+  }
+});
+
+app.patch('/schedule/reorder', requireAdmin, csrfProtection, async (req, res) => {
+  const { order } = req.body || {};
+  if (!Array.isArray(order) || order.some((item) => typeof item.id !== 'number' || typeof item.position !== 'number')) {
+    return res.status(400).json({ error: 'order must be an array of { id, position }' });
+  }
+  try {
+    await pool.query('BEGIN');
+    for (const { id, position } of order) {
+      await pool.query('UPDATE schedule_items SET position = $1 WHERE id = $2', [position, id]);
+    }
+    await pool.query('COMMIT');
+    cacheInvalidate('schedule');
+    return res.json({ status: 'reordered' });
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.error('schedule reorder error', err.message);
     return res.status(500).json({ error: 'internal error' });
   }
 });

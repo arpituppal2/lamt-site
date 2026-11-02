@@ -66,6 +66,7 @@ interface ServerScheduleItem {
   location: string;
   original_time: string | null;
   adjustment_reason: string | null;
+  position: number | null;
 }
 
 interface ServerMessage {
@@ -91,6 +92,7 @@ export function serverScheduleToSchedule(item: ServerScheduleItem): ScheduleItem
     location: item.location,
     originalTime: item.original_time || undefined,
     adjustmentReason: item.adjustment_reason || undefined,
+    position: item.position ?? undefined,
   };
 }
 
@@ -184,6 +186,11 @@ export const api = {
     }),
   deleteScheduleItem: (id: number) =>
     apiFetch<{ status: string }>(`/schedule/${id}`, { method: "DELETE" }),
+  reorderSchedule: (order: { id: number; position: number }[]) =>
+    apiFetch<{ status: string }>("/schedule/reorder", {
+      method: "PATCH",
+      body: JSON.stringify({ order }),
+    }),
 
   getMessages: async () => {
     const data = await apiFetch<{ messages: ServerMessage[] }>("/messages");
