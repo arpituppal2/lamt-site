@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { api } from '../lib/api';
 
 type NavLink = { href: string; label: string; external: boolean };
 
@@ -18,14 +19,28 @@ const BASE_LINKS: NavLink[] = [
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
+  const [siteMode, setSiteMode] = useState<'offseason' | 'tournament'>('offseason');
   const pathname = usePathname();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    api.getSettings().then(({ settings }) => {
+      if (settings.site_mode === 'tournament' || settings.site_mode === 'offseason') {
+        setSiteMode(settings.site_mode);
+      }
+    }).catch(() => {});
+  }, []);
+
   const linkClass =
     'nav-link font-extrabold text-2xl uppercase tracking-wide text-white transition-opacity duration-200 hover:opacity-70';
+
+  const isTournament = siteMode === 'tournament';
+  const navLinks = isTournament
+    ? [...BASE_LINKS, { href: '/live', label: 'TOURNAMENT DAY', external: false }]
+    : BASE_LINKS;
 
   return (
     <header className="w-full bg-[var(--ucla-blue)] transition-colors duration-300">
@@ -35,7 +50,7 @@ export default function NavbarClient() {
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={85} height={85} className="object-contain py-1" />
         </Link>
         <nav className="site-nav relative flex items-center" aria-label="Primary" style={{ gap: 'clamp(1.75rem, 4.5vw, 4.5rem)' }}>
-          {BASE_LINKS.map(({ href, label, external }) => {
+          {navLinks.map(({ href, label, external }) => {
             const isHome = href === '/' && pathname === '/';
             if (isHome) return null;
             const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
@@ -65,9 +80,8 @@ export default function NavbarClient() {
       </div>
 
       <div className="flex h-21 items-center justify-between px-4 max-[900px]:flex min-[901px]:hidden">
-        <Link href="/" className="flex flex-1 flex-col items-center gap-1 text-center font-extrabold tracking-wide text-white">
+        <Link href="/" className="flex flex-1 flex-col items-start gap-1 text-left font-extrabold tracking-wide text-white">
           <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={78} height={78} className="object-contain" />
-          <span className="text-[10px] uppercase tracking-[0.12em] sm:text-xs">LOS ANGELES MATH TOURNAMENT</span>
         </Link>
         <button
           type="button"
@@ -97,7 +111,7 @@ export default function NavbarClient() {
               if (el) setMenuHeight(el.scrollHeight);
             }}
           >
-            {BASE_LINKS.map(({ href, label, external }) => {
+            {navLinks.map(({ href, label, external }) => {
               const isHome = href === '/' && pathname === '/';
               if (isHome) return null;
               const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));

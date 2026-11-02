@@ -118,6 +118,22 @@ app.use((req, res, next) => {
 
 app.use(originGuard);
 
+// Hand every client a csrf_token cookie on a safe request, so /live (which GETs
+// /schedule, /announcements, /settings on mount) holds one before its first POST
+// and csrfProtection can do a real double-submit check instead of the first-visit
+// fallback. Clients read it from document.cookie and echo it in X-CSRF-Token.
+// ponytail: these responses now carry Set-Cookie, so a shared cache will skip them;
+// server-side cacheGet still serves them. Move to a GET /csrf endpoint if that matters.
+app.use((req, res, next) => {
+  if (
+    (req.method === 'GET' || req.method === 'HEAD') &&
+    !/(?:^|;\s*)csrf_token=/.test(req.headers.cookie || '')
+  ) {
+    res.setHeader('Set-Cookie', csrfCookie(issueCsrfToken()));
+  }
+  next();
+});
+
 // Security headers: CSP, frame-ancestors, X-Content-Type-Options, HSTS
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -475,7 +491,12 @@ app.post('/chat/start', limitChat, csrfProtection, async (req, res) => {
     const chat = inserted.rows[0];
     const position = await computePosition(pool, chat.id);
     const chatToken = makeChatToken(chat.id, userId);
-    res.setHeader('Set-Cookie', `lamt_chat_token=${chatToken}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=${24 * 60 * 60}`);
+    // Append, don't overwrite: csrfProtection may have just issued csrf_token in this same response.
+    const priorCookies = res.getHeader('Set-Cookie');
+    res.setHeader('Set-Cookie', [
+      ...(priorCookies ? [].concat(priorCookies) : []),
+      `lamt_chat_token=${chatToken}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=${24 * 60 * 60}`,
+    ]);
     return res.status(201).json({ chat: serializeChat(chat, []), position });
   } catch (err) {
     console.error('chat start error', err.message);
@@ -771,9 +792,9 @@ app.delete('/admin/users/:id', requireAdmin, csrfProtection, async (req, res) =>
 
 app.get('/session', limitSession, (req, res) => {
   const session = readSessionCookie(req);
+  // Issue the csrf_token cookie on the login-page GET too, so POST /login's double-submit check is enforceable.
+  res.setHeader('Set-Cookie', csrfCookie(issueCsrfToken()));
   if (!session) return res.status(401).json({ authed: false });
-  const csrfToken = issueCsrfToken();
-  res.setHeader('Set-Cookie', csrfCookie(csrfToken));
   return res.json({ authed: true, user: { id: session.userId, name: session.userName, role: session.userRole } });
 });
 

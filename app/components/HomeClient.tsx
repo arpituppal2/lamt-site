@@ -42,7 +42,7 @@ export default function HomeClient() {
   }, []);
 
   return (
-    <section className="relative flex min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:px-16">
+    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:px-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -106,9 +106,15 @@ export default function HomeClient() {
         )}
 
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
-          <a href="#email-signup" className="btn-gold">
-            Sign up for emails
-          </a>
+          {siteMode === 'tournament' ? (
+            <a href="/live" className="btn-gold">
+              Go to Tournament Day
+            </a>
+          ) : (
+            <a href="#email-signup" className="btn-gold">
+              Sign up for emails
+            </a>
+          )}
         </div>
       </div>
     </section>

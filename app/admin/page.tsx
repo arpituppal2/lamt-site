@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { ContactMessage, ScheduleItem, Update, LiveChat as LiveChatType, User } from "../live/types";
@@ -76,7 +76,7 @@ function LoginScreen({ onLogin }: { onLogin: (user: { id: number; name: string; 
               />
             </label>
             {err && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{err}</p>}
-            <button type="submit" disabled={pending || (!pw && !name)} className="btn-filled mt-5 w-full disabled:opacity-40">
+            <button type="submit" disabled={pending || !pw || !name} className="btn-filled mt-5 w-full disabled:opacity-40">
               {pending ? "Signing In..." : "Sign In"}
             </button>
           </form>
@@ -155,7 +155,7 @@ function MessagesTab({ messages, onResolve, onReply, onDelete }: {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="font-extrabold text-[var(--color-text)]">{message.name}</p>
-              <a href={`mailto:${message.email}`} className="subtle-link text-sm">
+              <a href={`mailto:${encodeURIComponent(message.email)}`} className="subtle-link text-sm">
                 {message.email}
               </a>
             </div>
@@ -791,6 +791,7 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
   const [replyMap, setReplyMap] = useState<Record<number, string>>({});
   const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const messageRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   async function reload() {
     try {
@@ -810,6 +811,17 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Scroll each active conversation to its newest message when the message list changes.
+  // Keyed on message counts so the 10s poll doesn't yank a volunteer out of history they scrolled to.
+  const messageKey = active.map((c) => `${c.id}:${c.messages.length}`).join("|");
+  useEffect(() => {
+    for (const chat of active) {
+      const el = messageRefs.current[chat.id];
+      if (el) el.scrollTop = el.scrollHeight;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messageKey]);
 
   async function run(id: number, action: () => Promise<void>) {
     setPendingIds((prev) => new Set(prev).add(id));
@@ -886,7 +898,7 @@ function LiveChatTab({ onQueueCount }: { onQueueCount: (n: number) => void }) {
                   Close Chat
                 </button>
               </div>
-              <div className="mt-4 max-h-[16rem] overflow-y-auto border-2 border-[var(--color-divider)] bg-[var(--color-surface)] p-4">
+              <div ref={(el) => { messageRefs.current[chat.id] = el; }} className="mt-4 max-h-[16rem] overflow-y-auto border-2 border-[var(--color-divider)] bg-[var(--color-surface)] p-4">
                 {chat.messages.map((m) => (
                   <div key={m.id} className={`mb-2 flex ${m.sender === "staff" ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[80%] px-3 py-2 text-sm ${m.sender === "staff" ? "bg-[#2774AE] text-white" : "bg-[var(--color-divider)] text-[var(--color-text)]"}`}>
@@ -976,11 +988,25 @@ function UsersTab({ users, currentUser, onCreate, onUpdate, onDelete }: {
   const off = users.filter((u) => u.role === "off");
 
   function roleLabel(role: string) {
-    return { off: "Off", volunteer: "Volunteer", admin: "Admin" }[role] || role;
+    return { off: "Inactive", volunteer: "Volunteer", admin: "Admin" }[role] || role;
   }
 
   function roleColor(role: string) {
-    return role === "admin" ? "text-[var(--ucla-gold-dark)]" : role === "volunteer" ? "text-[var(--color-text)]" : "text-[var(--color-text-muted)]";
+    return {
+      admin: "text-[#2774AE]",
+      volunteer: "text-[#FFD100]",
+      off: "text-[var(--color-text-muted)]",
+    }[role] || "text-[var(--color-text-secondary)]";
+  }
+
+  // Each role gets its own pill shape as well as its own color, so the role is
+  // still readable at a glance without relying on color alone.
+  function roleBadge(role: string) {
+    return role === "admin"
+      ? "border-[var(--button-selected-fill)] bg-[var(--button-selected-fill)] text-[var(--button-selected-text)]"
+      : role === "volunteer"
+        ? "border-[var(--color-border-strong)] bg-[var(--color-surface)] text-[var(--color-text)]"
+        : "border-[var(--color-text-muted)] bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]";
   }
 
   return (
@@ -999,17 +1025,23 @@ function UsersTab({ users, currentUser, onCreate, onUpdate, onDelete }: {
       </p>
       {error && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{error}</p>}
       <div className="mt-5 grid gap-4">
-        <div className="flex items-center gap-3">
+        <form
+          className="flex items-center gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            createUser();
+          }}
+        >
           <input
             className="lamt-input flex-1"
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Add a volunteer by name…"
           />
-          <button type="button" onClick={createUser} disabled={!name.trim() || pendingId === -1} className="btn-filled disabled:opacity-40">
+          <button type="submit" disabled={!name.trim() || pendingId === -1} className="btn-filled disabled:opacity-40">
             {pendingId === -1 ? "Adding…" : "+ Add"}
           </button>
-        </div>
+        </form>
         <div className="overflow-x-auto">
           <table className="lamt-table">
             <thead>

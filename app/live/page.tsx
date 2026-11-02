@@ -214,7 +214,7 @@ function MapSection() {
           {VENUES.map((venue) => (
             <a
               key={venue.label}
-              className="group block border-t-2 border-[var(--color-divider)] py-5 pr-6 transition-colors hover:border-[var(--ucla-gold)] md:border-l-2 md:border-t-0 md:px-6 md:first:border-l-0 md:first:pl-0"
+              className="block border-t-2 border-[var(--color-divider)] py-5 pr-6 transition-colors hover:border-[var(--ucla-gold)] active:border-[var(--ucla-gold)] active:bg-[var(--color-surface-2)] md:border-l-2 md:border-t-0 md:px-6 md:first:border-l-0 md:first:pl-0"
               href={venue.href}
               target="_blank"
               rel="noopener noreferrer"
@@ -300,6 +300,10 @@ function HelpSection() {
 
 const CHAT_ID_KEY = "lamt_live_chat_id";
 
+// Reconnect schedule: 1s, 2s, 4s, 8s, 16s, then give up and offer a manual retry.
+const MAX_WS_RETRIES = 5;
+const MAX_WS_DELAY_MS = 16_000;
+
 function LiveChat() {
   const [chatId, setChatId] = useState<number | null>(null);
   const [chat, setChat] = useState<LiveChatType | null>(null);
@@ -314,6 +318,7 @@ function LiveChat() {
   const endRef = useRef<HTMLDivElement | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryCountRef = useRef(0);
   const [connectKey, setConnectKey] = useState(0);
   const [wsStatus, setWsStatus] = useState<'connected' | 'reconnecting' | 'disconnected'>('connected');
 
@@ -321,12 +326,16 @@ function LiveChat() {
   useEffect(() => {
     if (!chatId) return;
 
+    // Guards against the socket's own onclose firing after teardown and
+    // scheduling a reconnect for a component that is gone or a chat we left.
+    let cancelled = false;
+
     const wsUrl = `${WS_BASE}/ws/chat?chatId=${chatId}`;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log('Chat WebSocket connected');
+      retryCountRef.current = 0;
       setWsStatus('connected');
     };
 
@@ -361,19 +370,28 @@ function LiveChat() {
     };
 
     ws.onclose = () => {
+      if (cancelled) return;
       wsRef.current = null;
+
+      const attempt = retryCountRef.current;
+      if (attempt >= MAX_WS_RETRIES) {
+        setWsStatus('disconnected');
+        return;
+      }
+
+      retryCountRef.current = attempt + 1;
       setWsStatus('reconnecting');
-      reconnectTimeoutRef.current = setTimeout(() => {
-        setConnectKey((k) => k + 1);
-      }, 3000);
+      // Exponential backoff, capped — spotty mobile networks need longer than 3s
+      // before a retry has any chance of succeeding.
+      const delay = Math.min(1000 * 2 ** attempt, MAX_WS_DELAY_MS);
+      reconnectTimeoutRef.current = setTimeout(() => setConnectKey((k) => k + 1), delay);
     };
 
-    ws.onerror = () => {
-      ws.close();
-      setWsStatus('disconnected');
-    };
+    // onclose always follows onerror, so let it own the retry state machine.
+    ws.onerror = () => ws.close();
 
     return () => {
+      cancelled = true;
       if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
       ws.close();
     };
@@ -427,6 +445,8 @@ function LiveChat() {
       const { chat: next, position: pos } = await api.startChat(name.trim(), email.trim() || undefined);
       setChat(next);
       setPosition(pos);
+      retryCountRef.current = 0;
+      setWsStatus('connected');
       setChatId(next.id);
       window.localStorage.setItem(CHAT_ID_KEY, String(next.id));
     } catch (err) {
@@ -453,6 +473,13 @@ function LiveChat() {
     } finally {
       setSending(false);
     }
+  }
+
+  function retryConnection() {
+    if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+    retryCountRef.current = 0;
+    setWsStatus('reconnecting');
+    setConnectKey((k) => k + 1);
   }
 
   function resetChat() {
@@ -496,10 +523,19 @@ function LiveChat() {
       {chat && (
         <div className="grid max-w-2xl gap-4">
           {wsStatus === 'reconnecting' && (
-            <p className="text-sm text-[var(--color-text-muted)]">Reconnecting…</p>
+            <p role="status" className="border-l-4 border-[var(--ucla-gold)] bg-[var(--color-surface-2)] px-3 py-2 text-sm font-bold text-[var(--color-text-secondary)]">
+              Reconnecting… Replies may be delayed.
+            </p>
           )}
           {wsStatus === 'disconnected' && (
-            <p className="text-sm font-bold text-[#B33A2B]">Connection lost. Reconnecting…</p>
+            <button
+              type="button"
+              onClick={retryConnection}
+              className="flex w-full items-center justify-between gap-3 border-l-4 border-[#B33A2B] bg-[var(--color-surface-2)] px-3 py-3 text-left text-sm font-extrabold text-[#B33A2B]"
+            >
+              <span>Connection lost — tap to retry</span>
+              <span aria-hidden="true">↻</span>
+            </button>
           )}
           {status === "waiting" && (
             <div className="border-t-2 border-[var(--ucla-gold)] pt-4">
