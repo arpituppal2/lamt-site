@@ -33,7 +33,7 @@ function normalize(text) {
 export function checkProfanity(text) {
   if (!text || typeof text !== 'string') return { clean: true, matches: [] };
   const normalized = normalize(text);
-  const matches: string[] = [];
+  const matches = [];
   const words = Array.from(PROFANITY_WORDS);
   for (let i = 0; i < words.length; i++) {
     if (normalized.includes(words[i])) {
