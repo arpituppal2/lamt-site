@@ -65,7 +65,7 @@
 
 .dark,
 [data-theme="dark"] {
-  --color-bg: #031522;
+  --color-bg: #000000;
   --color-surface: #071D2D;
   --color-surface-2: #0B2A42;
   --color-surface-3: #103B5C;
@@ -1358,7 +1358,7 @@ label .label-caps {
 }
 
 .program-rule.rule-run {
-  animation: lamt-rule-draw var(--dur-rule) 1260ms var(--ease-premium) both;
+  animation: lamt-rule-draw var(--dur-rule) 630ms var(--ease-premium) both;
 }
 
 .hero-enter.enter-run {
@@ -1370,7 +1370,7 @@ label .label-caps {
 }
 
 .hero-enter.enter-run[data-delay='2'] {
-  animation-delay: 1890ms;
+  animation-delay: 1575ms;
 }
 
 /* Sections rise once; lists sequence their children (not the shell) */

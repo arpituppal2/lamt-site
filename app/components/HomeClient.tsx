@@ -60,7 +60,7 @@ export default function HomeClient() {
   const isTournament = siteMode === 'tournament';
 
   return (
-    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] px-6 text-left transition-colors duration-300 md:px-16">
+    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 text-left transition-colors duration-300 md:px-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -77,7 +77,7 @@ export default function HomeClient() {
           height={700}
           className="hero-bear-img h-auto w-[clamp(400px,55vw,900px)] object-contain opacity-40"
           priority
-          style={{ transform: 'translateY(-3vh)' }}
+          style={{ transform: 'translateY(1vh)' }}
         />
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
