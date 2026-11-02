@@ -636,9 +636,12 @@ export default function LivePage() {
             <h1 className="mb-6 text-[clamp(2rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
               LAMT is currently offseason
             </h1>
-            <p className="text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95">
+            <p className="text-[clamp(0.95rem,2.4vw,1.25rem)] font-medium leading-normal text-white/95 mb-8">
               Check back for tournament dates and registration.
             </p>
+            <a href="/" className="btn-gold">
+              Go to Home
+            </a>
           </div>
         </section>
       </div>

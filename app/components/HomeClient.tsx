@@ -69,7 +69,7 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-center justify-end overflow-hidden pr-[2%]">
+      <div className="parallax-slow pointer-events-none absolute inset-0 flex select-none items-start justify-end overflow-hidden pr-[2%] pt-4">
         <Image
           src="/LAMTBear.png"
           alt=""
