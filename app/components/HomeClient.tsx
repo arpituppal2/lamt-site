@@ -110,6 +110,20 @@ export default function HomeClient() {
           A free UCLA-hosted math tournament for students in grade 12 or below.
         </p>
 
+        {/* LAMT 2027 tournaments */}
+        <div className="hero-enter enter-run mb-10 grid gap-6 lg:grid-cols-2 lg:items-start" data-delay="3">
+          <div className="p-6 rounded-lg bg-white/10 border border-white/10">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Blue</p>
+            <h3 className="mb-3 text-xl font-extrabold text-white">Middle school and below</h3>
+            <p className="text-white/90 leading-relaxed">Coming near the end of February.</p>
+          </div>
+          <div className="p-6 rounded-lg bg-white/10 border border-white/10">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ucla-gold)]">LAMT Gold</p>
+            <h3 className="mb-3 text-xl font-extrabold text-white">High school and below</h3>
+            <p className="text-white/90 leading-relaxed">Coming near the end of May.</p>
+          </div>
+        </div>
+
         <div className="hero-enter enter-run flex flex-wrap gap-3 border-t border-white/20 pt-8" data-delay="2">
           {isTournament ? (
             <a href="/live" className="btn-gold">

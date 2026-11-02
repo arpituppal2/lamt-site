@@ -368,7 +368,7 @@ label .label-caps {
 }
 
 .btn-gold {
-  border-color: var(--ucla-gold);
+  border: 2px solid var(--ucla-gold);
   background: var(--ucla-gold);
   color: var(--ucla-blue-deep);
   min-height: 3.25rem;
@@ -386,8 +386,8 @@ label .label-caps {
 }
 
 .btn-gold:hover {
-  border-color: var(--ucla-blue);
-  background: var(--ucla-blue);
+  border-color: var(--ucla-gold);
+  background: var(--ucla-blue-deep);
   color: #FFFFFF;
 }
 
