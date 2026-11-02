@@ -70,8 +70,8 @@ export default function HomeClient() {
         }}
       />
       <div className="absolute inset-0 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center bg-no-repeat -z-10" />
-      <div className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/40 dark:bg-[#000000]/60 -z-10" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-[var(--ucla-blue)]/55 dark:bg-[#000000]/70 -z-10" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[var(--ucla-blue)] to-transparent" />
 
       <div className="relative z-10 w-full max-w-5xl py-8">
         {events.length > 0 && (
