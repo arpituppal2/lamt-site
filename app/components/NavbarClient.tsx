@@ -43,7 +43,6 @@ export default function NavbarClient() {
     'nav-link font-extrabold text-2xl uppercase tracking-wide text-white transition-opacity duration-200 hover:opacity-70';
 
   const isTournament = siteMode === 'tournament';
-  const isHome = pathname === '/';
   const baseNavLinks = isTournament
     ? [...BASE_LINKS, { href: '/live', label: 'TOURNAMENT DAY', external: false }]
     : BASE_LINKS;
@@ -53,7 +52,7 @@ export default function NavbarClient() {
     : baseNavLinks;
 
   return (
-    <header className={isHome ? 'fixed top-0 left-0 right-0 z-[60] w-full bg-[var(--ucla-blue)]/70 dark:bg-[#000000]/70 backdrop-blur-md transition-colors duration-300' : 'w-full bg-[var(--ucla-blue)] dark:bg-[#000000] transition-colors duration-300'}>
+    <header className="relative z-[60] w-full bg-[var(--ucla-blue)] dark:bg-[#000000] transition-colors duration-300">
       {/* Desktop shell at 901px+ — not Tailwind md/768 */}
       <div className="mx-auto hidden h-[7.875rem] max-w-[1600px] items-center justify-between px-6 min-[901px]:flex min-[901px]:px-8">
         <Link href="/" className="flex items-center gap-3 font-extrabold tracking-wide text-white transition-all hover:opacity-70">

@@ -60,7 +60,7 @@ export default function HomeClient() {
   const isTournament = siteMode === 'tournament';
 
   return (
-    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 pt-24 text-left transition-colors duration-300 md:px-16 md:pt-0">
+    <section className="hero-stage relative flex min-h-[60vh] md:min-h-[calc(100svh-7.875rem)] flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 py-14 text-left transition-colors duration-300 md:px-16 md:py-16">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -69,7 +69,7 @@ export default function HomeClient() {
           backgroundSize: '40px 40px',
         }}
       />
-      <div className="parallax-slow pointer-events-none absolute select-none flex items-center justify-end pr-[2%] top-[5.25rem] right-0 bottom-0 left-0 md:top-[7.875rem]">
+      <div className="parallax-slow pointer-events-none absolute select-none flex items-center justify-end pr-[2%] top-0 right-0 bottom-0 left-0">
         <Image
           src="/LAMTBear.png"
           alt=""
@@ -81,7 +81,7 @@ export default function HomeClient() {
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--ucla-blue)] to-transparent dark:from-[#000000]" />
 
-      <div className="relative z-10 w-full max-w-5xl py-8">
+      <div className="hero-copy relative z-10 w-full max-w-5xl py-8">
         {events.length > 0 && (
           <div className="mb-6 flex flex-col sm:flex-row gap-3">
             {events.map((ev, i) => {
@@ -97,7 +97,7 @@ export default function HomeClient() {
           </div>
         )}
         <h1
-          className="hero-animate-words hero-run mb-6 text-[clamp(2.8rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight text-white"
+          className="hero-animate-words hero-run mb-4 text-[clamp(2.8rem,min(8vw,14vh),7rem)] font-bold leading-[1.05] tracking-tight text-white sm:mb-6"
           style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
           <span className="word">Los Angeles</span>

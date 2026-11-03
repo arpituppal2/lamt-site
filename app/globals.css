@@ -1373,6 +1373,37 @@ label .label-caps {
   animation-delay: 1575ms;
 }
 
+/* Short viewports (wide-but-thin windows): keep the whole hero above the fold.
+   Scales type and spacing against viewport height, not just width. */
+@media (min-width: 768px) and (max-height: 820px) {
+  .hero-stage {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .hero-copy {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.4rem, min(6.5vw, 9.5vh), 5rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-copy .program-rule {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-tournaments {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-copy .hero-enter {
+    padding-top: 1.25rem;
+  }
+}
+
 /* Sections rise once; lists sequence their children (not the shell) */
 html.js-motion .reveal:not(.is-visible),
 html.js-motion .reveal-block:not(.is-visible),
