@@ -153,8 +153,6 @@ vite.config.ts.timestamp-*
 .github/skills/
 .github/agents/
 .github/hooks/
-DESIGN.md
-PRODUCT.md
 GATES.md
 HANDOFF.md
 PLAN.md
