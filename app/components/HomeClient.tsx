@@ -60,7 +60,7 @@ export default function HomeClient() {
   const isTournament = siteMode === 'tournament';
 
   return (
-    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 text-left transition-colors duration-300 md:px-16">
+    <section className="relative flex min-h-[60vh] md:min-h-screen flex-col items-start justify-center overflow-hidden bg-[var(--ucla-blue)] dark:bg-[#000000] px-6 pt-24 text-left transition-colors duration-300 md:px-16 md:pt-0">
       <div
         aria-hidden
         className="hero-grid-lines pointer-events-none absolute inset-0 opacity-[0.07]"
