@@ -17,9 +17,7 @@ export default function SponsorshipsPage() {
             to life. Our sponsorship packet has everything you need to partner with us.
           </p>
         </header>
-      </div>
 
-      <div className="page-shell">
         <section className="section-row reveal">
           <h2 className="section-title">Sponsorship Packet</h2>
           <div>
