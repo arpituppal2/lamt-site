@@ -89,9 +89,9 @@ export default function NavbarClient() {
         </nav>
       </div>
 
-      <div className="flex h-21 items-center justify-between px-4 max-[900px]:flex min-[901px]:hidden">
+      <div className="flex h-24 items-center justify-between px-4 max-[900px]:flex min-[901px]:hidden">
         <Link href="/" className="flex flex-1 flex-col items-start gap-1 text-left font-extrabold tracking-wide text-white">
-          <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={78} height={78} className="object-contain" />
+          <Image src="/LAMTBear.png" alt="Los Angeles Math Tournament" width={72} height={72} className="object-contain" />
         </Link>
         <button
           type="button"
@@ -106,59 +106,72 @@ export default function NavbarClient() {
         </button>
       </div>
 
-      {menuOpen && (
-        <nav
-          className="overflow-hidden border-t border-white/20 bg-[var(--ucla-blue)] dark:bg-[#000000] min-[901px]:hidden"
-          aria-label="Mobile"
-          style={{
-            maxHeight: menuOpen ? `${menuHeight}px` : '0px',
-            transition: 'max-height 320ms cubic-bezier(0.33, 0, 0.2, 1)',
+      <nav
+        className={`overflow-hidden border-t bg-[var(--ucla-blue)] dark:bg-[#000000] min-[901px]:hidden ${
+          menuOpen ? 'border-white/20' : 'border-transparent'
+        }`}
+        aria-label="Mobile"
+        aria-hidden={!menuOpen}
+        style={{
+          maxHeight: menuOpen ? `${menuHeight}px` : '0px',
+          visibility: menuOpen ? 'visible' : 'hidden',
+          transition: `max-height 320ms cubic-bezier(0.33, 0, 0.2, 1), border-color 200ms ease, visibility 0s linear ${
+            menuOpen ? '0s' : '320ms'
+          }`,
+        }}
+      >
+        <div
+          className="flex flex-col gap-6 px-6 py-4"
+          ref={(el) => {
+            if (el) setMenuHeight(el.scrollHeight);
           }}
         >
-          <div
-            className="flex flex-col gap-6 px-6 py-4"
-            ref={(el) => {
-              if (el) setMenuHeight(el.scrollHeight);
-            }}
-          >
-            {navLinks.map(({ href, label, external }) => {
-              const isHome = href === '/' && pathname === '/';
-              if (isHome) return null;
-              const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
-              const mobileClass = 'text-lg font-extrabold uppercase tracking-wide text-white transition-opacity hover:opacity-70';
+          {navLinks.map(({ href, label, external }, i) => {
+            const isHome = href === '/' && pathname === '/';
+            if (isHome) return null;
+            const active = !external && (href === '/' ? pathname === '/' : pathname.startsWith(href));
+            const mobileClass = 'text-lg font-extrabold uppercase tracking-wide text-white transition-opacity hover:opacity-70';
+            const reveal = {
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? 'translateY(0)' : 'translateY(-6px)',
+              transition: `opacity 240ms ease ${menuOpen ? 60 + i * 45 : 0}ms, transform 240ms ease ${
+                menuOpen ? 60 + i * 45 : 0
+              }ms`,
+            };
 
-              return external ? (
-                <a
-                  key={href}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`${mobileClass} text-[var(--ucla-gold)]`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {label}
-                </a>
-              ) : (
-                <Link
-                  key={href}
-                  href={href}
-                  className={mobileClass}
-                  aria-current={active ? 'page' : undefined}
-                  style={{
-                    textDecoration: active ? 'underline' : 'none',
-                    textUnderlineOffset: '6px',
-                    textDecorationThickness: '2px',
-                    textDecorationColor: 'var(--ucla-gold)',
-                  }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-      )}
+            return external ? (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className={`${mobileClass} text-[var(--ucla-gold)]`}
+                style={reveal}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                className={mobileClass}
+                aria-current={active ? 'page' : undefined}
+                style={{
+                  ...reveal,
+                  textDecoration: active ? 'underline' : 'none',
+                  textUnderlineOffset: '6px',
+                  textDecorationThickness: '2px',
+                  textDecorationColor: 'var(--ucla-gold)',
+                }}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </header>
   );
 }

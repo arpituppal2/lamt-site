@@ -30,7 +30,7 @@ export default function FooterClient() {
   ];
 
   return (
-    <footer className="bg-[var(--ucla-blue)] text-white">
+    <footer className="bg-[var(--ucla-blue)] text-white dark:bg-[#000000]">
       <div className="mx-auto max-w-[1600px] px-4 py-8 md:px-8">
         {/* Equal columns so the social cluster is true-center, not space-between skewed */}
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3">

@@ -20,7 +20,7 @@ function ProofBand() {
   ];
 
   return (
-    <section className="border-t-4 border-[var(--ucla-gold)] bg-[var(--ucla-blue-deep)] text-white">
+    <section className="border-t-4 border-[var(--ucla-gold)] bg-[var(--ucla-blue-deep)] text-white dark:bg-[#000000]">
       <div className="page-shell !py-12 md:!py-16">
         <div className="stagger-parent grid gap-8 sm:grid-cols-3">
           {facts.map((fact) => (

@@ -66,10 +66,10 @@
 .dark,
 [data-theme="dark"] {
   --color-bg: #000000;
-  --color-surface: #071D2D;
-  --color-surface-2: #0B2A42;
-  --color-surface-3: #103B5C;
-  --color-band: #002A42;
+  --color-surface: #000000;
+  --color-surface-2: #000000;
+  --color-surface-3: #0A0A0A;
+  --color-band: #000000;
   --color-band-strong: #000000;
   --color-text: #FFFFFF;
   --color-text-secondary: #C7E0F6;
