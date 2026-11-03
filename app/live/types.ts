@@ -7,6 +7,7 @@ export interface ScheduleItem {
   event: string;
   location: string;
   originalTime?: string;
+  originalEnd?: string;
   adjustmentReason?: string;
   position?: number;
 }

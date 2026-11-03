@@ -28,6 +28,9 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   }
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
+    // The schedule/settings endpoints advertise max-age=300. Without this, the browser
+    // serves a stale list right after an admin saves, so edits look like they didn't apply.
+    cache: options.cache ?? "no-store",
     credentials: "include",
     headers: { "Content-Type": "application/json", ...extraHeaders, ...(options.headers || {}) },
   });
@@ -65,6 +68,7 @@ interface ServerScheduleItem {
   event: string;
   location: string;
   original_time: string | null;
+  original_end: string | null;
   adjustment_reason: string | null;
   position: number | null;
 }
@@ -91,6 +95,7 @@ export function serverScheduleToSchedule(item: ServerScheduleItem): ScheduleItem
     event: item.event,
     location: item.location,
     originalTime: item.original_time || undefined,
+    originalEnd: item.original_end || undefined,
     adjustmentReason: item.adjustment_reason || undefined,
     position: item.position ?? undefined,
   };
@@ -181,6 +186,8 @@ export const api = {
         ...(patch.end !== undefined ? { end: patch.end } : {}),
         ...(patch.event !== undefined ? { event: patch.event } : {}),
         ...(patch.location !== undefined ? { location: patch.location } : {}),
+        ...(patch.originalTime !== undefined ? { originalTime: patch.originalTime || null } : {}),
+        ...(patch.originalEnd !== undefined ? { originalEnd: patch.originalEnd || null } : {}),
         ...(patch.adjustmentReason !== undefined ? { adjustmentReason: patch.adjustmentReason } : {}),
       }),
     }),

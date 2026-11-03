@@ -178,6 +178,11 @@ export default function AnimationEngine() {
       void (el as HTMLElement).offsetWidth;
       el.classList.add('enter-run');
     });
+    document.querySelectorAll('.hero-bear-img').forEach((bear) => {
+      bear.classList.remove('hero-bear-enter');
+      void (bear as HTMLElement).offsetWidth;
+      bear.classList.add('hero-bear-enter');
+    });
 
     const cleanups: Array<(() => void) | void> = [
       initNavMorph(),

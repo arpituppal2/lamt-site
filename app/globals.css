@@ -1373,6 +1373,28 @@ label .label-caps {
   animation-delay: 1575ms;
 }
 
+/* Bear staggers in after the title words start arriving */
+@keyframes lamt-bear-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem) scale(0.97);
+  }
+  to {
+    opacity: 0.4;
+    transform: none;
+  }
+}
+
+.hero-bear-img {
+  opacity: 0.4;
+  transform: none;
+}
+
+.hero-bear-img.hero-bear-enter {
+  animation: lamt-bear-enter var(--dur-title) var(--ease-premium) both;
+  animation-delay: 315ms;
+}
+
 /* Short viewports (wide-but-thin windows): keep the whole hero above the fold.
    Scales type and spacing against viewport height, not just width. */
 @media (min-width: 768px) and (max-height: 820px) {
@@ -1446,7 +1468,8 @@ html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay
   .stagger-parent > *,
   .hero-animate-words .word,
   .program-rule,
-  .hero-enter {
+  .hero-enter,
+  .hero-bear-img {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -1454,17 +1477,6 @@ html.js-motion .stagger-parent.is-visible > *:nth-child(n + 6) { animation-delay
   }
 }
 
-/* Narrow desktop: keep 6 ALL-CAPS links readable between 901–1200 */
-@media (min-width: 901px) and (max-width: 1200px) {
-  .site-nav {
-    gap: 0.7rem !important;
-  }
-
-  .site-nav .nav-link {
-    font-size: 0.875rem;
-    letter-spacing: 0.08em;
-  }
-}
 
 @media (max-width: 900px) {
   :root {

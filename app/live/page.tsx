@@ -149,13 +149,15 @@ function ScheduleTable({ schedule }: { schedule: ScheduleItem[] }) {
         <div className="space-y-3 sm:hidden">
           {schedule.map((item) => (
             <div key={`${item.time}-${item.event}`} className="border border-[var(--color-divider)] p-4">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="tabular-nums font-extrabold text-[var(--color-text)]">
-                  {item.time}-{item.end}
-                </span>
+              <div className="flex flex-col gap-1 mb-2">
                 {item.originalTime && (
-                  <span className="text-sm text-[var(--color-text-muted)] line-through">{item.originalTime}</span>
+                  <span className="tabular-nums text-sm text-[var(--color-text-muted)] line-through">
+                    {item.originalTime} – {item.originalEnd || item.end}
+                  </span>
                 )}
+                <span className="tabular-nums font-extrabold text-[var(--color-text)]">
+                  {item.time} – {item.end}
+                </span>
               </div>
               <span className="font-extrabold text-[var(--color-text-secondary)] block">{item.event}</span>
               {item.adjustmentReason && <span className="mt-1 block text-sm font-bold text-[#9F2A18]">{item.adjustmentReason}</span>}
@@ -177,8 +179,12 @@ function ScheduleTable({ schedule }: { schedule: ScheduleItem[] }) {
               {schedule.map((item) => (
                 <tr key={`${item.time}-${item.event}`}>
                   <td className="tabular-nums text-[var(--color-text-secondary)]">
-                    {item.originalTime && <span className="mb-1 block text-sm text-[var(--color-text-muted)] line-through">{item.originalTime}</span>}
-                    {item.time}-{item.end}
+                    {item.originalTime && (
+                      <span className="mb-1 block text-sm text-[var(--color-text-muted)] line-through">
+                        {item.originalTime} – {item.originalEnd || item.end}
+                      </span>
+                    )}
+                    {item.time} – {item.end}
                   </td>
                   <td>
                     <span className="font-extrabold text-[var(--color-text)]">{item.event}</span>

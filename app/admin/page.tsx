@@ -347,212 +347,419 @@ function AnnouncementsTab({ updates, onPost, onDelete, onEdit }: {
   );
 }
 
-interface ScheduleDraft {
+interface ScheduleForm {
+  event: string;
+  location: string;
+  originalStart: string;
+  originalEnd: string;
+  modifiedStart: string;
+  modifiedEnd: string;
+  note: string;
+}
+
+type ScheduleEditorState =
+  | { mode: 'closed' }
+  | { mode: 'edit'; id: number }
+  | { mode: 'create' };
+
+const EMPTY_FORM: ScheduleForm = {
+  event: '',
+  location: '',
+  originalStart: '',
+  originalEnd: '',
+  modifiedStart: '',
+  modifiedEnd: '',
+  note: '',
+};
+
+function formFromItem(item: ScheduleItem): ScheduleForm {
+  const modified = Boolean(item.originalTime);
+  return {
+    event: item.event,
+    location: item.location,
+    originalStart: item.originalTime || item.time,
+    originalEnd: item.originalEnd || item.end,
+    modifiedStart: modified ? item.time : '',
+    modifiedEnd: modified ? item.end : '',
+    note: item.adjustmentReason || '',
+  };
+}
+
+// Returns null when valid, or a user-facing message.
+function validateForm(form: ScheduleForm): string | null {
+  if (!form.event.trim()) return 'Event is required.';
+  if (!form.location.trim()) return 'Location is required.';
+  if (!form.originalStart.trim() || !form.originalEnd.trim()) {
+    return 'Original start and end are required.';
+  }
+  const modStart = form.modifiedStart.trim();
+  const modEnd = form.modifiedEnd.trim();
+  if (modStart && !modEnd) return 'Fill both modified times, or leave both blank.';
+  if (!modStart && modEnd) return 'Fill both modified times, or leave both blank.';
+  return null;
+}
+
+function formToPayload(form: ScheduleForm): {
   time: string;
   end: string;
   event: string;
   location: string;
+  originalTime?: string;
+  originalEnd?: string;
   adjustmentReason?: string;
-  position?: number;
+} {
+  const modStart = form.modifiedStart.trim();
+  const modEnd = form.modifiedEnd.trim();
+  const isModified = Boolean(modStart && modEnd);
+  return {
+    event: form.event.trim(),
+    location: form.location.trim(),
+    time: isModified ? modStart : form.originalStart.trim(),
+    end: isModified ? modEnd : form.originalEnd.trim(),
+    originalTime: isModified ? form.originalStart.trim() : '',
+    originalEnd: isModified ? form.originalEnd.trim() : '',
+    adjustmentReason: form.note.trim(),
+  };
 }
 
 function ScheduleTab({ schedule, onSave, onDelete, onAdd, onReorder }: {
   schedule: ScheduleItem[];
-  onSave: (id: number, draft: ScheduleDraft) => Promise<void>;
+  onSave: (id: number, payload: ReturnType<typeof formToPayload>) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
-  onAdd: (draft: ScheduleDraft) => Promise<void>;
+  onAdd: (payload: ReturnType<typeof formToPayload>) => Promise<void>;
   onReorder: (order: { id: number; position: number }[]) => Promise<void>;
 }) {
-  const [drafts, setDrafts] = useState<Record<number, ScheduleDraft>>({});
-  const [errors, setErrors] = useState<Record<number, string>>({});
+  const [editor, setEditor] = useState<ScheduleEditorState>({ mode: 'closed' });
+  const [form, setForm] = useState<ScheduleForm>(EMPTY_FORM);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
-  const [newRow, setNewRow] = useState<ScheduleDraft | null>(null);
-  const [newError, setNewError] = useState<string | null>(null);
 
-  const draftFor = (item: ScheduleItem): ScheduleDraft =>
-    drafts[item.id] || {
-      time: item.time,
-      end: item.end,
-      event: item.event,
-      location: item.location,
-      adjustmentReason: item.adjustmentReason || "",
-    };
+  const editingItem = editor.mode === 'edit'
+    ? schedule.find((item) => item.id === editor.id) || null
+    : null;
 
-  function updateDraft(id: number, field: keyof ScheduleDraft, value: string) {
-    setDrafts((prev) => ({ ...prev, [id]: { ...(prev[id] || draftFor(schedule.find((item) => item.id === id)!)), [field]: value } }));
-    setErrors((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
+  function openEdit(item: ScheduleItem) {
+    setForm(formFromItem(item));
+    setEditor({ mode: 'edit', id: item.id });
+    setError(null);
   }
 
-  function updateNewRow(field: keyof ScheduleDraft, value: string) {
-    if (!newRow) return;
-    setNewRow({ ...newRow, [field]: value });
-    setNewError(null);
+  function openCreate() {
+    setForm(EMPTY_FORM);
+    setEditor({ mode: 'create' });
+    setError(null);
   }
 
-  async function saveItem(item: ScheduleItem) {
-    const draft = draftFor(item);
-    setPendingIds((prev) => new Set(prev).add(item.id));
-    setErrors((prev) => {
-      const next = { ...prev };
-      delete next[item.id];
-      return next;
-    });
-    try {
-      await onSave(item.id, draft);
-      setDrafts((prev) => {
-        const next = { ...prev };
-        delete next[item.id];
-        return next;
-      });
-    } catch (err) {
-      setErrors((prev) => ({ ...prev, [item.id]: err instanceof ApiError ? err.message : "Could not reach the server." }));
-    } finally {
-      setPendingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(item.id);
-        return next;
-      });
-    }
+  function closeEditor() {
+    if (saving) return;
+    setEditor({ mode: 'closed' });
+    setError(null);
   }
 
-  async function createRow() {
-    if (!newRow) return;
-    if (!newRow.time.trim() || !newRow.end.trim() || !newRow.event.trim() || !newRow.location.trim()) {
-      setNewError("Time, end, event, and location are required.");
+  function requestClose() {
+    const dirty = editor.mode === 'create'
+      ? Object.values(form).some((v) => v.trim() !== '')
+      : editingItem
+        ? JSON.stringify(form) !== JSON.stringify(formFromItem(editingItem))
+        : false;
+    if (dirty && !window.confirm('Discard unsaved changes to this row?')) return;
+    closeEditor();
+  }
+
+  function update(field: keyof ScheduleForm, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setError(null);
+  }
+
+  async function submit() {
+    const validation = validateForm(form);
+    if (validation) {
+      setError(validation);
       return;
     }
-    setPendingIds((prev) => new Set(prev).add(-1));
-    setNewError(null);
+    setSaving(true);
+    setError(null);
     try {
-      await onAdd(newRow);
-      setNewRow(null);
+      const payload = formToPayload(form);
+      if (editor.mode === 'create') await onAdd(payload);
+      else if (editor.mode === 'edit') await onSave(editor.id, payload);
+      setEditor({ mode: 'closed' });
+      setForm(EMPTY_FORM);
     } catch (err) {
-      setNewError(err instanceof ApiError ? err.message : "Could not reach the server.");
+      setError(err instanceof ApiError ? err.message : 'Could not reach the server.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function removeRow(id: number) {
+    if (!window.confirm('Delete this schedule row? This cannot be undone.')) return;
+    setPendingIds((prev) => new Set(prev).add(id));
+    try {
+      await onDelete(id);
+      if (editor.mode === 'edit' && editor.id === id) setEditor({ mode: 'closed' });
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not reach the server.');
     } finally {
       setPendingIds((prev) => {
         const next = new Set(prev);
-        next.delete(-1);
+        next.delete(id);
         return next;
       });
     }
   }
 
-  async function moveUp(id: number) {
+  async function move(id: number, direction: -1 | 1) {
     const idx = schedule.findIndex((item) => item.id === id);
-    if (idx <= 0) return;
-    const [a, b] = [schedule[idx - 1], schedule[idx]];
-    await onReorder([
-      { id: b.id, position: a.position ?? 0 },
-      { id: a.id, position: b.position ?? 0 },
-    ]);
+    const target = idx + direction;
+    if (idx < 0 || target < 0 || target >= schedule.length) return;
+    const a = schedule[idx];
+    const b = schedule[target];
+    setPendingIds((prev) => new Set(prev).add(id));
+    try {
+      await onReorder([
+        { id: b.id, position: a.position ?? 0 },
+        { id: a.id, position: b.position ?? 0 },
+      ]);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not reach the server.');
+    } finally {
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   }
 
-  async function moveDown(id: number) {
-    const idx = schedule.findIndex((item) => item.id === id);
-    if (idx < 0 || idx >= schedule.length - 1) return;
-    const [a, b] = [schedule[idx], schedule[idx + 1]];
-    await onReorder([
-      { id: a.id, position: b.position ?? 0 },
-      { id: b.id, position: a.position ?? 0 },
-    ]);
-  }
+  const isOpen = editor.mode !== 'closed';
 
   return (
     <section className="border-t-2 border-[var(--color-border)] pt-5">
       <p className="label-caps">Schedule</p>
-      <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Live Timeline Editor</h2>
-      <p className="mt-4 text-[var(--color-text-muted)]">Edit event times, rooms, and delay notes. Changes sync to the /live page within 30 seconds. Changing a time requires a delay note.</p>
-      <div className="mt-5 grid gap-4">
-        {schedule.map((item) => {
-          const draft = draftFor(item);
-          const dirty = draft.time !== item.time || draft.end !== item.end || draft.event !== item.event || draft.location !== item.location || draft.adjustmentReason !== (item.adjustmentReason || "");
-          return (
-            <div key={item.id} className="border-t-2 border-[var(--color-divider)] py-5">
-              <p className="mb-3 font-extrabold text-[var(--color-text)]">{item.event}</p>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                <label className="grid gap-2">
-                  <span className="label-caps">Position</span>
-                  <span className="font-mono text-sm text-[var(--color-text-muted)]">{(item.position ?? 0) + 1}</span>
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">Start</span>
-                  <input className="lamt-input" value={draft.time} onChange={(event) => updateDraft(item.id, "time", event.target.value)} />
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">End</span>
-                  <input className="lamt-input" value={draft.end} onChange={(event) => updateDraft(item.id, "end", event.target.value)} />
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">Location</span>
-                  <input className="lamt-input" value={draft.location} onChange={(event) => updateDraft(item.id, "location", event.target.value)} />
-                </label>
-                <label className="grid gap-2">
-                  <span className="label-caps">Original Time</span>
-                  <input className="lamt-input" value={item.originalTime || ""} readOnly disabled placeholder="Set automatically on first delay" />
-                </label>
-              </div>
-              <label className="mt-3 grid gap-2">
-                <span className="label-caps">Delay Reason</span>
-                <input className="lamt-input" value={draft.adjustmentReason || ""} onChange={(event) => updateDraft(item.id, "adjustmentReason", event.target.value)} placeholder="Required when changing a time" />
-              </label>
-              {errors[item.id] && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{errors[item.id]}</p>}
-              <div className="mt-4 flex flex-wrap gap-3">
-                <button type="button" onClick={() => moveUp(item.id)} disabled={item.position === 0 || pendingIds.has(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
-                  ▲ Move Up
-                </button>
-                <button type="button" onClick={() => moveDown(item.id)} disabled={item.position === schedule.length - 1 || pendingIds.has(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-40">
-                  ▼ Move Down
-                </button>
-                <button type="button" onClick={() => saveItem(item)} disabled={!dirty || pendingIds.has(item.id)} className="btn-outline disabled:opacity-40">
-                  {pendingIds.has(item.id) ? "Saving..." : "Save Changes"}
-                </button>
-                <button type="button" onClick={() => onDelete(item.id)} className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white">
-                  Remove Row
-                </button>
-              </div>
-            </div>
-          );
-        })}
-        {newRow && (
-          <div className="border-t-2 border-[var(--ucla-gold)] py-5">
-            <p className="mb-3 font-extrabold text-[var(--color-text)]">New Row</p>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <label className="grid gap-2">
-                <span className="label-caps">Start</span>
-                <input className="lamt-input" value={newRow.time} onChange={(event) => updateNewRow("time", event.target.value)} placeholder="e.g. 8:00 AM" />
-              </label>
-              <label className="grid gap-2">
-                <span className="label-caps">End</span>
-                <input className="lamt-input" value={newRow.end} onChange={(event) => updateNewRow("end", event.target.value)} placeholder="e.g. 8:45 AM" />
-              </label>
+      <h2 className="mt-1 text-xl font-extrabold text-[var(--color-text)]">Live Timeline</h2>
+      <p className="mt-4 text-[var(--color-text-muted)]">
+        Changes sync to the /live page within 30 seconds. Add a modified time to strike through the
+        original on the public schedule.
+      </p>
+
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[42rem] border-collapse text-left">
+          <thead>
+            <tr className="border-b-2 border-[var(--color-border-strong)]">
+              <th className="label-caps w-10 py-3 pr-2 text-[var(--color-text-muted)]">#</th>
+              <th className="label-caps py-3 pr-4 text-[var(--color-text-muted)]">Event</th>
+              <th className="label-caps py-3 pr-4 text-[var(--color-text-muted)]">Time</th>
+              <th className="label-caps py-3 pr-4 text-[var(--color-text-muted)]">Location</th>
+              <th className="label-caps w-[9.5rem] py-3 text-right text-[var(--color-text-muted)]">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {schedule.map((item, index) => {
+              const isModified = Boolean(item.originalTime);
+              const busy = pendingIds.has(item.id);
+              return (
+                <tr
+                  key={item.id}
+                  className="cursor-pointer border-b border-[var(--color-divider)] align-top transition-colors hover:bg-[var(--color-surface-2)]"
+                  onClick={() => openEdit(item)}
+                >
+                  <td className="py-4 pr-2 font-mono text-sm text-[var(--color-text-muted)]">{index + 1}</td>
+                  <td className="py-4 pr-4">
+                    <span className="font-extrabold text-[var(--color-text)]">{item.event}</span>
+                    {isModified && (
+                      <span className="ml-2 inline-block border border-[var(--ucla-gold-dark)] px-1.5 py-0.5 align-middle text-[0.625rem] font-extrabold uppercase tracking-[0.08em] text-[var(--ucla-gold-dark)]">
+                        Modified
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-4 pr-4 tabular-nums">
+                    {isModified && (
+                      <span className="block text-sm text-[var(--color-text-muted)] line-through">
+                        {item.originalTime} – {item.originalEnd}
+                      </span>
+                    )}
+                    <span className="block font-bold text-[var(--color-text)]">
+                      {item.time} – {item.end}
+                    </span>
+                  </td>
+                  <td className="py-4 pr-4 text-[var(--color-text-secondary)]">{item.location}</td>
+                  <td className="py-4 text-right">
+                    <div className="flex items-center justify-end gap-1" onClick={(event) => event.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={() => move(item.id, -1)}
+                        disabled={index === 0 || busy}
+                        aria-label={`Move ${item.event} up`}
+                        className="min-h-[2.25rem] min-w-[2.25rem] px-2 font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-30"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => move(item.id, 1)}
+                        disabled={index === schedule.length - 1 || busy}
+                        aria-label={`Move ${item.event} down`}
+                        className="min-h-[2.25rem] min-w-[2.25rem] px-2 font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-30"
+                      >
+                        ▼
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openEdit(item)}
+                        disabled={busy}
+                        aria-label={`Edit ${item.event}`}
+                        className="min-h-[2.25rem] min-w-[2.25rem] px-2 font-extrabold text-[var(--color-text)] hover:bg-[var(--color-divider)] disabled:opacity-30"
+                      >
+                        ⋯
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {schedule.length === 0 && (
+              <tr>
+                <td colSpan={5} className="py-6 text-[var(--color-text-muted)]">
+                  No schedule rows yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <button type="button" onClick={openCreate} className="btn-outline mt-5">
+        Add Row
+      </button>
+
+      {error && !isOpen && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{error}</p>}
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-black/60 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={editor.mode === 'create' ? 'Add schedule row' : 'Edit schedule row'}
+          onClick={requestClose}
+          onKeyDown={(event) => { if (event.key === 'Escape') requestClose(); }}
+          tabIndex={-1}
+        >
+          <div
+            className="w-full max-w-lg border-2 border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-[var(--color-text)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p className="label-caps">{editor.mode === 'create' ? 'New Row' : 'Edit Row'}</p>
+            <h3 className="mt-1 text-lg font-extrabold">
+              {editor.mode === 'create' ? 'Add schedule row' : form.event || 'Schedule row'}
+            </h3>
+
+            <div className="mt-5 grid gap-4">
               <label className="grid gap-2">
                 <span className="label-caps">Event</span>
-                <input className="lamt-input" value={newRow.event} onChange={(event) => updateNewRow("event", event.target.value)} placeholder="e.g. Check-In" />
+                <input
+                  className="lamt-input"
+                  value={form.event}
+                  onChange={(event) => update('event', event.target.value)}
+                  placeholder="e.g. Opening Ceremony"
+                  autoFocus
+                />
               </label>
               <label className="grid gap-2">
                 <span className="label-caps">Location</span>
-                <input className="lamt-input" value={newRow.location} onChange={(event) => updateNewRow("location", event.target.value)} placeholder="e.g. MS 4000A" />
+                <input
+                  className="lamt-input"
+                  value={form.location}
+                  onChange={(event) => update('location', event.target.value)}
+                  placeholder="e.g. MS 4000A"
+                />
+              </label>
+
+              <div className="grid gap-4 border-t border-[var(--color-divider)] pt-4">
+                <p className="label-caps !text-[var(--color-text-muted)]">Time</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="grid gap-2">
+                    <span className="label-caps">Original Start</span>
+                    <input
+                      className="lamt-input"
+                      value={form.originalStart}
+                      onChange={(event) => update('originalStart', event.target.value)}
+                      placeholder="e.g. 8:00 AM"
+                    />
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="label-caps">Original End</span>
+                    <input
+                      className="lamt-input"
+                      value={form.originalEnd}
+                      onChange={(event) => update('originalEnd', event.target.value)}
+                      placeholder="e.g. 8:45 AM"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 border-l-4 border-[var(--ucla-gold)] pl-3">
+                  <label className="grid gap-2">
+                    <span className="label-caps">Modified Start</span>
+                    <input
+                      className="lamt-input"
+                      value={form.modifiedStart}
+                      onChange={(event) => update('modifiedStart', event.target.value)}
+                      placeholder="Leave blank if unchanged"
+                    />
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="label-caps">Modified End</span>
+                    <input
+                      className="lamt-input"
+                      value={form.modifiedEnd}
+                      onChange={(event) => update('modifiedEnd', event.target.value)}
+                      placeholder="Leave blank if unchanged"
+                    />
+                  </label>
+                </div>
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Fill both modified times to replace the original. Leave both blank to show the original.
+                </p>
+              </div>
+
+              <label className="grid gap-2">
+                <span className="label-caps">Note (optional)</span>
+                <input
+                  className="lamt-input"
+                  value={form.note}
+                  onChange={(event) => update('note', event.target.value)}
+                  placeholder="e.g. Running 15 minutes behind"
+                />
               </label>
             </div>
-            {newError && <p className="mt-3 text-sm font-bold text-[#B33A2B]">{newError}</p>}
-            <div className="mt-4 flex flex-wrap gap-3">
-              <button type="button" onClick={createRow} disabled={pendingIds.has(-1)} className="btn-outline disabled:opacity-40">
-                {pendingIds.has(-1) ? "Creating..." : "Create Row"}
-              </button>
-              <button type="button" onClick={() => setNewRow(null)} className="btn-outline disabled:opacity-40">
-                Cancel
-              </button>
+
+            {error && <p className="mt-4 text-sm font-bold text-[#B33A2B]">{error}</p>}
+
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[var(--color-divider)] pt-4">
+              {editor.mode === 'edit' ? (
+                <button
+                  type="button"
+                  onClick={() => { if (editor.mode === 'edit') removeRow(editor.id); }}
+                  disabled={saving || (editor.mode === 'edit' && pendingIds.has(editor.id))}
+                  className="px-3 py-3 min-h-[2.75rem] font-extrabold text-[#B33A2B] hover:bg-[#B33A2B] hover:text-white disabled:opacity-40"
+                >
+                  Delete
+                </button>
+              ) : <span />}
+              <div className="flex gap-3">
+                <button type="button" onClick={requestClose} disabled={saving} className="btn-outline disabled:opacity-40">
+                  Cancel
+                </button>
+                <button type="button" onClick={submit} disabled={saving} className="btn-filled disabled:opacity-40">
+                  {saving ? 'Saving…' : 'Save'}
+                </button>
+              </div>
             </div>
           </div>
-        )}
-        <button type="button" onClick={() => setNewRow({ time: "", end: "", event: "", location: "", adjustmentReason: "" })} disabled={pendingIds.has(-1) || newRow !== null} className="btn-outline justify-self-start disabled:opacity-40">
-          Add Row
-        </button>
-      </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -1338,13 +1545,15 @@ export default function AdminPage() {
         {tab === "schedule" && (
           <ScheduleTab
             schedule={schedule}
-            onSave={async (id, draft) => {
+            onSave={async (id, payload) => {
               await api.patchScheduleItem(id, {
-                time: draft.time,
-                end: draft.end,
-                event: draft.event,
-                location: draft.location,
-                adjustmentReason: draft.adjustmentReason || undefined,
+                time: payload.time,
+                end: payload.end,
+                event: payload.event,
+                location: payload.location,
+                originalTime: payload.originalTime ?? '',
+                originalEnd: payload.originalEnd ?? '',
+                adjustmentReason: payload.adjustmentReason || '',
               });
               await reload();
             }}
@@ -1352,8 +1561,21 @@ export default function AdminPage() {
               await api.deleteScheduleItem(id);
               await reload();
             }}
-            onAdd={async (draft) => {
-              await api.postScheduleItem({ time: draft.time, end: draft.end, event: draft.event, location: draft.location });
+            onAdd={async (payload) => {
+              const created = await api.postScheduleItem({
+                time: payload.time,
+                end: payload.end,
+                event: payload.event,
+                location: payload.location,
+              });
+              // New rows can be created already-modified; apply the original pair in a follow-up patch.
+              if (payload.originalTime && payload.originalEnd && created.item) {
+                await api.patchScheduleItem(created.item.id, {
+                  originalTime: payload.originalTime,
+                  originalEnd: payload.originalEnd,
+                  adjustmentReason: payload.adjustmentReason || '',
+                });
+              }
               await reload();
             }}
             onReorder={async (order) => {

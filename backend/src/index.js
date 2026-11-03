@@ -109,7 +109,7 @@ app.use((req, res, next) => {
   }
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-CSRF-Token');
     res.setHeader('Access-Control-Max-Age', '600');
     return res.sendStatus(204);
   }
@@ -306,7 +306,7 @@ app.get('/schedule', async (req, res) => {
   }
   try {
     const result = await pool.query(
-      'SELECT id, time, "end", event, location, original_time, adjustment_reason, position FROM schedule_items ORDER BY position, id',
+      'SELECT id, time, "end", event, location, original_time, original_end, adjustment_reason, position FROM schedule_items ORDER BY position, id',
     );
     const body = { schedule: result.rows };
     cacheSet('schedule', body, CACHE_TTL.schedule);
@@ -323,7 +323,7 @@ app.post('/schedule', requireAdmin, csrfProtection, async (req, res) => {
   if (!time || !end || !event || !location) return res.status(400).json({ error: 'time, end, event, location required' });
   try {
     const result = await pool.query(
-      'INSERT INTO schedule_items (time, "end", event, location, position) VALUES ($1, $2, $3, $4, (SELECT COALESCE(MAX(position), 0) + 1 FROM schedule_items)) RETURNING id, time, "end", event, location, original_time, adjustment_reason, position',
+      'INSERT INTO schedule_items (time, "end", event, location, position) VALUES ($1, $2, $3, $4, (SELECT COALESCE(MAX(position), 0) + 1 FROM schedule_items)) RETURNING id, time, "end", event, location, original_time, original_end, adjustment_reason, position',
       [time, end, event, location],
     );
     cacheInvalidate('schedule');
@@ -336,31 +336,33 @@ app.post('/schedule', requireAdmin, csrfProtection, async (req, res) => {
 
 app.patch('/schedule/:id', requireAdmin, csrfProtection, async (req, res) => {
   const id = req.params.id;
-  const { time, end, event, location, adjustmentReason, position } = req.body || {};
+  const { time, end, event, location, originalTime, originalEnd, adjustmentReason, position } = req.body || {};
   try {
     const existing = await pool.query('SELECT * FROM schedule_items WHERE id = $1', [id]);
     if (existing.rows.length === 0) return res.status(404).json({ error: 'not found' });
     const current = existing.rows[0];
-    const timeChanged = time !== undefined && time !== current.time;
-    const endChanged = end !== undefined && end !== current.end;
-    if ((timeChanged || endChanged) && (!adjustmentReason || String(adjustmentReason).trim() === '')) {
-      return res.status(400).json({ error: 'adjustmentReason required when changing times' });
-    }
+    const hasOriginalTime = originalTime !== undefined;
+    const hasOriginalEnd = originalEnd !== undefined;
     const next = {
       time: time !== undefined ? time : current.time,
       end: end !== undefined ? end : current.end,
       event: event !== undefined ? event : current.event,
       location: location !== undefined ? location : current.location,
-      original_time: adjustmentReason ? current.original_time || current.time : current.original_time,
-      adjustment_reason: adjustmentReason !== undefined ? adjustmentReason : current.adjustment_reason,
+      // The client owns the "modified" pair: whatever it sends is stored verbatim.
+      // A null original means "not modified", so /live shows the plain time.
+      original_time: hasOriginalTime ? (originalTime ? String(originalTime) : null) : current.original_time,
+      original_end: hasOriginalEnd ? (originalEnd ? String(originalEnd) : null) : current.original_end,
+      adjustment_reason: adjustmentReason !== undefined
+        ? (adjustmentReason ? String(adjustmentReason) : null)
+        : current.adjustment_reason,
       position: position !== undefined ? position : current.position,
     };
     const result = await pool.query(
       `UPDATE schedule_items
-       SET time = $1, "end" = $2, event = $3, location = $4, original_time = $5, adjustment_reason = $6, position = $7
-       WHERE id = $8
-       RETURNING id, time, "end", event, location, original_time, adjustment_reason, position`,
-      [next.time, next.end, next.event, next.location, next.original_time, next.adjustment_reason, next.position, id],
+       SET time = $1, "end" = $2, event = $3, location = $4, original_time = $5, original_end = $6, adjustment_reason = $7, position = $8
+       WHERE id = $9
+       RETURNING id, time, "end", event, location, original_time, original_end, adjustment_reason, position`,
+      [next.time, next.end, next.event, next.location, next.original_time, next.original_end, next.adjustment_reason, next.position, id],
     );
     cacheInvalidate('schedule');
     return res.json({ item: result.rows[0] });
